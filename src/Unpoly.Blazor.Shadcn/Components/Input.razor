@@ -1,0 +1,28 @@
+@inherits UiComponentBase
+
+@* shadcn/ui <Input>. Everything but `type` arrives through @attributes, exactly as shadcn
+   spreads `...props` — so `name`, `value`, `placeholder`, `required`, `up-validate` and the
+   rest are written as plain HTML at the call site. *@
+
+<input type="@Type" data-slot="input" class="@Classes" @attributes="AdditionalAttributes" />
+
+@code {
+    [Parameter] public string Type { get; set; } = "text";
+
+    // hover:border-ring/60 is not shadcn's — its Input answers focus and ignores the pointer. A
+    // control that does not change under the mouse reads as decoration, and the select beside it
+    // does change. Declared in deviations.json; the same rule is on Select, Textarea, DatePicker
+    // and Stepper.
+    const string Base =
+        "h-control w-full min-w-0 rounded-md border border-input bg-transparent px-3 py-1 " +
+        "text-control shadow-xs transition-[color,box-shadow] outline-none " +
+        "selection:bg-primary selection:text-primary-foreground file:inline-flex file:h-7 " +
+        "file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground " +
+        "placeholder:text-muted-foreground disabled:pointer-events-none " +
+        "disabled:cursor-not-allowed disabled:opacity-50 dark:bg-input/30 " +
+        "focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 " +
+        "aria-invalid:border-destructive aria-invalid:ring-destructive/20 " +
+        "dark:aria-invalid:ring-destructive/40 hover:border-ring/60";
+
+    string Classes => Cn(Base, Class);
+}

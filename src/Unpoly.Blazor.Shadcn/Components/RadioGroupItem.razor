@@ -1,0 +1,18 @@
+@inherits UiComponentBase
+
+@* A radio's `name` is what groups it, and it has to be identical across the group — the DOM,
+   not the wrapper, is what decides membership. So <RadioGroup> is presentation only and the
+   name is written on each item, as it is in plain HTML. *@
+
+<input type="radio" data-slot="radio-group-item" class="@Classes" @attributes="AdditionalAttributes" />
+
+@code {
+    const string Base =
+        "aspect-square size-4 shrink-0 rounded-full border border-input text-primary " +
+        "shadow-xs transition-[color,box-shadow] outline-none focus-visible:border-ring " +
+        "focus-visible:ring-[3px] focus-visible:ring-ring/50 disabled:cursor-not-allowed " +
+        "disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-destructive/20 " +
+        "dark:bg-input/30 dark:aria-invalid:ring-destructive/40";
+
+    string Classes => Cn(Base, Class);
+}

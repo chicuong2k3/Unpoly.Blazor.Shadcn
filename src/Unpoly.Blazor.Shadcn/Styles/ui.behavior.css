@@ -1,0 +1,294 @@
+/* shadcn/ui for Unpoly.Blazor — what Radix does in JavaScript, done by the platform instead.
+   ------------------------------------------------------------------------------------------
+   Radix ships `data-state="open|closed"` and animates on it. Native <dialog>, <details> and
+   the popover API carry their own state, so the selectors differ; the animation names and
+   durations are shadcn's. Everything here is behaviour a class string cannot express —
+   variants and colour stay inline on the components, exactly as in shadcn.
+   ------------------------------------------------------------------------------------------ */
+
+@layer components {
+
+    /* ---- Dialog / Sheet / AlertDialog -----------------------------------------------
+       A modal <dialog> gets the focus trap, the inert background, Escape, and the top layer
+       from the user agent. Tailwind's preflight sets `margin: 0` on every element, which
+       flattens the user-agent `margin: auto` that centres a modal dialog — so it must be put
+       back, or the dialog opens hard against the top-left corner. The <dialog> itself is a
+       bare frame; the shadcn-styled panel is its single child, so the animation has a box
+       with a real size to scale. */
+    [data-slot="dialog"],
+    [data-slot="alert-dialog"] {
+        margin: auto;
+        padding: 0;
+        border: 0;
+        max-width: none;
+        max-height: none;
+        background: transparent;
+        color: inherit;
+        overflow: visible;
+    }
+    [data-slot="dialog"]::backdrop,
+    [data-slot="alert-dialog"]::backdrop,
+    [data-slot="sheet"]::backdrop {
+        background: rgb(0 0 0 / 0.5);
+        animation: sh-fade-in 150ms ease-out;
+    }
+    [data-slot="dialog"][open] > *,
+    [data-slot="alert-dialog"][open] > * {
+        animation: sh-dialog-in 200ms cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    [data-slot="sheet"] {
+        margin: 0;
+        padding: 0;
+        border: 0;
+        max-width: none;
+        max-height: none;
+        background: transparent;
+        color: inherit;
+        overflow: visible;
+    }
+    [data-slot="sheet"][data-side="right"]  { margin-left: auto; }
+    [data-slot="sheet"][data-side="left"]   { margin-right: auto; }
+    [data-slot="sheet"][data-side="top"]    { margin-bottom: auto; }
+    [data-slot="sheet"][data-side="bottom"] { margin-top: auto; }
+    [data-slot="sheet"][data-side="right"][open]  > * { animation: sh-slide-from-right 320ms cubic-bezier(0.32, 0.72, 0, 1); }
+    [data-slot="sheet"][data-side="left"][open]   > * { animation: sh-slide-from-left 320ms cubic-bezier(0.32, 0.72, 0, 1); }
+    [data-slot="sheet"][data-side="top"][open]    > * { animation: sh-slide-from-top 320ms cubic-bezier(0.32, 0.72, 0, 1); }
+    [data-slot="sheet"][data-side="bottom"][open] > * { animation: sh-slide-from-bottom 320ms cubic-bezier(0.32, 0.72, 0, 1); }
+
+    /* ---- Accordion ------------------------------------------------------------------
+       <details>/<summary> is the whole state machine, so an accordion works with JavaScript
+       off and survives a fragment swap without a compiler. */
+    [data-slot="accordion-trigger"]::-webkit-details-marker { display: none; }
+    [data-slot="accordion-trigger"]::marker { content: ""; }
+    [data-slot="accordion-item"][open] [data-chevron] { rotate: 180deg; }
+    [data-slot="accordion-item"][open] [data-slot="accordion-content"] { animation: sh-accordion-down 200ms ease-out; }
+
+    /* ---- DropdownMenu / Popover / HoverCard ------------------------------------------
+       The popover API supplies the top layer, light-dismiss and Escape. `position-area` is
+       not everywhere yet, so ui.js positions the panel and only the visuals live here. */
+    [popover] {
+        margin: 0;
+        padding: 0;
+        border: 0;
+        background: transparent;
+        overflow: visible;
+        position: fixed;
+    }
+    [popover]:popover-open { animation: sh-dialog-in 120ms ease-out; }
+
+    /* ---- Tooltip --------------------------------------------------------------------- */
+    [data-slot="tooltip-content"] { opacity: 0; transition: opacity 120ms ease-out; }
+    [data-slot="tooltip-content"][data-state="delayed-open"] { opacity: 1; }
+
+    /* ---- Button, while Unpoly has a request in flight ---------------------------------
+       Unpoly marks the element that started a request with `.up-active`. On a submit button
+       that is the honest place for the progress: the page stays legible, and [up-disable]
+       has already made the form's fields inert. shadcn has no equivalent — it belongs to
+       this port, which is why it is a rule here and not a class string on the component. */
+    [data-slot="button"].up-active { pointer-events: none; }
+    [data-slot="button"].up-active::after {
+        content: "";
+        margin-left: 0.5rem;
+        display: inline-block;
+        block-size: 0.875rem;
+        inline-size: 0.875rem;
+        flex-shrink: 0;
+        border-radius: 9999px;
+        border: 2px solid currentColor;
+        border-right-color: transparent;
+        vertical-align: -2px;
+        animation: sh-spin 0.6s linear infinite;
+    }
+    @media (prefers-reduced-motion: reduce) {
+        /* No spin, but still a mark that something is happening. */
+        [data-slot="button"].up-active::after {
+            animation: none;
+            border-right-color: currentColor;
+            opacity: 0.5;
+        }
+        [data-slot="dialog"][open] > *,
+        [data-slot="alert-dialog"][open] > *,
+        [data-slot="sheet"][open] > *,
+        [data-slot="accordion-item"][open] [data-slot="accordion-content"] { animation: none; }
+    }
+
+    /* ---- Sonner (Toastify-js underneath) ---------------------------------------------
+       Toastify owns the box, the stack and the animation; this dresses it in the app's own
+       surface. Its own CSS sets a gradient background, hence the override rather than a rule. */
+    .toastify[data-slot="sonner-toast"] {
+        border-radius: var(--radius-md);
+        border: 1px solid var(--border);
+        padding: 0.75rem 1rem;
+        font-size: 0.8125rem;
+        font-family: inherit;
+        background: var(--popover);
+        color: var(--popover-foreground);
+        box-shadow: 0 8px 24px -12px rgb(0 0 0 / 0.22), 0 2px 6px -2px rgb(0 0 0 / 0.08);
+    }
+    .toastify[data-slot="sonner-toast"][data-type="error"] {
+        background: color-mix(in oklab, var(--destructive) 12%, var(--popover));
+        color: var(--destructive);
+        border-color: var(--destructive);
+    }
+    .toastify[data-slot="sonner-toast"] .toast-close {
+        margin-left: 0.75rem;
+        opacity: 0.5;
+        color: inherit;
+        transition: opacity 150ms;
+    }
+    .toastify[data-slot="sonner-toast"] .toast-close:hover { opacity: 1; }
+
+    /* ---- Checkbox / RadioGroup / Switch ----------------------------------------------
+       Radix draws these as <button role="checkbox"> with a hidden input alongside. On static
+       SSR the real input is the only thing that posts, and it has to be the focusable one — so
+       it stays, and the indicator is a mask on its own ::after rather than a child element.
+       The mask scales with the box and inherits the fill, so one glyph serves every size. */
+    [data-slot="checkbox"],
+    [data-slot="radio-group-item"],
+    [data-slot="switch"] {
+        appearance: none;
+        -webkit-appearance: none;
+        display: grid;
+        place-items: center;
+        vertical-align: middle;
+        cursor: pointer;
+    }
+    [data-slot="checkbox"]:disabled,
+    [data-slot="radio-group-item"]:disabled,
+    [data-slot="switch"]:disabled { cursor: not-allowed; }
+
+    [data-slot="checkbox"]::after {
+        content: "";
+        block-size: 100%;
+        inline-size: 100%;
+        scale: 0;
+        background: currentColor;
+        transition: scale 100ms;
+        -webkit-mask: var(--sh-check) center / 0.75rem 0.75rem no-repeat;
+        mask: var(--sh-check) center / 0.75rem 0.75rem no-repeat;
+    }
+    [data-slot="checkbox"]:checked::after { scale: 1; }
+    [data-slot="checkbox"]:indeterminate::after {
+        scale: 1;
+        -webkit-mask: var(--sh-minus) center / 0.75rem 0.75rem no-repeat;
+        mask: var(--sh-minus) center / 0.75rem 0.75rem no-repeat;
+    }
+
+    [data-slot="radio-group-item"]::after {
+        content: "";
+        block-size: 0.5rem;
+        inline-size: 0.5rem;
+        border-radius: 9999px;
+        scale: 0;
+        background: currentColor;
+        transition: scale 100ms;
+    }
+    [data-slot="radio-group-item"]:checked::after { scale: 1; }
+
+    /* The switch is the same input again, presented as a state that is on or off rather than
+       ticked. `place-items: start` so the thumb sits at one end and travels to the other. */
+    [data-slot="switch"] { place-items: center start; }
+    [data-slot="switch"]::after {
+        content: "";
+        block-size: 1rem;
+        inline-size: 1rem;
+        margin-inline: 1px;
+        border-radius: 9999px;
+        background: var(--background);
+        box-shadow: 0 1px 2px rgb(0 0 0 / 0.25);
+        transition: translate 160ms cubic-bezier(0.32, 0.72, 0, 1);
+    }
+    [data-slot="switch"]:checked::after { translate: calc(2rem - 1rem - 4px) 0; }
+
+    /* ---- Select ----------------------------------------------------------------------
+       The bare <select>, before ui.js reaches it and after it if scripting is off. The OS draws
+       its own arrow in its own colour, so that is suppressed and one is drawn to match. */
+    select[data-slot="select"] {
+        appearance: none;
+        -webkit-appearance: none;
+        background-image: var(--sh-chevron-down);
+        background-position: right 0.7rem center;
+        background-repeat: no-repeat;
+        background-size: 1rem 1rem;
+    }
+
+    /* ---- Select, as built by ui.js --------------------------------------------------- */
+    [data-slot="select-chevron"] {
+        background: currentColor;
+        -webkit-mask: var(--sh-chevron-down) center / 1rem 1rem no-repeat;
+        mask: var(--sh-chevron-down) center / 1rem 1rem no-repeat;
+    }
+    [data-slot="select-item"][data-selected="true"]::after {
+        content: "";
+        position: absolute;
+        right: 0.5rem;
+        block-size: 0.875rem;
+        inline-size: 0.875rem;
+        background: currentColor;
+        -webkit-mask: var(--sh-check) center / contain no-repeat;
+        mask: var(--sh-check) center / contain no-repeat;
+    }
+
+    /* ---- native controls the design system still owns --------------------------------- */
+    /* Chrome draws the search field's clear button as a grey X from another design system.
+       The raw type=search inputs (list filters) are not wrapped in any component, so this
+       has to be a rule rather than a class. */
+    input[type="search"]::-webkit-search-cancel-button {
+        -webkit-appearance: none;
+        appearance: none;
+        width: 14px;
+        height: 14px;
+        cursor: pointer;
+        opacity: 0.5;
+        background: var(--sh-clear-icon) center / contain no-repeat;
+    }
+    input[type="search"]::-webkit-search-cancel-button:hover { opacity: 0.9; }
+
+    /* The option panel of a native <select> is drawn by the OS and cannot be themed; the most
+       that can be reached is its ground, so it is not OS white on a themed page. */
+    select option { background-color: var(--popover); color: var(--popover-foreground); }
+
+    /* A column of figures reads digit over digit, and the spinner — a different shape in every
+       engine, and money never needs it — is gone. */
+    input[type="number"][data-slot="input"],
+    [data-slot="date-picker"] { font-family: var(--font-numeric); }
+    input[type="number"][data-slot="input"] { -moz-appearance: textfield; appearance: textfield; }
+    input[type="number"][data-slot="input"]::-webkit-outer-spin-button,
+    input[type="number"][data-slot="input"]::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+}
+
+@keyframes sh-spin { to { transform: rotate(360deg); } }
+@keyframes sh-fade-in { from { opacity: 0; } }
+@keyframes sh-dialog-in { from { opacity: 0; transform: scale(0.96); } }
+@keyframes sh-accordion-down { from { opacity: 0; transform: translateY(-4px); } }
+@keyframes sh-slide-from-right { from { transform: translateX(100%); } }
+@keyframes sh-slide-from-left { from { transform: translateX(-100%); } }
+@keyframes sh-slide-from-top { from { transform: translateY(-100%); } }
+@keyframes sh-slide-from-bottom { from { transform: translateY(100%); } }
+
+/* ---- Air Datepicker, behind <DatePicker /> ------------------------------------------------
+   Outside @layer components on purpose: air-datepicker.css declares these same custom
+   properties on .air-datepicker unlayered, and unlayered declarations win over every layered
+   one regardless of order. Inside the layer the calendar kept its own orange. */
+.air-datepicker {
+    --adp-background-color: var(--popover);
+    --adp-text-color: var(--popover-foreground);
+    --adp-color: var(--popover-foreground);
+    --adp-color-secondary: var(--muted-foreground);
+    --adp-border-color: var(--border);
+    --adp-border-color-inner: var(--border);
+    --adp-cell-background-color-selected: var(--primary);
+    --adp-cell-background-color-selected-hover: var(--primary);
+    --adp-cell-background-color-hover: var(--accent);
+    --adp-day-name-color: var(--muted-foreground);
+    --adp-nav-color-secondary: var(--muted-foreground);
+    --adp-accent-color: var(--primary);
+    --adp-font-family: inherit;
+    /* Above up-modal (z-index 2000): the calendar renders on <body> to escape the overlay's
+       scrollport, so it has to clear the overlay it belongs to. */
+    --adp-z-index: 2100;
+}
+/* The header title is the year control: months -> years -> decades. Make it read as a button. */
+.air-datepicker-nav--title { font-weight: 500; }
+.air-datepicker.-active- { z-index: 2100; }

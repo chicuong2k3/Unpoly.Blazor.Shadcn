@@ -1,0 +1,11 @@
+@inherits UiComponentBase
+
+@* Radix swaps image for fallback in JS after the load event. Here the fallback sits behind the
+   image and the image hides itself if it fails, so the exchange costs no script and survives a
+   fragment swap. *@
+
+<span data-slot="avatar" class="@Classes" @attributes="AdditionalAttributes">@ChildContent</span>
+
+@code {
+    string Classes => Cn("group/avatar relative flex size-8 shrink-0 overflow-hidden rounded-full select-none data-[size=lg]:size-10 data-[size=sm]:size-6", Class);
+}

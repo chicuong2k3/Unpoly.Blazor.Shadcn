@@ -1,0 +1,145 @@
+# shadcn/ui for Unpoly.Blazor
+
+A port of [shadcn/ui](https://ui.shadcn.com) to Blazor **static SSR** with
+[Unpoly](https://unpoly.com). Same token names, same class strings, same `data-slot` contract,
+same `buttonVariants` export. Copy-in source, not a package: every component is a file you are
+expected to edit.
+
+```
+src/Unpoly.Blazor.Shadcn/
+  Styles/ui.css            tokens + @theme inline  (import this from the app's app.css)
+  Styles/ui.behavior.css   what Radix does in JS, done by the platform
+  wwwroot/ui.js            the compilers  (must be in the app's @source list)
+  Components/*.razor       the components — class lists are GENERATED, see below
+  ButtonVariants.cs        shadcn's `buttonVariants`, for things that are not buttons
+  LucideIcons.g.cs         the Lucide glyphs, generated from lucide-static
+  UiComponentBase.cs       Class / ChildContent / AdditionalAttributes, and `Cn`
+upstream/                  vendored shadcn/ui .tsx — what parity is measured against
+deviations.json            every difference from shadcn, with its reason
+tools/                     the generators; all six take --check and CI runs them
+skills/shadcn-unpoly/      SKILL.md + a generated API index, for coding agents
+```
+
+## Parity, and how it is checked
+
+The class strings are not typed by hand. `tools/fetch_upstream.py` downloads shadcn's own source
+into `upstream/`, `tools/extract_upstream.py` reduces it to class sets, and
+`tools/sync_classes.py` writes them into the components. The parity tests then render every
+component and compare it with the same upstream data.
+
+That indirection is the point. Parity asserted against a class string someone retyped from the
+docs is not parity — it is the same memory twice, and it agrees with the implementation for
+exactly the reason the implementation is wrong.
+
+`deviations.json` is the complete list of differences, each with a written reason. Both the
+generator and the tests read it, so they cannot disagree about what counts as one. Anything not
+in it must match shadcn exactly, and the test fails if it does not. At the time of writing there
+are eight, and four components with no upstream counterpart at all.
+
+## Wiring a head
+
+```css
+/* app.css */
+@import "tailwindcss";
+@import "../../Unpoly.Blazor.Shadcn/Styles/ui.css";
+
+@source "../Components/**/*.razor";
+@source "../../Unpoly.Blazor.Shadcn/Components/**/*.razor";
+@source "../../Unpoly.Blazor.Shadcn/ButtonVariants.cs";
+@source "../../Unpoly.Blazor.Shadcn/wwwroot/ui.js";   /* ui.js builds DOM out of Tailwind classes */
+
+:root {
+    --primary: #a02742;          /* … the rest of the shadcn palette */
+    --control-h: 2.875rem;
+    --control-text: 15px;
+}
+```
+
+```razor
+@* App.razor *@
+<script src="_content/Unpoly.Blazor.Shadcn/toastify/toastify.js" defer></script>
+<script src="_content/Unpoly.Blazor.Shadcn/ui.js" defer></script>
+```
+
+**`ui.js` is wrapped in an IIFE, and must stay that way.** A classic `<script src>` shares one
+global scope with every other script on the page. `const el` here against `function el` in a
+head's own `app.js` is a redeclaration, and the browser throws a SyntaxError that kills the whole
+file before one compiler is registered — no server error, nothing at the call site, every dialog
+and dropdown simply absent on the one head that picked the same name. It cost an afternoon.
+
+**`@source "…/ui.js"` is not optional.** Tailwind emits only the classes it can see, and the
+Select panel, the dropdown and the confirm dialog are assembled in JavaScript. Leave it out and
+those three render unstyled, silently, in production only.
+
+## Where this differs from shadcn, and why
+
+Radix keeps component state in React. Nothing here can: the server renders once and Unpoly swaps
+fragments underneath. So each interactive component is either a native element that already owns
+the state, or an `up.compiler` that rebuilds after every swap and tears itself down.
+
+| Component | shadcn / Radix | Here |
+|---|---|---|
+| `Dialog`, `AlertDialog` | portal + overlay + focus trap in JS | native `<dialog>` + `showModal()` |
+| `Accordion` | reducer, `data-state` | `<details>` / `<summary>`; `Name` gives you `type="single"` |
+| `DropdownMenu` | Popper + portal | `[popover]` for the top layer, `ui.js` for the position |
+| `Select` | listbox of divs + hidden input | real `<select>` + a shadcn panel drawn beside it |
+| `Checkbox`, `Switch`, `RadioGroupItem` | `<button role=…>` + hidden input | the real input, styled |
+| `Tabs` | React state | `ui.js`, panels hidden with `hidden` so their fields still post |
+| `Sonner` | its own renderer | Toastify-js, same `toast()` / `toast.error()` call shape |
+| `Form` | react-hook-form `Controller` | `<FormField>` takes Label/Description/Message as parameters |
+
+Four API differences follow from that and cannot be papered over:
+
+- **No `asChild`.** Blazor has no `cloneElement`. The case it was used for — "render this as a
+  link" — is the `Href` parameter on `Button`, `Badge` and `DropdownMenuItem`.
+- **No `<SelectTrigger>` / `<SelectValue>` / `<SelectContent>`.** The native `<select>` is all
+  three. Options are `<SelectItem>`, which renders `<option>`.
+- **No `TooltipProvider`.** Each tooltip keeps its own delay timer, so the grouped
+  "one opens, the rest open instantly" behaviour is missing.
+- **No tailwind-merge.** `cn()` upstream resolves conflicts, so `className="h-12"` beats the
+  variant's `h-9`. Here two classes of equal specificity are resolved by stylesheet order, which
+  is not the caller's order. Override with the important modifier: `Class="h-12!"`.
+
+Two tokens are ours: `--control-h` and `--control-text`, surfaced as `h-control` and
+`text-control`. shadcn writes `h-9 text-sm` literally, which pins every consumer to one
+control size. Everything else is shadcn's string, unchanged.
+
+## Four components shadcn does not have
+
+Each says so in its own comments, and each is skipped by the parity tests because there is
+nothing upstream to compare it with:
+
+- `DatePicker` — shadcn's is a Popover around react-day-picker; this is Air Datepicker,
+  attached by a compiler so it survives a fragment swap.
+- `TagsInput` — Tom Select over a real `<select multiple>`, so the form posts without JavaScript.
+  shadcn's nearest is Combobox, which is single-value and built on cmdk.
+- `Stepper` — shadcn has no number stepper, and a bare `<input type=number>` is not one: its
+  spinners are a different shape in every engine and invisible until hovered.
+- `Icon` — lucide-react ships one component per icon; 2000 Razor files is not an icon set, it is
+  a build problem, so one component takes the name.
+
+## Unpoly
+
+No component knows Unpoly exists. Every one splats `AdditionalAttributes`, so `up-target`,
+`up-poll`, `up-validate`, `up-disable` and the rest are written as plain attributes at the call
+site. The single point of contact is a CSS rule: `[data-slot="button"].up-active` grows a
+spinner, because Unpoly marks the element that started a request and a submit button is the
+honest place to show it.
+
+Two things worth knowing before reaching for a component here:
+
+- **An Unpoly overlay beats `<Dialog>` when the content comes from the server.**
+  `up-layer="new"` renders a *real route* into a modal, keeps it bookmarkable, and lets the
+  server decide what goes in it. `<Dialog>` is for content the page already has.
+- **`<Skeleton>` rendered by the server is never seen.** Static SSR runs
+  `OnInitializedAsync` to completion before a byte exists. The skeleton a user sees comes from
+  `[up-placeholder]`, so these live in `<template>` in the layout, not in the page they stand
+  in for.
+
+## Adding a component
+
+Copy the class strings from ui.shadcn.com and change three things: `text-sm` → `text-control`
+and `h-9` → `h-control` on controls, `data-slot` on the root, and `@attributes` last so a caller
+can override. If it needs state, ask in this order — does a native element already have it, does
+an Unpoly attribute already do it, and only then write a compiler. A compiler must return a
+destructor; one that leaves residue behind does not break this swap, it breaks the next one.

@@ -1,0 +1,605 @@
+// shadcn/ui for Unpoly.Blazor — the behaviour layer.
+// =============================================================================================
+// Radix builds its components in React and keeps their state in React. Nothing here can: the
+// server renders once and Unpoly swaps fragments in and out underneath. So each interactive
+// component is either
+//
+//   (a) a native element that already owns the state — <dialog>, <details>, [popover],
+//       <select> — dressed in shadcn's classes, or
+//   (b) an `up.compiler`, which runs on every DOM insertion (first load AND every fragment
+//       swap) and MUST return a destructor. A compiler that leaves residue behind does not
+//       break this swap; it breaks the next one, which is why every one below tears down.
+//
+// Tailwind only emits classes it can see in a scanned file, so this file must be listed in the
+// head's `@source` — otherwise everything built here renders unstyled. That line is in each
+// head's app.css next to the component globs.
+
+// Everything below runs inside an IIFE, and that is load-bearing rather than tidy.
+// A <script src> without type=module shares one global scope with every other script on the
+// page — so `const el` here and `function el` in a head's own app.js are a redeclaration, and
+// the browser throws a SyntaxError that kills THIS ENTIRE FILE before a single compiler is
+// registered. Nothing logs at the call site, nothing fails on the server, and every dialog,
+// toast and dropdown is simply absent on the one head that happened to pick the same name.
+// The two exports at the bottom are the only things this file puts on window, deliberately.
+;(function () {
+  // ---- config --------------------------------------------------------------------------------
+  // The only strings this library produces from JavaScript rather than from a Razor parameter.
+  // Read lazily at call time, not captured at load, so a head can set window.shadcnUi from a
+  // script that happens to load after this one.
+  //
+  //   window.shadcnUi = {
+  //     confirmText: 'Đồng ý',
+  //     cancelText: 'Huỷ',
+  //     datePickerLocale: { days: [...], months: [...], today: 'Hôm nay', clear: 'Xoá', ... },
+  //   }
+  const config = () => window.shadcnUi || {}
+
+  // ---- cn ------------------------------------------------------------------------------------
+  const cn = (...parts) => parts.filter(Boolean).join(' ')
+
+  const el = (tag, className, props = {}) =>
+    Object.assign(document.createElement(tag), { className, ...props })
+
+  // ---- shared class strings ------------------------------------------------------------------
+  // Only the JS-built components need these; the Razor components carry their own inline, exactly
+  // as shadcn does. They sit at the top rather than beside their use because a `const` read before
+  // its declaration is a temporal-dead-zone error, and a compiler callback is easy to reorder.
+
+  const SELECT_TRIGGER =
+    'border-input flex h-control w-full items-center gap-2 rounded-md border bg-transparent px-3 ' +
+    'py-2 text-control whitespace-nowrap shadow-xs transition-[color,box-shadow] outline-none ' +
+    'hover:border-ring/60 focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] ' +
+    'disabled:cursor-not-allowed disabled:opacity-50'
+
+  const SELECT_CONTENT =
+    'bg-popover text-popover-foreground z-50 max-h-60 min-w-[8rem] overflow-x-hidden overflow-y-auto ' +
+    'rounded-md border p-1 shadow-md'
+
+  const SELECT_ITEM =
+    'relative flex w-full cursor-default items-center gap-2 rounded-sm py-1.5 pr-8 pl-2 text-sm ' +
+    'outline-hidden select-none hover:bg-accent hover:text-accent-foreground ' +
+    'data-[active]:bg-accent data-[active]:text-accent-foreground ' +
+    'data-[disabled]:pointer-events-none data-[disabled]:opacity-50'
+
+  const BUTTON_BASE =
+    'inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-control ' +
+    'font-medium transition-all disabled:pointer-events-none disabled:opacity-50 shrink-0 ' +
+    'outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] ' +
+    'h-control px-4 py-2'
+
+  const BUTTON = {
+    default: cn(BUTTON_BASE, 'bg-primary text-primary-foreground shadow-xs hover:bg-primary/90'),
+    destructive: cn(BUTTON_BASE, 'bg-destructive text-white shadow-xs hover:bg-destructive/90'),
+    outline: cn(BUTTON_BASE, 'border bg-background shadow-xs hover:bg-accent hover:text-accent-foreground'),
+    ghost: cn(BUTTON_BASE, 'hover:bg-accent hover:text-accent-foreground'),
+  }
+
+  // =============================================================================================
+  // Sonner — toast()
+  // =============================================================================================
+  // Toastify-js underneath (vendored under /toastify, MIT). It owns the stack, the slide, the
+  // timer and the dismissal; we supply the wording and the slot the CSS dresses.
+  //
+  // The server already knows what happened and says so with `Ctx.UpEmit("sonner:toast", …)`.
+
+  function toast(text, options = {}) {
+    if (!text) return
+    if (typeof Toastify !== 'function') { console.warn('[ui] Toastify not loaded:', text); return }
+
+    const type = options.type || 'success'
+    Toastify({
+      text,
+      duration: options.duration ?? 4000,
+      close: true,
+      gravity: 'bottom',
+      position: 'right',
+      // Theme comes from CSS, not inline style, so every token stays in one place.
+      className: 'sonner-toast',
+      style: { background: '' },
+      stopOnFocus: true,
+      escapeMarkup: true,
+      callback: undefined,
+      onClick: options.onClick,
+    }).showToast()
+
+    // Toastify has no hook for arbitrary attributes, and [data-slot] is what ui.css styles.
+    const node = document.querySelector('.toastify:not([data-slot])')
+    if (node) { node.dataset.slot = 'sonner-toast'; node.dataset.type = type }
+  }
+
+  toast.success = (text, o) => toast(text, { ...o, type: 'success' })
+  toast.error = (text, o) => toast(text, { ...o, type: 'error' })
+
+  up.on('sonner:toast', (event) => toast(event.text, { type: event.flavor || event.type || 'success' }))
+  // The cart event carries its own wording and predates the toast channel.
+  up.on('cart:changed', (event) => toast(event.text))
+
+  // =============================================================================================
+  // AlertDialog — a destructive confirmation
+  // =============================================================================================
+  // [up-confirm] calls window.confirm, and Unpoly's hook for it (up.browser.assertConfirmed) is
+  // called synchronously and never awaited, so a promise returned from an override is ignored — a
+  // modal cannot be substituted there. Hence a separate attribute Unpoly does not know about:
+  // the click is caught in the capture phase before Unpoly sees it, and re-issued once answered.
+  //
+  // [data-confirm] is NOT a free name — Unpoly reads it as an alias of [up-confirm].
+
+  const ALERT_DIALOG_PANEL =
+    'bg-background rounded-lg border p-6 shadow-lg w-[min(28rem,calc(100vw-2rem))] ' +
+    'flex flex-col gap-4'
+
+  function alertDialog(message, options = {}) {
+    const confirmText = options.confirmText ?? config().confirmText ?? 'OK'
+    const cancelText = options.cancelText ?? config().cancelText ?? 'Cancel'
+    return new Promise((resolve) => {
+      const dialog = el('dialog', '', { })
+      dialog.dataset.slot = 'alert-dialog'
+
+      // The <dialog> is the frame; this is the box shadcn calls AlertDialogContent. Same split
+      // as the Razor <Dialog>, so one CSS rule dresses both.
+      const panel = el('div', ALERT_DIALOG_PANEL)
+      panel.dataset.slot = 'alert-dialog-content'
+      const header = el('div', 'flex flex-col gap-2 text-center sm:text-left')
+      header.dataset.slot = 'alert-dialog-header'
+      const title = el('p', 'text-muted-foreground text-sm', { textContent: message })
+      title.dataset.slot = 'alert-dialog-description'
+      header.append(title)
+
+      const footer = el('div', 'flex flex-col-reverse gap-2 sm:flex-row sm:justify-end')
+      footer.dataset.slot = 'alert-dialog-footer'
+
+      // data-ask-yes / data-ask-no name the two answers. Both buttons carry data-slot="button"
+      // and differ only by variant, so without these a test — or a keyboard shortcut — would have
+      // to tell them apart by their Vietnamese labels.
+      const cancel = el('button', BUTTON.outline, { type: 'button', textContent: cancelText })
+      cancel.dataset.slot = 'button'
+      cancel.dataset.variant = 'outline'
+      cancel.dataset.askNo = ''
+      const confirm = el('button', BUTTON.destructive, { type: 'button', textContent: confirmText })
+      confirm.dataset.slot = 'button'
+      confirm.dataset.variant = 'destructive'
+      confirm.dataset.askYes = ''
+      footer.append(cancel, confirm)
+
+      panel.append(header, footer)
+      dialog.append(panel)
+      document.body.append(dialog)
+
+      const answer = (ok) => { dialog.close(); dialog.remove(); resolve(ok) }
+      confirm.addEventListener('click', () => answer(true))
+      cancel.addEventListener('click', () => answer(false))
+      // Escape and the backdrop both mean no. <dialog> fires `cancel` for Escape by itself.
+      dialog.addEventListener('cancel', (e) => { e.preventDefault(); answer(false) })
+      dialog.addEventListener('click', (e) => { if (e.target === dialog) answer(false) })
+
+      dialog.showModal()          // native: focus trap, inert background, top layer
+      cancel.focus()              // the safe answer, not the destructive one
+    })
+  }
+
+  up.compiler('[data-ask]', (element) => {
+    const onClick = async (event) => {
+      // A second click — the one this handler issues itself after a yes.
+      if (element.dataset.asked) return
+
+      event.preventDefault()
+      event.stopImmediatePropagation()      // Unpoly's own click handler must not run yet
+
+      const message = element.dataset.ask
+      if (!message || await alertDialog(message)) {
+        element.dataset.asked = '1'
+        element.click()                     // now it means: follow the link, submit the form
+        delete element.dataset.asked
+      }
+    }
+
+    element.addEventListener('click', onClick, true)
+    return () => element.removeEventListener('click', onClick, true)
+  })
+
+  // =============================================================================================
+  // Dialog / Sheet — <dialog> does the hard parts
+  // =============================================================================================
+  // showModal() gives the focus trap, the inert background, Escape and the top layer. None of
+  // that is worth reimplementing, and all of it is what Radix spends most of its bytes on.
+
+  up.compiler('[data-slot="dialog-trigger"], [data-slot="sheet-trigger"]', (trigger) => {
+    const open = (event) => {
+      const target = document.getElementById(trigger.dataset.target)
+      if (!target) return
+      event.preventDefault()
+      target.showModal()
+    }
+    trigger.addEventListener('click', open)
+    return () => trigger.removeEventListener('click', open)
+  })
+
+  // A close button anywhere inside the dialog, including the corner X.
+  up.compiler('[data-slot="dialog-close"], [data-slot="sheet-close"]', (button) => {
+    const close = (event) => { event.preventDefault(); button.closest('dialog')?.close() }
+    button.addEventListener('click', close)
+    return () => button.removeEventListener('click', close)
+  })
+
+  // Clicking the backdrop dismisses. The <dialog> element IS the backdrop area, so a click whose
+  // target is the dialog itself — rather than the panel inside it — landed outside.
+  up.compiler('dialog[data-dismissable]', (dialog) => {
+    const onClick = (event) => { if (event.target === dialog) dialog.close() }
+    dialog.addEventListener('click', onClick)
+    return () => dialog.removeEventListener('click', onClick)
+  })
+
+  // =============================================================================================
+  // Tabs
+  // =============================================================================================
+  // No request, no history: this is a local view switch. A tab that should be linkable is a link
+  // with [up-target] instead, and needs none of this.
+
+  up.compiler('[data-slot="tabs"]', (root) => {
+    const triggers = [...root.querySelectorAll('[data-slot="tabs-trigger"]')]
+    const panels = [...root.querySelectorAll('[data-slot="tabs-content"]')]
+    if (triggers.length === 0) return
+
+    const show = (value) => {
+      for (const t of triggers) t.dataset.state = t.dataset.value === value ? 'active' : 'inactive'
+      for (const t of triggers) t.setAttribute('aria-selected', String(t.dataset.value === value))
+      for (const t of triggers) t.tabIndex = t.dataset.value === value ? 0 : -1
+      for (const p of panels) p.hidden = p.dataset.value !== value
+    }
+
+    const onClick = (event) => {
+      const trigger = event.target.closest('[data-slot="tabs-trigger"]')
+      if (trigger && root.contains(trigger)) show(trigger.dataset.value)
+    }
+
+    // Arrow keys move between tabs, which is the part of the APG pattern people actually notice.
+    const onKey = (event) => {
+      const step = { ArrowRight: 1, ArrowLeft: -1, Home: -Infinity, End: Infinity }[event.key]
+      if (step === undefined || !event.target.matches('[data-slot="tabs-trigger"]')) return
+      event.preventDefault()
+      const from = triggers.indexOf(event.target)
+      const to = Math.max(0, Math.min(triggers.length - 1, step === Infinity ? triggers.length - 1
+        : step === -Infinity ? 0 : from + step))
+      triggers[to].focus()
+      show(triggers[to].dataset.value)
+    }
+
+    root.addEventListener('click', onClick)
+    root.addEventListener('keydown', onKey)
+    show(root.dataset.value || triggers[0].dataset.value)
+
+    return () => {
+      root.removeEventListener('click', onClick)
+      root.removeEventListener('keydown', onKey)
+    }
+  })
+
+  // =============================================================================================
+  // DropdownMenu / Popover — the popover API does the hard parts
+  // =============================================================================================
+  // [popover] gives the top layer, light dismiss and Escape. What it does not give portably yet is
+  // anchor positioning (`position-area` is not everywhere), so that much is measured here.
+
+  function place(panel, anchor, align = 'start', side = 'bottom', offset = 4) {
+    const a = anchor.getBoundingClientRect()
+    const p = panel.getBoundingClientRect()
+
+    let top = side === 'top' ? a.top - p.height - offset : a.bottom + offset
+    let left = align === 'end' ? a.right - p.width
+      : align === 'center' ? a.left + (a.width - p.width) / 2
+      : a.left
+
+    // Stay on screen. A menu half off the right edge is a menu with unreachable items.
+    left = Math.max(8, Math.min(left, window.innerWidth - p.width - 8))
+    if (top + p.height > window.innerHeight - 8) top = Math.max(8, a.top - p.height - offset)
+
+    panel.style.top = `${Math.round(top)}px`
+    panel.style.left = `${Math.round(left)}px`
+  }
+
+  up.compiler('[data-slot="dropdown-menu-trigger"], [data-slot="popover-trigger"]', (trigger) => {
+    const panel = document.getElementById(trigger.dataset.target)
+    if (!panel) return
+
+    const onToggle = (event) => {
+      if (event.newState !== 'open') { trigger.setAttribute('aria-expanded', 'false'); return }
+      trigger.setAttribute('aria-expanded', 'true')
+      place(panel, trigger, panel.dataset.align, panel.dataset.side)
+      panel.querySelector('[data-slot$="-item"]:not([data-disabled])')?.focus()
+    }
+
+    // A dropdown pinned to a trigger that has scrolled away is worse than one that closed.
+    const onScroll = () => { if (panel.matches(':popover-open')) panel.hidePopover() }
+
+    panel.addEventListener('toggle', onToggle)
+    window.addEventListener('scroll', onScroll, { passive: true, capture: true })
+    window.addEventListener('resize', onScroll, { passive: true })
+
+    return () => {
+      panel.removeEventListener('toggle', onToggle)
+      window.removeEventListener('scroll', onScroll, true)
+      window.removeEventListener('resize', onScroll)
+    }
+  })
+
+  // Keyboard within an open menu. Radix roves focus; so does this.
+  up.compiler('[data-slot="dropdown-menu-content"]', (panel) => {
+    const onKey = (event) => {
+      const items = [...panel.querySelectorAll('[data-slot="dropdown-menu-item"]:not([data-disabled])')]
+      if (items.length === 0) return
+      const from = items.indexOf(document.activeElement)
+      if (event.key === 'ArrowDown') { event.preventDefault(); items[(from + 1) % items.length].focus() }
+      else if (event.key === 'ArrowUp') { event.preventDefault(); items[(from - 1 + items.length) % items.length].focus() }
+      else if (event.key === 'Home') { event.preventDefault(); items[0].focus() }
+      else if (event.key === 'End') { event.preventDefault(); items[items.length - 1].focus() }
+    }
+    panel.addEventListener('keydown', onKey)
+    return () => panel.removeEventListener('keydown', onKey)
+  })
+
+  // =============================================================================================
+  // Tooltip
+  // =============================================================================================
+  // Hover AND focus, because a tooltip only reachable by mouse is a tooltip half the users never
+  // see. Escape closes it, which the APG asks for and most implementations forget.
+
+  up.compiler('[data-slot="tooltip-trigger"]', (trigger) => {
+    const panel = document.getElementById(trigger.dataset.target)
+    if (!panel) return
+    let timer
+
+    const open = () => {
+      clearTimeout(timer)
+      timer = setTimeout(() => {
+        panel.showPopover()
+        place(panel, trigger, 'center', panel.dataset.side || 'top', 6)
+        panel.dataset.state = 'delayed-open'
+      }, Number(trigger.dataset.delay ?? 200))
+    }
+
+    const close = () => {
+      clearTimeout(timer)
+      panel.dataset.state = 'closed'
+      if (panel.matches(':popover-open')) panel.hidePopover()
+    }
+
+    const onKey = (event) => { if (event.key === 'Escape') close() }
+
+    trigger.addEventListener('pointerenter', open)
+    trigger.addEventListener('pointerleave', close)
+    trigger.addEventListener('focus', open)
+    trigger.addEventListener('blur', close)
+    document.addEventListener('keydown', onKey)
+
+    return () => {
+      close()
+      trigger.removeEventListener('pointerenter', open)
+      trigger.removeEventListener('pointerleave', close)
+      trigger.removeEventListener('focus', open)
+      trigger.removeEventListener('blur', close)
+      document.removeEventListener('keydown', onKey)
+    }
+  })
+
+  // =============================================================================================
+  // Select
+  // =============================================================================================
+  // Radix Select is a listbox built from divs and a hidden input. On static SSR the real <select>
+  // has to stay in the form — it is what posts, and it is what still works with scripting off. So
+  // the native control is kept and hidden, and a shadcn-shaped panel is drawn beside it. Choosing
+  // an item writes through to the <select> and dispatches a bubbling change event, so
+  // [up-autosubmit] and filter forms behave exactly as they do without this enhancement.
+
+  up.compiler('select[data-slot="select"]', (select) => {
+    if (select.disabled || select.multiple || select.closest('[data-slot="select-root"]')) return
+
+    const options = [...select.options].map((o) => ({ value: o.value, text: o.text, disabled: o.disabled }))
+    if (options.length === 0) return
+
+    // Sizing and layout belong to the visible control, so the caller's own classes move to the
+    // wrapper. <Select> hands them over verbatim in data-wrapper-class rather than leaving this to
+    // subtract the recipe and guess.
+    const wrap = el('span', cn('relative block', select.dataset.wrapperClass))
+    wrap.dataset.slot = 'select-root'
+
+    const trigger = el('button', cn(SELECT_TRIGGER, 'justify-between'), { type: 'button' })
+    trigger.dataset.slot = 'select-trigger'
+    trigger.setAttribute('aria-haspopup', 'listbox')
+    trigger.setAttribute('aria-expanded', 'false')
+
+    const label = el('span', 'line-clamp-1 flex items-center gap-2 text-left')
+    label.dataset.slot = 'select-value'
+    const chevron = el('span', 'size-4 shrink-0 opacity-50')
+    chevron.dataset.slot = 'select-chevron'
+    trigger.append(label, chevron)
+
+    const panel = el('span', cn(SELECT_CONTENT, 'absolute inset-x-0 top-[calc(100%+4px)] hidden'))
+    panel.dataset.slot = 'select-content'
+    panel.setAttribute('role', 'listbox')
+
+    const items = options.map((o) => {
+      const item = el('button', SELECT_ITEM, { type: 'button', textContent: o.text })
+      item.dataset.slot = 'select-item'
+      item.setAttribute('role', 'option')
+      if (o.disabled) item.dataset.disabled = ''
+      item.addEventListener('click', () => { choose(o.value); close(); trigger.focus() })
+      panel.append(item)
+      return { option: o, item }
+    })
+
+    let index = -1
+
+    function sync() {
+      const current = options.find((o) => o.value === select.value)
+      label.textContent = current ? current.text : ''
+      for (const { option, item } of items) {
+        const on = option.value === select.value
+        item.dataset.selected = String(on)
+        item.setAttribute('aria-selected', String(on))
+      }
+    }
+
+    function active(i) {
+      index = Math.max(0, Math.min(i, items.length - 1))
+      items.forEach(({ item }, k) => k === index ? item.dataset.active = '' : delete item.dataset.active)
+      items[index]?.item.scrollIntoView({ block: 'nearest' })
+    }
+
+    function choose(value) {
+      if (value !== select.value) {
+        select.value = value
+        select.dispatchEvent(new Event('change', { bubbles: true }))
+      }
+      sync()
+    }
+
+    function open() {
+      panel.classList.remove('hidden')
+      trigger.setAttribute('aria-expanded', 'true')
+      active(items.findIndex(({ option }) => option.value === select.value))
+      document.addEventListener('pointerdown', onDocPointerDown, true)
+      document.addEventListener('keydown', onKey, true)
+    }
+
+    function close() {
+      if (panel.classList.contains('hidden')) return
+      panel.classList.add('hidden')
+      trigger.setAttribute('aria-expanded', 'false')
+      document.removeEventListener('pointerdown', onDocPointerDown, true)
+      document.removeEventListener('keydown', onKey, true)
+    }
+
+    const isOpen = () => !panel.classList.contains('hidden')
+
+    function onDocPointerDown(e) { if (!wrap.contains(e.target)) close() }
+
+    function onKey(e) {
+      if (!isOpen()) {
+        if (['ArrowDown', 'ArrowUp', 'Enter', ' '].includes(e.key)) { e.preventDefault(); open() }
+        return
+      }
+      if (e.key === 'Escape') { e.preventDefault(); close(); trigger.focus() }
+      else if (e.key === 'Tab') close()
+      else if (e.key === 'ArrowDown') { e.preventDefault(); active(index + 1) }
+      else if (e.key === 'ArrowUp') { e.preventDefault(); active(index - 1) }
+      else if (e.key === 'Enter') {
+        e.preventDefault()
+        const hit = items[index]
+        if (hit && !hit.option.disabled) { choose(hit.option.value); close(); trigger.focus() }
+      }
+    }
+
+    trigger.addEventListener('click', () => (isOpen() ? close() : open()))
+    trigger.addEventListener('keydown', (e) => { if (!isOpen()) onKey(e) })
+
+    sync()
+    select.before(wrap)
+    wrap.append(select, trigger, panel)
+    select.classList.add('sr-only')
+    select.tabIndex = -1
+
+    return () => {
+      close()
+      select.classList.remove('sr-only')
+      select.tabIndex = 0
+      wrap.replaceWith(select)
+    }
+  })
+
+  // =============================================================================================
+  // DatePicker
+  // =============================================================================================
+  // Air Datepicker (vendored under /airdatepicker, MIT), not flatpickr: flatpickr renders the year
+  // as a number input whose ± arrows are 14px wide and opacity:0 until hovered, so in practice the
+  // year could not be changed, only stepped, by someone who found the arrows. Air Datepicker's
+  // header title is a button — months -> years -> decades — so any year is two or three clicks,
+  // and the same navigation works from the keyboard.
+  //
+  // Air Datepicker ships one locale file per language and none of them are bundled here, so the
+  // month and day names are configuration. Unset means its own English default.
+  // 📖 https://air-datepicker.com/docs — the shape is theirs, not ours.
+  const DEFAULT_DATE_LOCALE = { dateFormat: 'dd/MM/yyyy', timeFormat: 'HH:mm', firstDay: 1 }
+
+  const isoDate = (d) =>
+    `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`
+
+  up.compiler('[data-slot="date-picker"]', (input) => {
+    if (typeof window.AirDatepicker !== 'function') return
+
+    // What the form posts stays ISO (yyyy-MM-dd), matching the domain's DateOnly parsing, while
+    // the field on screen reads d/m/Y. Air Datepicker has no altInput, so the name moves to a
+    // hidden twin and the visible field becomes display-only.
+    const name = input.getAttribute('name')
+    const hidden = el('input', '', { type: 'hidden', name, value: input.value })
+    input.removeAttribute('name')
+    input.after(hidden)
+
+    const seeded = input.value ? new Date(`${input.value}T00:00:00`) : null
+    const valid = seeded && !Number.isNaN(seeded.getTime()) ? seeded : null
+
+    const dp = new window.AirDatepicker(input, {
+      locale: { ...DEFAULT_DATE_LOCALE, ...(config().datePickerLocale || {}) },
+      dateFormat: config().datePickerLocale?.dateFormat || DEFAULT_DATE_LOCALE.dateFormat,
+      selectedDates: valid ? [valid] : [],
+      autoClose: true,
+      isMobile: false,
+      buttons: ['today', 'clear'],
+      // Rendered on <body>, not beside the field. Inside an Unpoly overlay the field lives in
+      // up-modal-content, which scrolls — and a popup inside a scrollport is clipped by it, so the
+      // calendar came up buried under the modal. A global container also puts it above up-modal's
+      // z-index:2000 (see --adp-z-index in ui.behavior.css).
+      container: document.body,
+      onSelect: ({ date }) => {
+        const picked = Array.isArray(date) ? date[0] : date
+        hidden.value = picked ? isoDate(picked) : ''
+        // The hidden input is what filter / up-autosubmit forms watch, and a programmatic value
+        // assignment fires nothing on its own.
+        hidden.dispatchEvent(new Event('change', { bubbles: true }))
+      },
+    })
+
+    // readOnly, not disabled: the field still focuses, still tabs, still opens the calendar, but
+    // there is no free-typing a date the parser then has to guess at.
+    input.readOnly = true
+
+    // The overlay's own scrollport is not the window, so Air Datepicker's window-scroll listener
+    // never fires and the calendar would hang where the field used to be. Follow it, or close.
+    const scroller = input.closest('up-modal-content, [data-overlay-scroll]')
+    const follow = () => { if (dp.visible) dp.hide() }
+    scroller?.addEventListener('scroll', follow, { passive: true })
+
+    return () => {
+      scroller?.removeEventListener('scroll', follow)
+      dp.destroy()
+      hidden.remove()
+      if (name !== null) input.setAttribute('name', name)
+      input.readOnly = false
+    }
+  })
+
+  // =============================================================================================
+  // TagsInput — the multi-select shadcn does not ship
+  // =============================================================================================
+  // Tom Select (vendored under /tomselect, Apache-2.0). A shop with forty collections should not
+  // make an operator scroll a wall of checkboxes to tick two. It enhances a real <select multiple>,
+  // so the form posts exactly as it did and still works with scripting off.
+
+  up.compiler('select[data-slot="tags-input"]', (select) => {
+    if (typeof TomSelect !== 'function') { console.warn('[ui] TomSelect not loaded'); return }
+
+    const control = new TomSelect(select, {
+      plugins: ['remove_button'],
+      placeholder: select.dataset.placeholder || 'Search…',
+      maxOptions: null,
+      hideSelected: true,
+      searchField: ['text'],
+    })
+
+    return () => control.destroy()
+  })
+
+  // Anything outside Unpoly's world — a head's own app.js, a page script — reaches these.
+  // `toast` is global on purpose: that is sonner's API, and the call sites read the same.
+  window.toast = toast
+  window.alertDialog = alertDialog
+})()

@@ -1,0 +1,22 @@
+@inherits UiComponentBase
+
+@* Not a shadcn component — shadcn's nearest is Combobox, which is single-value and built on
+   cmdk. This is a real <select multiple> enhanced by Tom Select, so the form posts exactly as it
+   would without scripting, and a shop with forty collections does not make an operator scroll a
+   wall of checkboxes to tick two.
+
+   Kept in the library rather than a head because both heads pick collections this way. *@
+
+<select multiple data-slot="tags-input" name="@Name" data-placeholder="@Placeholder"
+        class="@Classes" @attributes="AdditionalAttributes">@ChildContent</select>
+
+@code {
+    [Parameter] public string? Name { get; set; }
+    [Parameter] public string Placeholder { get; set; } = "Search…";
+
+    const string Base =
+        "border-input w-full rounded-md border bg-transparent px-3 py-1 text-control shadow-xs " +
+        "outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px]";
+
+    string Classes => Cn(Base, Class);
+}

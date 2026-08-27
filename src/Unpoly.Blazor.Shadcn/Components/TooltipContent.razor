@@ -1,0 +1,16 @@
+@inherits UiComponentBase
+
+<div id="@Id" popover="manual" role="tooltip" data-slot="tooltip-content" data-side="@Side"
+     class="@Classes" @attributes="AdditionalAttributes">@ChildContent</div>
+
+@code {
+    [Parameter, EditorRequired] public string Id { get; set; } = default!;
+
+    /// <summary>top | bottom. Flipped when there is no room.</summary>
+    [Parameter] public string Side { get; set; } = "top";
+
+    const string Base =
+        "z-50 w-fit rounded-md bg-foreground px-3 py-1.5 text-xs text-balance text-background";
+
+    string Classes => Cn(Base, Class);
+}

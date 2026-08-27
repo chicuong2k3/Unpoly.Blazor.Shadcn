@@ -1,0 +1,31 @@
+<Project Sdk="Microsoft.NET.Sdk.Razor">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <RootNamespace>Unpoly.Blazor.Shadcn</RootNamespace>
+    <AssemblyName>Unpoly.Blazor.Shadcn</AssemblyName>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <PackageId>Unpoly.Blazor.Shadcn</PackageId>
+    <Description>shadcn/ui for Blazor static SSR with Unpoly. Same tokens, same class strings, same data-slot contract, same ARIA.</Description>
+    <PackageTags>blazor;shadcn;unpoly;ssr;tailwind;ui</PackageTags>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <RepositoryUrl>https://github.com/chicuong2k3/Unpoly.Blazor.Shadcn</RepositoryUrl>
+  </PropertyGroup>
+
+  <!-- Pager and the form components read HttpContext and the query helpers; those live in the
+       ASP.NET Core shared framework, supplied by the consuming web head. -->
+  <ItemGroup>
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="../../README.md" Pack="true" PackagePath="\" />
+  </ItemGroup>
+
+</Project>

@@ -1,0 +1,39 @@
+name: build
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.0.x'
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      # The generated files are committed, so CI never needs the network — it only proves that
+      # what is committed is what the generators produce. A stale API index or a component whose
+      # classes were edited by hand fails here rather than being discovered by a reader.
+      - name: Generated files are current
+        run: |
+          python tools/extract_upstream.py --check
+          python tools/sync_classes.py --check
+          python tools/sync_variants.py --check
+          python tools/gen_api.py --check
+          python tools/fetch_upstream.py --check
+
+      # gen_icons needs lucide-static, which is the one generator with a dependency.
+      - run: npm ci
+      - name: Icons are current
+        run: python tools/gen_icons.py --check
+
+      - run: dotnet build --configuration Release
+      - run: dotnet test --configuration Release --no-build --verbosity quiet

@@ -1,0 +1,234 @@
+{
+  "$comment": [
+    "Every place this port's classes differ from shadcn/ui, and why.",
+    "",
+    "Read by BOTH tools/sync_classes.py (which writes the components) and the parity tests",
+    "(which check them), so the generator and the test can never disagree about what counts as",
+    "a deviation. Anything not listed here must match shadcn exactly, and the test fails if it",
+    "does not.",
+    "",
+    "Adding an entry is a decision someone reviews. If the reason does not fit in a sentence,",
+    "the component is wrong, not the list."
+  ],
+  "tokens": {
+    "$comment": [
+      "The only substitutions. shadcn hardcodes the control height and font size, which pins",
+      "every consumer to one control size; these two read --control-h and --control-text so one",
+      "library can dress a 46px storefront and a 36px back office. Nothing else is substituted."
+    ],
+    "h-control": [
+      "h-9"
+    ],
+    "text-control": [
+      "text-sm",
+      "text-base",
+      "md:text-sm"
+    ],
+    "size-control": [
+      "size-9"
+    ]
+  },
+  "added": {
+    "input": {
+      "classes": [
+        "hover:border-ring/60"
+      ],
+      "why": "shadcn's Input answers focus and ignores the pointer. A control that does not change under the mouse reads as decoration — and the select beside it does change."
+    },
+    "textarea": {
+      "classes": [
+        "hover:border-ring/60"
+      ],
+      "why": "Same as input."
+    },
+    "select": {
+      "classes": [
+        "hover:border-ring/60"
+      ],
+      "why": "Same as input."
+    },
+    "avatar-image": {
+      "classes": [
+        "object-cover",
+        "relative",
+        "z-10"
+      ],
+      "why": "Radix swaps image for fallback in JS after the load event. Here the fallback sits behind the image and the image hides itself on error, so the exchange costs no script and survives a fragment swap — which needs the image stacked above it."
+    },
+    "avatar-fallback": {
+      "classes": [
+        "absolute",
+        "inset-0",
+        "text-xs",
+        "font-medium"
+      ],
+      "why": "It sits behind the image rather than replacing it; see avatar-image."
+    },
+    "dropdown-menu": {
+      "classes": [
+        "relative",
+        "inline-block"
+      ],
+      "why": "Radix renders the menu through a portal, so its root needs no positioning. ui.js measures the trigger in place, so the root is the positioning context."
+    },
+    "tooltip": {
+      "classes": [
+        "inline-block"
+      ],
+      "why": "Same as dropdown-menu."
+    }
+  },
+  "dropped": {
+    "dialog-content": {
+      "classes": [
+        "fixed",
+        "top-[50%]",
+        "left-[50%]",
+        "translate-x-[-50%]",
+        "translate-y-[-50%]",
+        "z-50",
+        "duration-200",
+        "data-[state=closed]:animate-out",
+        "data-[state=closed]:fade-out-0",
+        "data-[state=closed]:zoom-out-95",
+        "data-[state=open]:animate-in",
+        "data-[state=open]:fade-in-0",
+        "data-[state=open]:zoom-in-95"
+      ],
+      "why": "A modal <dialog> is centred by the user agent and lives in the top layer, so the fixed positioning and z-index are the platform's job. Radix animates on data-state; <dialog> has [open], so the animation is a CSS rule in ui.behavior.css instead."
+    },
+    "alert-dialog-content": {
+      "classes": [
+        "fixed",
+        "top-[50%]",
+        "left-[50%]",
+        "translate-x-[-50%]",
+        "translate-y-[-50%]",
+        "z-50",
+        "duration-200",
+        "data-[state=closed]:animate-out",
+        "data-[state=closed]:fade-out-0",
+        "data-[state=closed]:zoom-out-95",
+        "data-[state=open]:animate-in",
+        "data-[state=open]:fade-in-0",
+        "data-[state=open]:zoom-in-95"
+      ],
+      "why": "Same as dialog-content."
+    },
+    "dropdown-menu-content": {
+      "classes": [
+        "origin-(--radix-dropdown-menu-content-transform-origin)",
+        "max-h-(--radix-dropdown-menu-content-available-height)",
+        "data-[side=bottom]:slide-in-from-top-2",
+        "data-[side=left]:slide-in-from-right-2",
+        "data-[side=right]:slide-in-from-left-2",
+        "data-[side=top]:slide-in-from-bottom-2",
+        "data-[state=closed]:animate-out",
+        "data-[state=closed]:fade-out-0",
+        "data-[state=closed]:zoom-out-95",
+        "data-[state=open]:animate-in",
+        "data-[state=open]:fade-in-0",
+        "data-[state=open]:zoom-in-95"
+      ],
+      "why": "Those custom properties are set by Radix's positioning engine, which does not exist here — ui.js measures the anchor instead. The state animations go with them; the popover API exposes :popover-open, not data-state."
+    },
+    "tooltip-content": {
+      "classes": [
+        "origin-(--radix-tooltip-content-transform-origin)",
+        "animate-in",
+        "fade-in-0",
+        "zoom-in-95",
+        "data-[side=bottom]:slide-in-from-top-2",
+        "data-[side=left]:slide-in-from-right-2",
+        "data-[side=right]:slide-in-from-left-2",
+        "data-[side=top]:slide-in-from-bottom-2",
+        "data-[state=closed]:animate-out",
+        "data-[state=closed]:fade-out-0",
+        "data-[state=closed]:zoom-out-95"
+      ],
+      "why": "Same as dropdown-menu-content."
+    },
+    "select-item": {
+      "classes": [
+        "relative",
+        "flex",
+        "w-full",
+        "cursor-default",
+        "items-center",
+        "gap-2",
+        "rounded-sm",
+        "py-1.5",
+        "pr-8",
+        "pl-2",
+        "text-sm",
+        "outline-hidden",
+        "select-none",
+        "focus:bg-accent",
+        "focus:text-accent-foreground",
+        "data-[disabled]:pointer-events-none",
+        "data-[disabled]:opacity-50",
+        "*:[span]:last:flex",
+        "*:[span]:last:items-center",
+        "*:[span]:last:gap-2",
+        "[&_svg]:pointer-events-none",
+        "[&_svg]:shrink-0",
+        "[&_svg:not([class*='size-'])]:size-4",
+        "[&_svg:not([class*='text-'])]:text-muted-foreground"
+      ],
+      "why": "Radix's SelectItem is a div in a listbox. Here it is an <option> — the thing that actually posts, and the thing a phone renders as its own wheel. The OS draws it, so none of these classes reach anything. ui.js applies the same recipe to the themed row it draws beside the native control."
+    }
+  },
+  "subject": {
+    "$comment": [
+      "Components whose class-bearing element is not the first one they render, as component name",
+      "to the data-slot that carries the classes. Read by tools/sync_classes.py (which writes the",
+      "class list) and by the tests (which check it), so both always look at the same element.",
+      "Each entry exists because the platform needs a frame shadcn does not have."
+    ],
+    "Dialog": "dialog-content",
+    "Table": "table",
+    "FormField": "form-item",
+    "PaginationPrevious": "pagination-link",
+    "PaginationNext": "pagination-link"
+  },
+  "asChildButton": {
+    "$comment": [
+      "Slots where shadcn wraps a Button with asChild, so the element carries the button recipe",
+      "rather than classes of its own. There is no cloneElement in Blazor, so the trigger IS the",
+      "button — and the expected classes are the button's, checked by the button parity tests.",
+      "Each entry names the button variant and size the component renders, so the comparison is",
+      "against the recipe it actually asks for rather than cva's default."
+    ],
+    "dialog-trigger": {
+      "variant": "default",
+      "size": "default"
+    },
+    "dialog-close": {
+      "variant": "outline",
+      "size": "default"
+    },
+    "dropdown-menu-trigger": {
+      "variant": "outline",
+      "size": "default"
+    }
+  },
+  "defaultVariant": {
+    "$comment": [
+      "Components whose default rendering is not cva's default, keyed by component rather than by",
+      "slot — three components render pagination-link and two of them are not icon-sized.",
+      "shadcn passes these at the call site, where cva cannot see them."
+    ],
+    "PaginationLink": {
+      "variant": "ghost",
+      "size": "icon"
+    },
+    "PaginationPrevious": {
+      "variant": "ghost",
+      "size": "default"
+    },
+    "PaginationNext": {
+      "variant": "ghost",
+      "size": "default"
+    }
+  }
+}

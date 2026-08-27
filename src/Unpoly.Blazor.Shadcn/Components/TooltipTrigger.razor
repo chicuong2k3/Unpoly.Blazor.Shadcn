@@ -1,0 +1,16 @@
+@inherits UiComponentBase
+
+@* aria-describedby, not aria-label: the tooltip describes the control, it does not replace its
+   name. A trigger must be focusable for keyboard users to ever see it, which is why this is a
+   <button> and not a <span> — an icon with a tooltip nobody can tab to is decoration. *@
+
+<button type="button" data-slot="tooltip-trigger" data-target="@Target" data-delay="@Delay"
+        aria-describedby="@Target" class="@Class" @attributes="AdditionalAttributes">@ChildContent</button>
+
+@code {
+    /// <summary>The id of the <see cref="TooltipContent"/> it opens.</summary>
+    [Parameter, EditorRequired] public string Target { get; set; } = default!;
+
+    /// <summary>Milliseconds of hover before it appears. Focus opens after the same delay.</summary>
+    [Parameter] public int Delay { get; set; } = 200;
+}

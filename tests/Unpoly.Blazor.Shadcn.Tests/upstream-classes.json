@@ -1,0 +1,1792 @@
+{
+  "accordion": {
+    "base": [],
+    "variants": {},
+    "defaults": {}
+  },
+  "accordion-content": {
+    "base": [
+      "pt-0",
+      "pb-4"
+    ],
+    "variants": {},
+    "defaults": {}
+  },
+  "accordion-item": {
+    "base": [
+      "border-b",
+      "last:border-b-0"
+    ],
+    "variants": {},
+    "defaults": {}
+  },
+  "accordion-trigger": {
+    "base": [
+      "flex",
+      "flex-1",
+      "items-start",
+      "justify-between",
+      "gap-4",
+      "rounded-md",
+      "py-4",
+      "text-left",
+      "text-sm",
+      "font-medium",
+      "transition-all",
+      "outline-none",
+      "hover:underline",
+      "focus-visible:border-ring",
+      "focus-visible:ring-[3px]",
+      "focus-visible:ring-ring/50",
+      "disabled:pointer-events-none",
+      "disabled:opacity-50",
+      "[&[data-state=open]>svg]:rotate-180"
+    ],
+    "variants": {},
+    "defaults": {}
+  },
+  "alert": {
+    "base": [
+      "relative",
+      "grid",
+      "w-full",
+      "grid-cols-[0_1fr]",
+      "items-start",
+      "gap-y-0.5",
+      "rounded-lg",
+      "border",
+      "px-4",
+      "py-3",
+      "text-sm",
+      "has-[>svg]:grid-cols-[calc(var(--spacing)*4)_1fr]",
+      "has-[>svg]:gap-x-3",
+      "[&>svg]:size-4",
+      "[&>svg]:translate-y-0.5",
+      "[&>svg]:text-current"
+    ],
+    "variants": {
+      "variant": {
+        "default": [
+          "bg-card",
+          "text-card-foreground"
+        ],
+        "destructive": [
+          "bg-card",
+          "text-destructive",
+          "*:data-[slot=alert-description]:text-destructive/90",
+          "[&>svg]:text-current"
+        ]
+      }
+    },
+    "defaults": {
+      "variant": "default"
+    }
+  },
+  "alert-description": {
+    "base": [
+      "col-start-2",
+      "grid",
+      "justify-items-start",
+      "gap-1",
+      "text-sm",
+      "text-muted-foreground",
+      "[&_p]:leading-relaxed"
+    ],
+    "variants": {},
+    "defaults": {}
+  },
+  "alert-dialog": {
+    "base": [],
+    "variants": {},
+    "defaults": {}
+  },
+  "alert-dialog-action": {
+    "base": [],
+    "variants": {},
+    "defaults": {}
+  },
+  "alert-dialog-cancel": {
+    "base": [],
+    "variants": {},
+    "defaults": {}
+  },
+  "alert-dialog-content": {
+    "base": [
+      "group/alert-dialog-content",
+      "fixed",
+      "top-[50%]",
+      "left-[50%]",
+      "z-50",
+      "grid",
+      "w-full",
+      "max-w-[calc(100%-2rem)]",
+      "translate-x-[-50%]",
+      "translate-y-[-50%]",
+      "gap-4",
+      "rounded-lg",
+      "border",
+      "bg-background",
+      "p-6",
+      "shadow-lg",
+      "duration-200",
+      "data-[size=sm]:max-w-xs",
+      "data-[state=closed]:animate-out",
+      "data-[state=closed]:fade-out-0",
+      "data-[state=closed]:zoom-out-95",
+      "data-[state=open]:animate-in",
+      "data-[state=open]:fade-in-0",
+      "data-[state=open]:zoom-in-95",
+      "data-[size=default]:sm:max-w-lg"
+    ],
+    "variants": {},
+    "defaults": {}
+  },
+  "alert-dialog-description": {
+    "base": [
+      "text-sm",
+      "text-muted-foreground"
+    ],
+    "variants": {},
+    "defaults": {}
+  },
+  "alert-dialog-footer": {
+    "base": [
+      "flex",
+      "flex-col-reverse",
+      "gap-2",
+      "group-data-[size=sm]/alert-dialog-content:grid",
+      "group-data-[size=sm]/alert-dialog-content:grid-cols-2",
+      "sm:flex-row",
+      "sm:justify-end"
+    ],
+    "variants": {},
+    "defaults": {}
+  },
+  "alert-dialog-header": {
+    "base": [
+      "grid",
+      "grid-rows-[auto_1fr]",
+      "place-items-center",
+      "gap-1.5",
+      "text-center",
+      "has-data-[slot=alert-dialog-media]:grid-rows-[auto_auto_1fr]",
+      "has-data-[slot=alert-dialog-media]:gap-x-6",
+      "sm:group-data-[size=default]/alert-dialog-content:place-items-start",
+      "sm:group-data-[size=default]/alert-dialog-content:text-left",
+      "sm:group-data-[size=default]/alert-dialog-content:has-data-[slot=alert-dialog-media]:grid-rows-[auto_1fr]"
+    ],
+    "variants": {},
+    "defaults": {}
+  },
+  "alert-dialog-media": {
+    "base": [
+      "mb-2",
+      "inline-flex",
+      "size-16",
+      "items-center",
+      "justify-center",
+      "rounded-md",
+      "bg-muted",
+      "sm:group-data-[size=default]/alert-dialog-content:row-span-2",
+      "*:[svg:not([class*='size-'])]:size-8"
+    ],
+    "variants": {},
+    "defaults": {}
+  },
+  "alert-dialog-overlay": {
+    "base": [
+      "fixed",
+      "inset-0",
+      "z-50",
+      "bg-black/50",
+      "data-[state=closed]:animate-out",
+      "data-[state=closed]:fade-out-0",
+      "data-[state=open]:animate-in",
+      "data-[state=open]:fade-in-0"
+    ],
+    "variants": {},
+    "defaults": {}
+  },
+  "alert-dialog-portal": {
+    "base": [],
+    "variants": {},
+    "defaults": {}
+  },
+  "alert-dialog-title": {
+    "base": [
+      "text-lg",
+      "font-semibold",
+      "sm:group-data-[size=default]/alert-dialog-content:group-has-data-[slot=alert-dialog-media]/alert-dialog-content:col-start-2"
+    ],
+    "variants": {},
+    "defaults": {}
+  },
+  "alert-dialog-trigger": {
+    "base": [],
+    "variants": {},
+    "defaults": {}
+  },
+  "alert-title": {
+    "base": [
+      "col-start-2",
+      "line-clamp-1",
+      "min-h-4",
+      "font-medium",
+      "tracking-tight"
+    ],
+    "variants": {},
+    "defaults": {}
+  },
+  "avatar": {
+    "base": [
+      "group/avatar",
+      "relative",
+      "flex",
+      "size-8",
+      "shrink-0",
+      "overflow-hidden",
+      "rounded-full",
+      "select-none",
+      "data-[size=lg]:size-10",
+      "data-[size=sm]:size-6"
+    ],
+    "variants": {},
+    "defaults": {}
+  },
+  "avatar-badge": {
+    "base": [
+      "absolute",
+      "right-0",
+      "bottom-0",
+      "z-10",
+      "inline-flex",
+      "items-center",
+      "justify-center",
+      "rounded-full",
+      "bg-primary",
+      "text-primary-foreground",
+      "ring-2",
+      "ring-background",
+      "select-none",
+      "group-data-[size=sm]/avatar:size-2",
+      "group-data-[size=sm]/avatar:[&>svg]:hidden",
+      "group-data-[size=default]/avatar:size-2.5",
+      "group-data-[size=default]/avatar:[&>svg]:size-2",
+      "group-data-[size=lg]/avatar:size-3",
+      "group-data-[size=lg]/avatar:[&>svg]:size-2"
+    ],
+    "variants": {},
+    "defaults": {}
+  },
+  "avatar-fallback": {
+    "base": [
+      "flex",
+      "size-full",
+      "items-center",
+      "justify-center",
+      "rounded-full",
+      "bg-muted",
+      "text-sm",
+      "text-muted-foreground",
+      "group-data-[size=sm]/avatar:text-xs"
+    ],
+    "variants": {},
+    "defaults": {}
+  },
+  "avatar-group": {
+    "base": [
+      "group/avatar-group",
+      "flex",
+      "-space-x-2",
+      "*:data-[slot=avatar]:ring-2",
+      "*:data-[slot=avatar]:ring-background"
+    ],
+    "variants": {},
+    "defaults": {}
+  },
+  "avatar-group-count": {
+    "base": [
+      "relative",
+      "flex",
+      "size-8",
+      "shrink-0",
+      "items-center",
+      "justify-center",
+      "rounded-full",
+      "bg-muted",
+      "text-sm",
+      "text-muted-foreground",
+      "ring-2",
+      "ring-background",
+      "group-has-data-[size=lg]/avatar-group:size-10",
+      "group-has-data-[size=sm]/avatar-group:size-6",
+      "[&>svg]:size-4",
+      "group-has-data-[size=lg]/avatar-group:[&>svg]:size-5",
+      "group-has-data-[size=sm]/avatar-group:[&>svg]:size-3"
+    ],
+    "variants": {},
+    "defaults": {}
+  },
+  "avatar-image": {
+    "base": [
+      "aspect-square",
+      "size-full"
+    ],
+    "variants": {},
+    "defaults": {}
+  },
+  "badge": {
+    "base": [
+      "inline-flex",
+      "w-fit",
+      "shrink-0",
+      "items-center",
+      "justify-center",
+      "gap-1",
+      "overflow-hidden",
+      "rounded-full",
+      "border",
+      "border-transparent",
+      "px-2",
+      "py-0.5",
+      "text-xs",
+      "font-medium",
+      "whitespace-nowrap",
+      "transition-[color,box-shadow]",
+      "focus-visible:border-ring",
+      "focus-visible:ring-[3px]",
+      "focus-visible:ring-ring/50",
+      "aria-invalid:border-destructive",
+      "aria-invalid:ring-destructive/20",
+      "dark:aria-invalid:ring-destructive/40",
+      "[&>svg]:pointer-events-none",
+      "[&>svg]:size-3"
+    ],
+    "variants": {
+      "variant": {
+        "default": [
+          "bg-primary",
+          "text-primary-foreground",
+          "[a&]:hover:bg-primary/90"
+        ],
+        "secondary": [
+          "bg-secondary",
+          "text-secondary-foreground",
+          "[a&]:hover:bg-secondary/90"
+        ],
+        "destructive": [
+          "bg-destructive",
+          "text-white",
+          "focus-visible:ring-destructive/20",
+          "dark:bg-destructive/60",
+          "dark:focus-visible:ring-destructive/40",
+          "[a&]:hover:bg-destructive/90"
+        ],
+        "outline": [
+          "border-border",
+          "text-foreground",
+          "[a&]:hover:bg-accent",
+          "[a&]:hover:text-accent-foreground"
+        ],
+        "ghost": [
+          "[a&]:hover:bg-accent",
+          "[a&]:hover:text-accent-foreground"
+        ],
+        "link": [
+          "text-primary",
+          "underline-offset-4",
+          "[a&]:hover:underline"
+        ]
+      }
+    },
+    "defaults": {
+      "variant": "default"
+    }
+  },
+  "breadcrumb": {
+    "base": [],
+    "variants": {},
+    "defaults": {}
+  },
+  "breadcrumb-ellipsis": {
+    "base": [
+      "flex",
+      "size-9",
+      "items-center",
+      "justify-center"
+    ],
+    "variants": {},
+    "defaults": {}
+  },
+  "breadcrumb-item": {
+    "base": [
+      "inline-flex",
+      "items-center",
+      "gap-1.5"
+    ],
+    "variants": {},
+    "defaults": {}
+  },
+  "breadcrumb-link": {
+    "base": [
+      "transition-colors",
+      "hover:text-foreground"
+    ],
+    "variants": {},
+    "defaults": {}
+  },
+  "breadcrumb-list": {
+    "base": [
+      "flex",
+      "flex-wrap",
+      "items-center",
+      "gap-1.5",
+      "text-sm",
+      "break-words",
+      "text-muted-foreground",
+      "sm:gap-2.5"
+    ],
+    "variants": {},
+    "defaults": {}
+  },
+  "breadcrumb-page": {
+    "base": [
+      "font-normal",
+      "text-foreground"
+    ],
+    "variants": {},
+    "defaults": {}
+  },
+  "breadcrumb-separator": {
+    "base": [
+      "[&>svg]:size-3.5"
+    ],
+    "variants": {},
+    "defaults": {}
+  },
+  "button": {
+    "base": [
+      "inline-flex",
+      "shrink-0",
+      "items-center",
+      "justify-center",
+      "gap-2",
+      "rounded-md",
+      "text-sm",
+      "font-medium",
+      "whitespace-nowrap",
+      "transition-all",
+      "outline-none",
+      "focus-visible:border-ring",
+      "focus-visible:ring-[3px]",
+      "focus-visible:ring-ring/50",
+      "disabled:pointer-events-none",
+      "disabled:opacity-50",
+      "aria-invalid:border-destructive",
+      "aria-invalid:ring-destructive/20",
+      "dark:aria-invalid:ring-destructive/40",
+      "[&_svg]:pointer-events-none",
+      "[&_svg]:shrink-0",
+      "[&_svg:not([class*='size-'])]:size-4"
+    ],
+    "variants": {
+      "variant": {
+        "default": [
+          "bg-primary",
+          "text-primary-foreground",
+          "hover:bg-primary/90"
+        ],
+        "destructive": [
+          "bg-destructive",
+          "text-white",
+          "hover:bg-destructive/90",
+          "focus-visible:ring-destructive/20",
+          "dark:bg-destructive/60",
+          "dark:focus-visible:ring-destructive/40"
+        ],
+        "outline": [
+          "border",
+          "bg-background",
+          "shadow-xs",
+          "hover:bg-accent",
+          "hover:text-accent-foreground",
+          "dark:border-input",
+          "dark:bg-input/30",
+          "dark:hover:bg-input/50"
+        ],
+        "secondary": [
+          "bg-secondary",
+          "text-secondary-foreground",
+          "hover:bg-secondary/80"
+        ],
+        "ghost": [
+          "hover:bg-accent",
+          "hover:text-accent-foreground",
+          "dark:hover:bg-accent/50"
+        ],
+        "link": [
+          "text-primary",
+          "underline-offset-4",
+          "hover:underline"
+        ]
+      },
+      "size": {
+        "default": [
+          "h-9",
+          "px-4",
+          "py-2",
+          "has-[>svg]:px-3"
+        ],
+        "xs": [
+          "h-6",
+          "gap-1",
+          "rounded-md",
+          "px-2",
+          "text-xs",
+          "has-[>svg]:px-1.5",
+          "[&_svg:not([class*='size-'])]:size-3"
+        ],
+        "sm": [
+          "h-8",
+          "gap-1.5",
+          "rounded-md",
+          "px-3",
+          "has-[>svg]:px-2.5"
+        ],
+        "lg": [
+          "h-10",
+          "rounded-md",
+          "px-6",
+          "has-[>svg]:px-4"
+        ],
+        "icon": [
+          "size-9"
+        ]
+      }
+    },
+    "defaults": {
+      "variant": "default",
+      "size": "default"
+    }
+  },
+  "card": {
+    "base": [
+      "flex",
+      "flex-col",
+      "gap-6",
+      "rounded-xl",
+      "border",
+      "bg-card",
+      "py-6",
+      "text-card-foreground",
+      "shadow-sm"
+    ],
+    "variants": {},
+    "defaults": {}
+  },
+  "card-action": {
+    "base": [
+      "col-start-2",
+      "row-span-2",
+      "row-start-1",
+      "self-start",
+      "justify-self-end"
+    ],
+    "variants": {},
+    "defaults": {}
+  },
+  "card-content": {
+    "base": [
+      "px-6"
+    ],
+    "variants": {},
+    "defaults": {}
+  },
+  "card-description": {
+    "base": [
+      "text-sm",
+      "text-muted-foreground"
+    ],
+    "variants": {},
+    "defaults": {}
+  },
+  "card-footer": {
+    "base": [
+      "flex",
+      "items-center",
+      "px-6",
+      "[.border-t]:pt-6"
+    ],
+    "variants": {},
+    "defaults": {}
+  },
+  "card-header": {
+    "base": [
+      "@container/card-header",
+      "grid",
+      "auto-rows-min",
+      "grid-rows-[auto_auto]",
+      "items-start",
+      "gap-2",
+      "px-6",
+      "has-data-[slot=card-action]:grid-cols-[1fr_auto]",
+      "[.border-b]:pb-6"
+    ],
+    "variants": {},
+    "defaults": {}
+  },
+  "card-title": {
+    "base": [
+      "leading-none",
+      "font-semibold"
+    ],
+    "variants": {},
+    "defaults": {}
+  },
+  "checkbox": {
+    "base": [
+      "peer",
+      "size-4",
+      "shrink-0",
+      "rounded-[4px]",
+      "border",
+      "border-input",
+      "shadow-xs",
+      "transition-shadow",
+      "outline-none",
+      "focus-visible:border-ring",
+      "focus-visible:ring-[3px]",
+      "focus-visible:ring-ring/50",
+      "disabled:cursor-not-allowed",
+      "disabled:opacity-50",
+      "aria-invalid:border-destructive",
+      "aria-invalid:ring-destructive/20",
+      "data-[state=checked]:border-primary",
+      "data-[state=checked]:bg-primary",
+      "data-[state=checked]:text-primary-foreground",
+      "dark:bg-input/30",
+      "dark:aria-invalid:ring-destructive/40",
+      "dark:data-[state=checked]:bg-primary"
+    ],
+    "variants": {},
+    "defaults": {}
+  },
+  "checkbox-indicator": {
+    "base": [],
+    "variants": {},
+    "defaults": {}
+  },
+  "dialog": {
+    "base": [],
+    "variants": {},
+    "defaults": {}
+  },
+  "dialog-close": {
+    "base": [],
+    "variants": {},
+    "defaults": {}
+  },
+  "dialog-content": {
+    "base": [
+      "fixed",
+      "top-[50%]",
+      "left-[50%]",
+      "z-50",
+      "grid",
+      "w-full",
+      "max-w-[calc(100%-2rem)]",
+      "translate-x-[-50%]",
+      "translate-y-[-50%]",
+      "gap-4",
+      "rounded-lg",
+      "border",
+      "bg-background",
+      "p-6",
+      "shadow-lg",
+      "duration-200",
+      "outline-none",
+      "data-[state=closed]:animate-out",
+      "data-[state=closed]:fade-out-0",
+      "data-[state=closed]:zoom-out-95",
+      "data-[state=open]:animate-in",
+      "data-[state=open]:fade-in-0",
+      "data-[state=open]:zoom-in-95",
+      "sm:max-w-lg"
+    ],
+    "variants": {},
+    "defaults": {}
+  },
+  "dialog-description": {
+    "base": [
+      "text-sm",
+      "text-muted-foreground"
+    ],
+    "variants": {},
+    "defaults": {}
+  },
+  "dialog-footer": {
+    "base": [
+      "flex",
+      "flex-col-reverse",
+      "gap-2",
+      "sm:flex-row",
+      "sm:justify-end"
+    ],
+    "variants": {},
+    "defaults": {}
+  },
+  "dialog-header": {
+    "base": [
+      "flex",
+      "flex-col",
+      "gap-2",
+      "text-center",
+      "sm:text-left"
+    ],
+    "variants": {},
+    "defaults": {}
+  },
+  "dialog-overlay": {
+    "base": [
+      "fixed",
+      "inset-0",
+      "z-50",
+      "bg-black/50",
+      "data-[state=closed]:animate-out",
+      "data-[state=closed]:fade-out-0",
+      "data-[state=open]:animate-in",
+      "data-[state=open]:fade-in-0"
+    ],
+    "variants": {},
+    "defaults": {}
+  },
+  "dialog-portal": {
+    "base": [],
+    "variants": {},
+    "defaults": {}
+  },
+  "dialog-title": {
+    "base": [
+      "text-lg",
+      "leading-none",
+      "font-semibold"
+    ],
+    "variants": {},
+    "defaults": {}
+  },
+  "dialog-trigger": {
+    "base": [],
+    "variants": {},
+    "defaults": {}
+  },
+  "dropdown-menu": {
+    "base": [],
+    "variants": {},
+    "defaults": {}
+  },
+  "dropdown-menu-checkbox-item": {
+    "base": [
+      "relative",
+      "flex",
+      "cursor-default",
+      "items-center",
+      "gap-2",
+      "rounded-sm",
+      "py-1.5",
+      "pr-2",
+      "pl-8",
+      "text-sm",
+      "outline-hidden",
+      "select-none",
+      "focus:bg-accent",
+      "focus:text-accent-foreground",
+      "data-[disabled]:pointer-events-none",
+      "data-[disabled]:opacity-50",
+      "[&_svg]:pointer-events-none",
+      "[&_svg]:shrink-0",
+      "[&_svg:not([class*='size-'])]:size-4"
+    ],
+    "variants": {},
+    "defaults": {}
+  },
+  "dropdown-menu-content": {
+    "base": [
+      "z-50",
+      "max-h-(--radix-dropdown-menu-content-available-height)",
+      "min-w-[8rem]",
+      "origin-(--radix-dropdown-menu-content-transform-origin)",
+      "overflow-x-hidden",
+      "overflow-y-auto",
+      "rounded-md",
+      "border",
+      "bg-popover",
+      "p-1",
+      "text-popover-foreground",
+      "shadow-md",
+      "data-[side=bottom]:slide-in-from-top-2",
+      "data-[side=left]:slide-in-from-right-2",
+      "data-[side=right]:slide-in-from-left-2",
+      "data-[side=top]:slide-in-from-bottom-2",
+      "data-[state=closed]:animate-out",
+      "data-[state=closed]:fade-out-0",
+      "data-[state=closed]:zoom-out-95",
+      "data-[state=open]:animate-in",
+      "data-[state=open]:fade-in-0",
+      "data-[state=open]:zoom-in-95"
+    ],
+    "variants": {},
+    "defaults": {}
+  },
+  "dropdown-menu-group": {
+    "base": [],
+    "variants": {},
+    "defaults": {}
+  },
+  "dropdown-menu-item": {
+    "base": [
+      "relative",
+      "flex",
+      "cursor-default",
+      "items-center",
+      "gap-2",
+      "rounded-sm",
+      "px-2",
+      "py-1.5",
+      "text-sm",
+      "outline-hidden",
+      "select-none",
+      "focus:bg-accent",
+      "focus:text-accent-foreground",
+      "data-[disabled]:pointer-events-none",
+      "data-[disabled]:opacity-50",
+      "data-[inset]:pl-8",
+      "data-[variant=destructive]:text-destructive",
+      "data-[variant=destructive]:focus:bg-destructive/10",
+      "data-[variant=destructive]:focus:text-destructive",
+      "dark:data-[variant=destructive]:focus:bg-destructive/20",
+      "[&_svg]:pointer-events-none",
+      "[&_svg]:shrink-0",
+      "[&_svg:not([class*='size-'])]:size-4",
+      "[&_svg:not([class*='text-'])]:text-muted-foreground",
+      "data-[variant=destructive]:*:[svg]:text-destructive!"
+    ],
+    "variants": {},
+    "defaults": {}
+  },
+  "dropdown-menu-label": {
+    "base": [
+      "px-2",
+      "py-1.5",
+      "text-sm",
+      "font-medium",
+      "data-[inset]:pl-8"
+    ],
+    "variants": {},
+    "defaults": {}
+  },
+  "dropdown-menu-portal": {
+    "base": [],
+    "variants": {},
+    "defaults": {}
+  },
+  "dropdown-menu-radio-group": {
+    "base": [],
+    "variants": {},
+    "defaults": {}
+  },
+  "dropdown-menu-radio-item": {
+    "base": [
+      "relative",
+      "flex",
+      "cursor-default",
+      "items-center",
+      "gap-2",
+      "rounded-sm",
+      "py-1.5",
+      "pr-2",
+      "pl-8",
+      "text-sm",
+      "outline-hidden",
+      "select-none",
+      "focus:bg-accent",
+      "focus:text-accent-foreground",
+      "data-[disabled]:pointer-events-none",
+      "data-[disabled]:opacity-50",
+      "[&_svg]:pointer-events-none",
+      "[&_svg]:shrink-0",
+      "[&_svg:not([class*='size-'])]:size-4"
+    ],
+    "variants": {},
+    "defaults": {}
+  },
+  "dropdown-menu-separator": {
+    "base": [
+      "-mx-1",
+      "my-1",
+      "h-px",
+      "bg-border"
+    ],
+    "variants": {},
+    "defaults": {}
+  },
+  "dropdown-menu-shortcut": {
+    "base": [
+      "ml-auto",
+      "text-xs",
+      "tracking-widest",
+      "text-muted-foreground"
+    ],
+    "variants": {},
+    "defaults": {}
+  },
+  "dropdown-menu-sub": {
+    "base": [],
+    "variants": {},
+    "defaults": {}
+  },
+  "dropdown-menu-sub-content": {
+    "base": [
+      "z-50",
+      "min-w-[8rem]",
+      "origin-(--radix-dropdown-menu-content-transform-origin)",
+      "overflow-hidden",
+      "rounded-md",
+      "border",
+      "bg-popover",
+      "p-1",
+      "text-popover-foreground",
+      "shadow-lg",
+      "data-[side=bottom]:slide-in-from-top-2",
+      "data-[side=left]:slide-in-from-right-2",
+      "data-[side=right]:slide-in-from-left-2",
+      "data-[side=top]:slide-in-from-bottom-2",
+      "data-[state=closed]:animate-out",
+      "data-[state=closed]:fade-out-0",
+      "data-[state=closed]:zoom-out-95",
+      "data-[state=open]:animate-in",
+      "data-[state=open]:fade-in-0",
+      "data-[state=open]:zoom-in-95"
+    ],
+    "variants": {},
+    "defaults": {}
+  },
+  "dropdown-menu-sub-trigger": {
+    "base": [
+      "flex",
+      "cursor-default",
+      "items-center",
+      "gap-2",
+      "rounded-sm",
+      "px-2",
+      "py-1.5",
+      "text-sm",
+      "outline-hidden",
+      "select-none",
+      "focus:bg-accent",
+      "focus:text-accent-foreground",
+      "data-[inset]:pl-8",
+      "data-[state=open]:bg-accent",
+      "data-[state=open]:text-accent-foreground",
+      "[&_svg]:pointer-events-none",
+      "[&_svg]:shrink-0",
+      "[&_svg:not([class*='size-'])]:size-4",
+      "[&_svg:not([class*='text-'])]:text-muted-foreground"
+    ],
+    "variants": {},
+    "defaults": {}
+  },
+  "dropdown-menu-trigger": {
+    "base": [],
+    "variants": {},
+    "defaults": {}
+  },
+  "form-control": {
+    "base": [],
+    "variants": {},
+    "defaults": {}
+  },
+  "form-description": {
+    "base": [
+      "text-sm",
+      "text-muted-foreground"
+    ],
+    "variants": {},
+    "defaults": {}
+  },
+  "form-item": {
+    "base": [
+      "grid",
+      "gap-2"
+    ],
+    "variants": {},
+    "defaults": {}
+  },
+  "form-label": {
+    "base": [
+      "data-[error=true]:text-destructive"
+    ],
+    "variants": {},
+    "defaults": {}
+  },
+  "form-message": {
+    "base": [
+      "text-sm",
+      "text-destructive"
+    ],
+    "variants": {},
+    "defaults": {}
+  },
+  "input": {
+    "base": [
+      "h-9",
+      "w-full",
+      "min-w-0",
+      "rounded-md",
+      "border",
+      "border-input",
+      "bg-transparent",
+      "px-3",
+      "py-1",
+      "text-base",
+      "shadow-xs",
+      "transition-[color,box-shadow]",
+      "outline-none",
+      "selection:bg-primary",
+      "selection:text-primary-foreground",
+      "file:inline-flex",
+      "file:h-7",
+      "file:border-0",
+      "file:bg-transparent",
+      "file:text-sm",
+      "file:font-medium",
+      "file:text-foreground",
+      "placeholder:text-muted-foreground",
+      "disabled:pointer-events-none",
+      "disabled:cursor-not-allowed",
+      "disabled:opacity-50",
+      "md:text-sm",
+      "dark:bg-input/30",
+      "focus-visible:border-ring",
+      "focus-visible:ring-[3px]",
+      "focus-visible:ring-ring/50",
+      "aria-invalid:border-destructive",
+      "aria-invalid:ring-destructive/20",
+      "dark:aria-invalid:ring-destructive/40"
+    ],
+    "variants": {},
+    "defaults": {}
+  },
+  "label": {
+    "base": [
+      "flex",
+      "items-center",
+      "gap-2",
+      "text-sm",
+      "leading-none",
+      "font-medium",
+      "select-none",
+      "group-data-[disabled=true]:pointer-events-none",
+      "group-data-[disabled=true]:opacity-50",
+      "peer-disabled:cursor-not-allowed",
+      "peer-disabled:opacity-50"
+    ],
+    "variants": {},
+    "defaults": {}
+  },
+  "pagination": {
+    "base": [
+      "mx-auto",
+      "flex",
+      "w-full",
+      "justify-center"
+    ],
+    "variants": {},
+    "defaults": {}
+  },
+  "pagination-content": {
+    "base": [
+      "flex",
+      "flex-row",
+      "items-center",
+      "gap-1"
+    ],
+    "variants": {},
+    "defaults": {}
+  },
+  "pagination-ellipsis": {
+    "base": [
+      "flex",
+      "size-9",
+      "items-center",
+      "justify-center"
+    ],
+    "variants": {},
+    "defaults": {}
+  },
+  "pagination-item": {
+    "base": [],
+    "variants": {},
+    "defaults": {}
+  },
+  "pagination-link": {
+    "base": [
+      "inline-flex",
+      "shrink-0",
+      "items-center",
+      "justify-center",
+      "gap-2",
+      "rounded-md",
+      "text-sm",
+      "font-medium",
+      "whitespace-nowrap",
+      "transition-all",
+      "outline-none",
+      "focus-visible:border-ring",
+      "focus-visible:ring-[3px]",
+      "focus-visible:ring-ring/50",
+      "disabled:pointer-events-none",
+      "disabled:opacity-50",
+      "aria-invalid:border-destructive",
+      "aria-invalid:ring-destructive/20",
+      "dark:aria-invalid:ring-destructive/40",
+      "[&_svg]:pointer-events-none",
+      "[&_svg]:shrink-0",
+      "[&_svg:not([class*='size-'])]:size-4"
+    ],
+    "variants": {
+      "variant": {
+        "default": [
+          "bg-primary",
+          "text-primary-foreground",
+          "hover:bg-primary/90"
+        ],
+        "destructive": [
+          "bg-destructive",
+          "text-white",
+          "hover:bg-destructive/90",
+          "focus-visible:ring-destructive/20",
+          "dark:bg-destructive/60",
+          "dark:focus-visible:ring-destructive/40"
+        ],
+        "outline": [
+          "border",
+          "bg-background",
+          "shadow-xs",
+          "hover:bg-accent",
+          "hover:text-accent-foreground",
+          "dark:border-input",
+          "dark:bg-input/30",
+          "dark:hover:bg-input/50"
+        ],
+        "secondary": [
+          "bg-secondary",
+          "text-secondary-foreground",
+          "hover:bg-secondary/80"
+        ],
+        "ghost": [
+          "hover:bg-accent",
+          "hover:text-accent-foreground",
+          "dark:hover:bg-accent/50"
+        ],
+        "link": [
+          "text-primary",
+          "underline-offset-4",
+          "hover:underline"
+        ]
+      },
+      "size": {
+        "default": [
+          "h-9",
+          "px-4",
+          "py-2",
+          "has-[>svg]:px-3"
+        ],
+        "xs": [
+          "h-6",
+          "gap-1",
+          "rounded-md",
+          "px-2",
+          "text-xs",
+          "has-[>svg]:px-1.5",
+          "[&_svg:not([class*='size-'])]:size-3"
+        ],
+        "sm": [
+          "h-8",
+          "gap-1.5",
+          "rounded-md",
+          "px-3",
+          "has-[>svg]:px-2.5"
+        ],
+        "lg": [
+          "h-10",
+          "rounded-md",
+          "px-6",
+          "has-[>svg]:px-4"
+        ],
+        "icon": [
+          "size-9"
+        ]
+      }
+    },
+    "defaults": {
+      "variant": "default",
+      "size": "default"
+    }
+  },
+  "progress": {
+    "base": [
+      "relative",
+      "h-2",
+      "w-full",
+      "overflow-hidden",
+      "rounded-full",
+      "bg-primary/20"
+    ],
+    "variants": {},
+    "defaults": {}
+  },
+  "progress-indicator": {
+    "base": [],
+    "variants": {},
+    "defaults": {}
+  },
+  "radio-group": {
+    "base": [
+      "grid",
+      "gap-3"
+    ],
+    "variants": {},
+    "defaults": {}
+  },
+  "radio-group-indicator": {
+    "base": [],
+    "variants": {},
+    "defaults": {}
+  },
+  "radio-group-item": {
+    "base": [
+      "aspect-square",
+      "size-4",
+      "shrink-0",
+      "rounded-full",
+      "border",
+      "border-input",
+      "text-primary",
+      "shadow-xs",
+      "transition-[color,box-shadow]",
+      "outline-none",
+      "focus-visible:border-ring",
+      "focus-visible:ring-[3px]",
+      "focus-visible:ring-ring/50",
+      "disabled:cursor-not-allowed",
+      "disabled:opacity-50",
+      "aria-invalid:border-destructive",
+      "aria-invalid:ring-destructive/20",
+      "dark:bg-input/30",
+      "dark:aria-invalid:ring-destructive/40"
+    ],
+    "variants": {},
+    "defaults": {}
+  },
+  "select": {
+    "base": [],
+    "variants": {},
+    "defaults": {}
+  },
+  "select-content": {
+    "base": [
+      "relative",
+      "z-50",
+      "max-h-(--radix-select-content-available-height)",
+      "min-w-[8rem]",
+      "origin-(--radix-select-content-transform-origin)",
+      "overflow-x-hidden",
+      "overflow-y-auto",
+      "rounded-md",
+      "border",
+      "bg-popover",
+      "text-popover-foreground",
+      "shadow-md",
+      "data-[side=bottom]:slide-in-from-top-2",
+      "data-[side=left]:slide-in-from-right-2",
+      "data-[side=right]:slide-in-from-left-2",
+      "data-[side=top]:slide-in-from-bottom-2",
+      "data-[state=closed]:animate-out",
+      "data-[state=closed]:fade-out-0",
+      "data-[state=closed]:zoom-out-95",
+      "data-[state=open]:animate-in",
+      "data-[state=open]:fade-in-0",
+      "data-[state=open]:zoom-in-95",
+      "popper",
+      "data-[side=bottom]:translate-y-1",
+      "data-[side=left]:-translate-x-1",
+      "data-[side=right]:translate-x-1",
+      "data-[side=top]:-translate-y-1"
+    ],
+    "variants": {},
+    "defaults": {}
+  },
+  "select-group": {
+    "base": [],
+    "variants": {},
+    "defaults": {}
+  },
+  "select-item": {
+    "base": [
+      "relative",
+      "flex",
+      "w-full",
+      "cursor-default",
+      "items-center",
+      "gap-2",
+      "rounded-sm",
+      "py-1.5",
+      "pr-8",
+      "pl-2",
+      "text-sm",
+      "outline-hidden",
+      "select-none",
+      "focus:bg-accent",
+      "focus:text-accent-foreground",
+      "data-[disabled]:pointer-events-none",
+      "data-[disabled]:opacity-50",
+      "[&_svg]:pointer-events-none",
+      "[&_svg]:shrink-0",
+      "[&_svg:not([class*='size-'])]:size-4",
+      "[&_svg:not([class*='text-'])]:text-muted-foreground",
+      "*:[span]:last:flex",
+      "*:[span]:last:items-center",
+      "*:[span]:last:gap-2"
+    ],
+    "variants": {},
+    "defaults": {}
+  },
+  "select-item-indicator": {
+    "base": [],
+    "variants": {},
+    "defaults": {}
+  },
+  "select-label": {
+    "base": [
+      "px-2",
+      "py-1.5",
+      "text-xs",
+      "text-muted-foreground"
+    ],
+    "variants": {},
+    "defaults": {}
+  },
+  "select-scroll-down-button": {
+    "base": [
+      "flex",
+      "cursor-default",
+      "items-center",
+      "justify-center",
+      "py-1"
+    ],
+    "variants": {},
+    "defaults": {}
+  },
+  "select-scroll-up-button": {
+    "base": [
+      "flex",
+      "cursor-default",
+      "items-center",
+      "justify-center",
+      "py-1"
+    ],
+    "variants": {},
+    "defaults": {}
+  },
+  "select-separator": {
+    "base": [
+      "pointer-events-none",
+      "-mx-1",
+      "my-1",
+      "h-px",
+      "bg-border"
+    ],
+    "variants": {},
+    "defaults": {}
+  },
+  "select-trigger": {
+    "base": [
+      "flex",
+      "w-fit",
+      "items-center",
+      "justify-between",
+      "gap-2",
+      "rounded-md",
+      "border",
+      "border-input",
+      "bg-transparent",
+      "px-3",
+      "py-2",
+      "text-sm",
+      "whitespace-nowrap",
+      "shadow-xs",
+      "transition-[color,box-shadow]",
+      "outline-none",
+      "focus-visible:border-ring",
+      "focus-visible:ring-[3px]",
+      "focus-visible:ring-ring/50",
+      "disabled:cursor-not-allowed",
+      "disabled:opacity-50",
+      "aria-invalid:border-destructive",
+      "aria-invalid:ring-destructive/20",
+      "data-[placeholder]:text-muted-foreground",
+      "data-[size=default]:h-9",
+      "data-[size=sm]:h-8",
+      "*:data-[slot=select-value]:line-clamp-1",
+      "*:data-[slot=select-value]:flex",
+      "*:data-[slot=select-value]:items-center",
+      "*:data-[slot=select-value]:gap-2",
+      "dark:bg-input/30",
+      "dark:hover:bg-input/50",
+      "dark:aria-invalid:ring-destructive/40",
+      "[&_svg]:pointer-events-none",
+      "[&_svg]:shrink-0",
+      "[&_svg:not([class*='size-'])]:size-4",
+      "[&_svg:not([class*='text-'])]:text-muted-foreground"
+    ],
+    "variants": {},
+    "defaults": {}
+  },
+  "select-value": {
+    "base": [],
+    "variants": {},
+    "defaults": {}
+  },
+  "separator": {
+    "base": [
+      "shrink-0",
+      "bg-border",
+      "data-[orientation=horizontal]:h-px",
+      "data-[orientation=horizontal]:w-full",
+      "data-[orientation=vertical]:h-full",
+      "data-[orientation=vertical]:w-px"
+    ],
+    "variants": {},
+    "defaults": {}
+  },
+  "skeleton": {
+    "base": [
+      "animate-pulse",
+      "rounded-md",
+      "bg-accent"
+    ],
+    "variants": {},
+    "defaults": {}
+  },
+  "switch": {
+    "base": [
+      "peer",
+      "group/switch",
+      "inline-flex",
+      "shrink-0",
+      "items-center",
+      "rounded-full",
+      "border",
+      "border-transparent",
+      "shadow-xs",
+      "transition-all",
+      "outline-none",
+      "focus-visible:border-ring",
+      "focus-visible:ring-[3px]",
+      "focus-visible:ring-ring/50",
+      "disabled:cursor-not-allowed",
+      "disabled:opacity-50",
+      "data-[size=default]:h-[1.15rem]",
+      "data-[size=default]:w-8",
+      "data-[size=sm]:h-3.5",
+      "data-[size=sm]:w-6",
+      "data-[state=checked]:bg-primary",
+      "data-[state=unchecked]:bg-input",
+      "dark:data-[state=unchecked]:bg-input/80"
+    ],
+    "variants": {},
+    "defaults": {}
+  },
+  "switch-thumb": {
+    "base": [
+      "pointer-events-none",
+      "block",
+      "rounded-full",
+      "bg-background",
+      "ring-0",
+      "transition-transform",
+      "group-data-[size=default]/switch:size-4",
+      "group-data-[size=sm]/switch:size-3",
+      "data-[state=checked]:translate-x-[calc(100%-2px)]",
+      "data-[state=unchecked]:translate-x-0",
+      "dark:data-[state=checked]:bg-primary-foreground",
+      "dark:data-[state=unchecked]:bg-foreground"
+    ],
+    "variants": {},
+    "defaults": {}
+  },
+  "table": {
+    "base": [
+      "w-full",
+      "caption-bottom",
+      "text-sm"
+    ],
+    "variants": {},
+    "defaults": {}
+  },
+  "table-body": {
+    "base": [
+      "[&_tr:last-child]:border-0"
+    ],
+    "variants": {},
+    "defaults": {}
+  },
+  "table-caption": {
+    "base": [
+      "mt-4",
+      "text-sm",
+      "text-muted-foreground"
+    ],
+    "variants": {},
+    "defaults": {}
+  },
+  "table-cell": {
+    "base": [
+      "p-2",
+      "align-middle",
+      "whitespace-nowrap",
+      "[&:has([role=checkbox])]:pr-0",
+      "[&>[role=checkbox]]:translate-y-[2px]"
+    ],
+    "variants": {},
+    "defaults": {}
+  },
+  "table-container": {
+    "base": [],
+    "variants": {},
+    "defaults": {}
+  },
+  "table-footer": {
+    "base": [
+      "border-t",
+      "bg-muted/50",
+      "font-medium",
+      "[&>tr]:last:border-b-0"
+    ],
+    "variants": {},
+    "defaults": {}
+  },
+  "table-head": {
+    "base": [
+      "h-10",
+      "px-2",
+      "text-left",
+      "align-middle",
+      "font-medium",
+      "whitespace-nowrap",
+      "text-foreground",
+      "[&:has([role=checkbox])]:pr-0",
+      "[&>[role=checkbox]]:translate-y-[2px]"
+    ],
+    "variants": {},
+    "defaults": {}
+  },
+  "table-header": {
+    "base": [
+      "[&_tr]:border-b"
+    ],
+    "variants": {},
+    "defaults": {}
+  },
+  "table-row": {
+    "base": [
+      "border-b",
+      "transition-colors",
+      "hover:bg-muted/50",
+      "has-aria-expanded:bg-muted/50",
+      "data-[state=selected]:bg-muted"
+    ],
+    "variants": {},
+    "defaults": {}
+  },
+  "tabs": {
+    "base": [
+      "group/tabs",
+      "flex",
+      "gap-2",
+      "data-[orientation=horizontal]:flex-col"
+    ],
+    "variants": {},
+    "defaults": {}
+  },
+  "tabs-content": {
+    "base": [
+      "flex-1",
+      "outline-none"
+    ],
+    "variants": {},
+    "defaults": {}
+  },
+  "tabs-list": {
+    "base": [
+      "group/tabs-list",
+      "inline-flex",
+      "w-fit",
+      "items-center",
+      "justify-center",
+      "rounded-lg",
+      "p-[3px]",
+      "text-muted-foreground",
+      "group-data-[orientation=horizontal]/tabs:h-9",
+      "group-data-[orientation=vertical]/tabs:h-fit",
+      "group-data-[orientation=vertical]/tabs:flex-col",
+      "data-[variant=line]:rounded-none"
+    ],
+    "variants": {
+      "variant": {
+        "default": [
+          "bg-muted"
+        ],
+        "line": [
+          "gap-1",
+          "bg-transparent"
+        ]
+      }
+    },
+    "defaults": {
+      "variant": "default"
+    }
+  },
+  "tabs-trigger": {
+    "base": [
+      "relative",
+      "inline-flex",
+      "h-[calc(100%-1px)]",
+      "flex-1",
+      "items-center",
+      "justify-center",
+      "gap-1.5",
+      "rounded-md",
+      "border",
+      "border-transparent",
+      "px-2",
+      "py-1",
+      "text-sm",
+      "font-medium",
+      "whitespace-nowrap",
+      "text-foreground/60",
+      "transition-all",
+      "group-data-[orientation=vertical]/tabs:w-full",
+      "group-data-[orientation=vertical]/tabs:justify-start",
+      "hover:text-foreground",
+      "focus-visible:border-ring",
+      "focus-visible:ring-[3px]",
+      "focus-visible:ring-ring/50",
+      "focus-visible:outline-1",
+      "focus-visible:outline-ring",
+      "disabled:pointer-events-none",
+      "disabled:opacity-50",
+      "group-data-[variant=default]/tabs-list:data-[state=active]:shadow-sm",
+      "group-data-[variant=line]/tabs-list:data-[state=active]:shadow-none",
+      "dark:text-muted-foreground",
+      "dark:hover:text-foreground",
+      "[&_svg]:pointer-events-none",
+      "[&_svg]:shrink-0",
+      "[&_svg:not([class*='size-'])]:size-4",
+      "group-data-[variant=line]/tabs-list:bg-transparent",
+      "group-data-[variant=line]/tabs-list:data-[state=active]:bg-transparent",
+      "dark:group-data-[variant=line]/tabs-list:data-[state=active]:border-transparent",
+      "dark:group-data-[variant=line]/tabs-list:data-[state=active]:bg-transparent",
+      "data-[state=active]:bg-background",
+      "data-[state=active]:text-foreground",
+      "dark:data-[state=active]:border-input",
+      "dark:data-[state=active]:bg-input/30",
+      "dark:data-[state=active]:text-foreground",
+      "after:absolute",
+      "after:bg-foreground",
+      "after:opacity-0",
+      "after:transition-opacity",
+      "group-data-[orientation=horizontal]/tabs:after:inset-x-0",
+      "group-data-[orientation=horizontal]/tabs:after:bottom-[-5px]",
+      "group-data-[orientation=horizontal]/tabs:after:h-0.5",
+      "group-data-[orientation=vertical]/tabs:after:inset-y-0",
+      "group-data-[orientation=vertical]/tabs:after:-right-1",
+      "group-data-[orientation=vertical]/tabs:after:w-0.5",
+      "group-data-[variant=line]/tabs-list:data-[state=active]:after:opacity-100"
+    ],
+    "variants": {},
+    "defaults": {}
+  },
+  "textarea": {
+    "base": [
+      "flex",
+      "field-sizing-content",
+      "min-h-16",
+      "w-full",
+      "rounded-md",
+      "border",
+      "border-input",
+      "bg-transparent",
+      "px-3",
+      "py-2",
+      "text-base",
+      "shadow-xs",
+      "transition-[color,box-shadow]",
+      "outline-none",
+      "placeholder:text-muted-foreground",
+      "focus-visible:border-ring",
+      "focus-visible:ring-[3px]",
+      "focus-visible:ring-ring/50",
+      "disabled:cursor-not-allowed",
+      "disabled:opacity-50",
+      "aria-invalid:border-destructive",
+      "aria-invalid:ring-destructive/20",
+      "md:text-sm",
+      "dark:bg-input/30",
+      "dark:aria-invalid:ring-destructive/40"
+    ],
+    "variants": {},
+    "defaults": {}
+  },
+  "tooltip": {
+    "base": [],
+    "variants": {},
+    "defaults": {}
+  },
+  "tooltip-content": {
+    "base": [
+      "z-50",
+      "w-fit",
+      "origin-(--radix-tooltip-content-transform-origin)",
+      "animate-in",
+      "rounded-md",
+      "bg-foreground",
+      "px-3",
+      "py-1.5",
+      "text-xs",
+      "text-balance",
+      "text-background",
+      "fade-in-0",
+      "zoom-in-95",
+      "data-[side=bottom]:slide-in-from-top-2",
+      "data-[side=left]:slide-in-from-right-2",
+      "data-[side=right]:slide-in-from-left-2",
+      "data-[side=top]:slide-in-from-bottom-2",
+      "data-[state=closed]:animate-out",
+      "data-[state=closed]:fade-out-0",
+      "data-[state=closed]:zoom-out-95"
+    ],
+    "variants": {},
+    "defaults": {}
+  },
+  "tooltip-provider": {
+    "base": [],
+    "variants": {},
+    "defaults": {}
+  },
+  "tooltip-trigger": {
+    "base": [],
+    "variants": {},
+    "defaults": {}
+  }
+}

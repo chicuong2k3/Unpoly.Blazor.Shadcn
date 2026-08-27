@@ -1,0 +1,31 @@
+@inherits UiComponentBase
+
+@* The one deliberate departure from shadcn's DOM, and the reason for it:
+   -----------------------------------------------------------------------------------------
+   Radix Select is a listbox of divs plus a hidden input. That is a reasonable trade in a SPA
+   and a bad one here — the <select> is what posts the form, what works with scripting off, and
+   what a phone renders as its own native wheel. So the native control stays, wearing
+   SelectTrigger's classes, and ui.js draws the shadcn panel beside it and hides the select
+   (sr-only, never display:none — a hidden select still submits, but an unlabelled one is
+   unreachable to a screen reader).
+
+   The visible result is shadcn's. The API is not identical: there is no <SelectTrigger> /
+   <SelectValue> / <SelectContent> here, because the native element is all three. Options are
+   <SelectItem>, which renders <option>.
+
+   Without JavaScript this is a plain styled <select>, with the OS panel. That is the fallback
+   working, not the fallback failing. *@
+
+@* data-wrapper-class carries the caller's classes verbatim. When ui.js hides the select behind a
+   drawn panel, the sizing the call site asked for (`max-w-[170px]`, `w-full`) has to move to the
+   visible control — and guessing which classes those are by subtracting the recipe leaves
+   `pr-9` and the aria-invalid rules behind to shift the wrapper's layout. *@
+<select data-slot="select" data-wrapper-class="@Class" class="@Classes"
+        @attributes="AdditionalAttributes">@ChildContent</select>
+
+@code {
+    const string Base =
+        "hover:border-ring/60";
+
+    string Classes => Cn(Base, Class);
+}
