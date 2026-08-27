@@ -37,6 +37,7 @@ Source: `demo/Unpoly.Blazor.Shadcn.Demo/Components/Blocks/`. Rendered: run the d
 | `ProductGridBlock` | a catalogue | Card, AspectRatio, Badge, Select |
 | `SocialFeedBlock` | a feed of posts | Avatar, Button, DropdownMenu |
 | `MediaPlayerBlock` | audio with a queue | Card, AspectRatio, Item, ButtonGroup |
+| `MobileShellBlock` | a phone layout with a tab bar | ScrollArea, Item, Badge, DropdownMenu |
 
 ## The trap in each
 
@@ -150,6 +151,13 @@ waits eighty milliseconds.
 One attribute buys seeking, volume, keyboard support, media keys and a lock-screen control on a
 phone. Rebuilding that from divs and a range input is where audio players lose their
 accessibility, every time.
+
+**MobileShellBlock — `100dvh`, the safe-area inset, and links rather than buttons.**
+Three things, and all three are what separate an app from a page. `vh` on a phone is frozen at
+its largest, so a `100vh` layout puts its bottom bar under the address bar until you scroll —
+`100dvh` follows the chrome. Without `env(safe-area-inset-bottom)` the last tab sits under the
+home indicator and cannot be tapped. And the tab bar is a `<nav>` of real links with `[up-nav]`,
+not buttons and a state variable: a tab is a URL, so it can be shared and Back works.
 
 ## Building a new one
 

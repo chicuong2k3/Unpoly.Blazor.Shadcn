@@ -744,6 +744,59 @@
   })
 
   // =============================================================================================
+  // MessageScroller — stay at the newest message, unless the reader is reading
+  // =============================================================================================
+  // Every chat needs this and most get it wrong in one direction or the other: either it yanks
+  // you to the bottom while you are reading something from ten minutes ago, or it silently stops
+  // following and you miss the reply.
+  //
+  // The rule is simple once stated. Follow the newest message while the viewport is already at
+  // the bottom; stop the moment it is not; and show a button that says so. `overflow-anchor: auto`
+  // in the CSS does the first half without any script at all — the browser holds the scroll
+  // position against content inserted above the anchor — and this adds the button.
+
+  up.compiler('[data-slot="message-scroller"]', (root) => {
+    const viewport = root.querySelector('[data-slot="message-scroller-viewport"]')
+    const button = root.querySelector('[data-slot="message-scroller-button"]')
+    if (!viewport) return
+
+    // Not === 0: a fractional scroll height never reaches the exact bottom, and a scroller that
+    // is one pixel off is a scroller that never follows anything again.
+    const atBottom = () =>
+      viewport.scrollHeight - viewport.scrollTop - viewport.clientHeight < 8
+
+    const sync = () => {
+      const following = atBottom()
+      root.dataset.following = following ? 'true' : 'false'
+      if (button) {
+        button.hidden = following
+        button.dataset.active = following ? '' : 'true'
+        if (following) delete button.dataset.active
+      }
+    }
+
+    const toBottom = () => viewport.scrollTo({ top: viewport.scrollHeight, behavior: 'smooth' })
+
+    // New content only pulls the view down when the reader was already at the bottom.
+    const watch = new MutationObserver(() => {
+      if (root.dataset.following !== 'false') viewport.scrollTop = viewport.scrollHeight
+      sync()
+    })
+    watch.observe(viewport, { childList: true, subtree: true })
+
+    viewport.addEventListener('scroll', sync, { passive: true })
+    button?.addEventListener('click', toBottom)
+    viewport.scrollTop = viewport.scrollHeight
+    sync()
+
+    return () => {
+      watch.disconnect()
+      viewport.removeEventListener('scroll', sync)
+      button?.removeEventListener('click', toBottom)
+    }
+  })
+
+  // =============================================================================================
   // Tooltip
   // =============================================================================================
   // Hover AND focus, because a tooltip only reachable by mouse is a tooltip half the users never

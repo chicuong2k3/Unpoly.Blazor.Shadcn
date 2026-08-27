@@ -1,0 +1,30 @@
+@inherits UiComponentBase
+
+@* Opens the file. An <a href> when there is one, so it downloads, opens in a tab on middle-click
+   and shows its destination in the status bar — none of which a click handler gives you.
+
+   It is `absolute inset-0`: an invisible sheet over the whole card, not a wrapper around it.
+   Putting the media and the text inside it positions them absolutely too and they escape the
+   card, which is the mistake it invites. Its own content should be a name and nothing else —
+   `<span class="sr-only">Open acme-invoice.pdf</span>` — because a link with no text is a link a
+   screen reader announces as its own URL. *@
+
+@if (Href is not null)
+{
+    <a href="@Href" data-slot="attachment-trigger" class="@Classes"
+       @attributes="AdditionalAttributes">@ChildContent</a>
+}
+else
+{
+    <button type="button" data-slot="attachment-trigger" class="@Classes"
+            @attributes="AdditionalAttributes">@ChildContent</button>
+}
+
+@code {
+    [Parameter] public string? Href { get; set; }
+
+    const string Base =
+        "absolute inset-0 z-10 outline-none";
+
+    string Classes => Cn(Base, Class);
+}

@@ -411,6 +411,10 @@
       "variant": "ghost",
       "size": "icon-sm",
       "withSlotClasses": true
+    },
+    "attachment-action": {
+      "variant": "ghost",
+      "size": "icon-sm"
     }
   },
   "defaultVariant": {

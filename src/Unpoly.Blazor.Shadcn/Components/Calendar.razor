@@ -1,0 +1,110 @@
+@inherits UiComponentBase
+
+@* A month, as a table — because a calendar is a table: seven columns of days under seven column
+   headers, and every screen reader already knows how to read one. react-day-picker builds it out
+   of divs and then reimplements that, mostly correctly.
+
+   Each day is a real radio input, so choosing one posts under Name with no JavaScript at all,
+   and the browser gives the arrow keys, Home and End for free within the group. That is the
+   whole component: no roving tabindex, no key handlers, no state.
+
+   For picking a single date in a form, <DatePicker> around <input type="date"> is smaller and
+   better still. This is for when the month has to be visible — availability, a booking grid,
+   anything where the shape of the month is the information. *@
+
+<div data-slot="calendar" data-month="@Month.ToString("yyyy-MM")" class="@Classes"
+     @attributes="AdditionalAttributes">
+    <table class="w-full border-separate border-spacing-1">
+        <caption class="sr-only">@Month.ToString("MMMM yyyy")</caption>
+        <thead>
+            <tr>
+                @foreach (var day in Weekdays)
+                {
+                    <th scope="col" class="pb-2 text-xs font-normal text-muted-foreground">
+                        <span aria-hidden="true">@day[..1]</span>
+                        <span class="sr-only">@day</span>
+                    </th>
+                }
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var week in Weeks)
+            {
+                <tr>
+                    @foreach (var date in week)
+                    {
+                        <td class="p-0">
+                            @if (date is { } d)
+                            {
+                                var disabled = Disabled?.Invoke(d) ?? false;
+                                <label aria-current="@(d == Today ? "date" : null)"
+                                       class="@CellClasses(d, disabled)">
+                                    <input type="radio" name="@Name" value="@d.ToString("yyyy-MM-dd")"
+                                           class="sr-only peer" checked="@(d == Selected)"
+                                           disabled="@disabled" />
+                                    <span class="num">@d.Day</span>
+                                </label>
+                            }
+                        </td>
+                    }
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+@code {
+    /// <summary>Any date in the month to show. Only the year and month are read.</summary>
+    [Parameter] public DateOnly Month { get; set; } = DateOnly.FromDateTime(DateTime.Today);
+
+    /// <summary>The field the chosen day posts under. Without it nothing is selectable.</summary>
+    [Parameter] public string? Name { get; set; }
+
+    [Parameter] public DateOnly? Selected { get; set; }
+
+    /// <summary>Today, marked with aria-current. Null in tests, so the render is deterministic.</summary>
+    [Parameter] public DateOnly? Today { get; set; } = DateOnly.FromDateTime(DateTime.Today);
+
+    /// <summary>Days that cannot be chosen — a booked date, a closing day, the past.</summary>
+    [Parameter] public Func<DateOnly, bool>? Disabled { get; set; }
+
+    /// <summary>Monday first. Set it for a locale that starts on Sunday.</summary>
+    [Parameter] public DayOfWeek FirstDay { get; set; } = DayOfWeek.Monday;
+
+    string[] Weekdays =>
+        Enumerable.Range(0, 7)
+            .Select(i => System.Globalization.CultureInfo.CurrentCulture.DateTimeFormat
+                .GetAbbreviatedDayName((DayOfWeek)(((int)FirstDay + i) % 7)))
+            .ToArray();
+
+    IEnumerable<DateOnly?[]> Weeks
+    {
+        get
+        {
+            var first = new DateOnly(Month.Year, Month.Month, 1);
+            var lead = ((int)first.DayOfWeek - (int)FirstDay + 7) % 7;
+            var days = DateTime.DaysInMonth(Month.Year, Month.Month);
+
+            var cells = new List<DateOnly?>();
+            cells.AddRange(Enumerable.Repeat((DateOnly?)null, lead));
+            cells.AddRange(Enumerable.Range(1, days).Select(d => (DateOnly?)first.AddDays(d - 1)));
+            while (cells.Count % 7 != 0) cells.Add(null);
+
+            for (var i = 0; i < cells.Count; i += 7) yield return cells.GetRange(i, 7).ToArray();
+        }
+    }
+
+    // aria-current is what tells a screen reader which day is today; a ring only tells eyes, and
+    // a calendar where today is a colour and nothing else is one half its readers cannot orient in.
+    string CellClasses(DateOnly date, bool disabled) => Cn(
+        "flex size-9 items-center justify-center rounded-md text-sm",
+        disabled ? "pointer-events-none opacity-40" : "cursor-pointer hover:bg-accent",
+        "has-[:checked]:bg-primary has-[:checked]:text-primary-foreground",
+        "has-[:focus-visible]:ring-[3px] has-[:focus-visible]:ring-ring/50",
+        date == Today ? "ring-1 ring-primary" : "");
+
+    const string Base =
+        "";
+
+    string Classes => Cn(Base, Class);
+}

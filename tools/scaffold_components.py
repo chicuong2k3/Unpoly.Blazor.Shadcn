@@ -39,7 +39,8 @@ FAMILIES = {
     'command',
     # this batch: the platform answers each one
     'slider', 'resizable', 'carousel', 'context-menu', 'menubar', 'navigation-menu',
-    'drawer', 'combobox', 'sidebar',
+    'drawer', 'combobox', 'sidebar', 'calendar', 'chart', 'marker', 'bubble',
+    'message', 'message-scroller', 'attachment',
 }
 
 # Slots that will never have a component here, with the reason. Reported separately from "not
@@ -139,9 +140,22 @@ def main() -> int:
 
         template = VOID_TEMPLATE if element in VOID else TEMPLATE
         made.append(name)
-        if '--list' not in sys.argv:
+        if '--list' not in sys.argv and '--check' not in sys.argv:
             (COMPONENTS / f'{name}.razor').write_text(
                 template.format(tag=element, slot=slot), encoding='utf-8')
+
+    if '--check' in sys.argv:
+        # CI: nothing may be missing and nothing may be silently created. A slot that is neither
+        # ported nor refused with a reason is a gap somebody has to decide about.
+        if made or manual:
+            print('not accounted for — port it, or add it to NOT_PORTED with the reason:',
+                  file=sys.stderr)
+            for m in made + manual:
+                print('  ' + m, file=sys.stderr)
+            return 1
+        print(f'every upstream slot is ported or refused '
+              f'({len(NOT_PORTED)} refused, each with a reason)')
+        return 0
 
     if '--list' in sys.argv:
         print(f'{len(made)} would be scaffolded')

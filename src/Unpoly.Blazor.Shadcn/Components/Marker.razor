@@ -1,0 +1,26 @@
+@inherits UiComponentBase
+
+@* A small labelled mark in a stream of text — a citation, a source, a step number. shadcn ships
+   it with its AI components, where it points at whatever a model is quoting. *@
+
+<span data-slot="marker" data-variant="@Variant" class="@Classes"
+      @attributes="AdditionalAttributes">@ChildContent</span>
+
+@code {
+    /// <summary>default | separator | border</summary>
+    [Parameter] public string Variant { get; set; } = "default";
+
+    const string Base =
+        "group/marker relative flex min-h-4 w-full items-center gap-2 text-left text-control " +
+        "text-muted-foreground [&_svg:not([class*='size-'])]:size-4 [a]:underline " +
+        "[a]:underline-offset-3 [a]:hover:text-foreground";
+
+    string VariantClass => Variant switch
+    {
+        "border" => "border-b border-border pb-2",
+        "separator" => "before:mr-1 before:h-px before:min-w-0 before:flex-1 before:bg-border after:ml-1 after:h-px after:min-w-0 after:flex-1 after:bg-border",
+        _ => "",
+    };
+
+    string Classes => Cn(Base, VariantClass, Class);
+}

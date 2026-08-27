@@ -152,3 +152,14 @@
     accessibility.
 </p>
 <Example Source="MediaPlayerBlock.razor"><MediaPlayerBlock /></Example>
+
+<h2 class="doc-h2">Mobile shell</h2>
+<p class="doc-note">
+    Three things make this feel like an app rather than a page, and all three are easy to leave
+    out: <code>100dvh</code> rather than <code>100vh</code>, because a phone's browser chrome
+    slides away and <code>vh</code> is frozen at its largest;
+    <code>env(safe-area-inset-bottom)</code>, or the last tab sits under the home indicator and
+    cannot be tapped; and a tab bar of real links with <code>[up-nav]</code>, so a tab is a URL
+    that can be shared and the back button works.
+</p>
+<Example Source="MobileShellBlock.razor"><MobileShellBlock /></Example>

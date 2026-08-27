@@ -1334,7 +1334,10 @@
         ]
       }
     },
-    "defaults": {},
+    "defaults": {
+      "size": "default",
+      "orientation": "horizontal"
+    },
     "element": "div",
     "file": "attachment"
   },
@@ -4407,7 +4410,9 @@
         ]
       }
     },
-    "defaults": {},
+    "defaults": {
+      "variant": "default"
+    },
     "element": "Comp",
     "file": "marker"
   },

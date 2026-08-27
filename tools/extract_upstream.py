@@ -215,7 +215,21 @@ def parse_slots(text: str, cvas: dict) -> dict[str, dict]:
                 recipe = cvas[used.group(1)]
                 entry['base'] = list(recipe['base'])
                 entry['variants'] = recipe['variants']
-                entry['defaults'] = recipe['defaults']
+                # A copy: the same recipe is shared by several slots, and the fallback below
+                # would otherwise write one component's default into all of them.
+                entry['defaults'] = dict(recipe['defaults'])
+
+                # cva's defaultVariants are optional, and shadcn often leaves them out because
+                # the component's own signature already gives the prop a default. Read it from
+                # there rather than treating the group as having none — with no default the
+                # expectation is the base alone, and a component that renders its default variant
+                # then looks like it is rendering too much.
+                for group in entry['variants']:
+                    if group in entry['defaults']:
+                        continue
+                    signature = re.findall(rf'\b{group}\s*=\s*"([^"]+)"', text[:open_tag])
+                    if signature and signature[-1] in entry['variants'][group]:
+                        entry['defaults'][group] = signature[-1]
                 call = balanced(args, used.end() - 1)
                 args = args.replace(call, '')
 

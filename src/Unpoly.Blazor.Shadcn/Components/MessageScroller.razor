@@ -1,0 +1,19 @@
+@inherits UiComponentBase
+
+@* A thread that keeps itself pinned to the newest message — and stops doing so the moment you
+   scroll up to read something, which is the behaviour every chat needs and most get wrong in one
+   direction or the other.
+
+   `overflow-anchor` does the first half in CSS with no script at all: the browser holds the
+   scroll position against content being added above the anchor. The compiler adds the second
+   half — the button that appears once you have scrolled away, and takes you back. *@
+
+<div data-slot="message-scroller" class="@Classes"
+     @attributes="AdditionalAttributes">@ChildContent</div>
+
+@code {
+    const string Base =
+        "group/message-scroller relative flex size-full min-h-0 flex-col overflow-hidden";
+
+    string Classes => Cn(Base, Class);
+}

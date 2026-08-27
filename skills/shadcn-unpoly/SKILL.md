@@ -11,13 +11,13 @@ then apply the translation rules below. Do not invent a Blazor-flavoured API; th
 
 Two files next to this one, both worth opening before you write markup:
 
-- **`API.md`** — generated from the components, every parameter of all 180. Read it rather than
+- **`API.md`** — generated from the components, every parameter of all 301. Read it rather than
   guessing a name.
-- **`BLOCKS.md`** — 25 ready-made sections (sign in, data table, checkout, chat, board, file
+- **`BLOCKS.md`** — 26 ready-made sections (sign in, data table, checkout, chat, board, file
   manager, calendar, feed and the rest) and the trap in each. Building a login form or a list
   screen from primitives when a block exists is slower and gets the Unpoly wiring wrong.
 
-There is a runnable demo at `demo/` — every component with its source, all 25 blocks, a theme
+There is a runnable demo at `demo/` — every component with its source, all 26 blocks, a theme
 switcher, a live Customizer and a ⌘K search: `dotnet run --project demo/Unpoly.Blazor.Shadcn.Demo`.
 The demo is built entirely from this library, including its own code blocks and command palette,
 which is the only honest way to show that the components are enough to build something.
@@ -71,6 +71,18 @@ These are not gaps to work around. React constructs that static SSR does not hav
 | `Checkbox`, `Switch`, `RadioGroupItem` | `<button role=…>` + hidden input | the real `<input>`, styled |
 | `Tabs` | React state | a compiler; inactive panels use `hidden`, so their fields still post |
 | `Sonner` | its own renderer | Toastify; call `toast(...)`, `toast.error(...)` — same shape |
+| `Slider` | five divs + a roving tab index | `<input type="range">`; the track, fill and thumb are the browser's own three parts |
+| `Carousel` | embla | CSS scroll-snap; it still swipes with scripting off, and only the arrows go quiet |
+| `Resizable` | react-resizable-panels | a `role="separator"` the arrow keys move, writing flex-grow |
+| `ContextMenu` | Radix + a right-click handler | one `contextmenu` listener, which covers the menu key and long-press too |
+| `Menubar` | Radix roving focus | `[popover]` + arrow keys along the bar, and hover-to-switch once one is open |
+| `NavigationMenu` | one shared animated viewport | each panel its own `[popover]` — no cross-fade, no clipping, no z-index |
+| `Drawer` | vaul | `<dialog>` plus a pointer drag: past a third of the panel it closes |
+| `Combobox` | its own state | a real `<input type="hidden">`, so the form posts it |
+| `Sidebar` | React context + a cookie | the cookie alone; the server reads it and the first paint is right |
+| `Calendar` | react-day-picker | a `<table>` of radio inputs; the browser supplies the arrow keys |
+| `Chart` | recharts | the `--color-*` declarations only — what draws is yours |
+| `MessageScroller` | a scroll observer | `overflow-anchor`, which the browser has had since 2018 |
 | `Command` | cmdk, a filtered virtual list | every item is in the DOM as a real link; a compiler hides the ones that do not match |
 
 `Command` filters in the browser because the server already sent the list. When the list is a
@@ -154,6 +166,23 @@ Two variables are **not** shadcn's: `--control-h` and `--control-text`, surfaced
 `h-control` and `text-control`. shadcn writes `h-9 text-sm` literally, which pins every consumer
 to one control size. When porting a component from ui.shadcn.com, substitute those two and leave
 every other class exactly as it is.
+
+## Where a family is deliberately smaller than upstream
+
+Three, all listed with the reason in `tools/scaffold_components.py`:
+
+- **`Slider` has one thumb.** A range with a lower and an upper bound is two inputs with two
+  names — which is also what a server wants to read, so the honest shape and the useful one
+  agree. Two thumbs would mean rebuilding the control Radix rebuilt.
+- **`NavigationMenu` has no viewport or indicator.** Radix animates every panel through one
+  shared viewport so they cross-fade into each other; that needs a measured height and a motion
+  attribute per panel. Each panel here is its own popover in the top layer instead — no
+  cross-fade, and in exchange nothing clips it and there is no z-index to lose.
+- **`Chart` draws nothing.** `ChartContainer` upstream declares one custom property per series
+  and then carries a wall of `[&_.recharts-*]` selectors. The first half is kept; a real charting
+  library, when you need one, renders inside it and reads the same properties. Until then a
+  `<table>` with a percentage height per bar reads to a screen reader, prints, and needs nothing
+  loaded — the demo's Analytics block is the worked example.
 
 ## The two components shadcn does not have
 

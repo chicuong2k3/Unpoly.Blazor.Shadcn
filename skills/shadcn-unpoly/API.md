@@ -113,6 +113,63 @@ renders `<div>` · `data-slot="aspect-ratio"`
 |---|---|---|---|
 | `Ratio` | `string` | `"16 / 9"` |  |
 
+## `<Attachment>`
+renders `<div>` · `data-slot="attachment"`
+
+| Parameter | Type | Default | |
+|---|---|---|---|
+| `Size` | `string` | `"default"` |  |
+| `Orientation` | `string` | `"horizontal"` |  |
+| `State` | `string?` | — |  |
+
+## `<AttachmentAction>`
+renders `<button>` · `data-slot="attachment-action"`
+
+| Parameter | Type | Default | |
+|---|---|---|---|
+| `AriaLabel` | `string` | `default!` |  |
+| `Variant` | `string` | `"ghost"` | **required** |
+| `Size` | `string` | `"icon-sm"` |  |
+
+## `<AttachmentActions>`
+renders `<div>` · `data-slot="attachment-actions"`
+
+_No parameters of its own._
+
+## `<AttachmentContent>`
+renders `<div>` · `data-slot="attachment-content"`
+
+_No parameters of its own._
+
+## `<AttachmentDescription>`
+renders `<span>` · `data-slot="attachment-description"`
+
+_No parameters of its own._
+
+## `<AttachmentGroup>`
+renders `<ul>` · `data-slot="attachment-group"`
+
+_No parameters of its own._
+
+## `<AttachmentMedia>`
+renders `<div>` · `data-slot="attachment-media"`
+
+| Parameter | Type | Default | |
+|---|---|---|---|
+| `Variant` | `string` | `"icon"` |  |
+
+## `<AttachmentTitle>`
+renders `<span>` · `data-slot="attachment-title"`
+
+_No parameters of its own._
+
+## `<AttachmentTrigger>`
+renders `<a>` · `data-slot="attachment-trigger"`
+
+| Parameter | Type | Default | |
+|---|---|---|---|
+| `Href` | `string?` | — |  |
+
 ## `<Avatar>`
 renders `<span>` · `data-slot="avatar"`
 
@@ -195,6 +252,34 @@ renders `<li>` · `data-slot="breadcrumb-separator"`
 
 _No parameters of its own._
 
+## `<Bubble>`
+renders `<article>` · `data-slot="bubble"`
+
+| Parameter | Type | Default | |
+|---|---|---|---|
+| `Align` | `string` | `"start"` |  |
+| `Variant` | `string` | `"default"` |  |
+
+## `<BubbleContent>`
+renders `<div>` · `data-slot="bubble-content"`
+
+_No parameters of its own._
+
+## `<BubbleGroup>`
+renders `<div>` · `data-slot="bubble-group"`
+
+| Parameter | Type | Default | |
+|---|---|---|---|
+| `AriaLabel` | `string?` | — |  |
+
+## `<BubbleReactions>`
+renders `<div>` · `data-slot="bubble-reactions"`
+
+| Parameter | Type | Default | |
+|---|---|---|---|
+| `Side` | `string` | `"bottom"` |  |
+| `Align` | `string` | `"end"` |  |
+
 ## `<Button>`
 renders `<a>` · `data-slot="button"`
 
@@ -216,6 +301,17 @@ _No parameters of its own._
 | Parameter | Type | Default | |
 |---|---|---|---|
 | `Orientation` | `string` | `"vertical"` |  |
+
+## `<Calendar>`
+renders `<div>` · `data-slot="calendar"`
+
+| Parameter | Type | Default | |
+|---|---|---|---|
+| `Month` | `DateOnly` | `DateOnly.FromDateTime(DateTime.Today)` |  |
+| `Name` | `string?` | — |  |
+| `Selected` | `DateOnly?` | — |  |
+| `Today` | `DateOnly?` | `DateOnly.FromDateTime(DateTime.Today)` |  |
+| `FirstDay` | `DayOfWeek` | `DayOfWeek.Monday` |  |
 
 ## `<Card>`
 renders `<div>` · `data-slot="card"`
@@ -289,6 +385,13 @@ renders `<button>` · `data-slot="carousel-previous"`
 |---|---|---|---|
 | `Label` | `string` | `"Previous slide"` |  |
 | `Orientation` | `string` | `"horizontal"` |  |
+
+## `<Chart>`
+renders `<div>` · `data-slot="chart"`
+
+| Parameter | Type | Default | |
+|---|---|---|---|
+| `Id` | `string?` | — |  |
 
 ## `<Checkbox>`
 renders `<input>` · `data-slot="checkbox"`
@@ -1081,6 +1184,23 @@ renders `<label>` · `data-slot="label"`
 
 _No parameters of its own._
 
+## `<Marker>`
+renders `<span>` · `data-slot="marker"`
+
+| Parameter | Type | Default | |
+|---|---|---|---|
+| `Variant` | `string` | `"default"` |  |
+
+## `<MarkerContent>`
+renders `<span>` · `data-slot="marker-content"`
+
+_No parameters of its own._
+
+## `<MarkerIcon>`
+renders `<span>` · `data-slot="marker-icon"`
+
+_No parameters of its own._
+
 ## `<Menubar>`
 renders `<div>` · `data-slot="menubar"`
 
@@ -1184,6 +1304,65 @@ renders `<button>` · `data-slot="menubar-trigger"`
 | Parameter | Type | Default | |
 |---|---|---|---|
 | `Target` | `string` | `default!` |  |
+
+## `<Message>`
+renders `<article>` · `data-slot="message"`
+
+| Parameter | Type | Default | |
+|---|---|---|---|
+| `Align` | `string` | `"start"` |  |
+
+## `<MessageAvatar>`
+renders `<div>` · `data-slot="message-avatar"`
+
+_No parameters of its own._
+
+## `<MessageContent>`
+renders `<div>` · `data-slot="message-content"`
+
+_No parameters of its own._
+
+## `<MessageFooter>`
+renders `<div>` · `data-slot="message-footer"`
+
+_No parameters of its own._
+
+## `<MessageGroup>`
+renders `<div>` · `data-slot="message-group"`
+
+_No parameters of its own._
+
+## `<MessageHeader>`
+renders `<div>` · `data-slot="message-header"`
+
+_No parameters of its own._
+
+## `<MessageScroller>`
+renders `<div>` · `data-slot="message-scroller"`
+
+_No parameters of its own._
+
+## `<MessageScrollerButton>`
+renders `<button>` · `data-slot="message-scroller-button"`
+
+| Parameter | Type | Default | |
+|---|---|---|---|
+| `AriaLabel` | `string` | `"Jump to the newest message"` |  |
+
+## `<MessageScrollerContent>`
+renders `<div>` · `data-slot="message-scroller-content"`
+
+_No parameters of its own._
+
+## `<MessageScrollerItem>`
+renders `<div>` · `data-slot="message-scroller-item"`
+
+_No parameters of its own._
+
+## `<MessageScrollerViewport>`
+renders `<div>` · `data-slot="message-scroller-viewport"`
+
+_No parameters of its own._
 
 ## `<NativeSelect>`
 renders `<div>` · `data-slot="native-select-wrapper"`

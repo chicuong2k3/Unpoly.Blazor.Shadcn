@@ -49,6 +49,7 @@ BY_COMPILER = {
     'InputOtpSlot.data-active': 'up.compiler(\'[data-slot="input-otp"]\')',
     'CodeBlock.data-copied': 'up.compiler(\'[data-slot="code-block-copy"]\')',
     'ResizableHandle.data-dragging': 'up.compiler(\'[data-slot="resizable-handle"]\')',
+    'MessageScrollerButton.data-active': 'up.compiler(\'[data-slot="message-scroller"]\')',
 }
 
 # Every panel that is a [popover] gets data-state from one compiler, and so does its trigger:

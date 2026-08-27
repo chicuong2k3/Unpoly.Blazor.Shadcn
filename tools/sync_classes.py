@@ -55,7 +55,10 @@ def load():
 RUNTIME_VARIANTS = {'button', 'badge', 'alert', 'pagination-link', 'sheet-content',
                     'carousel-content', 'carousel-item', 'carousel-previous',
                     'carousel-next', 'field', 'input-group-addon',
-                    'input-group-button'}
+                    'input-group-button', 'marker', 'bubble',
+                    'bubble-reactions', 'attachment', 'attachment-media',
+                    'sidebar-container', 'sidebar-gap', 'sidebar-menu-button',
+                    'sidebar-menu-sub-button'}
 
 
 def upstream_default(entry, slot):

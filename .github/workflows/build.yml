@@ -31,6 +31,10 @@ jobs:
           python tools/fetch_upstream.py --check
           python tools/gen_themes.py --check
 
+      # Nothing left to scaffold, and nothing quietly unaccounted for.
+      - name: Every upstream slot is ported or refused with a reason
+        run: python tools/scaffold_components.py --check
+
       # A class rule keyed off an attribute nobody renders matches nothing, in silence.
       - name: Every data- rule has an attribute to match
         run: python tools/check_data_attributes.py --check

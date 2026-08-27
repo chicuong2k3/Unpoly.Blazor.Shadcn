@@ -1,0 +1,11 @@
+@inherits UiComponentBase
+
+<div data-slot="message-scroller-item" class="@Classes"
+     @attributes="AdditionalAttributes">@ChildContent</div>
+
+@code {
+    const string Base =
+        "min-w-0 shrink-0 [contain-intrinsic-size:auto_10rem] [content-visibility:auto]";
+
+    string Classes => Cn(Base, Class);
+}

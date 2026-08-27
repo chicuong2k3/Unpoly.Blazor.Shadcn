@@ -56,6 +56,19 @@
     [data-slot="sheet"][data-side="top"][open]    > * { animation: sh-slide-from-top 320ms cubic-bezier(0.32, 0.72, 0, 1); }
     [data-slot="sheet"][data-side="bottom"][open] > * { animation: sh-slide-from-bottom 320ms cubic-bezier(0.32, 0.72, 0, 1); }
 
+    /* ---- MessageScroller --------------------------------------------------------------
+       overflow-anchor is the whole "stay pinned to the newest message" behaviour, in CSS: the
+       browser holds the scroll position against content inserted above the anchor, so a thread
+       that grows at the bottom does not jump while you are reading the middle of it. Chat
+       libraries reimplement this with a scroll observer; the browser has done it since 2018. */
+    [data-slot="message-scroller-viewport"] {
+        overflow-y: auto;
+        overflow-anchor: auto;
+        scrollbar-width: thin;
+        scrollbar-color: var(--border) transparent;
+        overscroll-behavior-y: contain;
+    }
+
     /* ---- Drawer ---------------------------------------------------------------------
        A sheet you can drag shut. The frame rules are the sheet's; what differs is that vaul
        rounds the two corners facing into the screen and leaves the two against the edge square,
