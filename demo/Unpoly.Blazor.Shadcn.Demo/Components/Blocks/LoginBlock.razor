@@ -1,0 +1,45 @@
+@* A sign-in card that works with scripting off and swaps in place with Unpoly.
+
+   Two things here are load-bearing and get forgotten:
+
+   up-target="body" — signing in crosses the auth boundary, so the whole shell has to be
+   replaced. Target a fragment and the new page arrives wearing the signed-out chrome.
+
+   up-fail-target on the FORM, not on a div inside it — [up-disable] disables every field while
+   the request is out, including the antiforgery token. If the failure render does not replace
+   the form itself, those fields stay disabled, are not serialized, and the next submit is a 400. *@
+
+<div class="flex min-h-[60vh] items-center justify-center">
+    <Card Class="w-full max-w-sm">
+        <CardHeader>
+            <CardTitle>Sign in</CardTitle>
+            <CardDescription>Use the email you registered with.</CardDescription>
+        </CardHeader>
+
+        <form method="post" class="login-form" up-target="body" up-fail-target=".login-form">
+            <CardContent Class="space-y-4">
+                <FormField For="login-email" Label="Email">
+                    <Input id="login-email" name="email" type="email" required
+                           autocomplete="username" placeholder="you@example.com" />
+                </FormField>
+
+                <FormField For="login-password" Label="Password">
+                    <Input id="login-password" name="password" type="password" required
+                           autocomplete="current-password" />
+                </FormField>
+
+                <Label Class="flex w-fit cursor-pointer items-center gap-2.5 text-sm">
+                    <Checkbox name="remember" value="true" />
+                    <span>Keep me signed in</span>
+                </Label>
+            </CardContent>
+
+            <CardFooter Class="mt-6 flex-col gap-3">
+                <Button Class="w-full" up-disable>Sign in</Button>
+                <a href="/reset" class="text-sm text-muted-foreground hover:text-foreground">
+                    Forgotten your password?
+                </a>
+            </CardFooter>
+        </form>
+    </Card>
+</div>

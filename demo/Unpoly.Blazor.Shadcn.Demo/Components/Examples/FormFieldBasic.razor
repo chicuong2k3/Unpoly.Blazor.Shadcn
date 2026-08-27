@@ -1,0 +1,12 @@
+@* <FormField> is the composition shadcn's react-hook-form FormField produces:
+   FormItem + FormLabel + the control + FormDescription + FormMessage. The four are exported
+   separately too, for a shape this does not cover. *@
+<div class="w-[360px] space-y-4">
+    <FormField For="email" Label="Email" Description="We never share it.">
+        <Input id="email" name="email" type="email" placeholder="you@example.com" required />
+    </FormField>
+
+    <FormField For="bio" Label="Bio">
+        <Textarea id="bio" name="bio" rows="3" placeholder="A sentence or two." />
+    </FormField>
+</div>

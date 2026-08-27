@@ -1,0 +1,22 @@
+@* A native <dialog>. showModal() gives the focus trap, the inert background,
+   Escape and the top layer — the parts Radix spends most of its bytes on.
+
+   When the content comes from the SERVER, prefer an Unpoly overlay instead: up-layer="new"
+   renders a real, bookmarkable route into a modal. <Dialog> is for content the page already has. *@
+<DialogTrigger Target="demo-dialog" Variant="outline">Edit profile</DialogTrigger>
+
+<Dialog Id="demo-dialog">
+    <DialogHeader>
+        <DialogTitle>Edit profile</DialogTitle>
+        <DialogDescription>Changes are saved when you submit.</DialogDescription>
+    </DialogHeader>
+
+    <FormField For="name" Label="Name">
+        <Input id="name" name="name" value="Marta Ruiz" />
+    </FormField>
+
+    <DialogFooter>
+        <DialogClose>Cancel</DialogClose>
+        <Button>Save</Button>
+    </DialogFooter>
+</Dialog>

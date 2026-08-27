@@ -1,0 +1,104 @@
+/* Cupertino — iOS / macOS.
+   ==========================================================================================
+   Of the three ported design languages this is the one that transfers almost completely, and
+   the reason is worth knowing: Apple's system is mostly colour, radius, spacing and typography.
+   It has no state-layer model, no ripple, and it uses shadow sparingly — so there is very little
+   in it that has to live in component markup.
+
+   Colours are Apple's system colours in their light-mode sRGB values. */
+
+[data-theme="cupertino"] {
+    --background: oklch(97.6% 0.001 250);        /* systemGroupedBackground */
+    --foreground: oklch(14% 0 0);                /* label */
+
+    --card: oklch(100% 0 0);                     /* secondarySystemGroupedBackground */
+    --card-foreground: oklch(14% 0 0);
+    --popover: oklch(98.5% 0.001 250);
+    --popover-foreground: oklch(14% 0 0);
+
+    --primary: oklch(56.5% 0.212 258);           /* systemBlue */
+    --primary-foreground: oklch(100% 0 0);
+    --secondary: oklch(94% 0.002 250);           /* systemGray6 */
+    --secondary-foreground: oklch(14% 0 0);
+
+    --muted: oklch(94% 0.002 250);
+    --muted-foreground: oklch(55.5% 0.005 250);  /* secondaryLabel */
+    --accent: oklch(94% 0.002 250);
+    --accent-foreground: oklch(14% 0 0);
+
+    --destructive: oklch(59.5% 0.226 27);        /* systemRed */
+    --destructive-foreground: oklch(100% 0 0);
+
+    /* Apple's separators are hairlines and much lighter than shadcn's border. */
+    --border: oklch(89.5% 0.002 250);            /* separator */
+    --input: oklch(89.5% 0.002 250);
+    --ring: oklch(56.5% 0.212 258);
+
+    /* ---- shape ---------------------------------------------------------------------------
+       iOS 10pt on controls, 12–14pt on grouped containers. Not pill-shaped: that is Material.
+       The continuous "squircle" curve Apple actually uses is not expressible in CSS at all —
+       `corner-shape: squircle` is not shipped anywhere yet — so this is the round-rect
+       approximation every web implementation uses. */
+    --radius: 0.75rem;
+    --radius-control: 0.625rem;
+
+    /* ---- elevation -------------------------------------------------------------------------
+       iOS barely uses shadow. Cards are separated by ground colour, not by height; only things
+       that genuinely float — sheets, popovers, menus — cast anything. */
+    --elevation-1: 0 0 0 0 rgb(0 0 0 / 0);
+    --elevation-2: 0 1px 2px 0 rgb(0 0 0 / 0.04);
+    --elevation-3: 0 8px 24px -8px rgb(0 0 0 / 0.16);
+    --elevation-4: 0 16px 48px -12px rgb(0 0 0 / 0.24);
+
+    /* Apple's standard spring, flattened to a bezier. */
+    --ease-ui: cubic-bezier(0.32, 0.72, 0, 1);
+    --duration-ui: 250ms;
+
+    /* A 44pt hit target is Apple's minimum, and their controls are set in 17pt body text. */
+    --control-h: 2.75rem;
+    --control-text: 1.0625rem;
+
+    /* San Francisco, then the system stack that resolves to it on Apple platforms. */
+    --font-numeric: ui-monospace, "SF Mono", Menlo, monospace;
+}
+
+[data-theme="cupertino"].dark,
+[data-theme="cupertino"] .dark {
+    --background: oklch(12% 0 0);
+    --foreground: oklch(98% 0 0);
+    --card: oklch(17.5% 0.002 250);
+    --card-foreground: oklch(98% 0 0);
+    --popover: oklch(21% 0.003 250);
+    --popover-foreground: oklch(98% 0 0);
+    --primary: oklch(63.5% 0.196 256);           /* systemBlue, dark */
+    --primary-foreground: oklch(100% 0 0);
+    --secondary: oklch(24% 0.003 250);
+    --secondary-foreground: oklch(98% 0 0);
+    --muted: oklch(24% 0.003 250);
+    --muted-foreground: oklch(66% 0.005 250);
+    --accent: oklch(24% 0.003 250);
+    --accent-foreground: oklch(98% 0 0);
+    --destructive: oklch(64% 0.21 25);
+    --destructive-foreground: oklch(100% 0 0);
+    --border: oklch(28% 0.003 250);
+    --input: oklch(28% 0.003 250);
+    --ring: oklch(63.5% 0.196 256);
+}
+
+@layer components {
+    /* iOS type is set tighter than the web default at these sizes. */
+    [data-theme="cupertino"] { letter-spacing: -0.011em; }
+
+    /* A UIKit switch is larger than shadcn's and fully round, and it is the one control whose
+       proportions people recognise instantly. */
+    [data-theme="cupertino"] [data-slot="switch"] {
+        block-size: 1.5rem;
+        inline-size: 2.625rem;
+    }
+    [data-theme="cupertino"] [data-slot="switch"]::after {
+        block-size: 1.25rem;
+        inline-size: 1.25rem;
+        box-shadow: 0 3px 8px rgb(0 0 0 / 0.15), 0 1px 1px rgb(0 0 0 / 0.16);
+    }
+    [data-theme="cupertino"] [data-slot="switch"]:checked::after { translate: calc(2.625rem - 1.25rem - 6px) 0; }
+}

@@ -1,0 +1,72 @@
+@* A settings screen: a description column beside the fields, and one form per
+   section so saving one does not post the others. A single form across every section is the
+   usual mistake — it makes "Save" mean "save everything, including what I did not look at". *@
+
+<div class="space-y-10">
+    <section class="grid gap-8 md:grid-cols-[240px_1fr]">
+        <div>
+            <h2 class="text-base font-medium">Store</h2>
+            <p class="mt-1 text-sm text-muted-foreground">
+                The name and address shown to customers.
+            </p>
+        </div>
+
+        <form method="post" class="space-y-4">
+            <FormField For="store-name" Label="Store name">
+                <Input id="store-name" name="name" value="Nexora" required />
+            </FormField>
+
+            <FormField For="store-address" Label="Address" Description="Shown in the footer and on invoices.">
+                <Textarea id="store-address" name="address" rows="3" />
+            </FormField>
+
+            <Button up-disable>Save store</Button>
+        </form>
+    </section>
+
+    <Separator />
+
+    <section class="grid gap-8 md:grid-cols-[240px_1fr]">
+        <div>
+            <h2 class="text-base font-medium">Notifications</h2>
+            <p class="mt-1 text-sm text-muted-foreground">
+                Each is saved on its own, so a toggle takes effect where you set it.
+            </p>
+        </div>
+
+        <form method="post" class="space-y-1">
+            <Label Class="flex cursor-pointer items-center justify-between gap-4 rounded-md px-2 py-2.5 hover:bg-accent">
+                <span class="text-sm">Email me about new orders</span>
+                <Switch name="notify-orders" value="true" checked up-autosubmit />
+            </Label>
+            <Label Class="flex cursor-pointer items-center justify-between gap-4 rounded-md px-2 py-2.5 hover:bg-accent">
+                <span class="text-sm">Email me about low stock</span>
+                <Switch name="notify-stock" value="true" up-autosubmit />
+            </Label>
+        </form>
+    </section>
+
+    <Separator />
+
+    <section class="grid gap-8 md:grid-cols-[240px_1fr]">
+        <div>
+            <h2 class="text-base font-medium">Danger zone</h2>
+            <p class="mt-1 text-sm text-muted-foreground">This cannot be undone.</p>
+        </div>
+
+        <Card Class="border-destructive/40">
+            <CardHeader>
+                <CardTitle Class="text-base">Delete this store</CardTitle>
+                <CardDescription>Every product, order and customer goes with it.</CardDescription>
+            </CardHeader>
+            <CardFooter>
+                <form method="post">
+                    <Button Variant="destructive"
+                            data-ask="Delete this store? Every product, order and customer goes with it.">
+                        Delete store
+                    </Button>
+                </form>
+            </CardFooter>
+        </Card>
+    </section>
+</div>

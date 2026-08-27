@@ -1,0 +1,76 @@
+@page "/"
+
+<PageTitle>Unpoly.Blazor.Shadcn</PageTitle>
+
+<h1 class="doc-h1">shadcn/ui for Blazor static SSR</h1>
+<p class="doc-lede">
+    The same tokens, the same class strings, the same <code>data-slot</code> on every root, the
+    same ARIA. Write the shadcn markup you already know; the translation is four rules long.
+</p>
+
+<div class="mt-8 flex flex-wrap gap-3">
+    <Button Href="/components/button">Browse components</Button>
+    <Button Variant="outline" Href="/blocks">Blocks</Button>
+    <Button Variant="outline" Href="/theming">Theming</Button>
+</div>
+
+<h2 class="doc-h2">React to Razor</h2>
+<p class="doc-note">
+    Parameters are PascalCase; HTML attributes stay lowercase and are splatted onto the root.
+    That splat is the whole Unpoly integration — no component here knows Unpoly exists.
+</p>
+
+<div class="doc-example">
+    <pre class="doc-source"><code>&lt;Button variant="destructive" size="sm"&gt;    →  &lt;Button Variant="destructive" Size="sm"&gt;
+className="w-full"                          →  Class="w-full"
+&lt;Button asChild&gt;&lt;Link href="/x"&gt;           →  &lt;Button Href="/x"&gt;
+&lt;Input name="email" value={v} /&gt;            →  &lt;Input name="email" value="@@v" /&gt;
+onClick={...}                               →  there are none — a form posts, a link navigates</code></pre>
+</div>
+
+<h2 class="doc-h2">What it is built on</h2>
+
+<div class="mt-4 grid gap-4 md:grid-cols-3">
+    <Card>
+        <CardHeader>
+            <CardTitle Class="text-base">The platform, first</CardTitle>
+        </CardHeader>
+        <CardContent Class="text-sm text-muted-foreground">
+            Dialog is <code>&lt;dialog&gt;</code>. Accordion is <code>&lt;details&gt;</code>.
+            Menus and tooltips are <code>[popover]</code>. Select is a real
+            <code>&lt;select&gt;</code> that posts without JavaScript. The focus trap, the
+            top layer and Escape are the browser's.
+        </CardContent>
+    </Card>
+
+    <Card>
+        <CardHeader>
+            <CardTitle Class="text-base">Parity you can check</CardTitle>
+        </CardHeader>
+        <CardContent Class="text-sm text-muted-foreground">
+            Class lists are generated from shadcn's own source and compared against it by the
+            tests. Every difference is in <code>deviations.json</code> with a written reason.
+        </CardContent>
+    </Card>
+
+    <Card>
+        <CardHeader>
+            <CardTitle Class="text-base">Unpoly, by attribute</CardTitle>
+        </CardHeader>
+        <CardContent Class="text-sm text-muted-foreground">
+            <code>up-target</code>, <code>up-poll</code>, <code>up-validate</code>,
+            <code>up-disable</code> are written as plain HTML at the call site. The one point of
+            contact is a CSS rule: a button that started a request grows a spinner.
+        </CardContent>
+    </Card>
+</div>
+
+<h2 class="doc-h2">Try the switcher</h2>
+<p class="doc-note">
+    The theme control in the header changes <code>data-theme</code> on <code>&lt;html&gt;</code>
+    and nothing else. Every component on this page is the same markup under all four.
+</p>
+
+<Example Source="ButtonVariantsExample.razor">
+    <ButtonVariantsExample />
+</Example>

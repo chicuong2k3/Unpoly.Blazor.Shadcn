@@ -1,0 +1,46 @@
+@page "/blocks"
+
+<PageTitle>Blocks — Unpoly.Blazor.Shadcn</PageTitle>
+
+<h1 class="doc-h1">Blocks</h1>
+<p class="doc-lede">
+    Whole sections, composed from the library and meant to be copied and edited. Each carries the
+    Unpoly wiring that makes it behave — the part that is easy to leave out and hard to notice
+    missing.
+</p>
+<p class="doc-note">
+    <code>skills/shadcn-unpoly/BLOCKS.md</code> is the same list written for a coding agent: what
+    each block is for, what it composes, and the trap in it.
+</p>
+
+<h2 class="doc-h2">Sign in</h2>
+<p class="doc-note">
+    Two attributes here are load-bearing and routinely forgotten:
+    <code>up-target="body"</code>, because signing in crosses the auth boundary and the whole
+    shell has to be replaced; and <code>up-fail-target</code> on the <b>form</b> rather than a div
+    inside it, because <code>[up-disable]</code> disables the antiforgery field too.
+</p>
+<Example Source="LoginBlock.razor"><LoginBlock /></Example>
+
+<h2 class="doc-h2">Page header</h2>
+<Example Source="PageHeaderBlock.razor"><PageHeaderBlock /></Example>
+
+<h2 class="doc-h2">Stat cards</h2>
+<Example Source="StatsBlock.razor"><StatsBlock /></Example>
+
+<h2 class="doc-h2">Data table with a toolbar</h2>
+<p class="doc-note">
+    The filters are a GET form and the URL is the state, so the result is bookmarkable and Back
+    works. No client-side filter state exists to get out of sync.
+</p>
+<Example Source="DataTableBlock.razor"><DataTableBlock /></Example>
+
+<h2 class="doc-h2">Settings</h2>
+<p class="doc-note">
+    One form per section. A single form across the whole screen makes "Save" mean "save
+    everything, including what I did not look at".
+</p>
+<Example Source="SettingsBlock.razor"><SettingsBlock /></Example>
+
+<h2 class="doc-h2">Empty state</h2>
+<Example Source="EmptyStateBlock.razor"><EmptyStateBlock /></Example>

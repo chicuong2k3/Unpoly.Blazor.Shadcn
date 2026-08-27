@@ -1,0 +1,12 @@
+@* shadcn composes a label around the control rather than shipping a labelled
+   checkbox: the whole row becomes the hit area, and the markup says why. *@
+<div class="space-y-1">
+    <Label Class="flex w-fit cursor-pointer items-center gap-2.5 rounded-md px-2 py-1.5 text-sm hover:bg-accent">
+        <Checkbox name="terms" value="true" checked />
+        <span>Accept the terms</span>
+    </Label>
+    <Label Class="flex w-fit cursor-pointer items-center gap-2.5 rounded-md px-2 py-1.5 text-sm hover:bg-accent">
+        <Checkbox name="news" value="true" />
+        <span>Send me the newsletter</span>
+    </Label>
+</div>

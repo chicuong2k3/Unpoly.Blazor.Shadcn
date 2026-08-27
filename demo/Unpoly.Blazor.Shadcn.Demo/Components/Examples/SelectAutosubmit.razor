@@ -1,0 +1,9 @@
+@* A filter that reruns itself. [up-autosubmit] submits on change and
+   [up-target] says what to replace — no handler, no client state. The themed panel dispatches a
+   real change event, so this works whether or not ui.js is loaded. *@
+<form method="get" up-autosubmit up-target=".doc-main">
+    <Select name="sort" aria-label="Sort" Class="w-[200px]">
+        <SelectItem Value="new">Newest</SelectItem>
+        <SelectItem Value="price">Price</SelectItem>
+    </Select>
+</form>

@@ -1,0 +1,62 @@
+@inherits LayoutComponentBase
+
+@* The nav and the header sit in <UpChrome>: on a fragment request they are not rendered at all,
+   so moving between component pages costs one .doc-main swap and the sidebar keeps its scroll.
+   Provides names what the chrome contains that anything might target from outside. *@
+
+<UpChrome Provides=".doc-nav, .doc-header">
+    <header class="doc-header sticky top-0 z-40 border-b bg-background/80 backdrop-blur">
+        <div class="mx-auto flex max-w-[1400px] items-center gap-4 px-6 py-3">
+            <a href="/" class="font-semibold tracking-tight" up-target="body">Unpoly.Blazor.Shadcn</a>
+            <Badge Variant="secondary">shadcn/ui for Blazor SSR</Badge>
+
+            <div class="ml-auto flex items-center gap-2">
+                @* The library's own Select, doing the demo's job — which is the point. *@
+                <Select data-theme-picker aria-label="Theme" Class="w-[150px]">
+                    <SelectItem Value="shadcn">shadcn</SelectItem>
+                    <SelectItem Value="md3">Material 3</SelectItem>
+                    <SelectItem Value="cupertino">Cupertino</SelectItem>
+                    <SelectItem Value="fluent">Fluent 2</SelectItem>
+                </Select>
+
+                <Button Variant="ghost" Size="icon" Type="button" data-dark-toggle
+                        aria-label="Toggle dark mode">
+                    <Icon Name="eye" />
+                </Button>
+
+                <Button Variant="outline" Size="sm"
+                        Href="https://github.com/chicuong2k3/Unpoly.Blazor.Shadcn"
+                        up-follow="false">GitHub</Button>
+            </div>
+        </div>
+    </header>
+</UpChrome>
+
+<div class="doc-shell">
+    <UpChrome>
+        <nav class="doc-nav" up-nav>
+            <h3>Getting started</h3>
+            <a href="/">Overview</a>
+            <a href="/theming">Theming</a>
+            <a href="/blocks">Blocks</a>
+
+            <h3>Components</h3>
+            <a href="/components/button">Button</a>
+            <a href="/components/badge">Badge</a>
+            <a href="/components/card">Card</a>
+            <a href="/components/form">Form controls</a>
+            <a href="/components/select">Select</a>
+            <a href="/components/table">Table</a>
+            <a href="/components/dialog">Dialog</a>
+            <a href="/components/dropdown-menu">Dropdown menu</a>
+            <a href="/components/tabs">Tabs</a>
+            <a href="/components/accordion">Accordion</a>
+            <a href="/components/navigation">Navigation</a>
+            <a href="/components/feedback">Feedback</a>
+            <a href="/components/avatar">Avatar</a>
+            <a href="/components/icon">Icon</a>
+        </nav>
+    </UpChrome>
+
+    <main class="doc-main">@Body</main>
+</div>

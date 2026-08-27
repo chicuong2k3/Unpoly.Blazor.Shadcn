@@ -1,4 +1,7 @@
 <Solution>
+  <Folder Name="/demo/">
+    <Project Path="demo/Unpoly.Blazor.Shadcn.Demo/Unpoly.Blazor.Shadcn.Demo.csproj" />
+  </Folder>
   <Folder Name="/src/">
     <Project Path="src/Unpoly.Blazor.Shadcn/Unpoly.Blazor.Shadcn.csproj" />
   </Folder>

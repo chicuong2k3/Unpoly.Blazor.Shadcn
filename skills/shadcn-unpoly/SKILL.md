@@ -9,8 +9,16 @@ description: Use when writing markup in a Blazor static SSR app that references 
 same `data-slot` on every root, the same ARIA. Write the shadcn markup you would write in React,
 then apply the translation rules below. Do not invent a Blazor-flavoured API; there isn't one.
 
-`API.md` next to this file is generated from the components and lists every parameter of all 86
-of them. Read it before guessing a parameter name.
+Two files next to this one, both worth opening before you write markup:
+
+- **`API.md`** — generated from the components, every parameter of all 102. Read it rather than
+  guessing a name.
+- **`BLOCKS.md`** — six ready-made sections (login, page header, stats, data table, settings,
+  empty state) and the trap in each. Building a login form or a list screen from primitives when
+  a block exists is slower and gets the Unpoly wiring wrong.
+
+There is a runnable demo at `demo/`: every component with its source, the blocks, and a theme
+switcher. `dotnet run --project demo/Unpoly.Blazor.Shadcn.Demo`.
 
 ## The translation rules
 
@@ -102,6 +110,17 @@ Two consequences worth knowing before you reach for a component:
   `TabsTrigger`, `DialogClose` and `DropdownMenuItem` already set it.
 
 ## Theming
+
+A theme is a `[data-theme="name"]` block of custom properties, or `:root` if the app ships one.
+`themes/` has three worked examples — Material 3, Cupertino and Fluent 2 — and `themes/README.md`
+states exactly which parts of each transfer and which cannot. The short version: colour, shape,
+elevation, motion and density are tokens and transfer; state layers, ripples and type scales live
+in component markup and do not.
+
+Six tokens exist beyond shadcn's so that another design language has somewhere to land:
+`--control-h`, `--control-text`, `--radius-control`, `--elevation-1..4`, `--ease-ui`,
+`--duration-ui`. All are additive theme keys — they change no class string, so they cost nothing
+in parity.
 
 A consuming app sets shadcn's own variables in `:root` — `--background`, `--foreground`,
 `--primary`, `--muted`, `--accent`, `--destructive`, `--border`, `--input`, `--ring`, `--radius`,

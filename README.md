@@ -17,8 +17,26 @@ src/Unpoly.Blazor.Shadcn/
 upstream/                  vendored shadcn/ui .tsx — what parity is measured against
 deviations.json            every difference from shadcn, with its reason
 tools/                     the generators; all six take --check and CI runs them
-skills/shadcn-unpoly/      SKILL.md + a generated API index, for coding agents
+skills/shadcn-unpoly/      SKILL.md, a generated API index and BLOCKS.md, for coding agents
+themes/                    Material 3, Cupertino and Fluent 2, and what each cannot reproduce
+demo/                      every component with its source, the blocks, a theme switcher
 ```
+
+## The demo
+
+```bash
+dotnet run --project demo/Unpoly.Blazor.Shadcn.Demo
+```
+
+Every example is **rendered and shown from the same file** — the source under each component is
+read from the `.razor` that produced it, not retyped beside it. Docs that carry a copy of their
+own code start lying the first time someone edits one half, and this library exists partly to
+make that class of drift impossible.
+
+`/blocks` has six whole sections meant to be copied: sign in, page header, stat cards, a data
+table with a toolbar, settings, and an empty state. Each carries the Unpoly wiring that makes it
+behave, which is the part that is easy to leave out and impossible to notice missing —
+`skills/shadcn-unpoly/BLOCKS.md` names the trap in each.
 
 ## Parity, and how it is checked
 

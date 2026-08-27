@@ -1,0 +1,45 @@
+@* The theme lives on <html> as data-theme, and dark mode as the .dark class shadcn expects.
+   Both are read from localStorage by an inline script that runs BEFORE the body paints — a
+   theme applied after first paint is a flash of the wrong one, and no amount of transition
+   hides it. *@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <UpChrome>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <base href="/" />
+
+        <link rel="stylesheet" href="_content/Unpoly.Blazor.Shadcn/airdatepicker/air-datepicker.css" />
+        <link rel="stylesheet" href="app.css" />
+        <link rel="stylesheet" href="_content/Unpoly.Blazor.Shadcn/toastify/toastify.css" />
+        <link rel="stylesheet" href="_content/Unpoly.Blazor.Shadcn/tomselect/tom-select.min.css" />
+
+        <script>
+            // Inline and synchronous on purpose. Anything deferred paints the default theme first.
+            (function () {
+                var t = localStorage.getItem('demo-theme');
+                if (t && t !== 'shadcn') document.documentElement.dataset.theme = t;
+                if (localStorage.getItem('demo-dark') === '1') document.documentElement.classList.add('dark');
+            })();
+        </script>
+
+        <script src="_content/Unpoly.Blazor.Shadcn/airdatepicker/air-datepicker.js" defer></script>
+        <script src="_content/Unpoly.Blazor.Shadcn/toastify/toastify.js" defer></script>
+        <script src="_content/Unpoly.Blazor.Shadcn/tomselect/tom-select.complete.min.js" defer></script>
+        <script src="_content/Unpoly.Blazor.Shadcn/ui.js" defer></script>
+        <script src="demo.js" defer></script>
+
+        <UnpolyHead />
+    </UpChrome>
+
+    @* Outside UpChrome, or <PageTitle> stops working on a fragment response. *@
+    <HeadOutlet />
+</head>
+
+<body>
+    <Routes />
+</body>
+
+</html>

@@ -1,0 +1,37 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <IsPackable>false</IsPackable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Unpoly.Blazor" Version="0.1.0" />
+    <ProjectReference Include="../../src/Unpoly.Blazor.Shadcn/Unpoly.Blazor.Shadcn.csproj" />
+  </ItemGroup>
+
+  <!-- Every example is rendered AND shown as source, from the same file. Copying the .razor
+       files to the output is what makes those two the same thing rather than two things that
+       drift: <Example> reads the file it just rendered. -->
+  <!-- A plain Copy rather than item metadata: .razor files are already Content items owned by
+       the Razor SDK, and re-declaring them to add CopyToOutputDirectory either duplicates the
+       item or takes them out of compilation. Copying after the build touches neither. -->
+  <Target Name="CopySamples" AfterTargets="Build">
+    <ItemGroup>
+      <SampleFile Include="Components/Examples/**/*.razor;Components/Blocks/**/*.razor" />
+    </ItemGroup>
+    <Copy SourceFiles="@(SampleFile)" DestinationFolder="$(OutDir)samples" SkipUnchangedFiles="true" />
+  </Target>
+
+  <Target Name="NpmInstall" BeforeTargets="Tailwind"
+          Condition="!Exists('node_modules') And '$(SkipTailwind)' != 'true'">
+    <Exec Command="npm install" />
+  </Target>
+
+  <Target Name="Tailwind" BeforeTargets="BeforeBuild" Condition="'$(SkipTailwind)' != 'true'">
+    <Exec Command="npm run css" />
+  </Target>
+
+</Project>

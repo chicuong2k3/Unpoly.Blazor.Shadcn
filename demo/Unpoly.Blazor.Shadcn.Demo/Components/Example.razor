@@ -1,0 +1,47 @@
+@* An example is the rendered component above the source that produced it.
+
+   The source is READ FROM THE FILE that was just rendered, not retyped into a string beside it.
+   Docs that carry a copy of their own code are docs that lie the first time someone edits one
+   half — and this library exists partly to make that class of drift impossible, so it would be
+   a poor showing to reintroduce it here.
+
+   The .razor files are copied to samples/ by the csproj. A missing one says so on the page
+   rather than rendering an empty box. *@
+
+<div class="doc-example">
+    <div class="doc-preview">@ChildContent</div>
+    <pre class="doc-source"><code>@SourceText</code></pre>
+</div>
+
+@code {
+    /// <summary>File name of the sample, e.g. "ButtonVariants.razor".</summary>
+    [Parameter, EditorRequired] public string Source { get; set; } = default!;
+
+    [Parameter] public RenderFragment? ChildContent { get; set; }
+
+    string SourceText = "";
+
+    protected override void OnParametersSet()
+    {
+        var path = Path.Combine(AppContext.BaseDirectory, "samples", Source);
+        SourceText = File.Exists(path)
+            ? Trim(File.ReadAllText(path))
+            : $"(sample not found: samples/{Source} — is it under Components/Examples?)";
+    }
+
+    /// <summary>
+    /// Drops the leading `@inherits`/`@using` lines and the trailing @@code block: a reader wants
+    /// the markup, and the plumbing above it is noise they would have to skip past every time.
+    /// </summary>
+    static string Trim(string text)
+    {
+        var lines = text.Replace("\r\n", "\n").Split('\n').ToList();
+        while (lines.Count > 0 && (lines[0].StartsWith('@') || lines[0].Length == 0))
+            lines.RemoveAt(0);
+
+        var code = lines.FindIndex(l => l.StartsWith("@code"));
+        if (code >= 0) lines = lines[..code];
+
+        return string.Join('\n', lines).Trim();
+    }
+}

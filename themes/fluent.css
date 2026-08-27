@@ -1,0 +1,99 @@
+/* Fluent 2 — Microsoft.
+   ==========================================================================================
+   Colour, radius, elevation and density transfer. What does not: the acrylic material (a
+   backdrop blur with a noise layer), the reveal highlight that follows the cursor across a
+   surface, and Fluent's bottom-border accent on focused inputs, which is markup rather than a
+   token. The last of those is small enough to add as a rule, and is, at the bottom.
+
+   Colours are Fluent 2's Web light theme ramps. */
+
+[data-theme="fluent"] {
+    --background: oklch(98% 0 0);                /* neutralBackground2 */
+    --foreground: oklch(24.5% 0 0);              /* neutralForeground1 */
+
+    --card: oklch(100% 0 0);                     /* neutralBackground1 */
+    --card-foreground: oklch(24.5% 0 0);
+    --popover: oklch(100% 0 0);
+    --popover-foreground: oklch(24.5% 0 0);
+
+    --primary: oklch(51% 0.156 258);             /* brandBackground, Communication Blue #0F6CBD */
+    --primary-foreground: oklch(100% 0 0);
+    --secondary: oklch(95% 0 0);                 /* neutralBackground3 */
+    --secondary-foreground: oklch(24.5% 0 0);
+
+    --muted: oklch(95% 0 0);
+    --muted-foreground: oklch(50% 0 0);          /* neutralForeground3 */
+    --accent: oklch(94% 0 0);                    /* neutralBackground1Hover */
+    --accent-foreground: oklch(24.5% 0 0);
+
+    --destructive: oklch(48% 0.176 25);          /* dangerBackground */
+    --destructive-foreground: oklch(100% 0 0);
+
+    --border: oklch(86% 0 0);                    /* neutralStroke1 */
+    --input: oklch(86% 0 0);
+    --ring: oklch(51% 0.156 258);
+
+    /* ---- shape ---------------------------------------------------------------------------
+       Fluent's corner radii are small and nearly uniform: 4px on controls, 8px on surfaces.
+       It is the least rounded of the three, and that alone changes the character a great deal. */
+    --radius: 0.5rem;                            /* borderRadiusLarge */
+    --radius-control: 0.25rem;                   /* borderRadiusMedium */
+
+    /* ---- elevation -------------------------------------------------------------------------
+       Fluent's shadow2/4/8/16, each an ambient plus a key shadow, both very soft. */
+    --elevation-1: 0 1px 2px rgb(0 0 0 / 0.14), 0 0 2px rgb(0 0 0 / 0.12);
+    --elevation-2: 0 2px 4px rgb(0 0 0 / 0.14), 0 0 2px rgb(0 0 0 / 0.12);
+    --elevation-3: 0 4px 8px rgb(0 0 0 / 0.14), 0 0 2px rgb(0 0 0 / 0.12);
+    --elevation-4: 0 8px 16px rgb(0 0 0 / 0.14), 0 0 2px rgb(0 0 0 / 0.12);
+
+    /* curveEasyEase and durationNormal. */
+    --ease-ui: cubic-bezier(0.33, 0, 0.67, 1);
+    --duration-ui: 200ms;
+
+    /* A Fluent medium control is 32px with a 14px label — the densest of the three. */
+    --control-h: 2rem;
+    --control-text: 0.875rem;
+}
+
+[data-theme="fluent"].dark,
+[data-theme="fluent"] .dark {
+    --background: oklch(19.5% 0 0);
+    --foreground: oklch(96% 0 0);
+    --card: oklch(23% 0 0);
+    --card-foreground: oklch(96% 0 0);
+    --popover: oklch(26% 0 0);
+    --popover-foreground: oklch(96% 0 0);
+    --primary: oklch(70% 0.13 254);
+    --primary-foreground: oklch(19.5% 0 0);
+    --secondary: oklch(28% 0 0);
+    --secondary-foreground: oklch(96% 0 0);
+    --muted: oklch(28% 0 0);
+    --muted-foreground: oklch(70% 0 0);
+    --accent: oklch(31% 0 0);
+    --accent-foreground: oklch(96% 0 0);
+    --destructive: oklch(70% 0.15 25);
+    --destructive-foreground: oklch(19.5% 0 0);
+    --border: oklch(35% 0 0);
+    --input: oklch(35% 0 0);
+    --ring: oklch(70% 0.13 254);
+}
+
+@layer components {
+    /* Fluent's most recognisable control detail: a focused input grows a 2px accent bar along
+       its bottom edge, drawn from the centre outwards. shadcn draws a ring on all four sides;
+       this replaces it, which is the one place a token could not have. */
+    [data-theme="fluent"] [data-slot="input"],
+    [data-theme="fluent"] [data-slot="textarea"],
+    [data-theme="fluent"] [data-slot="select"] {
+        position: relative;
+        border-bottom-color: var(--muted-foreground);
+    }
+    [data-theme="fluent"] [data-slot="input"]:focus-visible,
+    [data-theme="fluent"] [data-slot="textarea"]:focus-visible,
+    [data-theme="fluent"] [data-slot="select"]:focus-visible {
+        box-shadow: inset 0 -2px 0 0 var(--primary);
+        --tw-ring-shadow: 0 0 #0000;
+        border-color: var(--input);
+        border-bottom-color: var(--primary);
+    }
+}

@@ -1,0 +1,9 @@
+{
+  "profiles": {
+    "demo": {
+      "commandName": "Project",
+      "applicationUrl": "http://localhost:5177",
+      "environmentVariables": { "ASPNETCORE_ENVIRONMENT": "Development" }
+    }
+  }
+}

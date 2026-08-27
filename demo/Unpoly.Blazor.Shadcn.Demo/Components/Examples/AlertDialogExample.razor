@@ -1,0 +1,17 @@
+@* Same frame as <Dialog> with one difference that is the whole component:
+   no [data-dismissable], so a stray click on the backdrop does nothing. Escape still closes it —
+   a modal a keyboard user cannot leave is a trap. *@
+<AlertDialogTrigger Target="demo-alert" Variant="destructive">Delete account</AlertDialogTrigger>
+
+<AlertDialog Id="demo-alert">
+    <AlertDialogHeader>
+        <AlertDialogTitle>Delete this account?</AlertDialogTitle>
+        <AlertDialogDescription>
+            This removes the account and every order attached to it. It cannot be undone.
+        </AlertDialogDescription>
+    </AlertDialogHeader>
+    <AlertDialogFooter>
+        <AlertDialogCancel>Cancel</AlertDialogCancel>
+        <AlertDialogAction Variant="destructive">Delete</AlertDialogAction>
+    </AlertDialogFooter>
+</AlertDialog>

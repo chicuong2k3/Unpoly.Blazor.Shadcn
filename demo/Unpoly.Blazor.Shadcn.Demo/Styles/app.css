@@ -1,0 +1,50 @@
+@import "tailwindcss";
+@import "../../../src/Unpoly.Blazor.Shadcn/Styles/ui.css";
+
+/* A theme is a [data-theme] block, which is what lets all three load at once and be switched by
+   an attribute rather than by a rebuild. That works because every token is a runtime custom
+   property — nothing a theme sets is resolved by Tailwind at build time. An app that wants only
+   one theme puts data-theme on <html> and ships one file.
+   Read themes/README.md for what each can and cannot reproduce. */
+@import "../../../themes/md3.css";
+@import "../../../themes/cupertino.css";
+@import "../../../themes/fluent.css";
+
+/* The CLI does not pick up .razor on its own — without these every utility written in markup is
+   silently dropped. ui.js is here because it builds the Select panel, the dropdown and the
+   confirm dialog out of class strings that exist nowhere else. */
+@source "../Components/**/*.razor";
+@source "../../../src/Unpoly.Blazor.Shadcn/Components/**/*.razor";
+@source "../../../src/Unpoly.Blazor.Shadcn/ButtonVariants.cs";
+@source "../../../src/Unpoly.Blazor.Shadcn/wwwroot/ui.js";
+
+@layer base {
+    body { @apply bg-background text-foreground antialiased; }
+}
+
+@layer components {
+    /* The demo's own chrome — deliberately plain, so nothing here is mistaken for the library. */
+    .doc-shell { @apply mx-auto flex min-h-dvh max-w-[1400px] gap-8 px-6; }
+    .doc-nav { @apply sticky top-0 hidden h-dvh w-56 shrink-0 overflow-y-auto py-8 lg:block; }
+    .doc-nav a {
+        @apply block rounded-md px-3 py-1.5 text-sm text-muted-foreground transition-colors
+               hover:bg-accent hover:text-accent-foreground;
+    }
+    .doc-nav a.up-current { @apply bg-accent font-medium text-accent-foreground; }
+    .doc-nav h3 { @apply mt-6 mb-1 px-3 text-xs font-semibold tracking-wide uppercase opacity-60; }
+    .doc-main { @apply min-w-0 flex-1 py-8; }
+
+    .doc-h1 { @apply text-3xl font-semibold tracking-tight; }
+    .doc-lede { @apply mt-2 max-w-2xl text-muted-foreground; }
+    .doc-h2 { @apply mt-12 scroll-mt-8 text-lg font-semibold tracking-tight; }
+    .doc-note { @apply mt-2 max-w-2xl text-sm text-muted-foreground; }
+
+    /* An example is the rendered thing on top of the source that produced it — the same file,
+       so the two cannot disagree. */
+    .doc-example { @apply mt-4 overflow-hidden rounded-lg border; }
+    .doc-preview { @apply flex flex-wrap items-start gap-4 bg-card p-8; }
+    .doc-source {
+        @apply overflow-x-auto border-t bg-muted/40 p-4 text-[12.5px] leading-relaxed;
+        font-family: ui-monospace, "Cascadia Mono", Consolas, monospace;
+    }
+}
