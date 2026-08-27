@@ -5,6 +5,14 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <IsPackable>false</IsPackable>
+
+    <!-- RZ10012 is "that element is not a component I know about", and it is the only thing that
+         notices an example referring to a component this library does not actually have: Razor
+         emits the unknown tag as literal markup, the page renders, the demo looks fine, and the
+         component was never there. It shipped that way once. RZ2012 is a required parameter left
+         unset, which for DropdownMenuContent means a popover with no id and a trigger pointing at
+         nothing. Both are errors here because both are silent in the browser. -->
+    <WarningsAsErrors>$(WarningsAsErrors);RZ10012;RZ2012</WarningsAsErrors>
   </PropertyGroup>
 
   <ItemGroup>

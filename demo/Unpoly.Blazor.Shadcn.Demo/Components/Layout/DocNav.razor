@@ -1,0 +1,71 @@
+@* The sidebar, built out of the library: ItemGroup, Item and ScrollArea, not a list of bare
+   anchors with hand-written classes.
+
+   [up-nav] is what marks the current page — Unpoly compares each href with the address bar and
+   adds .up-current. No active-route parameter, no state, and it keeps working after a fragment
+   swap because the swap is what updates the address bar. *@
+
+<ScrollArea Class="h-[calc(100dvh-4rem)] w-56 shrink-0 py-6 pr-2" up-nav>
+    @foreach (var (heading, links) in Sections)
+    {
+        <ItemGroup Class="mb-4">
+            <ItemHeader Class="px-3 py-1">
+                <ItemTitle Class="text-xs font-semibold tracking-wide uppercase opacity-60">
+                    @heading
+                </ItemTitle>
+            </ItemHeader>
+
+            @foreach (var (label, href) in links)
+            {
+                <Item Href="@href" Size="sm" Class="doc-nav-item rounded-md px-3 py-1.5">
+                    <ItemContent>
+                        <ItemTitle Class="text-sm font-normal">@label</ItemTitle>
+                    </ItemContent>
+                </Item>
+            }
+        </ItemGroup>
+    }
+</ScrollArea>
+
+@code {
+    static readonly (string Heading, (string Label, string Href)[] Links)[] Sections =
+    [
+        ("Getting started",
+        [
+            ("Overview", "/"),
+            ("Theming", "/theming"),
+            ("Blocks", "/blocks"),
+        ]),
+        ("Forms",
+        [
+            ("Button", "/components/button"),
+            ("Form controls", "/components/form"),
+            ("Select", "/components/select"),
+            ("Toggles", "/components/toggles"),
+        ]),
+        ("Overlays",
+        [
+            ("Dialog", "/components/dialog"),
+            ("Overlays", "/components/overlays"),
+            ("Dropdown menu", "/components/dropdown-menu"),
+            ("Command", "/components/command"),
+        ]),
+        ("Display",
+        [
+            ("Card", "/components/card"),
+            ("Badge", "/components/badge"),
+            ("Table", "/components/table"),
+            ("Avatar", "/components/avatar"),
+            ("Icon", "/components/icon"),
+            ("Feedback", "/components/feedback"),
+        ]),
+        ("Structure",
+        [
+            ("Layout", "/components/layout"),
+            ("Tabs", "/components/tabs"),
+            ("Accordion", "/components/accordion"),
+            ("Disclosure", "/components/disclosure"),
+            ("Navigation", "/components/navigation"),
+        ]),
+    ];
+}

@@ -1,17 +1,32 @@
-@* An example is the rendered component above the source that produced it.
+@* An example is the rendered component and the source that produced it, on two tabs.
 
-   The source is READ FROM THE FILE that was just rendered, not retyped into a string beside it.
-   Docs that carry a copy of their own code are docs that lie the first time someone edits one
-   half — and this library exists partly to make that class of drift impossible, so it would be
-   a poor showing to reintroduce it here.
+   The source is READ FROM THE FILE that was just rendered, not retyped beside it. Docs that carry
+   a copy of their own code start lying the first time someone edits one half, and this library
+   exists partly to make that impossible — it would be a poor showing to reintroduce it here.
 
-   The .razor files are copied to samples/ by the csproj. A missing one says so on the page
-   rather than rendering an empty box. *@
+   Every part of this is a component from the library: Tabs, Card and CodeBlock. That is not
+   decoration. A component library whose own documentation is built out of hand-rolled markup has
+   not shown that the components are enough to build anything — it has shown the opposite. *@
 
-<div class="doc-example">
-    <div class="doc-preview">@ChildContent</div>
-    <pre class="doc-source"><code>@SourceText</code></pre>
-</div>
+<Tabs Value="preview" Class="mt-4">
+    <div class="flex items-center justify-between gap-4">
+        <TabsList>
+            <TabsTrigger Value="preview">Preview</TabsTrigger>
+            <TabsTrigger Value="code">Code</TabsTrigger>
+        </TabsList>
+        <span class="font-mono text-xs text-muted-foreground">@Source</span>
+    </div>
+
+    <TabsContent Value="preview">
+        <Card Class="border border-dashed">
+            <CardContent Class="flex flex-wrap items-start gap-4 px-6">@ChildContent</CardContent>
+        </Card>
+    </TabsContent>
+
+    <TabsContent Value="code" Hidden>
+        <CodeBlock Code="@SourceText" Language="razor" Title="@Source" />
+    </TabsContent>
+</Tabs>
 
 @code {
     /// <summary>File name of the sample, e.g. "ButtonVariants.razor".</summary>
@@ -31,7 +46,7 @@
 
     /// <summary>
     /// Drops the leading `@inherits`/`@using` lines and the trailing @@code block: a reader wants
-    /// the markup, and the plumbing above it is noise they would have to skip past every time.
+    /// the markup, and the plumbing above it is noise they would skip past every time.
     /// </summary>
     static string Trim(string text)
     {

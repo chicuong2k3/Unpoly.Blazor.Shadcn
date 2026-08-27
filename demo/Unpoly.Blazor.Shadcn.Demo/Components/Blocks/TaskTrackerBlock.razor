@@ -1,0 +1,74 @@
+@* A task list where ticking a box is a POST.
+
+   [up-autosubmit] on the form means the checkbox submits itself, and up-target=":origin" swaps
+   only the row that changed — so a list of two hundred tasks costs one row, not two hundred, and
+   nothing below you jumps while you are ticking.
+
+   The done state is drawn from the checkbox with :has(), so there is no second source of truth to
+   drift: if the box is checked, the row is struck through, and if the server disagrees the swap
+   corrects both at once. *@
+
+<Card Class="w-full max-w-2xl">
+    <CardHeader>
+        <CardTitle>Today</CardTitle>
+        <CardDescription>3 of 5 done</CardDescription>
+        <CardAction>
+            <form method="get" up-autosubmit up-target="[data-tasks]">
+                <Select name="filter" Class="w-[130px]" aria-label="Filter">
+                    <SelectItem Value="all" Selected>All</SelectItem>
+                    <SelectItem Value="open">Open</SelectItem>
+                    <SelectItem Value="done">Done</SelectItem>
+                </Select>
+            </form>
+        </CardAction>
+    </CardHeader>
+
+    <CardContent Class="p-0" data-tasks>
+        <ItemGroup>
+            @foreach (var t in Tasks)
+            {
+                <form method="post" action="@($"/tasks/{t.Id}/toggle")" up-autosubmit up-target=":origin">
+                    <AntiforgeryToken />
+                    <Item Class="border-b px-4 py-3 has-[:checked]:opacity-60">
+                        <ItemMedia>
+                            <Checkbox name="done" value="true" Checked="@t.Done"
+                                      aria-label="@($"Mark {t.Title} as done")" />
+                        </ItemMedia>
+                        <ItemContent>
+                            <ItemTitle Class="has-[:checked]:line-through">@t.Title</ItemTitle>
+                            <ItemDescription>@t.Project</ItemDescription>
+                        </ItemContent>
+                        <ItemActions>
+                            @if (t.Due is not null)
+                            {
+                                <Badge Variant="@(t.Overdue ? "destructive" : "outline")" Class="num">@t.Due</Badge>
+                            }
+                            <Avatar Class="size-6"><AvatarFallback Class="text-[10px]">@t.Who</AvatarFallback></Avatar>
+                        </ItemActions>
+                    </Item>
+                </form>
+            }
+        </ItemGroup>
+    </CardContent>
+
+    <CardFooter Class="pt-4">
+        @* A GET link, not a modal-only path — /tasks/new is a real page, so it works when the
+           overlay does not. *@
+        <Button Variant="outline" Class="w-full" Href="/tasks/new" up-layer="new modal">
+            <Icon Name="plus" />Add a task
+        </Button>
+    </CardFooter>
+</Card>
+
+@code {
+    record Task(int Id, string Title, string Project, string? Due, bool Overdue, bool Done, string Who);
+
+    static readonly Task[] Tasks =
+    [
+        new(1, "Reply to the Acme thread", "Sales", "Today", false, false, "MR"),
+        new(2, "Review the migration PR", "Platform", "Yesterday", true, false, "JW"),
+        new(3, "Book the venue", "Ops", null, false, true, "AL"),
+        new(4, "Update the changelog", "Platform", null, false, true, "MR"),
+        new(5, "Send the invoice", "Finance", "Fri", false, true, "AL"),
+    ];
+}

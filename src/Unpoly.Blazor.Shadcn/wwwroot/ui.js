@@ -388,6 +388,169 @@
   })
 
   // =============================================================================================
+  // CodeBlock — copy
+  // =============================================================================================
+  // The button ships hidden and this reveals it. A copy button that silently does nothing because
+  // the page is not on a secure origin is worse than no button at all, so it stays absent unless
+  // the clipboard is actually there.
+
+  up.compiler('[data-slot="code-block-copy"]', (button) => {
+    if (!navigator.clipboard?.writeText) return
+    button.hidden = false
+
+    const code = button.closest('[data-slot="code-block"]')?.querySelector('[data-slot="code-block-code"]')
+    if (!code) return
+
+    let revert
+    const onClick = async () => {
+      try {
+        await navigator.clipboard.writeText(code.textContent ?? '')
+      } catch {
+        // Denied, or no permission. Say nothing rather than claiming success.
+        return
+      }
+      // Confirmed on the button itself: a toast for something this small is a toast people
+      // learn to ignore.
+      button.dataset.copied = ''
+      clearTimeout(revert)
+      revert = setTimeout(() => delete button.dataset.copied, 1500)
+    }
+
+    button.addEventListener('click', onClick)
+    return () => {
+      clearTimeout(revert)
+      button.removeEventListener('click', onClick)
+    }
+  })
+
+  // =============================================================================================
+  // Command
+  // =============================================================================================
+  // Upstream is cmdk, which keeps the filtered list in React state. Here every item is already in
+  // the DOM — as a link, usually — and this hides the ones that do not match. For a list the
+  // server can render that is the same thing, and the palette still works with scripting off.
+  //
+  // Matching is on the visible text plus [data-keywords], so "billing" can find "Invoices".
+  // Accents are stripped on both sides: someone typing "don" should find "Đơn hàng".
+
+  const fold = (s) => s.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase()
+
+  up.compiler('[data-slot="command"], [data-slot="command-dialog"]', (root) => {
+    const input = root.querySelector('[data-slot="command-input"]')
+    const list = root.querySelector('[data-slot="command-list"]')
+    if (!input || !list) return
+
+    const items = () => [...list.querySelectorAll('[data-slot="command-item"]:not([hidden])')]
+    const empty = root.querySelector('[data-slot="command-empty"]')
+
+    // Every item needs an id for aria-activedescendant to point at one.
+    let seq = 0
+    for (const item of list.querySelectorAll('[data-slot="command-item"]')) {
+      if (!item.id) item.id = `cmd-${++seq}-${Math.abs(fold(item.textContent).length)}`
+    }
+    input.setAttribute('role', 'combobox')
+    input.setAttribute('aria-expanded', 'true')
+    input.setAttribute('aria-controls', list.id || (list.id = 'cmd-list-' + seq))
+
+    const highlight = (item) => {
+      for (const other of list.querySelectorAll('[data-slot="command-item"]')) {
+        delete other.dataset.selected
+      }
+      if (!item) { input.removeAttribute('aria-activedescendant'); return }
+      item.dataset.selected = 'true'
+      input.setAttribute('aria-activedescendant', item.id)
+      item.scrollIntoView({ block: 'nearest' })
+    }
+
+    const filter = () => {
+      const q = fold(input.value.trim())
+      let shown = 0
+
+      for (const item of list.querySelectorAll('[data-slot="command-item"]')) {
+        const hay = fold(item.textContent + ' ' + (item.dataset.keywords || ''))
+        const match = !q || hay.includes(q)
+        item.hidden = !match
+        if (match) shown++
+      }
+
+      // A heading over nothing is worse than no heading.
+      for (const group of list.querySelectorAll('[data-slot="command-group"]')) {
+        group.hidden = !group.querySelector('[data-slot="command-item"]:not([hidden])')
+      }
+      if (empty) empty.hidden = shown > 0
+
+      highlight(items()[0])
+    }
+
+    const onKey = (event) => {
+      const shown = items()
+      if (shown.length === 0) return
+      const at = shown.findIndex((i) => i.dataset.selected === 'true')
+
+      if (event.key === 'ArrowDown') {
+        event.preventDefault()
+        highlight(shown[(at + 1) % shown.length])
+      } else if (event.key === 'ArrowUp') {
+        event.preventDefault()
+        highlight(shown[(at - 1 + shown.length) % shown.length])
+      } else if (event.key === 'Home') {
+        event.preventDefault(); highlight(shown[0])
+      } else if (event.key === 'End') {
+        event.preventDefault(); highlight(shown[shown.length - 1])
+      } else if (event.key === 'Enter' && at >= 0) {
+        // Let the item BE the click, so a link navigates and Unpoly follows it as usual.
+        event.preventDefault()
+        shown[at].click()
+      }
+    }
+
+    input.addEventListener('input', filter)
+    input.addEventListener('keydown', onKey)
+    list.addEventListener('pointermove', (e) => {
+      const item = e.target.closest('[data-slot="command-item"]')
+      if (item && !item.hidden) highlight(item)
+    })
+    filter()
+
+    return () => {
+      input.removeEventListener('input', filter)
+      input.removeEventListener('keydown', onKey)
+    }
+  })
+
+  // The shortcut that opens a palette. `mod` is ⌘ on a Mac and Ctrl everywhere else, which is the
+  // distinction every implementation gets wrong in one direction or the other.
+  up.compiler('[data-command-key]', (dialog) => {
+    const combo = (dialog.dataset.commandKey || 'mod+k').toLowerCase().split('+')
+    const key = combo[combo.length - 1]
+    const wantsMod = combo.includes('mod') || combo.includes('ctrl') || combo.includes('cmd')
+    const wantsShift = combo.includes('shift')
+
+    const onKey = (event) => {
+      const mod = event.metaKey || event.ctrlKey
+      if (event.key.toLowerCase() !== key) return
+      if (wantsMod !== mod || wantsShift !== event.shiftKey) return
+      event.preventDefault()
+      if (dialog.open) dialog.close()
+      else dialog.showModal()
+    }
+
+    // Focus the field, not the dialog: a palette that needs a second click to type into is a
+    // palette nobody uses twice. Clear it too — the last search is not this one.
+    const onOpen = () => {
+      const input = dialog.querySelector('[data-slot="command-input"]')
+      if (!input) return
+      input.value = ''
+      input.dispatchEvent(new Event('input', { bubbles: true }))
+      input.focus()
+    }
+
+    document.addEventListener('keydown', onKey)
+    dialog.addEventListener('toggle', (e) => { if (e.newState === 'open') onOpen() })
+    return () => document.removeEventListener('keydown', onKey)
+  })
+
+  // =============================================================================================
   // InputOTP
   // =============================================================================================
   // Six real inputs rather than one hidden input with painted boxes. What that costs is this

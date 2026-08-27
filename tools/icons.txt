@@ -1,5 +1,3 @@
-# The Lucide icons this library ships. One per line, kebab-case, as on lucide.dev.
-# Add with: python tools/gen_icons.py --add <name>
 arrow-down
 arrow-left
 arrow-right
@@ -18,22 +16,33 @@ circle-alert
 circle-check
 circle-x
 copy
+download
 ellipsis
 ellipsis-vertical
 external-link
 eye
 eye-off
+file
+folder
 grip-vertical
+heart
 info
+layout-grid
 loader-circle
 menu
+message-circle
 minus
 panel-left
+paperclip
 pencil
 plus
+repeat
 search
+send
 settings
+share
 trash-2
+trending-up
 triangle-alert
 upload
 x

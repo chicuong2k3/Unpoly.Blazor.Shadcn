@@ -1,0 +1,62 @@
+@inherits UiComponentBase
+
+@* Not a shadcn component — shadcn's docs draw their code blocks with a bespoke MDX pipeline and
+   ship nothing you can use. This is the piece its own documentation needs and does not export,
+   and this library's documentation is built out of this library, so it has to exist here.
+
+   Three decisions worth stating:
+
+   The content is `Code`, a string, not ChildContent. Razor would try to parse markup inside a
+   <pre> as components — a snippet containing `<Button>` would render a button rather than show
+   one, which is the opposite of the point.
+
+   No syntax highlighting. Highlighting needs either a parser per language on the client or a
+   build step, and both mean a copy of the snippet in a second form; the whole point of the
+   generated docs is that there is one copy. Colour comes back the day someone wants it enough to
+   pay for it in bytes, and it is a compiler over this element, not a change here.
+
+   The copy button is markup, not a parameter that toggles JavaScript on: the compiler in ui.js
+   binds to [data-slot="code-block-copy"] and does nothing if the clipboard is unavailable, which
+   is the honest failure — a button that silently does nothing is worse than one that is absent,
+   so it hides itself instead. *@
+
+<div data-slot="code-block" class="@Classes" @attributes="AdditionalAttributes">
+    @if (Title is not null || ShowCopy)
+    {
+        <div data-slot="code-block-header"
+             class="flex items-center justify-between gap-2 border-b px-4 py-2">
+            <span class="text-xs font-medium text-muted-foreground">@Title</span>
+            @if (ShowCopy)
+            {
+                <button type="button" data-slot="code-block-copy" hidden
+                        class="@ButtonVariants.Of("ghost", "sm")" aria-label="@CopyLabel">
+                    <Icon Name="copy" />
+                    <span class="sr-only">@CopyLabel</span>
+                </button>
+            }
+        </div>
+    }
+
+    <pre data-slot="code-block-pre" class="overflow-x-auto p-4 text-[12.5px] leading-relaxed"
+         tabindex="0"><code data-slot="code-block-code" data-language="@Language">@Code</code></pre>
+</div>
+
+@code {
+    /// <summary>The snippet. A string, not markup — see the note above.</summary>
+    [Parameter, EditorRequired] public string Code { get; set; } = "";
+
+    /// <summary>Shown in the header, usually a file name.</summary>
+    [Parameter] public string? Title { get; set; }
+
+    /// <summary>Recorded on the &lt;code&gt; as data-language, for a highlighter to find later.</summary>
+    [Parameter] public string? Language { get; set; }
+
+    [Parameter] public bool ShowCopy { get; set; } = true;
+
+    [Parameter] public string CopyLabel { get; set; } = "Copy";
+
+    const string Base =
+        "bg-card text-card-foreground overflow-hidden rounded-lg border font-mono";
+
+    string Classes => Cn(Base, Class);
+}

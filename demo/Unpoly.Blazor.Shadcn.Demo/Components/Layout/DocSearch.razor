@@ -1,0 +1,73 @@
+@* Search, as a command palette. ⌘K on a Mac and Ctrl+K everywhere else — ui.js knows the
+   difference, which is the part most implementations get wrong in one direction or the other.
+
+   Every entry is a real link to a real page, so the palette is a list of links with scripting off
+   and a filter with it. The filtering is in the browser because this list is forty items the
+   server already rendered; a catalogue of ten thousand would put `up-autosubmit` on the input and
+   let the server answer instead, swapping <CommandList>. Both shapes are the same markup. *@
+
+<Button Variant="outline" Size="sm" Type="button" data-command-open="doc-search"
+        Class="w-56 justify-between text-muted-foreground">
+    <span class="flex items-center gap-2"><Icon Name="search" />Search…</span>
+    <KbdGroup><Kbd>⌘</Kbd><Kbd>K</Kbd></KbdGroup>
+</Button>
+
+<CommandDialog Id="doc-search" Key="mod+k" Title="Search the documentation"
+               Description="Jump to a component, a block or a page.">
+    <CommandInput Placeholder="Search components, blocks, pages…" />
+    <CommandList>
+        <CommandEmpty Class="py-8 text-center text-sm text-muted-foreground">
+            Nothing matches that.
+        </CommandEmpty>
+
+        @foreach (var (heading, entries) in Groups)
+        {
+            <CommandGroup Heading="@heading">
+                @foreach (var (label, href, keywords, icon) in entries)
+                {
+                    <CommandItem Href="@href" Keywords="@keywords" up-target="body">
+                        <Icon Name="@icon" />
+                        <span>@label</span>
+                    </CommandItem>
+                }
+            </CommandGroup>
+        }
+    </CommandList>
+</CommandDialog>
+
+@code {
+    // Keywords are what someone types when they do not know what the thing is called: "modal"
+    // for Dialog, "dropdown" for Select. Matching only the visible label is why most site
+    // searches feel broken.
+    static readonly (string Heading, (string Label, string Href, string Keywords, string Icon)[] Entries)[] Groups =
+    [
+        ("Pages",
+        [
+            ("Overview", "/", "home start install setup", "info"),
+            ("Theming", "/theming", "theme colours tokens dark mode customizer", "settings"),
+            ("Blocks", "/blocks", "templates patterns login dashboard checkout", "copy"),
+        ]),
+        ("Components",
+        [
+            ("Button", "/components/button", "cta action submit variant", "circle"),
+            ("Form controls", "/components/form", "input textarea checkbox switch radio field label validation", "pencil"),
+            ("Select", "/components/select", "dropdown option native picker", "chevron-down"),
+            ("Toggles", "/components/toggles", "toggle group pressed segmented", "circle-check"),
+            ("Dialog", "/components/dialog", "modal alert confirm popup", "circle-alert"),
+            ("Overlays", "/components/overlays", "sheet drawer popover hover card side panel", "panel-left"),
+            ("Dropdown menu", "/components/dropdown-menu", "menu context actions kebab submenu", "ellipsis"),
+            ("Command", "/components/command", "palette search cmdk quick open", "search"),
+            ("Card", "/components/card", "panel surface container", "circle"),
+            ("Badge", "/components/badge", "chip tag pill status label", "circle"),
+            ("Table", "/components/table", "grid rows data list", "menu"),
+            ("Avatar", "/components/avatar", "profile picture user initials group", "eye"),
+            ("Icon", "/components/icon", "lucide svg glyph", "check"),
+            ("Feedback", "/components/feedback", "alert progress skeleton tooltip toast sonner separator", "info"),
+            ("Layout", "/components/layout", "aspect ratio scroll area empty state kbd spinner item button group", "panel-left"),
+            ("Tabs", "/components/tabs", "tab panel switcher", "menu"),
+            ("Accordion", "/components/accordion", "collapse expand faq details", "chevron-down"),
+            ("Disclosure", "/components/disclosure", "collapsible submenu", "chevron-right"),
+            ("Navigation", "/components/navigation", "breadcrumb pagination pager", "chevron-right"),
+        ]),
+    ];
+}

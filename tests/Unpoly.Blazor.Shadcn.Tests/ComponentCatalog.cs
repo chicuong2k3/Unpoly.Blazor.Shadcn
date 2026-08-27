@@ -21,9 +21,11 @@ public static class ComponentCatalog
     static readonly Dictionary<string, Dictionary<string, object>> Seed = new()
     {
         ["Icon"] = new() { ["Name"] = "check" },
+        ["CodeBlock"] = new() { ["Code"] = "&lt;Button&gt;Save&lt;/Button&gt;" },
         ["Dialog"] = new() { ["Id"] = "d" },
         ["AlertDialog"] = new() { ["Id"] = "a" },
         ["Sheet"] = new() { ["Id"] = "sh" },
+        ["CommandDialog"] = new() { ["Id"] = "cmd" },
         ["SheetTrigger"] = new() { ["Target"] = "sh" },
         ["PopoverContent"] = new() { ["Id"] = "pop" },
         ["PopoverTrigger"] = new() { ["Target"] = "pop" },

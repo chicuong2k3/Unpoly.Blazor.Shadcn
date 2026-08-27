@@ -231,6 +231,31 @@
     }
     [data-slot="switch"]:checked::after { translate: calc(2rem - 1rem - 4px) 0; }
 
+    /* ---- CodeBlock -------------------------------------------------------------------
+       The confirmation lives on the button: a toast for something this small is a toast people
+       learn to ignore. The tick replaces the icon rather than sitting beside it, so the button
+       does not change width and the row does not jump. */
+    [data-slot="code-block-copy"][data-copied] svg { display: none; }
+    [data-slot="code-block-copy"][data-copied]::before {
+        content: "";
+        block-size: 1rem;
+        inline-size: 1rem;
+        background: currentColor;
+        -webkit-mask: var(--sh-check) center / contain no-repeat;
+        mask: var(--sh-check) center / contain no-repeat;
+    }
+    [data-slot="code-block-pre"] {
+        scrollbar-width: thin;
+        scrollbar-color: var(--border) transparent;
+    }
+
+    /* ---- Command ---------------------------------------------------------------------
+       Nothing to draw here: the compiler sets data-selected="true" on the highlighted row, which
+       is the attribute cmdk sets and which upstream's own class string already styles. The
+       highlight follows the keyboard as well as the pointer, which is why it is an attribute and
+       not :hover — otherwise arrowing down leaves the mouse's row lit and two rows look chosen. */
+    [data-slot="command-input"]::-webkit-search-cancel-button { margin-inline-start: 0.25rem; }
+
     /* ---- Select ----------------------------------------------------------------------
        The bare <select>, before ui.js reaches it and after it if scripting is off. The OS draws
        its own arrow in its own colour, so that is suppressed and one is drawn to match. */

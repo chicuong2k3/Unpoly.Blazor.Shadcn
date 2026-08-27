@@ -81,3 +81,74 @@
 <h2 class="doc-h2">Checkout</h2>
 <p class="doc-note">The summary sits beside the form on a desktop and above it on a phone — never below, because the total is what someone checks before they commit.</p>
 <Example Source="CheckoutBlock.razor"><CheckoutBlock /></Example>
+
+<h2 class="doc-h2">Analytics</h2>
+<p class="doc-note">
+    A chart drawn as a <code>&lt;table&gt;</code>: the numbers are in the DOM as numbers, so it is
+    readable by a screen reader, selectable and correct with CSS off. Reach for a charting library
+    when you need axes, tooltips or an irregular time axis — not to draw eleven rectangles.
+</p>
+<Example Source="AnalyticsBlock.razor"><AnalyticsBlock /></Example>
+
+<h2 class="doc-h2">Calendar</h2>
+<p class="doc-note">
+    Also a table, for the same reason. Month navigation is two links to real URLs, so a month is
+    bookmarkable and Back moves through months. For picking a single date use
+    <code>DatePicker</code> instead — this one is for showing what is on.
+</p>
+<Example Source="CalendarBlock.razor"><CalendarBlock /></Example>
+
+<h2 class="doc-h2">Chat</h2>
+<p class="doc-note">
+    The composer targets <code>.chat-thread:after</code> — append, not replace — so sending adds
+    one bubble instead of re-rendering the conversation and losing your scroll. The thread polls
+    with an <code>[up-etag]</code>, so a poll that finds nothing costs an empty 304.
+</p>
+<Example Source="ChatBlock.razor"><ChatBlock /></Example>
+
+<h2 class="doc-h2">File manager</h2>
+<p class="doc-note">
+    Selection is real checkboxes sharing one name, and the bulk bar appears through
+    <code>:has(:checked)</code> — CSS reading the boxes rather than a second copy of the selection
+    that can drift from them.
+</p>
+<Example Source="FileManagerBlock.razor"><FileManagerBlock /></Example>
+
+<h2 class="doc-h2">Board</h2>
+<p class="doc-note">
+    No drag-and-drop, deliberately. Dragging has no keyboard equivalent unless you build one, and
+    the accessible fallback everyone eventually bolts on is exactly this: a control on the card
+    saying which column it belongs in. So the fallback is the interface.
+</p>
+<Example Source="KanbanBlock.razor"><KanbanBlock /></Example>
+
+<h2 class="doc-h2">Task tracker</h2>
+<p class="doc-note">
+    Ticking a box is a POST targeting <code>:origin</code>, so a list of two hundred tasks costs
+    one row per tick and nothing below you moves.
+</p>
+<Example Source="TaskTrackerBlock.razor"><TaskTrackerBlock /></Example>
+
+<h2 class="doc-h2">Product grid</h2>
+<p class="doc-note">
+    Add-to-cart swaps the cart badge, not the grid — which means the badge lives in the chrome and
+    <code>&lt;UpChrome Provides=".cart-badge"&gt;</code> is required. Leaving it out is the most
+    common bug in this whole pattern: no error, and the swap finds nothing.
+</p>
+<Example Source="ProductGridBlock.razor"><ProductGridBlock /></Example>
+
+<h2 class="doc-h2">Social feed</h2>
+<p class="doc-note">
+    Each post is an <code>&lt;article&gt;</code> with a real permalink. Optimistic UI is left out
+    on purpose: the round trip is the truth here, and a counter that goes up and then back down is
+    worse than one that waits.
+</p>
+<Example Source="SocialFeedBlock.razor"><SocialFeedBlock /></Example>
+
+<h2 class="doc-h2">Media player</h2>
+<p class="doc-note">
+    Built on <code>&lt;audio controls&gt;</code>, which already has seeking, volume, media keys and
+    a lock-screen control on a phone. Hand-rolled scrubbers are where audio players lose their
+    accessibility.
+</p>
+<Example Source="MediaPlayerBlock.razor"><MediaPlayerBlock /></Example>

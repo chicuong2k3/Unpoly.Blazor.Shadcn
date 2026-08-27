@@ -1,0 +1,78 @@
+@* A board without drag-and-drop.
+
+   That is a deliberate call, not a missing feature. Dragging a card is a pointer gesture with no
+   keyboard equivalent unless you build one, and the accessible fallback everyone eventually bolts
+   on is exactly this: a control on the card that says which column it should be in. So the
+   fallback is the interface. Each card carries a small POST form whose Select autosubmits, moving
+   the card server-side and swapping the board.
+
+   If you do add dragging later, add it on top of this — the form stays as the keyboard path. *@
+
+<div class="grid w-full gap-4 md:grid-cols-3" data-board>
+    @foreach (var column in Board)
+    {
+        <section class="flex flex-col gap-3 rounded-lg bg-muted/40 p-3" aria-labelledby="@($"col-{column.Key}")">
+            <header class="flex items-center gap-2">
+                <h3 id="@($"col-{column.Key}")" class="text-sm font-medium">@column.Name</h3>
+                <Badge Variant="secondary" Class="num">@column.Cards.Length</Badge>
+                <Button Variant="ghost" Size="icon" Class="ml-auto"
+                        Href="@($"/board/new?column={column.Key}")" up-layer="new modal"
+                        aria-label="@($"Add a card to {column.Name}")">
+                    <Icon Name="plus" />
+                </Button>
+            </header>
+
+            @foreach (var card in column.Cards)
+            {
+                <Card Class="gap-3 p-3">
+                    <div class="flex items-start justify-between gap-2">
+                        <a href="@($"/board/{card.Id}")" up-layer="new modal"
+                           class="text-sm font-medium hover:underline">@card.Title</a>
+                        <Badge Variant="@card.Badge">@card.Priority</Badge>
+                    </div>
+
+                    <div class="flex items-center gap-2">
+                        <Avatar Class="size-6"><AvatarFallback Class="text-[10px]">@card.Who</AvatarFallback></Avatar>
+                        <span class="num text-xs text-muted-foreground">@card.Due</span>
+
+                        <form method="post" action="@($"/board/{card.Id}/move")" class="ml-auto"
+                              up-autosubmit up-target="[data-board]">
+                            <AntiforgeryToken />
+                            <Select name="column" Class="h-7 w-[104px] text-xs"
+                                    aria-label="@($"Move {card.Title} to another column")">
+                                @foreach (var target in Board)
+                                {
+                                    <SelectItem Value="@target.Key" Selected="@(target.Key == column.Key)">
+                                        @target.Name
+                                    </SelectItem>
+                                }
+                            </Select>
+                        </form>
+                    </div>
+                </Card>
+            }
+        </section>
+    }
+</div>
+
+@code {
+    record Card(int Id, string Title, string Priority, string Badge, string Who, string Due);
+    record Column(string Key, string Name, Card[] Cards);
+
+    static readonly Column[] Board =
+    [
+        new("todo", "To do",
+        [
+            new(1, "Rewrite the onboarding email", "High", "destructive", "MR", "14 Mar"),
+            new(2, "Audit the colour contrast", "Low", "secondary", "AL", "20 Mar"),
+        ]),
+        new("doing", "In progress",
+        [
+            new(3, "Move uploads to object storage", "High", "destructive", "JW", "12 Mar"),
+        ]),
+        new("done", "Done",
+        [
+            new(4, "Ship the pricing page", "Medium", "outline", "MR", "8 Mar"),
+        ]),
+    ];
+}

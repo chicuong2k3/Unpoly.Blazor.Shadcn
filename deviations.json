@@ -213,7 +213,9 @@
     "ScrollArea": "scroll-area",
     "NativeSelect": "native-select",
     "InputGroupControl": "input-group-control",
-    "InputOtp": "input-otp"
+    "InputOtp": "input-otp",
+    "CommandDialog": "command",
+    "CommandInput": "command-input"
   },
   "asChildButton": {
     "$comment": [
@@ -345,6 +347,10 @@
         "focus-visible:ring-[3px]"
       ],
       "component": "Input or Textarea, whose own classes are checked on their own slots"
+    },
+    "command-dialog": {
+      "classes": [],
+      "component": "Command"
     }
   }
 }

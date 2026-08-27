@@ -1,0 +1,19 @@
+@* The same thing as a modal, bound to a shortcut. mod is ⌘ on a Mac and Ctrl everywhere else —
+   ui.js knows the difference, which is the part implementations get wrong in one direction or
+   the other. Try it: the search box in the header above is this component. *@
+<Button Variant="outline" Type="button" data-command-open="demo-palette">
+    <Icon Name="search" />Open the palette
+    <KbdGroup Class="ml-2"><Kbd>⌘</Kbd><Kbd>K</Kbd></KbdGroup>
+</Button>
+
+<CommandDialog Id="demo-palette" Key="mod+k">
+    <CommandInput />
+    <CommandList>
+        <CommandEmpty Class="py-6 text-center text-sm text-muted-foreground">No results.</CommandEmpty>
+        <CommandGroup Heading="Go to">
+            <CommandItem Href="/components/button"><Icon Name="circle" /><span>Button</span></CommandItem>
+            <CommandItem Href="/blocks"><Icon Name="copy" /><span>Blocks</span></CommandItem>
+            <CommandItem Href="/theming"><Icon Name="settings" /><span>Theming</span></CommandItem>
+        </CommandGroup>
+    </CommandList>
+</CommandDialog>

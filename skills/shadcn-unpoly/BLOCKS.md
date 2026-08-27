@@ -28,6 +28,15 @@ Source: `demo/Unpoly.Blazor.Shadcn.Demo/Components/Blocks/`. Rendered: run the d
 | `PricingBlock` | a pricing page | Card, ToggleGroup, Badge, Icon |
 | `HeroBlock` | a marketing landing area | Badge, Button, AvatarGroup |
 | `EmptyStateBlock` | a list with nothing in it | Card, Icon, Button |
+| `AnalyticsBlock` | a chart on a dashboard | Card, Badge, Select, Icon |
+| `CalendarBlock` | a month view of what is on | Card, ButtonGroup, Button |
+| `ChatBlock` | a conversation | ScrollArea, Textarea, Avatar, DropdownMenu |
+| `FileManagerBlock` | files and folders | Breadcrumb, Table, Checkbox, ToggleGroup, DropdownMenu |
+| `KanbanBlock` | a board of cards in columns | Card, Badge, Avatar, Select |
+| `TaskTrackerBlock` | a task list you tick through | Card, Item, Checkbox, Badge |
+| `ProductGridBlock` | a catalogue | Card, AspectRatio, Badge, Select |
+| `SocialFeedBlock` | a feed of posts | Avatar, Button, DropdownMenu |
+| `MediaPlayerBlock` | audio with a queue | Card, AspectRatio, Item, ButtonGroup |
 
 ## The trap in each
 
@@ -90,6 +99,57 @@ Saying "no such account" turns the form into a way of asking whether someone has
 **CheckoutBlock — the summary is never below the form.**
 Beside it on a desktop, above it on a phone. The total is what someone checks before committing,
 and the submit says the amount rather than "Place order".
+
+**AnalyticsBlock — the chart is a `<table>`.**
+Bars are table cells with a percentage height, so the numbers are in the DOM as numbers: readable
+by a screen reader, selectable, printable, and still correct with CSS off. A charting library
+ships hundreds of kilobytes to draw eleven rectangles into a `<canvas>` nothing else can read.
+Reach for one when you need axes, tooltips, zoom, or a line through irregular time — not before.
+
+**CalendarBlock — also a table, and `aria-current="date"` is what says "today".**
+Seven columns of days under seven column headers is a table, and every screen reader already
+knows how to read one; a grid of divs has to reimplement that and usually reimplements half.
+Marking today with a colour and nothing else leaves half the people using it unable to orient.
+For *picking* a date this is the wrong block — that is `DatePicker`, wrapping `<input type=date>`.
+
+**ChatBlock — the composer appends, it does not replace.**
+`up-target=".chat-thread:after"`. Replace the thread and you re-render the whole conversation and
+throw away the scroll position on every message sent. The thread polls with `[up-etag]`, so a
+poll that finds nothing costs an empty 304 instead of a render.
+
+**FileManagerBlock — selection is checkboxes, and the bulk bar reads them.**
+One `name` shared by every row means the bulk form posts a list of ids with no script. The bar
+appears through `:has(:checked)` — CSS reading the boxes, so there is no second copy of the
+selection to drift from them. The view toggle is a GET form, not a class swap, so a bookmark of
+the grid view opens as the grid view.
+
+**KanbanBlock — no drag-and-drop, deliberately.**
+Dragging is a pointer gesture with no keyboard equivalent unless you build one, and the
+accessible fallback everyone eventually bolts on is exactly this: a control on the card naming
+the column it should be in. So the fallback is the interface. Add dragging on top later if you
+must; the form stays as the keyboard path.
+
+**TaskTrackerBlock — tick swaps `:origin`, one row.**
+`up-target=":origin"` on the row's form, so two hundred tasks cost one row per tick and nothing
+below the pointer moves. The struck-through state comes from `has-[:checked]`, so the row cannot
+disagree with its own checkbox.
+
+**ProductGridBlock — add-to-cart swaps the badge, so the badge must be declared.**
+`up-target=".cart-badge"` and the badge lives in the layout, which means
+`<UpChrome Provides=".cart-badge">`. Without it the chrome is stripped from the response, the
+selector is absent, and the swap silently does nothing — no error anywhere. Prices are formatted
+by the server; formatting money in the browser is how a shop shows two different totals on two
+different screens.
+
+**SocialFeedBlock — each post is an `<article>` with a real permalink.**
+A feed of divs is a feed nobody can link into. Optimistic counters are left out on purpose: the
+round trip is the truth here, and a number that goes up and then back down is worse than one that
+waits eighty milliseconds.
+
+**MediaPlayerBlock — `<audio controls>`, not a hand-rolled scrubber.**
+One attribute buys seeking, volume, keyboard support, media keys and a lock-screen control on a
+phone. Rebuilding that from divs and a range input is where audio players lose their
+accessibility, every time.
 
 ## Building a new one
 

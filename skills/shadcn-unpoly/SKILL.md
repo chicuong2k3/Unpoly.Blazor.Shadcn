@@ -11,14 +11,16 @@ then apply the translation rules below. Do not invent a Blazor-flavoured API; th
 
 Two files next to this one, both worth opening before you write markup:
 
-- **`API.md`** — generated from the components, every parameter of all 102. Read it rather than
+- **`API.md`** — generated from the components, every parameter of all 180. Read it rather than
   guessing a name.
-- **`BLOCKS.md`** — six ready-made sections (login, page header, stats, data table, settings,
-  empty state) and the trap in each. Building a login form or a list screen from primitives when
-  a block exists is slower and gets the Unpoly wiring wrong.
+- **`BLOCKS.md`** — 25 ready-made sections (sign in, data table, checkout, chat, board, file
+  manager, calendar, feed and the rest) and the trap in each. Building a login form or a list
+  screen from primitives when a block exists is slower and gets the Unpoly wiring wrong.
 
-There is a runnable demo at `demo/`: every component with its source, the blocks, and a theme
-switcher. `dotnet run --project demo/Unpoly.Blazor.Shadcn.Demo`.
+There is a runnable demo at `demo/` — every component with its source, all 25 blocks, a theme
+switcher, a live Customizer and a ⌘K search: `dotnet run --project demo/Unpoly.Blazor.Shadcn.Demo`.
+The demo is built entirely from this library, including its own code blocks and command palette,
+which is the only honest way to show that the components are enough to build something.
 
 ## The translation rules
 
@@ -69,6 +71,12 @@ These are not gaps to work around. React constructs that static SSR does not hav
 | `Checkbox`, `Switch`, `RadioGroupItem` | `<button role=…>` + hidden input | the real `<input>`, styled |
 | `Tabs` | React state | a compiler; inactive panels use `hidden`, so their fields still post |
 | `Sonner` | its own renderer | Toastify; call `toast(...)`, `toast.error(...)` — same shape |
+| `Command` | cmdk, a filtered virtual list | every item is in the DOM as a real link; a compiler hides the ones that do not match |
+
+`Command` filters in the browser because the server already sent the list. When the list is a
+catalogue rather than a menu, put `up-autosubmit` and `up-target` on `<CommandInput>` and let the
+server answer — `<CommandList>` is the fragment it swaps, and the markup is otherwise identical.
+`<CommandDialog Key="mod+k">` binds the shortcut; `mod` is ⌘ on a Mac and Ctrl everywhere else.
 
 `Select` has **no** `<SelectTrigger>` / `<SelectValue>` / `<SelectContent>`: the native element is
 all three. Write `<Select name="kind"><SelectItem Value="a">A</SelectItem></Select>`.
@@ -113,10 +121,24 @@ Two consequences worth knowing before you reach for a component:
 ## Theming
 
 A theme is a `[data-theme="name"]` block of custom properties, or `:root` if the app ships one.
-`themes/` has three worked examples — Material 3, Cupertino and Fluent 2 — and `themes/README.md`
-states exactly which parts of each transfer and which cannot. The short version: colour, shape,
-elevation, motion and density are tokens and transfer; state layers, ripples and type scales live
-in component markup and do not.
+`themes/` has six worked examples: `vercel`, `supabase`, `modern-minimal` and `notebook`
+(generated from the tweakcn registry by `tools/gen_themes.py`), plus hand-written `cupertino` and
+`fluent`. `themes/README.md` states which parts of a foreign design language transfer and which
+cannot — colour, shape, elevation, motion and density are tokens and transfer; state layers,
+ripples and type scales live in component markup and do not.
+
+A Material 3 theme was written and then deleted. It is the honest outcome of the paragraph above:
+M3 without its state layers and ripples is not M3, it is shadcn wearing M3's palette, and shipping
+it as a theme would have claimed something the tokens cannot deliver.
+
+**The default is deliberately borderless.** `--background` is one step off `--card`, so surfaces
+separate by tone rather than by a hairline, and `ui.behavior.css` makes the border transparent on
+the containers that carry one in upstream shadcn (card, alert, menu and dialog content). Set
+`border-color` on those slots in your theme to get the lines back — nothing else changes.
+
+The demo's Customizer is worth knowing about as a tool: it writes tokens straight onto `<html>`
+and prints the block to paste. Every token in this library is a runtime custom property, so a
+live theme editor needs no rebuild and no CSS-in-JS.
 
 Six tokens exist beyond shadcn's so that another design language has somewhere to land:
 `--control-h`, `--control-text`, `--radius-control`, `--elevation-1..4`, `--ease-ui`,
@@ -132,6 +154,20 @@ Two variables are **not** shadcn's: `--control-h` and `--control-text`, surfaced
 `h-control` and `text-control`. shadcn writes `h-9 text-sm` literally, which pins every consumer
 to one control size. When porting a component from ui.shadcn.com, substitute those two and leave
 every other class exactly as it is.
+
+## The two components shadcn does not have
+
+Everything else in this library is upstream shadcn, name for name. These two are not, and are
+marked as such in `API.md`:
+
+- **`CodeBlock`** — a `<pre>` with a title bar and a copy button. shadcn's docs draw code with a
+  bespoke MDX pipeline and export nothing, so a port whose own documentation is built from itself
+  had to have one. `Code` is a **string** parameter, not `ChildContent`: Razor parses markup
+  inside `<pre>` as components, so a snippet containing `<Button>` would render a button rather
+  than show one. There is no syntax highlighting — that would mean shipping a second copy of a
+  language grammar per page.
+- **`Kbd` / `KbdGroup`** — upstream has these; listed here only because they are what a `Command`
+  trigger pairs with.
 
 ## Adding a component
 

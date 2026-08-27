@@ -257,6 +257,17 @@ renders `<input>` · `data-slot="checkbox"`
 
 _No parameters of its own._
 
+## `<CodeBlock>`
+renders `<pre>` · `data-slot="code-block-copy"`
+
+| Parameter | Type | Default | |
+|---|---|---|---|
+| `Code` | `string` | `""` |  |
+| `Title` | `string?` | — | **required** |
+| `Language` | `string?` | — |  |
+| `ShowCopy` | `bool` | `true` |  |
+| `CopyLabel` | `string` | `"Copy"` |  |
+
 ## `<Collapsible>`
 renders `<details>` · `data-slot="collapsible"`
 
@@ -271,6 +282,65 @@ _No parameters of its own._
 
 ## `<CollapsibleTrigger>`
 renders `<summary>` · `data-slot="collapsible-trigger"`
+
+_No parameters of its own._
+
+## `<Command>`
+renders `<div>` · `data-slot="command"`
+
+_No parameters of its own._
+
+## `<CommandDialog>`
+renders `<dialog>` · `data-slot="command-dialog"`
+
+| Parameter | Type | Default | |
+|---|---|---|---|
+| `Id` | `string` | `default!` |  |
+| `Key` | `string` | `"mod+k"` | **required** |
+| `Title` | `string` | `"Command palette"` |  |
+| `Description` | `string` | `"Search for a command to run."` |  |
+
+## `<CommandEmpty>`
+renders `<div>` · `data-slot="command-empty"`
+
+_No parameters of its own._
+
+## `<CommandGroup>`
+renders `<div>` · `data-slot="command-group"`
+
+| Parameter | Type | Default | |
+|---|---|---|---|
+| `Heading` | `string?` | — |  |
+
+## `<CommandInput>`
+renders `<div>` · `data-slot="command-input-wrapper"`
+
+| Parameter | Type | Default | |
+|---|---|---|---|
+| `Placeholder` | `string` | `"Type a command or search…"` |  |
+| `AriaLabel` | `string` | `"Search"` |  |
+
+## `<CommandItem>`
+renders `<a>` · `data-slot="command-item"`
+
+| Parameter | Type | Default | |
+|---|---|---|---|
+| `Href` | `string?` | — |  |
+| `Keywords` | `string?` | — |  |
+| `Disabled` | `bool` | — |  |
+
+## `<CommandList>`
+renders `<div>` · `data-slot="command-list"`
+
+_No parameters of its own._
+
+## `<CommandSeparator>`
+renders `<div>` · `data-slot="command-separator"`
+
+_No parameters of its own._
+
+## `<CommandShortcut>`
+renders `<span>` · `data-slot="command-shortcut"`
 
 _No parameters of its own._
 
@@ -616,6 +686,15 @@ renders `<button>` · `data-slot="input-group-button"`
 | `Type` | `string` | `"text"` |  |
 | `Value` | `string?` | — |  |
 
+## `<InputOtp>`
+renders `<div>` · `data-slot="input-otp"`
+
+| Parameter | Type | Default | |
+|---|---|---|---|
+| `Name` | `string?` | — |  |
+| `Value` | `string?` | — |  |
+| `Length` | `int` | `6` |  |
+
 ## `<InputOtpGroup>`
 renders `<div>` · `data-slot="input-otp-group"`
 
@@ -625,6 +704,14 @@ _No parameters of its own._
 renders `<div>` · `data-slot="input-otp-separator"`
 
 _No parameters of its own._
+
+## `<InputOtpSlot>`
+renders `<input>` · `data-slot="input-otp-slot"`
+
+| Parameter | Type | Default | |
+|---|---|---|---|
+| `First` | `bool` | — |  |
+| `AriaLabel` | `string?` | — |  |
 
 ## `<Item>`
 renders `<a>` · `data-slot="item"`
@@ -921,6 +1008,13 @@ renders `<button>` · `data-slot="sheet-trigger"`
 renders `<div>` · `data-slot="skeleton"`
 
 _No parameters of its own._
+
+## `<Spinner>`
+`data-slot="spinner"`
+
+| Parameter | Type | Default | |
+|---|---|---|---|
+| `AriaLabel` | `string` | `"Loading"` |  |
 
 ## `<Stepper>`
 renders `<div>` · `data-slot="stepper"`

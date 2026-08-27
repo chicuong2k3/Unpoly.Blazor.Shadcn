@@ -352,4 +352,130 @@ public class AccessibilityTests : BunitContext
 
         Assert.Equal("true", label.GetAttribute("data-error"));
     }
+
+    // ---- the command palette -----------------------------------------------------------------
+
+    [Fact]
+    public void The_command_list_is_a_listbox()
+    {
+        // Without the role the palette is a div of links: arrow keys announce nothing, and
+        // aria-activedescendant on the input has nothing to point into.
+        var list = Render<CommandList>().Find("[data-slot=command-list]");
+
+        Assert.Equal("listbox", list.GetAttribute("role"));
+    }
+
+    [Fact]
+    public void A_command_item_is_an_option()
+    {
+        var item = Render<CommandItem>(p => p.Add(i => i.Href, "/x")).Find("[data-slot=command-item]");
+
+        Assert.Equal("option", item.GetAttribute("role"));
+    }
+
+    [Fact]
+    public void A_command_item_that_goes_somewhere_is_a_real_link()
+    {
+        // This is what makes the palette work with scripting off, and what lets middle-click
+        // open a tab. A div with a click handler does neither.
+        var item = Render<CommandItem>(p => p.Add(i => i.Href, "/settings")).Find("[data-slot=command-item]");
+
+        Assert.Equal("A", item.TagName);
+    }
+
+    [Fact]
+    public void A_command_item_with_nowhere_to_go_is_a_button_that_does_not_submit()
+    {
+        // A palette is nearly always inside a <dialog>, but a bare <button> inside any form
+        // would submit it.
+        var item = Render<CommandItem>().Find("[data-slot=command-item]");
+
+        Assert.Equal("button", item.GetAttribute("type"));
+    }
+
+    [Fact]
+    public void A_disabled_command_item_says_so_where_a_screen_reader_can_read_it()
+    {
+        var item = Render<CommandItem>(p => p
+            .Add(i => i.Href, "/x")
+            .Add(i => i.Disabled, true)).Find("[data-slot=command-item]");
+
+        Assert.NotNull(item.GetAttribute("data-disabled"));
+    }
+
+    [Fact]
+    public void The_command_input_carries_a_name_because_a_placeholder_is_not_a_label()
+    {
+        var input = Render<CommandInput>().Find("[data-slot=command-input]");
+
+        Assert.Equal("Search", input.GetAttribute("aria-label"));
+    }
+
+    [Fact]
+    public void A_command_group_is_named_by_its_heading()
+    {
+        // The heading is a div, so it names nothing by itself. Without aria-label the options
+        // inside are announced with no idea which section they came from.
+        var group = Render<CommandGroup>(p => p.Add(g => g.Heading, "Actions"))
+            .Find("[data-slot=command-group]");
+
+        Assert.Equal("Actions", group.GetAttribute("aria-label"));
+    }
+
+    [Fact]
+    public void The_empty_message_starts_hidden_because_nothing_has_been_typed_yet()
+    {
+        // Announcing "no results" over a full list on first render is worse than saying nothing.
+        var empty = Render<CommandEmpty>().Find("[data-slot=command-empty]");
+
+        Assert.True(empty.HasAttribute("hidden"));
+    }
+
+    [Fact]
+    public void A_command_dialog_is_named_and_described_for_a_screen_reader()
+    {
+        var dialog = Render<CommandDialog>(p => p.Add(d => d.Id, "palette"));
+
+        Assert.Equal("Command palette", dialog.Find("h2.sr-only").TextContent.Trim());
+        Assert.Equal("Search for a command to run.", dialog.Find("p.sr-only").TextContent.Trim());
+    }
+
+    // ---- code blocks -------------------------------------------------------------------------
+
+    [Fact]
+    public void A_code_block_is_reachable_by_keyboard_because_it_can_scroll()
+    {
+        // A scrollable region no one can focus cannot be scrolled without a mouse — 2.1.1, and
+        // the reason tabindex=0 is on the <pre> rather than anywhere prettier.
+        var pre = Render<CodeBlock>(p => p.Add(c => c.Code, "x")).Find("[data-slot=code-block-pre]");
+
+        Assert.Equal("0", pre.GetAttribute("tabindex"));
+    }
+
+    [Fact]
+    public void The_copy_button_is_named_by_more_than_its_icon()
+    {
+        var button = Render<CodeBlock>(p => p.Add(c => c.Code, "x")).Find("[data-slot=code-block-copy]");
+
+        Assert.Equal("Copy", button.GetAttribute("aria-label"));
+    }
+
+    [Fact]
+    public void The_copy_button_is_hidden_until_a_clipboard_is_known_to_exist()
+    {
+        // ui.js reveals it. A button that silently does nothing is worse than one that is absent.
+        var button = Render<CodeBlock>(p => p.Add(c => c.Code, "x")).Find("[data-slot=code-block-copy]");
+
+        Assert.True(button.HasAttribute("hidden"));
+    }
+
+    [Fact]
+    public void Code_is_rendered_as_text_and_never_as_markup()
+    {
+        // The whole reason Code is a string: a snippet showing <script> must show it, not run it.
+        var code = Render<CodeBlock>(p => p.Add(c => c.Code, "<b>x</b>")).Find("[data-slot=code-block-code]");
+
+        Assert.Equal("<b>x</b>", code.TextContent);
+        Assert.Empty(code.QuerySelectorAll("b"));
+    }
 }

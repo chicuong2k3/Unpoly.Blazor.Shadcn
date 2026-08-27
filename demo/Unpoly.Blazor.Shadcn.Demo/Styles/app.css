@@ -26,28 +26,22 @@
 }
 
 @layer components {
-    /* The demo's own chrome — deliberately plain, so nothing here is mistaken for the library. */
-    .doc-shell { @apply mx-auto flex min-h-dvh max-w-[1400px] gap-8 px-6; }
-    .doc-nav { @apply sticky top-0 hidden h-dvh w-56 shrink-0 overflow-y-auto py-8 lg:block; }
-    .doc-nav a {
-        @apply block rounded-md px-3 py-1.5 text-sm text-muted-foreground transition-colors
-               hover:bg-accent hover:text-accent-foreground;
-    }
-    .doc-nav a.up-current { @apply bg-accent font-medium text-accent-foreground; }
-    .doc-nav h3 { @apply mt-6 mb-1 px-3 text-xs font-semibold tracking-wide uppercase opacity-60; }
-    .doc-main { @apply min-w-0 flex-1 py-8; }
+    /* What is left after the chrome was rebuilt out of the library: a page's own type, and the
+       one thing Unpoly marks that the library has no opinion about — the current nav row.
 
+       Everything that used to be here — .doc-nav a, .doc-example, .doc-preview, .doc-source —
+       is now Item, Tabs, Card and CodeBlock. If something has to come back to this file, that is
+       a component the library is missing, and worth noticing. */
     .doc-h1 { @apply text-3xl font-semibold tracking-tight; }
     .doc-lede { @apply mt-2 max-w-2xl text-muted-foreground; }
-    .doc-h2 { @apply mt-12 scroll-mt-8 text-lg font-semibold tracking-tight; }
+    .doc-h2 { @apply mt-12 scroll-mt-20 text-lg font-semibold tracking-tight; }
     .doc-note { @apply mt-2 max-w-2xl text-sm text-muted-foreground; }
+    .doc-note code, .doc-lede code {
+        @apply rounded bg-muted px-1 py-0.5 font-mono text-[0.85em];
+    }
 
-    /* An example is the rendered thing on top of the source that produced it — the same file,
-       so the two cannot disagree. */
-    .doc-example { @apply mt-4 overflow-hidden rounded-lg border; }
-    .doc-preview { @apply flex flex-wrap items-start gap-4 bg-card p-8; }
-    .doc-source {
-        @apply overflow-x-auto border-t bg-muted/40 p-4 text-[12.5px] leading-relaxed;
-        font-family: ui-monospace, "Cascadia Mono", Consolas, monospace;
+    /* [up-nav] adds .up-current to whichever nav row matches the address bar. */
+    .doc-nav-item.up-current {
+        @apply bg-accent font-medium text-accent-foreground;
     }
 }

@@ -1,0 +1,71 @@
+@* A catalogue. Every card is a link to a real product page, and "add to cart" is a POST that
+   swaps the cart badge rather than the grid — which is why the page does not jump and your scroll
+   position survives.
+
+   The badge lives in the layout chrome, so <UpChrome Provides=".cart-badge"> is required or the
+   swap silently finds nothing. That one omission is the most common bug in this whole pattern.
+
+   Prices are rendered by the server with the site's culture. Formatting money in the browser is
+   how a shop ends up showing two different totals on two different screens. *@
+
+<div class="w-full space-y-4">
+    <div class="flex flex-wrap items-center gap-2">
+        <h2 class="mr-auto text-lg font-semibold tracking-tight">Bags</h2>
+
+        <form method="get" up-autosubmit up-target="[data-grid]" class="flex gap-2">
+            <Select name="sort" Class="w-[170px]" aria-label="Sort by">
+                <SelectItem Value="featured" Selected>Featured</SelectItem>
+                <SelectItem Value="price-asc">Price: low to high</SelectItem>
+                <SelectItem Value="price-desc">Price: high to low</SelectItem>
+                <SelectItem Value="new">Newest</SelectItem>
+            </Select>
+        </form>
+    </div>
+
+    <div data-grid class="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        @foreach (var p in Catalogue)
+        {
+            <Card Class="gap-0 overflow-hidden p-0">
+                <a href="@($"/products/{p.Slug}")" class="block">
+                    <AspectRatio Ratio="1" Class="bg-muted">
+                        @* A real <img> with width/height, so the grid does not reflow as images
+                           land. loading=lazy is the platform's, not a library's. *@
+                        <img src="@p.Image" alt="@p.Name" width="400" height="400" loading="lazy"
+                             class="size-full object-cover" />
+                    </AspectRatio>
+                </a>
+
+                <div class="flex flex-1 flex-col gap-1 p-4">
+                    <div class="flex items-start justify-between gap-2">
+                        <a href="@($"/products/{p.Slug}")" class="text-sm font-medium hover:underline">@p.Name</a>
+                        @if (p.Tag is not null)
+                        {
+                            <Badge Variant="secondary">@p.Tag</Badge>
+                        }
+                    </div>
+                    <p class="num text-sm text-muted-foreground">@p.Price.ToString("C0")</p>
+
+                    <form method="post" action="@($"/cart/add/{p.Slug}")" class="mt-3"
+                          up-target=".cart-badge" up-disable>
+                        <AntiforgeryToken />
+                        <Button Variant="outline" Type="submit" Class="w-full" disabled="@(!p.InStock)">
+                            @(p.InStock ? "Add to cart" : "Sold out")
+                        </Button>
+                    </form>
+                </div>
+            </Card>
+        }
+    </div>
+</div>
+
+@code {
+    record Product(string Slug, string Name, decimal Price, string? Tag, bool InStock, string Image);
+
+    static readonly Product[] Catalogue =
+    [
+        new("weekender", "Weekender", 189, "New", true, "https://placehold.co/400"),
+        new("day-tote", "Day tote", 129, null, true, "https://placehold.co/400"),
+        new("sling", "Sling", 79, "Sale", true, "https://placehold.co/400"),
+        new("backpack", "Backpack", 149, null, false, "https://placehold.co/400"),
+    ];
+}

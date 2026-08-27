@@ -1,18 +1,32 @@
 @inherits LayoutComponentBase
 
-@* The nav and the header sit in <UpChrome>: on a fragment request they are not rendered at all,
-   so moving between component pages costs one .doc-main swap and the sidebar keeps its scroll.
-   Provides names what the chrome contains that anything might target from outside. *@
+@* The whole chrome is the library: Item and ScrollArea for the nav, Command for the search,
+   Sheet for the Customizer, Tabs and CodeBlock for every example, Button, Badge, Kbd and
+   Separator for the header.
+
+   That is the point rather than a flourish. A component library whose own documentation is built
+   from hand-rolled markup has not shown that its components are enough to build anything — it has
+   shown the opposite, and hand-rolled chrome is exactly where the gaps hide. Writing this page is
+   what surfaced the need for CodeBlock.
+
+   The header and nav sit in <UpChrome>: on a fragment request neither is rendered, so moving
+   between pages costs one .doc-main swap and the sidebar keeps its scroll. Provides names what
+   the chrome contains that anything might target from outside. *@
 
 <UpChrome Provides=".doc-nav, .doc-header">
     <header class="doc-header sticky top-0 z-40 border-b bg-background/80 backdrop-blur">
-        <div class="mx-auto flex max-w-[1400px] items-center gap-4 px-6 py-3">
-            <a href="/" class="font-semibold tracking-tight" up-target="body">Unpoly.Blazor.Shadcn</a>
-            <Badge Variant="secondary">shadcn/ui for Blazor SSR</Badge>
+        <div class="mx-auto flex h-16 max-w-[1400px] items-center gap-4 px-6">
+            <a href="/" class="font-semibold tracking-tight" up-target="body">
+                Unpoly.Blazor.Shadcn
+            </a>
+            <Badge Variant="secondary" Class="hidden sm:inline-flex">shadcn/ui for Blazor SSR</Badge>
 
             <div class="ml-auto flex items-center gap-2">
-                @* The library's own Select, doing the demo's job — which is the point. *@
-                <Select data-theme-picker aria-label="Theme" Class="w-[150px]">
+                <DocSearch />
+
+                <Separator Orientation="vertical" Class="mx-1 h-6" />
+
+                <Select data-theme-picker aria-label="Theme" Class="hidden w-[150px] md:flex">
                     <SelectItem Value="shadcn">shadcn</SelectItem>
                     <SelectItem Value="vercel">Vercel</SelectItem>
                     <SelectItem Value="supabase">Supabase</SelectItem>
@@ -22,48 +36,29 @@
                     <SelectItem Value="fluent">Fluent 2</SelectItem>
                 </Select>
 
+                <DocCustomizer />
+
                 <Button Variant="ghost" Size="icon" Type="button" data-dark-toggle
                         aria-label="Toggle dark mode">
                     <Icon Name="eye" />
                 </Button>
 
-                <Button Variant="outline" Size="sm"
+                <Button Variant="outline" Size="icon"
                         Href="https://github.com/chicuong2k3/Unpoly.Blazor.Shadcn"
-                        up-follow="false">GitHub</Button>
+                        up-follow="false" aria-label="Source on GitHub">
+                    <Icon Name="external-link" />
+                </Button>
             </div>
         </div>
     </header>
 </UpChrome>
 
-<div class="doc-shell">
+<div class="mx-auto flex max-w-[1400px] gap-8 px-6">
     <UpChrome>
-        <nav class="doc-nav" up-nav>
-            <h3>Getting started</h3>
-            <a href="/">Overview</a>
-            <a href="/theming">Theming</a>
-            <a href="/blocks">Blocks</a>
-
-            <h3>Components</h3>
-            <a href="/components/button">Button</a>
-            <a href="/components/badge">Badge</a>
-            <a href="/components/card">Card</a>
-            <a href="/components/form">Form controls</a>
-            <a href="/components/select">Select</a>
-            <a href="/components/table">Table</a>
-            <a href="/components/dialog">Dialog</a>
-            <a href="/components/dropdown-menu">Dropdown menu</a>
-            <a href="/components/tabs">Tabs</a>
-            <a href="/components/toggles">Toggles</a>
-            <a href="/components/accordion">Accordion</a>
-            <a href="/components/disclosure">Disclosure</a>
-            <a href="/components/overlays">Overlays</a>
-            <a href="/components/layout">Layout</a>
-            <a href="/components/navigation">Navigation</a>
-            <a href="/components/feedback">Feedback</a>
-            <a href="/components/avatar">Avatar</a>
-            <a href="/components/icon">Icon</a>
-        </nav>
+        <div class="doc-nav hidden lg:block">
+            <DocNav />
+        </div>
     </UpChrome>
 
-    <main class="doc-main">@Body</main>
+    <main class="doc-main min-w-0 flex-1 py-8">@Body</main>
 </div>

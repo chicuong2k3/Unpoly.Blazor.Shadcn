@@ -1,0 +1,72 @@
+@* A conversation. Two attributes carry it, and both are easy to leave out:
+
+   The thread is [up-poll], so new messages arrive without a socket, and [up-etag] means a poll
+   that finds nothing costs an empty 304 rather than a full render.
+
+   The composer targets .chat-thread:after — append, not replace — so sending adds one bubble
+   instead of re-rendering the conversation and throwing away your scroll position. [up-disable]
+   stops a double send while the request is in flight. *@
+
+<div class="flex h-[540px] w-full max-w-2xl flex-col overflow-hidden rounded-lg border">
+    <div class="flex items-center gap-3 border-b p-3">
+        <Avatar><AvatarFallback>ML</AvatarFallback></Avatar>
+        <div class="min-w-0">
+            <p class="truncate text-sm font-medium">Mai Linh</p>
+            <p class="text-xs text-muted-foreground">Active now</p>
+        </div>
+        <DropdownMenu Class="ml-auto">
+            <DropdownMenuTrigger Target="chat-options" Variant="ghost" Size="icon"
+                                 aria-label="Conversation options">
+                <Icon Name="ellipsis" />
+            </DropdownMenuTrigger>
+            <DropdownMenuContent Id="chat-options" Align="end">
+                <DropdownMenuItem Href="/chat/1/search">Search in conversation</DropdownMenuItem>
+                <DropdownMenuItem Href="/chat/1/mute">Mute</DropdownMenuItem>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem Variant="destructive" data-ask="Delete this conversation?">
+                    Delete
+                </DropdownMenuItem>
+            </DropdownMenuContent>
+        </DropdownMenu>
+    </div>
+
+    <ScrollArea Class="flex-1 p-4">
+        <div class="chat-thread flex flex-col gap-3" up-poll up-interval="5000" up-etag="c1-84">
+            @foreach (var m in Thread)
+            {
+                <div class="@(m.Mine ? "items-end self-end" : "items-start self-start") flex max-w-[75%] flex-col gap-1">
+                    <div class="@Bubble(m.Mine)">@m.Text</div>
+                    <time class="num text-[10px] text-muted-foreground" datetime="@m.At">@m.When</time>
+                </div>
+            }
+        </div>
+    </ScrollArea>
+
+    <form method="post" action="/chat/1/messages" up-target=".chat-thread:after" up-disable
+          class="flex items-end gap-2 border-t p-3">
+        <AntiforgeryToken />
+        <Button Variant="ghost" Size="icon" Type="button" aria-label="Attach a file">
+            <Icon Name="paperclip" />
+        </Button>
+        <Textarea name="body" rows="1" required placeholder="Write a message…"
+                  Class="max-h-32 min-h-9 flex-1 resize-none py-2" />
+        <Button Type="submit" Size="icon" aria-label="Send">
+            <Icon Name="send" />
+        </Button>
+    </form>
+</div>
+
+@code {
+    record Message(string Text, bool Mine, string When, string At);
+
+    static readonly Message[] Thread =
+    [
+        new("Did the invoice go out?", false, "09:12", "2026-03-11T09:12"),
+        new("Sent it this morning — copy is in the shared folder.", true, "09:14", "2026-03-11T09:14"),
+        new("Perfect, thank you.", false, "09:15", "2026-03-11T09:15"),
+    ];
+
+    static string Bubble(bool mine) =>
+        "rounded-2xl px-3.5 py-2 text-sm leading-relaxed "
+        + (mine ? "rounded-br-sm bg-primary text-primary-foreground" : "rounded-bl-sm bg-muted");
+}

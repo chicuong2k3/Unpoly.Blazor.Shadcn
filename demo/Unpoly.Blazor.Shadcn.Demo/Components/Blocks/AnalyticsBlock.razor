@@ -1,0 +1,71 @@
+@* An analytics panel with a real chart and no charting library.
+
+   The bars are a <table> — the numbers are in the DOM as numbers, so the chart is readable by a
+   screen reader, selectable, printable and correct with CSS off. Height comes from one inline
+   percentage per row; that is the whole implementation. A charting library would ship 200KB to
+   draw eleven rectangles, into a <canvas> nobody else can read.
+
+   Reach for a real library when you need axes, tooltips, zoom, or a line through irregular
+   time. Not before. *@
+
+<Card Class="w-full">
+    <CardHeader>
+        <CardTitle>Revenue</CardTitle>
+        <CardDescription>Last 11 weeks, net of refunds</CardDescription>
+        <CardAction>
+            @* A GET form: the range is in the URL, so a view can be linked and Back works. *@
+            <form method="get" up-autosubmit up-target="[data-analytics]">
+                <Select name="range" Class="w-[140px]" aria-label="Range">
+                    <SelectItem Value="11w" Selected>11 weeks</SelectItem>
+                    <SelectItem Value="6m">6 months</SelectItem>
+                    <SelectItem Value="12m">12 months</SelectItem>
+                </Select>
+            </form>
+        </CardAction>
+    </CardHeader>
+
+    <CardContent data-analytics>
+        <div class="mb-6 flex items-baseline gap-3">
+            <span class="num text-3xl font-semibold tracking-tight">$48,120</span>
+            <Badge Variant="secondary" Class="gap-1">
+                <Icon Name="trending-up" Class="size-3" />+12.4%
+            </Badge>
+        </div>
+
+        <table class="w-full">
+            <caption class="sr-only">Weekly revenue in US dollars</caption>
+            <thead class="sr-only">
+                <tr><th scope="col">Week</th><th scope="col">Revenue</th></tr>
+            </thead>
+            <tbody class="flex h-40 items-end gap-1.5">
+                @foreach (var (label, value) in Weeks)
+                {
+                    <tr class="group flex flex-1 flex-col items-center justify-end gap-1.5">
+                        <td class="w-full rounded-sm bg-primary/85 transition-[height] group-hover:bg-primary"
+                            style="@($"height: {value * 100 / Peak}%")">
+                            <span class="sr-only">@value.ToString("C0")</span>
+                        </td>
+                        <th scope="row" class="text-[10px] font-normal text-muted-foreground">@label</th>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </CardContent>
+
+    <CardFooter Class="justify-between border-t pt-4 text-sm text-muted-foreground">
+        <span>Best week: 8 Apr</span>
+        <Button Variant="ghost" Href="/reports/revenue">
+            Full report<Icon Name="chevron-right" />
+        </Button>
+    </CardFooter>
+</Card>
+
+@code {
+    static readonly (string Label, int Value)[] Weeks =
+    [
+        ("W1", 2900), ("W2", 3400), ("W3", 3100), ("W4", 4200), ("W5", 3900), ("W6", 4800),
+        ("W7", 4400), ("W8", 5600), ("W9", 5100), ("W10", 6200), ("W11", 5800),
+    ];
+
+    static readonly int Peak = Weeks.Max(w => w.Value);
+}

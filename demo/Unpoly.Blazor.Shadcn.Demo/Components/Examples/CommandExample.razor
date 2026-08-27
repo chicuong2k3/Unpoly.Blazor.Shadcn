@@ -1,0 +1,33 @@
+@* Inline, not in a dialog. Every item is a real link, so this is a filtered list of links with
+   JavaScript and a plain list of links without it. Keywords match in addition to the label —
+   "modal" finds Dialog — because matching only the visible text is why most site searches feel
+   broken. *@
+<Command Class="w-[420px] border">
+    <CommandInput Placeholder="Search components…" />
+    <CommandList>
+        <CommandEmpty Class="py-6 text-center text-sm text-muted-foreground">
+            Nothing matches that.
+        </CommandEmpty>
+
+        <CommandGroup Heading="Components">
+            <CommandItem Href="/components/dialog" Keywords="modal popup confirm">
+                <Icon Name="circle-alert" /><span>Dialog</span>
+            </CommandItem>
+            <CommandItem Href="/components/select" Keywords="dropdown picker option">
+                <Icon Name="chevron-down" /><span>Select</span>
+            </CommandItem>
+            <CommandItem Href="/components/table" Keywords="grid rows data">
+                <Icon Name="menu" /><span>Table</span>
+            </CommandItem>
+        </CommandGroup>
+
+        <CommandSeparator />
+
+        <CommandGroup Heading="Actions">
+            <CommandItem Keywords="theme dark light">
+                <Icon Name="eye" /><span>Toggle dark mode</span>
+                <CommandShortcut>⌘D</CommandShortcut>
+            </CommandItem>
+        </CommandGroup>
+    </CommandList>
+</Command>

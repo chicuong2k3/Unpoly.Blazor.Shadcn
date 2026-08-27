@@ -1,0 +1,75 @@
+@* A player built on <audio>, which already has play, pause, seek, volume, keyboard support,
+   media-key support, a lock-screen control on a phone, and Picture-in-Picture on some platforms.
+   Reimplementing that with three divs and a range input is where audio players go to lose their
+   accessibility.
+
+   Skipping controls are links to real track URLs, so a track is shareable and Back works. The
+   queue is a plain list; only [data-player] is swapped when a track changes, so playback of the
+   next track starts from a fresh element rather than a mutated one. *@
+
+<Card Class="w-full max-w-md" data-player>
+    <CardContent Class="flex flex-col items-center gap-4 pt-6">
+        <AspectRatio Ratio="1" Class="w-40 overflow-hidden rounded-md bg-muted">
+            <img src="https://placehold.co/320" alt="Cover of Slow Light by Hà Trâm"
+                 width="320" height="320" class="size-full object-cover" />
+        </AspectRatio>
+
+        <div class="text-center">
+            <p class="font-medium">Slow Light</p>
+            <p class="text-sm text-muted-foreground">Hà Trâm</p>
+        </div>
+
+        @* controls, not a hand-rolled scrubber. It is one attribute and it is better than what
+           most of us would write in a week. *@
+        <audio controls preload="metadata" class="w-full"
+               src="https://upload.wikimedia.org/wikipedia/commons/c/c8/Example.ogg">
+            Your browser cannot play audio.
+            <a href="/tracks/slow-light.ogg" download>Download the track</a> instead.
+        </audio>
+
+        <ButtonGroup>
+            <Button Variant="outline" Size="icon" Href="/player/previous"
+                    up-target="[data-player]" aria-label="Previous track">
+                <Icon Name="chevron-left" />
+            </Button>
+            <Button Variant="outline" Href="/player/shuffle" up-target="[data-player]">
+                <Icon Name="repeat" />Shuffle
+            </Button>
+            <Button Variant="outline" Size="icon" Href="/player/next"
+                    up-target="[data-player]" aria-label="Next track">
+                <Icon Name="chevron-right" />
+            </Button>
+        </ButtonGroup>
+    </CardContent>
+
+    <Separator />
+
+    <CardContent Class="p-0">
+        <ItemGroup>
+            @foreach (var t in Queue)
+            {
+                <Item Href="@($"/player/{t.Slug}")" up-target="[data-player]"
+                      Class="rounded-none px-4 py-2.5">
+                    <ItemContent>
+                        <ItemTitle Class="text-sm font-normal">@t.Title</ItemTitle>
+                        <ItemDescription>@t.Artist</ItemDescription>
+                    </ItemContent>
+                    <ItemActions>
+                        <span class="num text-xs text-muted-foreground">@t.Length</span>
+                    </ItemActions>
+                </Item>
+            }
+        </ItemGroup>
+    </CardContent>
+</Card>
+
+@code {
+    record Track(string Slug, string Title, string Artist, string Length);
+
+    static readonly Track[] Queue =
+    [
+        new("slow-light", "Slow Light", "Hà Trâm", "3:42"),
+        new("blue-hour", "Blue Hour", "Kiên", "4:05"),
+        new("paper-boats", "Paper Boats", "Mưa", "2:58"),
+    ];
+}
