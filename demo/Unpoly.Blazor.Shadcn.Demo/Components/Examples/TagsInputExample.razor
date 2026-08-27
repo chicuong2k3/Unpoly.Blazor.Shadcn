@@ -1,0 +1,11 @@
+@* Not shadcn either — its nearest is Combobox, which is single-value. This enhances a real
+   <select multiple> with Tom Select, so the form posts exactly as it would without scripting. *@
+<div class="w-[360px]">
+    <FormField For="tags" Label="Collections">
+        <TagsInput id="tags" Name="collections" Placeholder="Search collections…">
+            <option value="summer" selected>Summer</option>
+            <option value="sale">Sale</option>
+            <option value="new">New in</option>
+        </TagsInput>
+    </FormField>
+</div>

@@ -1,0 +1,53 @@
+@* A notification centre. Unread is marked in the markup, not only by weight: aria-label says
+   so, because bold text is invisible to a screen reader.
+
+   "Mark all as read" is a POST, not a link — it changes something. Unpoly swaps the panel and
+   the badge together with [up-hungry] on the badge. *@
+
+<Card Class="w-[420px]">
+    <CardHeader>
+        <CardTitle>Notifications</CardTitle>
+        <CardDescription>You have 3 unread.</CardDescription>
+        <CardAction>
+            <form method="post" action="/notifications/read-all" up-target="[data-notifications]">
+                <Button Variant="ghost" Size="sm" up-disable>Mark all as read</Button>
+            </form>
+        </CardAction>
+    </CardHeader>
+
+    <CardContent Class="px-0" data-notifications>
+        <ItemGroup>
+            @foreach (var n in Items)
+            {
+                <Item Href="@n.Href" Class="rounded-none px-6"
+                      aria-label="@(n.Unread ? $"Unread: {n.Title}" : n.Title)">
+                    <ItemMedia>
+                        <span class="grid size-8 place-items-center rounded-full bg-muted">
+                            <Icon Name="@n.Icon" Class="size-4 text-muted-foreground" />
+                        </span>
+                    </ItemMedia>
+                    <ItemContent>
+                        <ItemTitle Class="@(n.Unread ? "font-medium" : "font-normal")">@n.Title</ItemTitle>
+                        <ItemDescription>@n.When</ItemDescription>
+                    </ItemContent>
+                    @if (n.Unread)
+                    {
+                        <ItemActions><span class="size-2 rounded-full bg-primary"></span></ItemActions>
+                    }
+                </Item>
+            }
+        </ItemGroup>
+    </CardContent>
+</Card>
+
+@code {
+    record Note(string Title, string When, string Icon, string Href, bool Unread);
+
+    static readonly Note[] Items =
+    [
+        new("Order #3201 was paid", "2 minutes ago", "circle-check", "/orders/3201", true),
+        new("Low stock: Corset, black", "1 hour ago", "triangle-alert", "/products/12", true),
+        new("Ana Lopes left a review", "Yesterday", "info", "/reviews/8", true),
+        new("Weekly report is ready", "Monday", "upload", "/reports", false),
+    ];
+}

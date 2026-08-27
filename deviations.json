@@ -212,7 +212,8 @@
     "Sheet": "sheet-content",
     "ScrollArea": "scroll-area",
     "NativeSelect": "native-select",
-    "InputGroupControl": "input-group-control"
+    "InputGroupControl": "input-group-control",
+    "InputOtp": "input-otp"
   },
   "asChildButton": {
     "$comment": [

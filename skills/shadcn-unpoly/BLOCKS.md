@@ -12,11 +12,21 @@ Source: `demo/Unpoly.Blazor.Shadcn.Demo/Components/Blocks/`. Rendered: run the d
 
 | Block | Use it for | Composes |
 |---|---|---|
-| `LoginBlock` | sign in, sign up, password reset | Card, FormField, Input, Checkbox, Button |
+| `LoginBlock` | sign in | Card, FormField, Input, Checkbox, Button |
+| `SignUpBlock` | account creation | Card, FormField, Progress, Checkbox |
+| `ResetPasswordBlock` | password recovery | Card, FormField, Button |
+| `OtpVerifyBlock` | a code sent by SMS or email | InputOtp, Card, Button |
 | `PageHeaderBlock` | the top of any detail screen | Breadcrumb, Badge, Button, DropdownMenu |
 | `StatsBlock` | figures across the top of a dashboard | Card, Badge, Progress, Icon |
 | `DataTableBlock` | any list screen with filters | Input, Select, Table, Checkbox, DropdownMenu, Pagination |
+| `FiltersBlock` | more filters than fit in a toolbar | Popover, Field, Select, DatePicker, Badge |
 | `SettingsBlock` | a settings screen with sections | Card, FormField, Switch, Separator, AlertDialog |
+| `FormWizardBlock` | a multi-step form | Progress, FieldSet, Field, Button |
+| `MasterDetailBlock` | mail, chat, any inbox | Item, ScrollArea, InputGroup, ButtonGroup |
+| `NotificationsBlock` | a notification centre | Card, Item, Icon |
+| `CheckoutBlock` | e-commerce checkout | FieldSet, RadioGroup, Item, Separator, AspectRatio |
+| `PricingBlock` | a pricing page | Card, ToggleGroup, Badge, Icon |
+| `HeroBlock` | a marketing landing area | Badge, Button, AvatarGroup |
 | `EmptyStateBlock` | a list with nothing in it | Card, Icon, Button |
 
 ## The trap in each
@@ -52,6 +62,34 @@ list is empty because of a filter rather than because there is nothing.
 **PageHeaderBlock — the destructive action is behind a menu.**
 Not beside Save. `data-ask` on it, which builds an AlertDialog on the fly with no markup in the
 page.
+
+**FormWizardBlock — each step is a URL, not an index.**
+A client-side step counter breaks the back button, makes a refresh lose everything, and cannot be
+resumed from a link in an email. Steps are routes; Back is a link, never a button, so it cannot
+resubmit.
+
+**MasterDetailBlock — only the detail pane is swapped.**
+`up-target="[data-detail]"` on each row, so the list keeps its scroll position and `[up-nav]`
+marks the current one with no state. On a phone the same markup is a full navigation, because
+nothing in it depends on both columns being visible.
+
+**FiltersBlock — the URL is the state.**
+No client-side filter object to get out of sync. The view is shareable and the back button works.
+Applied filters are visible chips: a filter you cannot see is a filter you will blame the data for.
+
+**OtpVerifyBlock — `autocomplete="one-time-code"` on the first box only.**
+It is what lets a phone offer the code it has just received. On every box they compete.
+
+**SignUpBlock — `autocomplete="new-password"`, not `off`.**
+A password manager offers to generate one, and knows not to fill the confirmation with the old
+password. `off` gets you neither.
+
+**ResetPasswordBlock — the same answer either way.**
+Saying "no such account" turns the form into a way of asking whether someone has one.
+
+**CheckoutBlock — the summary is never below the form.**
+Beside it on a desktop, above it on a phone. The total is what someone checks before committing,
+and the submit says the amount rather than "Place order".
 
 ## Building a new one
 

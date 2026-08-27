@@ -1,0 +1,67 @@
+@* Three tiers and a billing switch. The switch is a link, not a toggle: monthly and yearly
+   are two states of the page worth linking to, and a link is shareable, bookmarkable and
+   crawlable where a client-side toggle is none of those.
+
+   The recommended tier is marked in the markup as well as in the styling — aria-label carries it,
+   or "Popular" is a coloured word nobody hears. *@
+
+<div class="mx-auto max-w-4xl">
+    <div class="text-center">
+        <h2 class="text-3xl font-semibold tracking-tight">Simple pricing</h2>
+        <p class="mt-2 text-muted-foreground">Change or cancel whenever you like.</p>
+
+        <ToggleGroup Class="mt-6" aria-label="Billing period">
+            <ToggleGroupItem Name="billing" Value="monthly" Checked>Monthly</ToggleGroupItem>
+            <ToggleGroupItem Name="billing" Value="yearly">Yearly · save 20%</ToggleGroupItem>
+        </ToggleGroup>
+    </div>
+
+    <div class="mt-10 grid gap-6 md:grid-cols-3">
+        @foreach (var tier in Tiers)
+        {
+            <Card Class="@(tier.Featured ? "ring-2 ring-primary" : null)">
+                <CardHeader>
+                    <CardTitle>@tier.Name</CardTitle>
+                    <CardDescription>@tier.Blurb</CardDescription>
+                    @if (tier.Featured)
+                    {
+                        <CardAction><Badge aria-label="Recommended plan">Popular</Badge></CardAction>
+                    }
+                </CardHeader>
+
+                <CardContent Class="space-y-4">
+                    <p><span class="num text-3xl font-semibold">@tier.Price</span>
+                       <span class="text-sm text-muted-foreground">/month</span></p>
+                    <ul class="space-y-2 text-sm">
+                        @foreach (var line in tier.Includes)
+                        {
+                            <li class="flex items-start gap-2">
+                                <Icon Name="check" Class="mt-0.5 text-primary" />
+                                <span>@line</span>
+                            </li>
+                        }
+                    </ul>
+                </CardContent>
+
+                <CardFooter>
+                    <Button Class="w-full" Variant="@(tier.Featured ? "default" : "outline")"
+                            Href="/signup">Choose @tier.Name</Button>
+                </CardFooter>
+            </Card>
+        }
+    </div>
+</div>
+
+@code {
+    record Tier(string Name, string Blurb, string Price, bool Featured, string[] Includes);
+
+    static readonly Tier[] Tiers =
+    [
+        new("Starter", "For one person.", "$0", false,
+            ["Up to 100 orders", "One storefront", "Email support"]),
+        new("Studio", "For a small team.", "$29", true,
+            ["Unlimited orders", "Three storefronts", "Priority support", "Custom domain"]),
+        new("Scale", "For a lot of orders.", "$99", false,
+            ["Everything in Studio", "SLA", "Dedicated support"]),
+    ];
+}

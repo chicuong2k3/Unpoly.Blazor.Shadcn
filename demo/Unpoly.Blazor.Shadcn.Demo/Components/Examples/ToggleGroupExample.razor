@@ -1,0 +1,13 @@
+@* Multiple decides whether the items are checkboxes or radios — the DOM's own version of
+   Radix's type="single" | "multiple", and it means the group posts either one value or a list
+   with no JavaScript involved. Radios also bring arrow-key navigation for free. *@
+<ToggleGroup aria-label="View">
+    <ToggleGroupItem Name="view" Value="grid" Checked>Grid</ToggleGroupItem>
+    <ToggleGroupItem Name="view" Value="list">List</ToggleGroupItem>
+    <ToggleGroupItem Name="view" Value="table">Table</ToggleGroupItem>
+</ToggleGroup>
+
+<ToggleGroup aria-label="Format" Class="ml-6">
+    <ToggleGroupItem Name="fmt" Value="b" Multiple Checked>B</ToggleGroupItem>
+    <ToggleGroupItem Name="fmt" Value="i" Multiple>I</ToggleGroupItem>
+</ToggleGroup>

@@ -1,0 +1,14 @@
+@* A control and its trimmings in one frame. The field inside loses its own border and ring,
+   because the frame draws both — two rings on one control is the giveaway that a group was
+   assembled rather than composed. *@
+<div class="w-[360px] space-y-3">
+    <InputGroup>
+        <InputGroupAddon><Icon Name="search" /></InputGroupAddon>
+        <InputGroupControl name="q" placeholder="Search orders…" />
+    </InputGroup>
+
+    <InputGroup>
+        <InputGroupControl name="pw" Type="password" placeholder="Password" />
+        <InputGroupAddon><InputGroupButton aria-label="Show password"><Icon Name="eye" /></InputGroupButton></InputGroupAddon>
+    </InputGroup>
+</div>

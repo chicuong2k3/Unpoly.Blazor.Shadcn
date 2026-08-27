@@ -33,7 +33,7 @@ FAMILIES = {
     'tooltip',
     # this batch
     'aspect-ratio', 'button-group', 'collapsible', 'empty', 'field', 'hover-card', 'input-group',
-    'item', 'kbd', 'native-select', 'popover', 'scroll-area', 'sheet', 'spinner', 'toggle',
+    'input-otp', 'item', 'kbd', 'native-select', 'popover', 'scroll-area', 'sheet', 'spinner', 'toggle',
     'toggle-group',
 }
 
@@ -53,7 +53,6 @@ NOT_PORTED = {
     'radio-group-indicator': 'the dot is ::after on the input',
     'checkbox-indicator': 'the tick is ::after on the input',
     'form-control': 'Slot.Root is asChild; the control is written into FormField directly',
-    'input-otp': 'the whole component is a compiler over real inputs, not a wrapper',
 }
 
 # React needs a portal to escape overflow and stacking context, and an overlay element to dim
@@ -79,7 +78,7 @@ def in_family(slot: str) -> bool:
 # Slots whose element is plain HTML but whose behaviour is not — they need a compiler, a native
 # element with state, or a decision about which. Listed so they are hand-written deliberately.
 BEHAVIOURAL = {
-    'native-select', 'input-otp-slot', 'sidebar-trigger', 'sidebar-rail',
+    'native-select', 'sidebar-trigger', 'sidebar-rail',
     'carousel-previous', 'carousel-next', 'command-input', 'combobox-input',
 }
 

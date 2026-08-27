@@ -1,0 +1,20 @@
+@* Radix nests submenus through a portal and opens them on hover with a safe triangle. The
+   popover API does not nest, so ui.js opens the child popover from the parent row and puts it
+   beside rather than below. *@
+<DropdownMenu>
+    <DropdownMenuTrigger Target="sub-menu">File<Icon Name="chevron-down" /></DropdownMenuTrigger>
+    <DropdownMenuContent Id="sub-menu" Align="start">
+        <DropdownMenuGroup>
+            <DropdownMenuItem>New</DropdownMenuItem>
+            <DropdownMenuItem>Open<DropdownMenuShortcut>⌘O</DropdownMenuShortcut></DropdownMenuItem>
+        </DropdownMenuGroup>
+        <DropdownMenuSeparator />
+        <DropdownMenuSub>
+            <DropdownMenuSubTrigger Target="sub-export">Export as</DropdownMenuSubTrigger>
+            <DropdownMenuSubContent Id="sub-export">
+                <DropdownMenuItem>CSV</DropdownMenuItem>
+                <DropdownMenuItem>JSON</DropdownMenuItem>
+            </DropdownMenuSubContent>
+        </DropdownMenuSub>
+    </DropdownMenuContent>
+</DropdownMenu>

@@ -44,3 +44,40 @@
 
 <h2 class="doc-h2">Empty state</h2>
 <Example Source="EmptyStateBlock.razor"><EmptyStateBlock /></Example>
+
+<h2 class="doc-h2">Sign up</h2>
+<p class="doc-note">The strength meter is rendered by the server from <code>[up-validate]</code>, not computed in the browser: the rule that decides it lives on the server anyway, and a second copy in JavaScript is a second copy to get wrong.</p>
+<Example Source="SignUpBlock.razor"><SignUpBlock /></Example>
+
+<h2 class="doc-h2">Reset password</h2>
+<p class="doc-note">The response is the same whether or not the address exists. Saying "no such account" turns the form into a way of asking whether someone has one.</p>
+<Example Source="ResetPasswordBlock.razor"><ResetPasswordBlock /></Example>
+
+<h2 class="doc-h2">Verify a code</h2>
+<p class="doc-note">Six real inputs; the server sees one field. <code>autocomplete="one-time-code"</code> on the first box is what lets a phone offer the code it has just received.</p>
+<Example Source="OtpVerifyBlock.razor"><OtpVerifyBlock /></Example>
+
+<h2 class="doc-h2">Pricing</h2>
+<Example Source="PricingBlock.razor"><PricingBlock /></Example>
+
+<h2 class="doc-h2">Hero</h2>
+<Example Source="HeroBlock.razor"><HeroBlock /></Example>
+
+<h2 class="doc-h2">Filters</h2>
+<p class="doc-note">The URL is the state, so a filtered view can be sent to a colleague and reached by the back button. Applied filters are chips, because a filter you cannot see is a filter you will blame the data for.</p>
+<Example Source="FiltersBlock.razor"><FiltersBlock /></Example>
+
+<h2 class="doc-h2">Form wizard</h2>
+<p class="doc-note">Each step is a real URL and a real POST, not a client-side index — which is what makes the back button work, a refresh safe, and a half-finished application resumable from a link.</p>
+<Example Source="FormWizardBlock.razor"><FormWizardBlock /></Example>
+
+<h2 class="doc-h2">Master and detail</h2>
+<p class="doc-note">The shape behind mail, chat and any inbox. Only the detail pane is swapped, so the list keeps its scroll and the address bar always names what is on screen.</p>
+<Example Source="MasterDetailBlock.razor"><MasterDetailBlock /></Example>
+
+<h2 class="doc-h2">Notifications</h2>
+<Example Source="NotificationsBlock.razor"><NotificationsBlock /></Example>
+
+<h2 class="doc-h2">Checkout</h2>
+<p class="doc-note">The summary sits beside the form on a desktop and above it on a phone — never below, because the total is what someone checks before they commit.</p>
+<Example Source="CheckoutBlock.razor"><CheckoutBlock /></Example>

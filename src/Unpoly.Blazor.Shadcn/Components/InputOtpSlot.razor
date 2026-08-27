@@ -1,0 +1,28 @@
+@inherits UiComponentBase
+
+@* One box. A real input: inputmode="numeric" brings up the digits keyboard, maxlength="1" keeps
+   it to one character, and the first box carries autocomplete="one-time-code" so the platform can
+   offer the code it has just received by SMS. The rest carry "off", or they compete for it. *@
+
+<input data-slot="input-otp-slot" type="text" inputmode="numeric" maxlength="1"
+       autocomplete="@(First ? "one-time-code" : "off")"
+       aria-label="@AriaLabel" class="@Classes" @attributes="AdditionalAttributes" />
+
+@code {
+    /// <summary>The first box takes the autofill hint.</summary>
+    [Parameter] public bool First { get; set; }
+
+    /// <summary>Announced per box — "Digit 3 of 6" rather than six identically named fields.</summary>
+    [Parameter] public string? AriaLabel { get; set; }
+
+    const string Base =
+        "relative flex h-control w-9 items-center justify-center border-y border-r " +
+        "border-input text-control shadow-xs transition-all outline-none first:rounded-l-md " +
+        "first:border-l last:rounded-r-md aria-invalid:border-destructive " +
+        "data-[active=true]:z-10 data-[active=true]:border-ring data-[active=true]:ring-[3px] " +
+        "data-[active=true]:ring-ring/50 data-[active=true]:aria-invalid:border-destructive " +
+        "data-[active=true]:aria-invalid:ring-destructive/20 dark:bg-input/30 " +
+        "dark:data-[active=true]:aria-invalid:ring-destructive/40";
+
+    string Classes => Cn(Base, Class);
+}

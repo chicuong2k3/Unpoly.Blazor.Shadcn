@@ -1,0 +1,21 @@
+@* A row: media on the left, content in the middle, actions on the right. Give it an Href and
+   the whole row becomes a link — which is also what makes it followable by Unpoly. *@
+<ItemGroup Class="w-[460px]">
+    <Item Href="/components/avatar">
+        <ItemMedia><Avatar><AvatarFallback>MR</AvatarFallback></Avatar></ItemMedia>
+        <ItemContent>
+            <ItemTitle>Marta Ruiz</ItemTitle>
+            <ItemDescription>128 orders · joined March 2024</ItemDescription>
+        </ItemContent>
+        <ItemActions><Icon Name="chevron-right" Class="text-muted-foreground" /></ItemActions>
+    </Item>
+    <ItemSeparator />
+    <Item>
+        <ItemMedia><Avatar><AvatarFallback>AL</AvatarFallback></Avatar></ItemMedia>
+        <ItemContent>
+            <ItemTitle>Ana Lopes</ItemTitle>
+            <ItemDescription>12 orders</ItemDescription>
+        </ItemContent>
+        <ItemActions><Button Variant="ghost" Size="sm">Message</Button></ItemActions>
+    </Item>
+</ItemGroup>

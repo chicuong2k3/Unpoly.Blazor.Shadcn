@@ -1,0 +1,7 @@
+@* Not a shadcn component — shadcn has no number stepper, and a bare <input type=number> is
+   not one: its spinners are a different shape in every engine and invisible until hovered. *@
+<Stepper data-qty>
+    <button type="button" data-qty-minus aria-label="Fewer">−</button>
+    <input type="number" name="qty" value="1" min="1" aria-label="Quantity" />
+    <button type="button" data-qty-plus aria-label="More">+</button>
+</Stepper>

@@ -31,6 +31,10 @@ jobs:
           python tools/fetch_upstream.py --check
           python tools/gen_themes.py --check
 
+      # A component nobody can look at is a component nobody reviews.
+      - name: Every component is shown in the demo
+        run: python tools/check_demo.py --check
+
       # Not a --check: it reports, and a gap is a decision rather than a build break.
       - name: API coverage report
         run: python tools/audit_api.py

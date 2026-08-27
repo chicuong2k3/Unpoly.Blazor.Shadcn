@@ -1,0 +1,40 @@
+@* Six-digit verification. The code is one posted field, not six: <InputOtp> keeps a hidden
+   input in step, so the handler reads `code` and never has to join anything.
+
+   The resend link is a real form post with its own throttle on the server. A countdown drawn in
+   the browser is decoration — the limit that matters is the one the server enforces. *@
+
+<div class="flex min-h-[60vh] items-center justify-center">
+    <Card Class="w-full max-w-sm text-center">
+        <CardHeader>
+            <CardTitle>Check your phone</CardTitle>
+            <CardDescription>We sent a six-digit code to ••• ••• 4127.</CardDescription>
+        </CardHeader>
+
+        <form method="post" class="otp-form" up-target="body" up-fail-target=".otp-form">
+            <CardContent Class="flex flex-col items-center gap-4">
+                <InputOtp Name="code" Length="6">
+                    <InputOtpGroup>
+                        <InputOtpSlot First AriaLabel="Digit 1 of 6" />
+                        <InputOtpSlot AriaLabel="Digit 2 of 6" />
+                        <InputOtpSlot AriaLabel="Digit 3 of 6" />
+                    </InputOtpGroup>
+                    <InputOtpSeparator />
+                    <InputOtpGroup>
+                        <InputOtpSlot AriaLabel="Digit 4 of 6" />
+                        <InputOtpSlot AriaLabel="Digit 5 of 6" />
+                        <InputOtpSlot AriaLabel="Digit 6 of 6" />
+                    </InputOtpGroup>
+                </InputOtp>
+            </CardContent>
+
+            <CardFooter Class="mt-6 flex-col gap-3">
+                <Button Class="w-full" up-disable>Verify</Button>
+            </CardFooter>
+        </form>
+
+        <form method="post" action="/verify/resend" class="px-6 pb-6">
+            <Button Variant="link" Size="sm" up-disable>Send it again</Button>
+        </form>
+    </Card>
+</div>

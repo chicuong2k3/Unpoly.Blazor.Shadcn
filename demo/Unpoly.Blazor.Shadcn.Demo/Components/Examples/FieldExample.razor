@@ -1,0 +1,18 @@
+@* Field is shadcn's newer, more structured form set: a fieldset with a legend, fields
+   grouped, and errors attached per field. <FormField> is the compact composition over the same
+   primitives; use whichever fits. *@
+<FieldSet Class="w-[420px]">
+    <FieldLegend>Shipping</FieldLegend>
+    <FieldGroup>
+        <Field>
+            <FieldLabel For="f-name">Recipient</FieldLabel>
+            <Input id="f-name" name="name" />
+            <FieldDescription>The name on the door, not the account name.</FieldDescription>
+        </Field>
+        <Field>
+            <FieldLabel For="f-post">Postcode</FieldLabel>
+            <Input id="f-post" name="post" aria-invalid="true" />
+            <FieldError>We do not deliver to that postcode yet.</FieldError>
+        </Field>
+    </FieldGroup>
+</FieldSet>

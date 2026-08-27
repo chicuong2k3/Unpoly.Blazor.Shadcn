@@ -1,0 +1,25 @@
+@* A Sheet is a Dialog pinned to an edge — same native <dialog>, same focus trap, same
+   Escape. Side decides which edge; ui.behavior.css does the rest from [data-side]. *@
+<SheetTrigger Target="demo-sheet">Open the panel</SheetTrigger>
+
+<Sheet Id="demo-sheet" Side="right">
+    <SheetHeader>
+        <SheetTitle>Filters</SheetTitle>
+        <SheetDescription>Narrow the list without leaving the page.</SheetDescription>
+    </SheetHeader>
+
+    <div class="grid gap-4 px-4">
+        <FormField For="sheet-q" Label="Search"><Input id="sheet-q" name="q" type="search" /></FormField>
+        <FormField For="sheet-status" Label="Status">
+            <Select id="sheet-status" name="status">
+                <SelectItem Value="">Any</SelectItem>
+                <SelectItem Value="paid">Paid</SelectItem>
+            </Select>
+        </FormField>
+    </div>
+
+    <SheetFooter>
+        <SheetClose>Cancel</SheetClose>
+        <Button>Apply</Button>
+    </SheetFooter>
+</Sheet>

@@ -1,0 +1,58 @@
+@* Account creation. Three things here are decisions rather than markup:
+
+   autocomplete="new-password" — not "off". A password manager offers to generate one on the
+   first, and knows not to fill the second with the old password.
+
+   The strength meter is server-rendered from [up-validate], not computed in the browser: the
+   rule that decides it lives on the server anyway, and a second copy in JavaScript is a second
+   copy to get wrong.
+
+   The confirmation field is checked on the server too. Comparing two fields in the browser only
+   moves the moment you find out; it does not remove the check. *@
+
+<div class="flex min-h-[60vh] items-center justify-center">
+    <Card Class="w-full max-w-sm">
+        <CardHeader>
+            <CardTitle>Create an account</CardTitle>
+            <CardDescription>Free for the first 30 days.</CardDescription>
+        </CardHeader>
+
+        <form method="post" class="signup-form" up-target="body" up-fail-target=".signup-form">
+            <CardContent Class="space-y-4">
+                <FormField For="su-email" Label="Email">
+                    <Input id="su-email" name="email" type="email" required autocomplete="username" />
+                </FormField>
+
+                <FormField For="su-password" Label="Password"
+                           Description="At least 12 characters.">
+                    <Input id="su-password" name="password" type="password" required
+                           autocomplete="new-password" up-validate=".signup-form" />
+                </FormField>
+
+                <div class="space-y-1">
+                    <Progress Value="55" Class="h-1" />
+                    <p class="text-xs text-muted-foreground">Strength: fair</p>
+                </div>
+
+                <FormField For="su-confirm" Label="Confirm password">
+                    <Input id="su-confirm" name="confirm" type="password" required
+                           autocomplete="new-password" />
+                </FormField>
+
+                <Label Class="flex cursor-pointer items-start gap-2.5 text-sm">
+                    <Checkbox name="terms" value="true" required Class="mt-0.5" />
+                    <span class="text-muted-foreground">
+                        I accept the <a href="/terms" class="underline underline-offset-4">terms</a>.
+                    </span>
+                </Label>
+            </CardContent>
+
+            <CardFooter Class="mt-6 flex-col gap-3">
+                <Button Class="w-full" up-disable>Create account</Button>
+                <p class="text-sm text-muted-foreground">
+                    Already have one? <a href="/login" class="underline underline-offset-4">Sign in</a>
+                </p>
+            </CardFooter>
+        </form>
+    </Card>
+</div>

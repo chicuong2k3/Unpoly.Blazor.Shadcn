@@ -388,6 +388,97 @@
   })
 
   // =============================================================================================
+  // InputOTP
+  // =============================================================================================
+  // Six real inputs rather than one hidden input with painted boxes. What that costs is this
+  // compiler; what it buys is a field that posts, autofills, and survives a fragment swap with no
+  // state of its own.
+  //
+  // The hidden input is the one the server sees. Keeping it in step here rather than joining the
+  // boxes in every handler is the difference between one place to get it right and one per form.
+
+  up.compiler('[data-slot="input-otp"]', (root) => {
+    const boxes = [...root.querySelectorAll('[data-slot="input-otp-slot"]')]
+    const hidden = root.querySelector('[data-otp-value]')
+    if (boxes.length === 0 || !hidden) return
+
+    const sync = () => {
+      const next = boxes.map((b) => b.value).join('')
+      if (next === hidden.value) return
+      hidden.value = next
+      // Filter forms and [up-autosubmit] watch the hidden input, and a programmatic assignment
+      // fires nothing on its own.
+      hidden.dispatchEvent(new Event('change', { bubbles: true }))
+    }
+
+    // Pasting the whole code is how most people enter one — from a message, not by typing.
+    const spread = (digits, from = 0) => {
+      for (let k = 0; k < digits.length && from + k < boxes.length; k++) {
+        boxes[from + k].value = digits[k]
+      }
+      boxes[Math.min(from + digits.length, boxes.length - 1)].focus()
+    }
+
+    const onInput = (event) => {
+      const box = event.target
+      const i = boxes.indexOf(box)
+      if (i < 0) return
+      // A phone keyboard can deliver more than one character at a time.
+      const typed = box.value.replace(/\D/g, '')
+      box.value = typed.slice(0, 1)
+      if (typed.length > 1) spread(typed, i)
+      else if (box.value && i < boxes.length - 1) boxes[i + 1].focus()
+      sync()
+    }
+
+    const onKeyDown = (event) => {
+      const i = boxes.indexOf(event.target)
+      if (i < 0) return
+      if (event.key === 'Backspace' && !event.target.value && i > 0) {
+        // Retreat AND clear, which is what a code field is expected to do: one backspace per
+        // digit, not one to move and another to erase.
+        event.preventDefault()
+        boxes[i - 1].value = ''
+        boxes[i - 1].focus()
+        sync()
+      } else if (event.key === 'ArrowLeft' && i > 0) {
+        event.preventDefault()
+        boxes[i - 1].focus()
+      } else if (event.key === 'ArrowRight' && i < boxes.length - 1) {
+        event.preventDefault()
+        boxes[i + 1].focus()
+      }
+    }
+
+    const onPaste = (event) => {
+      const digits = (event.clipboardData?.getData('text') || '').replace(/\D/g, '')
+      if (!digits) return
+      event.preventDefault()
+      spread(digits)
+      sync()
+    }
+
+    // Clicking box four while two and three are empty is almost never what was meant.
+    const onFocus = (event) => {
+      const firstEmpty = boxes.find((b) => !b.value) || boxes[boxes.length - 1]
+      if (boxes.indexOf(event.target) > boxes.indexOf(firstEmpty)) firstEmpty.focus()
+    }
+
+    root.addEventListener('input', onInput)
+    root.addEventListener('keydown', onKeyDown)
+    root.addEventListener('paste', onPaste)
+    root.addEventListener('focusin', onFocus)
+    sync()
+
+    return () => {
+      root.removeEventListener('input', onInput)
+      root.removeEventListener('keydown', onKeyDown)
+      root.removeEventListener('paste', onPaste)
+      root.removeEventListener('focusin', onFocus)
+    }
+  })
+
+  // =============================================================================================
   // HoverCard
   // =============================================================================================
   // A popover that opens on hover. It is decoration by definition — anything only reachable by

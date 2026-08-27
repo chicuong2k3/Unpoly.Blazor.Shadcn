@@ -1,0 +1,37 @@
+@* A landing hero. One primary action and one secondary; two primaries is a decision the
+   visitor has to make before they know anything.
+
+   The social proof is beside the buttons rather than below the fold, because it is what makes
+   the button worth pressing. *@
+
+<section class="mx-auto max-w-3xl py-16 text-center">
+    <Badge Variant="secondary" Class="mb-6">
+        <Icon Name="check" />shadcn/ui, for Blazor static SSR
+    </Badge>
+
+    <h1 class="text-4xl font-semibold tracking-tight text-balance sm:text-5xl">
+        The components you already know, without the JavaScript you do not need
+    </h1>
+
+    <p class="mt-6 text-lg text-muted-foreground text-balance">
+        Native dialogs, real form controls and fragment swaps. Every class list is generated from
+        shadcn's own source and checked against it.
+    </p>
+
+    <div class="mt-8 flex flex-wrap justify-center gap-3">
+        <Button Size="lg" Href="/components/button">Browse components</Button>
+        <Button Size="lg" Variant="outline" Href="/blocks">
+            See the blocks<Icon Name="arrow-right" />
+        </Button>
+    </div>
+
+    <div class="mt-10 flex items-center justify-center gap-3">
+        <AvatarGroup>
+            <Avatar Size="sm"><AvatarFallback>MR</AvatarFallback></Avatar>
+            <Avatar Size="sm"><AvatarFallback>AL</AvatarFallback></Avatar>
+            <Avatar Size="sm"><AvatarFallback>JW</AvatarFallback></Avatar>
+            <AvatarGroupCount>+40</AvatarGroupCount>
+        </AvatarGroup>
+        <p class="text-sm text-muted-foreground">used on 40 production screens</p>
+    </div>
+</section>

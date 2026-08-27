@@ -1,0 +1,74 @@
+@* Advanced filters in a popover, which is the right shape once there are more than three:
+   the toolbar stays one row, and the panel is a form of its own.
+
+   The whole thing is a GET form. The URL is the state, so a filtered view can be sent to a
+   colleague, bookmarked, and reached by the back button — none of which a client-side filter
+   object gives you. The applied filters are shown as removable chips because a filter you
+   cannot see is a filter you will blame the data for. *@
+
+<form method="get" up-target="[data-results]" up-fallback=".doc-main">
+    <div class="flex flex-wrap items-center gap-2">
+        <InputGroup Class="max-w-[280px]">
+            <InputGroupAddon><Icon Name="search" /></InputGroupAddon>
+            <InputGroupControl name="q" type="search" placeholder="Search orders…"
+                               up-autosubmit up-watch-event="input" up-watch-delay="400" />
+        </InputGroup>
+
+        <Popover>
+            <PopoverTrigger Target="filters-panel" Size="default">
+                <Icon Name="settings" />Filters
+                <Badge Variant="secondary" Class="ml-1">2</Badge>
+            </PopoverTrigger>
+
+            <PopoverContent Id="filters-panel" Align="start" Class="w-[320px] p-4">
+                <PopoverHeader>
+                    <PopoverTitle>Filters</PopoverTitle>
+                    <PopoverDescription>Applied when you press Apply.</PopoverDescription>
+                </PopoverHeader>
+
+                <FieldGroup Class="mt-4">
+                    <Field>
+                        <FieldLabel For="f-status">Status</FieldLabel>
+                        <Select id="f-status" name="status">
+                            <SelectItem Value="">Any</SelectItem>
+                            <SelectItem Value="paid" Selected>Paid</SelectItem>
+                            <SelectItem Value="pending">Pending</SelectItem>
+                        </Select>
+                    </Field>
+
+                    <Field>
+                        <FieldLabel For="f-from">Placed after</FieldLabel>
+                        <DatePicker id="f-from" Name="from" />
+                    </Field>
+
+                    <Field>
+                        <FieldLabel>Total</FieldLabel>
+                        <div class="flex items-center gap-2">
+                            <Input name="min" type="number" placeholder="0" Class="num" />
+                            <span class="text-sm text-muted-foreground">to</span>
+                            <Input name="max" type="number" placeholder="Any" Class="num" />
+                        </div>
+                    </Field>
+                </FieldGroup>
+
+                <div class="mt-4 flex justify-end gap-2">
+                    <Button Variant="ghost" Size="sm" Href="?">Reset</Button>
+                    <Button Size="sm" up-disable>Apply</Button>
+                </div>
+            </PopoverContent>
+        </Popover>
+
+        <div class="flex flex-wrap items-center gap-1.5">
+            <Badge Variant="secondary">
+                Status: Paid
+                <a href="?status=" aria-label="Remove the status filter"><Icon Name="x" /></a>
+            </Badge>
+            <Badge Variant="secondary">
+                After 1 Mar
+                <a href="?from=" aria-label="Remove the date filter"><Icon Name="x" /></a>
+            </Badge>
+        </div>
+    </div>
+</form>
+
+<div data-results class="mt-6 text-sm text-muted-foreground">42 of 128 orders match.</div>
