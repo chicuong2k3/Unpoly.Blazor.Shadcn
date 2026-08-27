@@ -39,7 +39,7 @@ are C# parameters. `name`, `value`, `placeholder`, `required`, `id`, `aria-*`, `
 `up-*` attribute are written exactly as HTML and reach the element untouched. That splat is the
 only reason no component here knows Unpoly exists.
 
-## Five things that cannot be translated
+## Four things that cannot be translated
 
 These are not gaps to work around. React constructs that static SSR does not have:
 
@@ -51,10 +51,11 @@ These are not gaps to work around. React constructs that static SSR does not hav
    `Description` and `Message` as parameters and composes the same four primitives, which are
    also exported separately for when that shape does not fit.
 4. **`TooltipProvider`.** No shared delay timer; each tooltip keeps its own.
-5. **`cn()` conflict resolution.** There is no tailwind-merge. `Class="h-12"` does **not** beat
-   the variant's `h-control` — equal specificity, and stylesheet order is not yours. Use the
-   important modifier: `Class="h-12!"`. Layout classes the variant never sets (`w-full`, `mt-4`,
-   `col-span-2`) need nothing.
+5. **`TooltipProvider` is the last of them** — there is no fifth. `cn()` used to be one and no
+   longer is: this ships [tailwind-merge](https://github.com/dcastil/tailwind-merge) through its
+   .NET port, so `Class="h-12"` *removes* the variant's `h-control` exactly as it would in React.
+   Layout classes the variant never sets (`w-full`, `mt-4`, `col-span-2`) are appended, as
+   before. No `!` needed.
 
 ## Where the state lives
 

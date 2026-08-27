@@ -25,9 +25,11 @@ fit in a sentence, the component is wrong, not the list.
 
 ## What parity means here, exactly
 
-Radix keeps component state in React. Static SSR has none, so five things cannot be reproduced
-and are not attempted: `asChild`, controlled props, render props, `TooltipProvider`, and
-tailwind-merge's conflict resolution. Everything else is held to:
+Radix keeps component state in React. Static SSR has none, so four things cannot be reproduced
+and are not attempted: `asChild`, controlled props, render props and `TooltipProvider`. Class
+conflict resolution is not among them — `ClassMerge` is tailwind-merge through its .NET port, so
+a caller's class replaces the recipe's rather than losing to stylesheet order. Everything else is
+held to:
 
 > DOM, class strings, `data-slot`, and **all** ARIA identical to shadcn. The C# API identical
 > wherever the API is not a React construct.

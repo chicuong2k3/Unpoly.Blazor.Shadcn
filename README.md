@@ -106,7 +106,7 @@ the state, or an `up.compiler` that rebuilds after every swap and tears itself d
 | `Sonner` | its own renderer | Toastify-js, same `toast()` / `toast.error()` call shape |
 | `Form` | react-hook-form `Controller` | `<FormField>` takes Label/Description/Message as parameters |
 
-Four API differences follow from that and cannot be papered over:
+Three API differences follow from that and cannot be papered over:
 
 - **No `asChild`.** Blazor has no `cloneElement`. The case it was used for — "render this as a
   link" — is the `Href` parameter on `Button`, `Badge` and `DropdownMenuItem`.
@@ -114,9 +114,10 @@ Four API differences follow from that and cannot be papered over:
   three. Options are `<SelectItem>`, which renders `<option>`.
 - **No `TooltipProvider`.** Each tooltip keeps its own delay timer, so the grouped
   "one opens, the rest open instantly" behaviour is missing.
-- **No tailwind-merge.** `cn()` upstream resolves conflicts, so `className="h-12"` beats the
-  variant's `h-9`. Here two classes of equal specificity are resolved by stylesheet order, which
-  is not the caller's order. Override with the important modifier: `Class="h-12!"`.
+`cn()` is the exception that used to be on this list and is not any more: `ClassMerge` runs
+[tailwind-merge](https://github.com/dcastil/tailwind-merge) through its .NET port, with this
+library's three tokens registered in the groups they stand in for, so `Class="h-12"` removes the
+variant's `h-control` exactly as it would in React.
 
 Two tokens are ours: `--control-h` and `--control-text`, surfaced as `h-control` and
 `text-control`. shadcn writes `h-9 text-sm` literally, which pins every consumer to one

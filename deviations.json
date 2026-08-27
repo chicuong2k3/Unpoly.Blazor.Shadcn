@@ -58,11 +58,9 @@
     "avatar-fallback": {
       "classes": [
         "absolute",
-        "inset-0",
-        "text-xs",
-        "font-medium"
+        "inset-0"
       ],
-      "why": "It sits behind the image rather than replacing it; see avatar-image."
+      "why": "It sits behind the image rather than replacing it, so the exchange costs no script and survives a fragment swap; see avatar-image. text-xs and font-medium were also here and were a hand-written leftover — they overrode upstream's own text-sm, which only tailwind-merge made visible."
     },
     "dropdown-menu": {
       "classes": [

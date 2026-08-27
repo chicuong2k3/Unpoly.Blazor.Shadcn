@@ -28,4 +28,8 @@
     <None Include="../../README.md" Pack="true" PackagePath="\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <PackageReference Include="TailwindMerge.NET" Version="1.4.0" />
+  </ItemGroup>
+
 </Project>

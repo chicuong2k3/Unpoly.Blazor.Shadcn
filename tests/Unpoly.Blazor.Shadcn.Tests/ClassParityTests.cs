@@ -104,7 +104,14 @@ public class ClassParityTests : BunitContext
     static void AssertSameClasses(string slot, string? rendered, IReadOnlyList<string> upstream)
     {
         var ours = (rendered ?? "").Split(' ', StringSplitOptions.RemoveEmptyEntries).ToHashSet();
-        var theirs = upstream.ToHashSet();
+
+        // The upstream list is the raw union of base + variant + size, which is what the .tsx
+        // *says*. What React *renders* is that union through cn(), so `gap-2` from the base is
+        // gone the moment the sm size sets `gap-1.5`. Merging both sides with the same engine is
+        // what makes this a comparison of rendered output rather than of source text — and
+        // without it every recipe whose variant overrides its own base reads as a difference.
+        var theirs = ClassMerge.Of(string.Join(' ', upstream))
+            .Split(' ', StringSplitOptions.RemoveEmptyEntries).ToHashSet();
 
         theirs.ExceptWith(Deviations.DroppedFor(slot));
         ours.ExceptWith(Deviations.AddedFor(slot));

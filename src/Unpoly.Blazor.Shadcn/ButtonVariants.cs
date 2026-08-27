@@ -6,10 +6,11 @@ namespace Unpoly.Blazor.Shadcn;
 /// that export.
 /// </summary>
 /// <remarks>
-/// Two substitutions from the upstream recipe: <c>text-sm</c> and the default size's <c>h-9</c>
-/// read <c>--control-text</c> / <c>--control-h</c>, because one control layer dresses two heads
-/// at 36px and 46px. Unknown variant or size names fall back to the default, which is what cva
-/// does with an unmatched key.
+/// Three substitutions from the upstream recipe: <c>text-sm</c>, <c>h-9</c> and <c>size-9</c>
+/// read <c>--control-text</c> / <c>--control-h</c>, because hardcoding them pins every consumer
+/// to one control size. Unknown variant or size names fall back to the default, which is what
+/// cva does with an unmatched key. <c>extra</c> goes through <see cref="ClassMerge"/>, so a
+/// caller's class replaces the recipe's rather than competing with it.
 /// </remarks>
 public static class ButtonVariants
 {
@@ -45,6 +46,5 @@ public static class ButtonVariants
 
     /// <summary>The whole recipe, plus any extra classes the caller wants after it.</summary>
     public static string Of(string variant = "default", string size = "default", string? extra = null) =>
-        string.Join(' ', new[] { Base, ForVariant(variant), ForSize(size), extra }
-            .Where(p => !string.IsNullOrWhiteSpace(p)));
+        ClassMerge.Of(Base, ForVariant(variant), ForSize(size), extra);
 }

@@ -9,12 +9,10 @@ namespace Unpoly.Blazor.Shadcn;
 /// </summary>
 /// <remarks>
 /// <para>
-/// <b>There is no tailwind-merge here.</b> In shadcn, <c>cn()</c> resolves conflicts, so
-/// <c>className="h-12"</c> beats the variant's <c>h-9</c>. Two classes of equal specificity are
-/// resolved by stylesheet order instead, and Tailwind's order is not the caller's — so passing
-/// <c>Class="h-12"</c> may lose. Use the important modifier when overriding a value the variant
-/// already sets: <c>Class="h-12!"</c>. Layout classes the variant does not set (margins, grid
-/// placement, width) need nothing.
+/// <c>Class</c> wins over the component's own recipe, because <see cref="ClassMerge"/> is
+/// tailwind-merge: <c>Class="h-12"</c> removes the variant's <c>h-control</c> rather than sitting
+/// next to it and losing on stylesheet order. Layout classes the variant does not set — margins,
+/// grid placement, width — are simply appended, as before.
 /// </para>
 /// </remarks>
 public abstract class UiComponentBase : ComponentBase
@@ -33,7 +31,6 @@ public abstract class UiComponentBase : ComponentBase
     [Parameter(CaptureUnmatchedValues = true)]
     public IReadOnlyDictionary<string, object>? AdditionalAttributes { get; set; }
 
-    /// <summary>shadcn's <c>cn()</c>, minus the conflict resolution: joins and drops the blanks.</summary>
-    protected static string Cn(params string?[] parts) =>
-        string.Join(' ', parts.Where(p => !string.IsNullOrWhiteSpace(p)));
+    /// <summary>shadcn's <c>cn()</c>. See <see cref="ClassMerge"/>.</summary>
+    protected static string Cn(params string?[] parts) => ClassMerge.Of(parts);
 }

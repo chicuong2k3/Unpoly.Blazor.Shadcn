@@ -56,8 +56,9 @@ page.
 ## Building a new one
 
 Compose from the library; do not restyle it. If a block needs a class the components do not
-provide, that is layout (`grid`, `gap`, `md:grid-cols-…`) and belongs on a wrapper — not a
-`Class` override that fights a variant, which loses anyway because there is no tailwind-merge.
+provide, that is layout (`grid`, `gap`, `md:grid-cols-…`) and belongs on a wrapper. A `Class`
+override does now win — tailwind-merge resolves it — but a block that has to override a variant
+to look right is usually a block that wanted a different variant.
 
 Ask in this order for anything interactive: does a native element already do it, does an Unpoly
 attribute already do it, and only then write a compiler.
