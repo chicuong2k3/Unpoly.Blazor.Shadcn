@@ -1,0 +1,42 @@
+@* Right-click the area. The context-menu key and a long press on touch open it too, because the
+   platform fires one event for all three — a right-click handler bolted onto a div gets only the
+   first. Tab to the area and press the menu key to see it. *@
+<ContextMenu Target="cm-demo">
+    <ContextMenuTrigger Class="flex h-40 w-80 items-center justify-center rounded-md border border-dashed text-sm text-muted-foreground">
+        Right-click here
+    </ContextMenuTrigger>
+
+    <ContextMenuContent Id="cm-demo" Class="w-52">
+        <ContextMenuLabel>Row</ContextMenuLabel>
+        <ContextMenuItem Href="/components/table">
+            Open<ContextMenuShortcut>⏎</ContextMenuShortcut>
+        </ContextMenuItem>
+        <ContextMenuItem>
+            Duplicate<ContextMenuShortcut>⌘D</ContextMenuShortcut>
+        </ContextMenuItem>
+
+        <ContextMenuSub>
+            <ContextMenuSubTrigger Target="cm-demo-share">Share</ContextMenuSubTrigger>
+            <ContextMenuSubContent Id="cm-demo-share" Class="w-40">
+                <ContextMenuItem>Copy link</ContextMenuItem>
+                <ContextMenuItem>Email</ContextMenuItem>
+            </ContextMenuSubContent>
+        </ContextMenuSub>
+
+        <ContextMenuSeparator />
+        <ContextMenuGroup>
+            <ContextMenuCheckboxItem Name="cm-pinned" Checked>Pinned</ContextMenuCheckboxItem>
+        </ContextMenuGroup>
+
+        <ContextMenuSeparator />
+        <ContextMenuLabel Inset>Sort by</ContextMenuLabel>
+        <ContextMenuRadioGroup>
+            <ContextMenuRadioItem Name="cm-sort" Value="name" Checked>Name</ContextMenuRadioItem>
+            <ContextMenuRadioItem Name="cm-sort" Value="date">Date</ContextMenuRadioItem>
+        </ContextMenuRadioGroup>
+        <ContextMenuSeparator />
+        <ContextMenuItem Variant="destructive" data-ask="Delete this row?">
+            Delete<ContextMenuShortcut>⌫</ContextMenuShortcut>
+        </ContextMenuItem>
+    </ContextMenuContent>
+</ContextMenu>

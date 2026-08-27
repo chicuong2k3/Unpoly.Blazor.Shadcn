@@ -24,6 +24,9 @@ INTERNAL = {
     'SelectItemIndicator',      # ui.js draws it
     'InputOtpSeparator',        # <InputOtp> renders it
     'AlertDialogMedia',         # optional, shown when a block uses one
+    'ComboboxTriggerIcon',      # <ComboboxTrigger> renders it
+    'ComboboxItemIndicator',    # <ComboboxItem> renders it
+    'ComboboxChipRemove',       # <ComboboxChip> renders it
 }
 
 

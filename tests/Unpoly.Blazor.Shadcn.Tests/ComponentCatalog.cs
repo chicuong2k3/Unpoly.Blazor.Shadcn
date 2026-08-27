@@ -42,6 +42,24 @@ public static class ComponentCatalog
         // Renders nothing at all when there is no message — deliberately, so the grid gap does
         // not open a hole under every valid field.
         ["FormMessage"] = new() { ["Message"] = "x" },
+        ["ContextMenu"] = new() { ["Target"] = "cm" },
+        ["ContextMenuContent"] = new() { ["Id"] = "cm" },
+        ["ContextMenuSubContent"] = new() { ["Id"] = "cms" },
+        ["ContextMenuSubTrigger"] = new() { ["Target"] = "cms" },
+        ["MenubarContent"] = new() { ["Id"] = "mb" },
+        ["MenubarTrigger"] = new() { ["Target"] = "mb" },
+        ["MenubarSubContent"] = new() { ["Id"] = "mbs" },
+        ["MenubarSubTrigger"] = new() { ["Target"] = "mbs" },
+        ["NavigationMenuContent"] = new() { ["Id"] = "nav" },
+        ["NavigationMenuTrigger"] = new() { ["Target"] = "nav" },
+        ["NavigationMenuLink"] = new() { ["Href"] = "/x" },
+        ["Drawer"] = new() { ["Id"] = "dr" },
+        ["DrawerTrigger"] = new() { ["Target"] = "dr" },
+        ["Combobox"] = new() { ["Target"] = "cb" },
+        ["ComboboxContent"] = new() { ["Id"] = "cb" },
+        ["ComboboxTrigger"] = new() { ["Target"] = "cb" },
+        ["ComboboxItem"] = new() { ["Value"] = "a" },
+        ["ComboboxChip"] = new() { ["Value"] = "a" },
     };
 
     public static IEnumerable<Type> All =>

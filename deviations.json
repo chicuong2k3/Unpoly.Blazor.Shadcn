@@ -132,6 +132,78 @@
         "inline-block"
       ],
       "why": "Same as popover."
+    },
+    "context-menu": {
+      "classes": [
+        "relative"
+      ],
+      "why": "The trigger and its panel need a common ancestor for the compiler to pair them, and upstream has none because React context does that job. Positioning only."
+    },
+    "context-menu-sub": {
+      "classes": [
+        "relative"
+      ],
+      "why": "The trigger and its panel need a common ancestor for the compiler to pair them, and upstream has none because React context does that job. Positioning only."
+    },
+    "menubar-menu": {
+      "classes": [
+        "relative"
+      ],
+      "why": "Upstream renders nothing here at all — it is a context provider. The trigger and the panel still need something holding them together for the compiler to find."
+    },
+    "menubar-sub": {
+      "classes": [
+        "relative"
+      ],
+      "why": "Upstream renders nothing here at all — it is a context provider. The trigger and the panel still need something holding them together for the compiler to find."
+    },
+    "combobox-content": {
+      "classes": [
+        "border",
+        "z-50"
+      ],
+      "why": "Upstream draws the border and the stacking on a Popup primitive that has no slot of its own. In the top layer z-50 is inert, but the panel is styled the same either way and one class is cheaper than a second code path."
+    },
+    "combobox-trigger-icon": {
+      "classes": [
+        "ml-2",
+        "opacity-50",
+        "shrink-0"
+      ],
+      "why": "Upstream positions this chevron from the trigger with a descendant selector. Here it is a component a caller can place, so it carries its own spacing."
+    },
+    "combobox-item-indicator": {
+      "classes": [
+        "ml-auto",
+        "opacity-0",
+        "shrink-0",
+        "size-4"
+      ],
+      "why": "Radix hides the indicator by not rendering it. Static SSR renders every row once and the compiler cannot re-render, so the tick is always in the DOM at opacity-0 and the selected row reveals it."
+    },
+    "combobox-clear": {
+      "classes": [
+        "opacity-60",
+        "hover:opacity-100"
+      ],
+      "why": "Upstream leaves this unstyled and expects the caller to dress it; a bare button here would be browser chrome."
+    },
+    "combobox-chip-remove": {
+      "classes": [
+        "ml-0.5",
+        "opacity-60",
+        "hover:opacity-100",
+        "rounded-sm"
+      ],
+      "why": "Same: upstream ships no classes for it, and an unstyled button inside a chip is not a chip."
+    },
+    "combobox-trigger": {
+      "classes": [
+        "w-full",
+        "justify-between",
+        "font-normal"
+      ],
+      "why": "A combobox trigger shows a value, not a label: it fills its field, puts the chevron at the far end, and does not embolden what the user chose. Upstream gets all three from the call site, which a component cannot rely on."
     }
   },
   "dropped": {
@@ -240,6 +312,13 @@
         "data-[orientation=vertical]:flex-col"
       ],
       "why": "Upstream's root is a <div> holding a track and a thumb, so it is a flex container. Here the root IS the <input type=range>, and display:flex on a range input destroys the box model the browser draws its own track and thumb inside — the track vanished and only the thumb was left, a lone circle floating in the row. The remaining layout classes (relative, w-full, touch-none, select-none) are harmless on an input and are kept."
+    },
+    "combobox-trigger": {
+      "classes": [
+        "justify-center",
+        "font-medium"
+      ],
+      "why": "Replaced by the two above; a value pinned to the middle in bold is not a value."
     }
   },
   "subject": {
@@ -261,7 +340,8 @@
     "InputGroupControl": "input-group-control",
     "InputOtp": "input-otp",
     "CommandDialog": "command",
-    "CommandInput": "command-input"
+    "CommandInput": "command-input",
+    "Drawer": "drawer-content"
   },
   "asChildButton": {
     "$comment": [
@@ -317,6 +397,18 @@
     },
     "input-group-button": {
       "variant": "ghost",
+      "size": "default"
+    },
+    "combobox-trigger": {
+      "variant": "outline",
+      "size": "default"
+    },
+    "drawer-trigger": {
+      "variant": "outline",
+      "size": "default"
+    },
+    "drawer-close": {
+      "variant": "outline",
       "size": "default"
     }
   },

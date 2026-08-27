@@ -1,0 +1,24 @@
+@inherits UiComponentBase
+
+@* A text box that filters a list, and posts the value that was chosen.
+
+   The important part is the last clause. A combobox that only holds its value in JavaScript is
+   useless to a form that posts, so underneath this is a real <input type="hidden"> carrying the
+   value and a real <input type="text"> carrying what was typed. Nothing is stored anywhere else,
+   which is also why a fragment swap cannot lose the selection.
+
+   With scripting off it degrades to that text box and a visible list of options — worse than the
+   filtered version, but it still submits. Where the list is a catalogue rather than a menu, put
+   `up-autosubmit` and `up-target` on the input and let the server filter instead; the markup is
+   otherwise the same. *@
+
+<div data-slot="combobox" data-target="@Target" data-multiple="@(Multiple ? "true" : null)"
+     class="@Cn("relative", Class)" @attributes="AdditionalAttributes">@ChildContent</div>
+
+@code {
+    /// <summary>The id of the <see cref="ComboboxContent"/> this opens.</summary>
+    [Parameter, EditorRequired] public string Target { get; set; } = default!;
+
+    /// <summary>More than one value, shown as chips. The hidden inputs repeat the same name.</summary>
+    [Parameter] public bool Multiple { get; set; }
+}

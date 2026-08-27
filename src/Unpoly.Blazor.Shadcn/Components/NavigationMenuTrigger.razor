@@ -1,0 +1,23 @@
+@inherits UiComponentBase
+
+@* popovertarget opens the panel with no script at all. The chevron turns on the open state,
+   which the compiler that mirrors popover state supplies. *@
+
+<button type="button" data-slot="navigation-menu-trigger" data-target="@Target"
+        popovertarget="@Target" aria-expanded="false" class="@Classes"
+        @attributes="AdditionalAttributes">
+    @ChildContent
+    <Icon Name="chevron-down"
+          Class="relative top-[1px] ml-1 size-3 transition duration-300 group-data-[state=open]:rotate-180"
+          aria-hidden="true" />
+</button>
+
+@code {
+    /// <summary>The id of the <see cref="NavigationMenuContent"/> this opens.</summary>
+    [Parameter, EditorRequired] public string Target { get; set; } = default!;
+
+    const string Base =
+        "group";
+
+    string Classes => Cn(Base, Class);
+}

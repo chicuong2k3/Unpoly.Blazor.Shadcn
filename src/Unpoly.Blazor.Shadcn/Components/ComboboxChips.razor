@@ -1,0 +1,22 @@
+@inherits UiComponentBase
+
+@* The frame of a multi-select: chips for what is chosen, and a text box to add more. It looks
+   like one control and is really two, which is why the frame carries the focus ring rather than
+   the input — :focus-within is what makes a composite control look focused. *@
+
+<div data-slot="combobox-chips" class="@Classes"
+     @attributes="AdditionalAttributes">@ChildContent</div>
+
+@code {
+    const string Base =
+        "flex min-h-9 flex-wrap items-center gap-1.5 rounded-md border border-input " +
+        "bg-transparent bg-clip-padding px-2.5 py-1.5 text-control shadow-xs " +
+        "transition-[color,box-shadow] focus-within:border-ring focus-within:ring-[3px] " +
+        "focus-within:ring-ring/50 has-aria-invalid:border-destructive " +
+        "has-aria-invalid:ring-[3px] has-aria-invalid:ring-destructive/20 " +
+        "has-data-[slot=combobox-chip]:px-1.5 dark:bg-input/30 " +
+        "dark:has-aria-invalid:border-destructive/50 " +
+        "dark:has-aria-invalid:ring-destructive/40";
+
+    string Classes => Cn(Base, Class);
+}

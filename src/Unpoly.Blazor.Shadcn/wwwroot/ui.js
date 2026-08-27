@@ -275,6 +275,31 @@
   })
 
   // =============================================================================================
+  // data-state on a [popover]
+  // =============================================================================================
+  // The same problem as <dialog>, and the same fix. shadcn animates every menu and popover with
+  // data-[state=open] and data-[state=closed], which Radix sets as it mounts. A [popover] has an
+  // open state but no attribute for it, so those classes matched nothing and panels appeared and
+  // vanished with no transition at all.
+  //
+  // The trigger gets it too, because a chevron that turns when its menu opens is written
+  // `group-data-[state=open]:rotate-180` — the group is the trigger, not the panel.
+
+  up.compiler('[popover][data-slot]', (panel) => {
+    const trigger = document.querySelector(`[popovertarget="${panel.id}"]`)
+
+    const onToggle = (event) => {
+      const open = event.newState === 'open'
+      panel.dataset.state = open ? 'open' : 'closed'
+      if (trigger) trigger.dataset.state = open ? 'open' : 'closed'
+    }
+
+    if (panel.matches(':popover-open')) panel.dataset.state = 'open'
+    panel.addEventListener('toggle', onToggle)
+    return () => panel.removeEventListener('toggle', onToggle)
+  })
+
+  // =============================================================================================
   // DropdownMenu / Popover — the popover API does the hard parts
   // =============================================================================================
   // [popover] gives the top layer, light dismiss and Escape. What it does not give portably yet is
@@ -297,8 +322,12 @@
     panel.style.left = `${Math.round(left)}px`
   }
 
+  // Every trigger that opens a panel anchored to itself: a dropdown, a popover, a submenu row,
+  // and a menubar's own buttons. They differ in where the panel goes, not in how it opens.
   up.compiler('[data-slot="dropdown-menu-trigger"], [data-slot="popover-trigger"], ' +
-              '[data-slot="dropdown-menu-sub-trigger"]', (trigger) => {
+              '[data-slot="dropdown-menu-sub-trigger"], [data-slot="menubar-trigger"], ' +
+              '[data-slot="menubar-sub-trigger"], [data-slot="context-menu-sub-trigger"]',
+              (trigger) => {
     const panel = document.getElementById(trigger.dataset.target)
     if (!panel) return
 
@@ -310,7 +339,11 @@
     const onToggle = (event) => {
       if (event.newState !== 'open') { trigger.setAttribute('aria-expanded', 'false'); return }
       trigger.setAttribute('aria-expanded', 'true')
-      place(panel, trigger, panel.dataset.align, panel.dataset.side)
+      // A submenu opens BESIDE its row, not below it — otherwise it lands on top of the parent
+      // menu and the row you came from disappears underneath it.
+      if (trigger.getAttribute('data-slot').endsWith('sub-trigger')) placeBeside(panel, trigger)
+      else place(panel, anchor, panel.dataset.align, panel.dataset.side,
+                 Number(panel.dataset.sideOffset || 4))
       panel.querySelector('[data-slot$="-item"]:not([data-disabled])')?.focus()
     }
 
@@ -328,10 +361,35 @@
     }
   })
 
-  // Keyboard within an open menu. Radix roves focus; so does this.
-  up.compiler('[data-slot="dropdown-menu-content"]', (panel) => {
+  function placeBeside(panel, row) {
+    const a = row.getBoundingClientRect()
+    const p = panel.getBoundingClientRect()
+    let left = a.right - 4
+    if (left + p.width > window.innerWidth - 8) left = Math.max(8, a.left - p.width + 4)
+    panel.style.left = `${Math.round(left)}px`
+    panel.style.top = `${Math.round(Math.min(a.top - 4, window.innerHeight - p.height - 8))}px`
+  }
+
+  // Keyboard within an open menu, for all three families. Radix roves focus; so does this.
+  // Right opens a submenu and Left closes one, which is what the APG asks for and what makes a
+  // nested menu usable with no pointer at all.
+  up.compiler('[data-slot="dropdown-menu-content"], [data-slot="context-menu-content"], ' +
+              '[data-slot="menubar-content"], [data-slot="dropdown-menu-sub-content"], ' +
+              '[data-slot="context-menu-sub-content"], [data-slot="menubar-sub-content"]',
+              (panel) => {
     const onKey = (event) => {
-      const items = [...panel.querySelectorAll('[data-slot="dropdown-menu-item"]:not([data-disabled])')]
+      if (event.key === 'ArrowRight' && document.activeElement?.matches('[aria-haspopup=menu]')) {
+        event.preventDefault()
+        document.activeElement.click()
+        return
+      }
+      if (event.key === 'ArrowLeft' && panel.getAttribute('data-slot').includes('sub-content')) {
+        event.preventDefault()
+        panel.hidePopover()
+        return
+      }
+      const items = [...panel.querySelectorAll('[data-slot$="-item"]:not([data-disabled]), ' +
+                                               '[data-slot$="-sub-trigger"]')]
       if (items.length === 0) return
       const from = items.indexOf(document.activeElement)
       if (event.key === 'ArrowDown') { event.preventDefault(); items[(from + 1) % items.length].focus() }
@@ -341,6 +399,304 @@
     }
     panel.addEventListener('keydown', onKey)
     return () => panel.removeEventListener('keydown', onKey)
+  })
+
+  // =============================================================================================
+  // ContextMenu — the right button, and the two other ways to ask for the same thing
+  // =============================================================================================
+  // One `contextmenu` listener covers the right button, the context-menu key and a long press on
+  // touch, because the platform fires the same event for all three. A right-click handler bolted
+  // onto a div gets only the first, which is how context menus end up unreachable by keyboard.
+
+  up.compiler('[data-slot="context-menu"]', (root) => {
+    const panel = document.getElementById(root.dataset.target)
+    const trigger = root.querySelector('[data-slot="context-menu-trigger"]')
+    if (!panel || !trigger) return
+
+    const onContextMenu = (event) => {
+      event.preventDefault()
+      if (panel.matches(':popover-open')) panel.hidePopover()
+      panel.showPopover()
+
+      // The keyboard route carries no pointer position, and 0,0 from a key press would put the
+      // menu in the corner of the screen rather than on the thing it belongs to.
+      const box = panel.getBoundingClientRect()
+      const fromKeyboard = event.clientX === 0 && event.clientY === 0
+      const at = fromKeyboard ? trigger.getBoundingClientRect() : null
+      const x = at ? at.left : event.clientX
+      const y = at ? at.bottom : event.clientY
+
+      panel.style.left = `${Math.round(Math.min(x, window.innerWidth - box.width - 8))}px`
+      panel.style.top = `${Math.round(Math.min(y, window.innerHeight - box.height - 8))}px`
+      trigger.setAttribute('aria-expanded', 'true')
+      panel.querySelector('[data-slot$="-item"]:not([data-disabled])')?.focus()
+    }
+
+    const onToggle = (event) => {
+      if (event.newState !== 'open') trigger.setAttribute('aria-expanded', 'false')
+    }
+
+    trigger.addEventListener('contextmenu', onContextMenu)
+    panel.addEventListener('toggle', onToggle)
+
+    return () => {
+      trigger.removeEventListener('contextmenu', onContextMenu)
+      panel.removeEventListener('toggle', onToggle)
+    }
+  })
+
+  // =============================================================================================
+  // Menubar — what makes a bar of dropdowns a menubar
+  // =============================================================================================
+  // Two behaviours, and they are the whole difference. Left and Right move along the bar rather
+  // than into the page. And once ANY menu is open, hovering another opens that one instead of
+  // doing nothing — the thing that makes a menubar feel like one, and the only part of it that
+  // is not free.
+
+  up.compiler('[data-slot="menubar"]', (bar) => {
+    const triggers = () => [...bar.querySelectorAll('[data-slot="menubar-trigger"]')]
+    const panelFor = (trigger) => document.getElementById(trigger.dataset.target)
+
+    const openMenuFor = (trigger) => {
+      const panel = panelFor(trigger)
+      if (!panel || panel.matches(':popover-open')) return
+      for (const other of triggers()) {
+        if (other !== trigger) panelFor(other)?.hidePopover()
+      }
+      panel.showPopover()
+    }
+
+    const anyOpen = () => triggers().some((t) => panelFor(t)?.matches(':popover-open'))
+
+    const onOver = (event) => {
+      const trigger = event.target.closest?.('[data-slot="menubar-trigger"]')
+      if (trigger && anyOpen()) openMenuFor(trigger)
+    }
+
+    const onKey = (event) => {
+      const all = triggers()
+      const at = all.indexOf(event.target.closest('[data-slot="menubar-trigger"]'))
+      if (at < 0) return
+      if (event.key === 'ArrowRight') { event.preventDefault(); all[(at + 1) % all.length].focus() }
+      else if (event.key === 'ArrowLeft') { event.preventDefault(); all[(at - 1 + all.length) % all.length].focus() }
+      else if (event.key === 'ArrowDown') { event.preventDefault(); openMenuFor(all[at]) }
+    }
+
+    bar.addEventListener('pointerover', onOver)
+    bar.addEventListener('keydown', onKey)
+
+    return () => {
+      bar.removeEventListener('pointerover', onOver)
+      bar.removeEventListener('keydown', onKey)
+    }
+  })
+
+  // =============================================================================================
+  // Drawer — the one thing a sheet cannot do
+  // =============================================================================================
+  // Everything else about a drawer is <Sheet>: a native <dialog> for the top layer, the focus
+  // trap, Escape and ::backdrop. What vaul adds, and the only reason it exists, is that you can
+  // drag it shut — which on a phone is the gesture people reach for before they look for a close
+  // button. Past a third of the panel it closes; short of that it springs back.
+  //
+  // Pointer events, not touch events: the same code then works for a mouse drag and a stylus,
+  // and setPointerCapture means letting go outside the panel still ends the drag.
+
+  up.compiler('[data-slot="drawer-trigger"]', (trigger) => {
+    const onClick = () => document.getElementById(trigger.dataset.open)?.showModal()
+    trigger.addEventListener('click', onClick)
+    return () => trigger.removeEventListener('click', onClick)
+  })
+
+  up.compiler('dialog[data-slot="drawer"]', (dialog) => {
+    const panel = dialog.querySelector('[data-slot="drawer-content"]')
+    if (!panel) return
+
+    const vertical = dialog.dataset.direction !== 'left' && dialog.dataset.direction !== 'right'
+    const towards = dialog.dataset.direction === 'top' || dialog.dataset.direction === 'left' ? -1 : 1
+    let from = null
+
+    const offset = (event) => (vertical ? event.clientY : event.clientX)
+
+    const onDown = (event) => {
+      // Not on a control: dragging must not steal a press meant for a button or a text field.
+      if (event.target.closest('button, a, input, select, textarea, [contenteditable]')) return
+      from = offset(event)
+      panel.setPointerCapture(event.pointerId)
+      panel.style.transition = 'none'
+    }
+
+    const onMove = (event) => {
+      if (from === null) return
+      const moved = (offset(event) - from) * towards
+      if (moved <= 0) return                       // dragging further in does nothing
+      panel.style.transform = vertical ? `translateY(${moved * towards}px)`
+                                       : `translateX(${moved * towards}px)`
+    }
+
+    const onUp = (event) => {
+      if (from === null) return
+      const moved = (offset(event) - from) * towards
+      const span = vertical ? panel.offsetHeight : panel.offsetWidth
+      from = null
+      panel.style.transition = ''
+      panel.style.transform = ''
+      if (moved > span / 3) dialog.close()
+    }
+
+    panel.addEventListener('pointerdown', onDown)
+    panel.addEventListener('pointermove', onMove)
+    panel.addEventListener('pointerup', onUp)
+    panel.addEventListener('pointercancel', onUp)
+
+    return () => {
+      panel.removeEventListener('pointerdown', onDown)
+      panel.removeEventListener('pointermove', onMove)
+      panel.removeEventListener('pointerup', onUp)
+      panel.removeEventListener('pointercancel', onUp)
+    }
+  })
+
+  // =============================================================================================
+  // Combobox — filter, choose, and post what was chosen
+  // =============================================================================================
+  // The value lives in a real <input type="hidden">, so the form posts it, a fragment swap cannot
+  // lose it, and the server reads it with no JSON anywhere. Everything below is presentation over
+  // that one fact.
+
+  up.compiler('[data-slot="combobox"]', (root) => {
+    const panel = document.getElementById(root.dataset.target)
+    if (!panel) return
+
+    const multiple = root.dataset.multiple === 'true'
+    const input = root.querySelector('[data-slot="combobox-chip-input"], input[type="text"]')
+    const trigger = root.querySelector('[data-slot="combobox-trigger"]')
+    const value = root.querySelector('[data-slot="combobox-value"]')
+    const clear = root.querySelector('[data-slot="combobox-clear"]')
+    const hidden = root.querySelector('input[type="hidden"][data-combobox-value]')
+    const empty = panel.querySelector('[data-slot="combobox-empty"]')
+    const items = () => [...panel.querySelectorAll('[data-slot="combobox-item"]')]
+
+    const shown = () => items().filter((i) => !i.hidden)
+
+    const filter = () => {
+      const q = fold((input?.value || '').trim())
+      let count = 0
+      for (const item of items()) {
+        const hay = fold(item.textContent + ' ' + (item.dataset.keywords || ''))
+        item.hidden = q ? !hay.includes(q) : false
+        if (!item.hidden) count++
+      }
+      for (const group of panel.querySelectorAll('[data-slot="combobox-group"]')) {
+        group.hidden = !group.querySelector('[data-slot="combobox-item"]:not([hidden])')
+      }
+      if (empty) empty.hidden = count > 0
+    }
+
+    const choose = (item) => {
+      if (!multiple) {
+        for (const other of items()) {
+          const on = other === item
+          other.dataset.selected = on ? 'true' : ''
+          if (!on) delete other.dataset.selected
+          other.setAttribute('aria-selected', String(on))
+        }
+        if (hidden) hidden.value = item.dataset.value
+        if (value) value.textContent = item.textContent.trim()
+        if (clear) clear.hidden = false
+        panel.hidePopover()
+        trigger?.focus()
+        return
+      }
+
+      // Multiple: one hidden input per chosen value, all under the same name, which is what the
+      // server reads as a list. Choosing an already-chosen row removes it.
+      const chips = root.querySelector('[data-slot="combobox-chips"]')
+      if (!chips) return
+      const existing = chips.querySelector(`[data-slot="combobox-chip"][data-value="${item.dataset.value}"]`)
+      if (existing) { existing.remove(); delete item.dataset.selected; return }
+      item.dataset.selected = 'true'
+      const chip = document.createElement('span')
+      chip.dataset.slot = 'combobox-chip'
+      chip.dataset.value = item.dataset.value
+      chip.className = chips.dataset.chipClass || ''
+      chip.textContent = item.textContent.trim()
+      const post = document.createElement('input')
+      post.type = 'hidden'
+      post.name = chips.dataset.name || ''
+      post.value = item.dataset.value
+      chip.appendChild(post)
+      chips.insertBefore(chip, input)
+      if (input) input.value = ''
+      filter()
+    }
+
+    const onClick = (event) => {
+      const remove = event.target.closest('[data-slot="combobox-chip-remove"]')
+      if (remove) {
+        const chip = remove.closest('[data-slot="combobox-chip"]')
+        const item = items().find((i) => i.dataset.value === chip?.dataset.value)
+        if (item) delete item.dataset.selected
+        chip?.remove()
+        return
+      }
+      const item = event.target.closest('[data-slot="combobox-item"]')
+      if (item && !item.disabled) choose(item)
+    }
+
+    const onKey = (event) => {
+      const list = shown()
+      if (event.key === 'ArrowDown' || event.key === 'ArrowUp') {
+        event.preventDefault()
+        if (!panel.matches(':popover-open')) panel.showPopover()
+        const at = list.indexOf(document.activeElement)
+        const next = event.key === 'ArrowDown' ? at + 1 : at - 1
+        list[(next + list.length) % list.length]?.focus()
+      } else if (event.key === 'Escape' && panel.matches(':popover-open')) {
+        panel.hidePopover()
+      }
+    }
+
+    const onInput = () => {
+      if (!panel.matches(':popover-open')) panel.showPopover()
+      filter()
+    }
+
+    const onClear = () => {
+      for (const item of items()) { delete item.dataset.selected; item.setAttribute('aria-selected', 'false') }
+      for (const chip of root.querySelectorAll('[data-slot="combobox-chip"]')) chip.remove()
+      if (hidden) hidden.value = ''
+      if (input) input.value = ''
+      if (value) value.textContent = value.dataset.placeholder || ''
+      clear.hidden = true
+      filter()
+    }
+
+    const onToggle = (event) => {
+      const open = event.newState === 'open'
+      trigger?.setAttribute('aria-expanded', String(open))
+      input?.setAttribute('aria-expanded', String(open))
+      if (open) place(panel, trigger || root, 'start', 'bottom', 4)
+    }
+
+    panel.addEventListener('click', onClick)
+    root.addEventListener('click', onClick)
+    root.addEventListener('keydown', onKey)
+    panel.addEventListener('keydown', onKey)
+    input?.addEventListener('input', onInput)
+    clear?.addEventListener('click', onClear)
+    panel.addEventListener('toggle', onToggle)
+    filter()
+
+    return () => {
+      panel.removeEventListener('click', onClick)
+      root.removeEventListener('click', onClick)
+      root.removeEventListener('keydown', onKey)
+      panel.removeEventListener('keydown', onKey)
+      input?.removeEventListener('input', onInput)
+      clear?.removeEventListener('click', onClear)
+      panel.removeEventListener('toggle', onToggle)
+    }
   })
 
   // =============================================================================================

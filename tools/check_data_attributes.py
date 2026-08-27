@@ -44,9 +44,32 @@ BY_COMPILER = {
     'ResizableHandle.data-dragging': 'up.compiler(\'[data-slot="resizable-handle"]\')',
 }
 
+# Every panel that is a [popover] gets data-state from one compiler, and so does its trigger:
+# a chevron that turns when its own menu opens is written group-data-[state=open] on the trigger,
+# not on the panel.
+BY_COMPILER.update({
+    f'{name}.data-state': "up.compiler('[popover][data-slot]')"
+    for name in ('DropdownMenuContent', 'DropdownMenuTrigger', 'ContextMenuContent',
+                 'ContextMenuSubContent', 'ContextMenuSubTrigger', 'MenubarContent',
+                 'MenubarSubContent', 'MenubarSubTrigger', 'MenubarTrigger',
+                 'NavigationMenuContent', 'NavigationMenuTrigger', 'ComboboxContent')
+})
+
 # Attributes a CALLER sets, because the state they describe is the caller's to know.
 BY_CALLER = {
     'TableRow.data-state': 'a row is selected by whatever renders the table',
+}
+
+# Rules that cannot apply here, with what replaced the mechanism behind them.
+NOT_APPLICABLE = {
+    'NavigationMenuContent.data-motion':
+        'Radix animates panels sliding past each other inside one shared viewport; each panel '
+        'here is its own popover in the top layer, so there is no direction to animate from',
+    'ComboboxContent.data-chips':
+        'upstream marks the panel when the trigger is a chip frame so it can widen to match; '
+        'the popover is measured against its anchor here, so the width follows already',
+    'ContextMenuContent.data-side':
+        'a context menu opens at the pointer, not on a side of an anchor',
 }
 
 # Attributes rendered by the component this one composes, as upstream composes it too.
@@ -64,7 +87,8 @@ def main() -> int:
         emitted = set(EMITS.findall(source))
         for attribute in sorted(wanted - emitted):
             key = f'{path.stem}.data-{attribute}'
-            if key in BY_COMPILER or key in BY_CALLER or key in BY_COMPOSITION:
+            if key in BY_COMPILER or key in BY_CALLER or key in BY_COMPOSITION \
+                    or key in NOT_APPLICABLE:
                 continue
             problems.append(f'{path.stem}: styles itself with data-[{attribute}=…] '
                             f'and never renders data-{attribute}')
@@ -80,7 +104,8 @@ def main() -> int:
 
     print(f'{checked} components: every data- rule has an attribute to match '
           f'({len(BY_COMPILER)} set by a compiler, {len(BY_CALLER)} by the caller, '
-          f'{len(BY_COMPOSITION)} by a composed component)')
+          f'{len(BY_COMPOSITION)} by a composed component, '
+          f'{len(NOT_APPLICABLE)} that cannot apply here)')
     return 0
 
 

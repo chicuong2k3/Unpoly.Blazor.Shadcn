@@ -323,6 +323,116 @@ renders `<summary>` · `data-slot="collapsible-trigger"`
 
 _No parameters of its own._
 
+## `<Combobox>`
+renders `<div>` · `data-slot="combobox"`
+
+| Parameter | Type | Default | |
+|---|---|---|---|
+| `Target` | `string` | `default!` |  |
+| `Multiple` | `bool` | — | **required** |
+
+## `<ComboboxChip>`
+renders `<span>` · `data-slot="combobox-chip"`
+
+| Parameter | Type | Default | |
+|---|---|---|---|
+| `Value` | `string` | `default!` |  |
+| `Name` | `string?` | — | **required** |
+| `Label` | `string?` | — |  |
+
+## `<ComboboxChipInput>`
+renders `<input>` · `data-slot="combobox-chip-input"`
+
+| Parameter | Type | Default | |
+|---|---|---|---|
+| `Placeholder` | `string?` | — |  |
+| `AriaLabel` | `string` | `"Search"` |  |
+
+## `<ComboboxChipRemove>`
+renders `<button>` · `data-slot="combobox-chip-remove"`
+
+| Parameter | Type | Default | |
+|---|---|---|---|
+| `Label` | `string` | `"Remove"` |  |
+
+## `<ComboboxChips>`
+renders `<div>` · `data-slot="combobox-chips"`
+
+_No parameters of its own._
+
+## `<ComboboxClear>`
+renders `<button>` · `data-slot="combobox-clear"`
+
+| Parameter | Type | Default | |
+|---|---|---|---|
+| `Label` | `string` | `"Clear"` |  |
+
+## `<ComboboxContent>`
+renders `<div>` · `data-slot="combobox-content"`
+
+| Parameter | Type | Default | |
+|---|---|---|---|
+| `Id` | `string` | `default!` |  |
+
+## `<ComboboxEmpty>`
+renders `<div>` · `data-slot="combobox-empty"`
+
+_No parameters of its own._
+
+## `<ComboboxGroup>`
+renders `<div>` · `data-slot="combobox-group"`
+
+| Parameter | Type | Default | |
+|---|---|---|---|
+| `Heading` | `string?` | — |  |
+
+## `<ComboboxItem>`
+renders `<button>` · `data-slot="combobox-item"`
+
+| Parameter | Type | Default | |
+|---|---|---|---|
+| `Value` | `string` | `default!` |  |
+| `Keywords` | `string?` | — | **required** |
+| `Selected` | `bool` | — |  |
+| `Disabled` | `bool` | — |  |
+
+## `<ComboboxItemIndicator>`
+`data-slot="combobox-item-indicator"`
+
+_No parameters of its own._
+
+## `<ComboboxLabel>`
+renders `<div>` · `data-slot="combobox-label"`
+
+_No parameters of its own._
+
+## `<ComboboxList>`
+renders `<div>` · `data-slot="combobox-list"`
+
+_No parameters of its own._
+
+## `<ComboboxSeparator>`
+renders `<div>` · `data-slot="combobox-separator"`
+
+_No parameters of its own._
+
+## `<ComboboxTrigger>`
+renders `<button>` · `data-slot="combobox-trigger"`
+
+| Parameter | Type | Default | |
+|---|---|---|---|
+| `Target` | `string` | `default!` |  |
+
+## `<ComboboxTriggerIcon>`
+`data-slot="combobox-trigger-icon"`
+
+_No parameters of its own._
+
+## `<ComboboxValue>`
+renders `<span>` · `data-slot="combobox-value"`
+
+_No parameters of its own._
+
 ## `<Command>`
 renders `<div>` · `data-slot="command"`
 
@@ -382,6 +492,103 @@ renders `<span>` · `data-slot="command-shortcut"`
 
 _No parameters of its own._
 
+## `<ContextMenu>`
+renders `<div>` · `data-slot="context-menu"`
+
+| Parameter | Type | Default | |
+|---|---|---|---|
+| `Target` | `string` | `default!` |  |
+
+## `<ContextMenuCheckboxItem>`
+renders `<input>` · `data-slot="context-menu-checkbox-item"`
+
+| Parameter | Type | Default | |
+|---|---|---|---|
+| `Name` | `string?` | — |  |
+| `Value` | `string` | `"true"` |  |
+| `Checked` | `bool` | — |  |
+| `Disabled` | `bool` | — |  |
+
+## `<ContextMenuContent>`
+renders `<div>` · `data-slot="context-menu-content"`
+
+| Parameter | Type | Default | |
+|---|---|---|---|
+| `Id` | `string` | `default!` |  |
+
+## `<ContextMenuGroup>`
+renders `<div>` · `data-slot="context-menu-group"`
+
+_No parameters of its own._
+
+## `<ContextMenuItem>`
+renders `<a>` · `data-slot="context-menu-item"`
+
+| Parameter | Type | Default | |
+|---|---|---|---|
+| `Href` | `string?` | — |  |
+| `Variant` | `string` | `"default"` |  |
+| `Disabled` | `bool` | — |  |
+| `Inset` | `bool` | — |  |
+| `Type` | `string` | `"button"` |  |
+
+## `<ContextMenuLabel>`
+renders `<div>` · `data-slot="context-menu-label"`
+
+| Parameter | Type | Default | |
+|---|---|---|---|
+| `Inset` | `bool` | — |  |
+
+## `<ContextMenuRadioGroup>`
+renders `<div>` · `data-slot="context-menu-radio-group"`
+
+_No parameters of its own._
+
+## `<ContextMenuRadioItem>`
+renders `<label>` · `data-slot="context-menu-radio-item"`
+
+| Parameter | Type | Default | |
+|---|---|---|---|
+| `Name` | `string?` | — |  |
+| `Value` | `string?` | — |  |
+| `Checked` | `bool` | — |  |
+| `Disabled` | `bool` | — |  |
+
+## `<ContextMenuSeparator>`
+renders `<div>` · `data-slot="context-menu-separator"`
+
+_No parameters of its own._
+
+## `<ContextMenuShortcut>`
+renders `<span>` · `data-slot="context-menu-shortcut"`
+
+_No parameters of its own._
+
+## `<ContextMenuSub>`
+renders `<div>` · `data-slot="context-menu-sub"`
+
+_No parameters of its own._
+
+## `<ContextMenuSubContent>`
+renders `<div>` · `data-slot="context-menu-sub-content"`
+
+| Parameter | Type | Default | |
+|---|---|---|---|
+| `Id` | `string` | `default!` |  |
+
+## `<ContextMenuSubTrigger>`
+renders `<button>` · `data-slot="context-menu-sub-trigger"`
+
+| Parameter | Type | Default | |
+|---|---|---|---|
+| `Target` | `string` | `default!` |  |
+| `Inset` | `bool` | — | **required** |
+
+## `<ContextMenuTrigger>`
+renders `<div>` · `data-slot="context-menu-trigger"`
+
+_No parameters of its own._
+
 ## `<DatePicker>`
 renders `<input>` · `data-slot="date-picker"`
 
@@ -438,6 +645,53 @@ renders `<button>` · `data-slot="dialog-trigger"`
 |---|---|---|---|
 | `Target` | `string` | `default!` |  |
 | `Variant` | `string` | `"default"` | **required** |
+| `Size` | `string` | `"default"` |  |
+
+## `<Drawer>`
+renders `<dialog>` · `data-slot="drawer"`
+
+| Parameter | Type | Default | |
+|---|---|---|---|
+| `Id` | `string` | `default!` |  |
+| `Direction` | `string` | `"bottom"` | **required** |
+| `Dismissable` | `bool` | `true` |  |
+| `ShowHandle` | `bool` | `true` |  |
+
+## `<DrawerClose>`
+renders `<button>` · `data-slot="drawer-close"`
+
+| Parameter | Type | Default | |
+|---|---|---|---|
+| `Variant` | `string` | `"outline"` |  |
+| `Size` | `string` | `"default"` |  |
+
+## `<DrawerDescription>`
+renders `<p>` · `data-slot="drawer-description"`
+
+_No parameters of its own._
+
+## `<DrawerFooter>`
+renders `<div>` · `data-slot="drawer-footer"`
+
+_No parameters of its own._
+
+## `<DrawerHeader>`
+renders `<div>` · `data-slot="drawer-header"`
+
+_No parameters of its own._
+
+## `<DrawerTitle>`
+renders `<h2>` · `data-slot="drawer-title"`
+
+_No parameters of its own._
+
+## `<DrawerTrigger>`
+renders `<button>` · `data-slot="drawer-trigger"`
+
+| Parameter | Type | Default | |
+|---|---|---|---|
+| `Target` | `string` | `default!` |  |
+| `Variant` | `string` | `"outline"` | **required** |
 | `Size` | `string` | `"default"` |  |
 
 ## `<DropdownMenu>`
@@ -827,6 +1081,110 @@ renders `<label>` · `data-slot="label"`
 
 _No parameters of its own._
 
+## `<Menubar>`
+renders `<div>` · `data-slot="menubar"`
+
+_No parameters of its own._
+
+## `<MenubarCheckboxItem>`
+renders `<input>` · `data-slot="menubar-checkbox-item"`
+
+| Parameter | Type | Default | |
+|---|---|---|---|
+| `Name` | `string?` | — |  |
+| `Value` | `string` | `"true"` |  |
+| `Checked` | `bool` | — |  |
+| `Disabled` | `bool` | — |  |
+
+## `<MenubarContent>`
+renders `<div>` · `data-slot="menubar-content"`
+
+| Parameter | Type | Default | |
+|---|---|---|---|
+| `Id` | `string` | `default!` |  |
+| `Align` | `string` | `"start"` | **required** |
+| `SideOffset` | `int` | `8` |  |
+
+## `<MenubarGroup>`
+renders `<div>` · `data-slot="menubar-group"`
+
+_No parameters of its own._
+
+## `<MenubarItem>`
+renders `<a>` · `data-slot="menubar-item"`
+
+| Parameter | Type | Default | |
+|---|---|---|---|
+| `Href` | `string?` | — |  |
+| `Variant` | `string` | `"default"` |  |
+| `Disabled` | `bool` | — |  |
+| `Inset` | `bool` | — |  |
+| `Type` | `string` | `"button"` |  |
+
+## `<MenubarLabel>`
+renders `<div>` · `data-slot="menubar-label"`
+
+| Parameter | Type | Default | |
+|---|---|---|---|
+| `Inset` | `bool` | — |  |
+
+## `<MenubarMenu>`
+renders `<div>` · `data-slot="menubar-menu"`
+
+_No parameters of its own._
+
+## `<MenubarRadioGroup>`
+renders `<div>` · `data-slot="menubar-radio-group"`
+
+_No parameters of its own._
+
+## `<MenubarRadioItem>`
+renders `<label>` · `data-slot="menubar-radio-item"`
+
+| Parameter | Type | Default | |
+|---|---|---|---|
+| `Name` | `string?` | — |  |
+| `Value` | `string?` | — |  |
+| `Checked` | `bool` | — |  |
+| `Disabled` | `bool` | — |  |
+
+## `<MenubarSeparator>`
+renders `<div>` · `data-slot="menubar-separator"`
+
+_No parameters of its own._
+
+## `<MenubarShortcut>`
+renders `<span>` · `data-slot="menubar-shortcut"`
+
+_No parameters of its own._
+
+## `<MenubarSub>`
+renders `<div>` · `data-slot="menubar-sub"`
+
+_No parameters of its own._
+
+## `<MenubarSubContent>`
+renders `<div>` · `data-slot="menubar-sub-content"`
+
+| Parameter | Type | Default | |
+|---|---|---|---|
+| `Id` | `string` | `default!` |  |
+
+## `<MenubarSubTrigger>`
+renders `<button>` · `data-slot="menubar-sub-trigger"`
+
+| Parameter | Type | Default | |
+|---|---|---|---|
+| `Target` | `string` | `default!` |  |
+| `Inset` | `bool` | — | **required** |
+
+## `<MenubarTrigger>`
+renders `<button>` · `data-slot="menubar-trigger"`
+
+| Parameter | Type | Default | |
+|---|---|---|---|
+| `Target` | `string` | `default!` |  |
+
 ## `<NativeSelect>`
 renders `<div>` · `data-slot="native-select-wrapper"`
 
@@ -853,6 +1211,46 @@ renders `<option>` · `data-slot="native-select-option"`
 renders `<div>` · `data-slot="native-select-wrapper"`
 
 _No parameters of its own._
+
+## `<NavigationMenu>`
+renders `<nav>` · `data-slot="navigation-menu"`
+
+| Parameter | Type | Default | |
+|---|---|---|---|
+| `AriaLabel` | `string` | `"Main"` |  |
+
+## `<NavigationMenuContent>`
+renders `<div>` · `data-slot="navigation-menu-content"`
+
+| Parameter | Type | Default | |
+|---|---|---|---|
+| `Id` | `string` | `default!` |  |
+| `Align` | `string` | `"start"` | **required** |
+
+## `<NavigationMenuItem>`
+renders `<li>` · `data-slot="navigation-menu-item"`
+
+_No parameters of its own._
+
+## `<NavigationMenuLink>`
+renders `<a>` · `data-slot="navigation-menu-link"`
+
+| Parameter | Type | Default | |
+|---|---|---|---|
+| `Href` | `string` | `default!` |  |
+| `Active` | `bool` | — | **required** |
+
+## `<NavigationMenuList>`
+renders `<ul>` · `data-slot="navigation-menu-list"`
+
+_No parameters of its own._
+
+## `<NavigationMenuTrigger>`
+renders `<button>` · `data-slot="navigation-menu-trigger"`
+
+| Parameter | Type | Default | |
+|---|---|---|---|
+| `Target` | `string` | `default!` |  |
 
 ## `<Pagination>`
 renders `<nav>` · `data-slot="pagination"`

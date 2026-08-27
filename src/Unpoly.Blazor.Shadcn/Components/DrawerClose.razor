@@ -1,0 +1,14 @@
+@inherits UiComponentBase
+
+@* formmethod="dialog" closes the <dialog> it is inside with no JavaScript and no id to point at
+   — the platform's own close button, which keeps working if ui.js never loads. *@
+
+<button type="submit" formmethod="dialog" data-slot="drawer-close" class="@Classes"
+        @attributes="AdditionalAttributes">@ChildContent</button>
+
+@code {
+    [Parameter] public string Variant { get; set; } = "outline";
+    [Parameter] public string Size { get; set; } = "default";
+
+    string Classes => ButtonVariants.Of(Variant, Size, Class);
+}

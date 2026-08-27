@@ -38,7 +38,8 @@ FAMILIES = {
     # command and the code block, hand-written
     'command',
     # this batch: the platform answers each one
-    'slider', 'resizable', 'carousel',
+    'slider', 'resizable', 'carousel', 'context-menu', 'menubar', 'navigation-menu',
+    'drawer', 'combobox',
 }
 
 # Slots that will never have a component here, with the reason. Reported separately from "not
@@ -71,13 +72,23 @@ NOT_PORTED = {
 NOT_PORTED.update({s: 'the native top layer is the portal'
                    for s in ('dialog-portal', 'alert-dialog-portal', 'sheet-portal',
                              'dropdown-menu-portal', 'hover-card-portal', 'popover-portal',
-                             'context-menu-portal', 'menubar-portal', 'select-portal')})
+                             'context-menu-portal', 'menubar-portal', 'select-portal',
+                             'drawer-portal')})
 NOT_PORTED.update({
+    # Radix animates every navigation panel through one shared viewport so they cross-fade into
+    # each other. That needs a measured height and a per-panel motion attribute, i.e. React. Each
+    # panel here is its own [popover] in the top layer instead: no cross-fade, and in exchange no
+    # overflow clipping and no z-index to lose.
+    'navigation-menu-viewport': 'each panel is its own popover; there is no shared viewport',
+    'navigation-menu-indicator': 'the arrow belongs to the shared viewport that is not here',
+    'drawer-handle': "this port's own; vaul draws the grab bar without a slot",
+    'combobox-collection': 'a React helper for rendering a list, not an element',
     'scroll-area-scrollbar': 'the platform draws the scrollbar; ui.behavior.css colours it',
     'scroll-area-thumb': 'part of the platform scrollbar',
 })
 NOT_PORTED.update({s: '::backdrop is the overlay'
-                   for s in ('dialog-overlay', 'alert-dialog-overlay', 'sheet-overlay')})
+                   for s in ('dialog-overlay', 'alert-dialog-overlay', 'sheet-overlay',
+                             'drawer-overlay')})
 
 
 def in_family(slot: str) -> bool:

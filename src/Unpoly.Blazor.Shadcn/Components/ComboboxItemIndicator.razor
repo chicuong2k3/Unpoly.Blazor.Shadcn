@@ -1,0 +1,7 @@
+@inherits UiComponentBase
+
+@* The tick beside the chosen row. Hidden until the row is selected, by CSS on the row rather
+   than by a parameter — the row already knows, and two sources of the same truth drift. *@
+
+<Icon Name="check" data-slot="combobox-item-indicator" aria-hidden="true"
+      Class="@Cn("ml-auto opacity-0 shrink-0 size-4", Class)" @attributes="AdditionalAttributes" />
