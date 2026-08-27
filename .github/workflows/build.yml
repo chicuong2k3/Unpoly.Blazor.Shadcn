@@ -30,6 +30,10 @@ jobs:
           python tools/gen_api.py --check
           python tools/fetch_upstream.py --check
 
+      # Not a --check: it reports, and a gap is a decision rather than a build break.
+      - name: API coverage report
+        run: python tools/audit_api.py
+
       # gen_icons needs lucide-static, which is the one generator with a dependency.
       - run: npm ci
       - name: Icons are current

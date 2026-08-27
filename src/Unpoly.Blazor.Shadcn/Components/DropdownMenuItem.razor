@@ -5,12 +5,12 @@
 
 @if (Href is not null)
 {
-    <a href="@Href" role="menuitem" data-slot="dropdown-menu-item" data-variant="@Variant"
+    <a href="@Href" role="menuitem" data-slot="dropdown-menu-item" data-variant="@Variant" data-inset="@(Inset ? "true" : null)"
        data-disabled="@(Disabled ? "" : null)" class="@Classes" @attributes="AdditionalAttributes">@ChildContent</a>
 }
 else
 {
-    <button type="@Type" role="menuitem" data-slot="dropdown-menu-item" data-variant="@Variant"
+    <button type="@Type" role="menuitem" data-slot="dropdown-menu-item" data-variant="@Variant" data-inset="@(Inset ? "true" : null)"
             data-disabled="@(Disabled ? "" : null)" disabled="@Disabled"
             class="@Classes" @attributes="AdditionalAttributes">@ChildContent</button>
 }
@@ -22,6 +22,9 @@ else
     [Parameter] public string Variant { get; set; } = "default";
 
     [Parameter] public bool Disabled { get; set; }
+
+    /// <summary>Indents the label to line up with rows that have an icon.</summary>
+    [Parameter] public bool Inset { get; set; }
 
     /// <summary>Only meaningful on the button branch.</summary>
     [Parameter] public string Type { get; set; } = "button";

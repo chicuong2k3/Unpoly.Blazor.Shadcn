@@ -1,6 +1,6 @@
 @inherits UiComponentBase
 
-<div id="@Id" popover="manual" role="tooltip" data-slot="tooltip-content" data-side="@Side"
+<div id="@Id" popover="manual" role="tooltip" data-slot="tooltip-content" data-side="@Side" data-side-offset="@SideOffset"
      class="@Classes" @attributes="AdditionalAttributes">@ChildContent</div>
 
 @code {
@@ -8,6 +8,9 @@
 
     /// <summary>top | bottom. Flipped when there is no room.</summary>
     [Parameter] public string Side { get; set; } = "top";
+
+    /// <summary>Pixels between the trigger and the tip. Read by ui.js when it positions.</summary>
+    [Parameter] public int SideOffset { get; set; } = 6;
 
     const string Base =
         "z-50 w-fit rounded-md bg-foreground px-3 py-1.5 text-xs text-balance text-background";

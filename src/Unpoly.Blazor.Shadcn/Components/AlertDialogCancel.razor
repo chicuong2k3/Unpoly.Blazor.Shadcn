@@ -1,0 +1,14 @@
+@inherits UiComponentBase
+
+@* The answer that backs out. type="button" so it never submits the form it sits inside, and it
+   closes the nearest <dialog> — the same handler <DialogClose> uses. *@
+
+<button type="button" data-slot="dialog-close" class="@Classes"
+        @attributes="AdditionalAttributes">@ChildContent</button>
+
+@code {
+    [Parameter] public string Variant { get; set; } = "outline";
+    [Parameter] public string Size { get; set; } = "default";
+
+    string Classes => ButtonVariants.Of(Variant, Size, Class);
+}

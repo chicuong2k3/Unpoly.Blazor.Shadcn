@@ -22,6 +22,10 @@ public static class ComponentCatalog
     {
         ["Icon"] = new() { ["Name"] = "check" },
         ["Dialog"] = new() { ["Id"] = "d" },
+        ["AlertDialog"] = new() { ["Id"] = "a" },
+        ["AlertDialogTrigger"] = new() { ["Target"] = "a" },
+        ["DropdownMenuSubContent"] = new() { ["Id"] = "s" },
+        ["DropdownMenuSubTrigger"] = new() { ["Target"] = "s" },
         ["DialogTrigger"] = new() { ["Target"] = "d" },
         ["DropdownMenuContent"] = new() { ["Id"] = "m" },
         ["DropdownMenuTrigger"] = new() { ["Target"] = "m" },

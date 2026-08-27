@@ -4,8 +4,11 @@
    image and the image hides itself if it fails, so the exchange costs no script and survives a
    fragment swap. *@
 
-<span data-slot="avatar" class="@Classes" @attributes="AdditionalAttributes">@ChildContent</span>
+<span data-slot="avatar" data-size="@Size" class="@Classes" @attributes="AdditionalAttributes">@ChildContent</span>
 
 @code {
+    /// <summary>default | sm | lg. Read by the badge and the fallback through a group variant.</summary>
+    [Parameter] public string Size { get; set; } = "default";
+
     string Classes => Cn("group/avatar relative flex size-8 shrink-0 overflow-hidden rounded-full select-none data-[size=lg]:size-10 data-[size=sm]:size-6", Class);
 }

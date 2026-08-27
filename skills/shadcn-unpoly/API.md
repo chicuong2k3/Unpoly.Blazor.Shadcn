@@ -42,6 +42,31 @@ renders `<div>` · `data-slot="alert-description"`
 
 _No parameters of its own._
 
+## `<AlertDialog>`
+renders `<dialog>` · `data-slot="alert-dialog"`
+
+| Parameter | Type | Default | |
+|---|---|---|---|
+| `Id` | `string` | `default!` |  |
+| `Size` | `string` | `"default"` | **required** |
+
+## `<AlertDialogAction>`
+renders `<button>` · `data-slot="alert-dialog-action"`
+
+| Parameter | Type | Default | |
+|---|---|---|---|
+| `Type` | `string` | `"submit"` |  |
+| `Variant` | `string` | `"default"` |  |
+| `Size` | `string` | `"default"` |  |
+
+## `<AlertDialogCancel>`
+renders `<button>` · `data-slot="dialog-close"`
+
+| Parameter | Type | Default | |
+|---|---|---|---|
+| `Variant` | `string` | `"outline"` |  |
+| `Size` | `string` | `"default"` |  |
+
 ## `<AlertDialogDescription>`
 renders `<p>` · `data-slot="alert-dialog-description"`
 
@@ -57,10 +82,24 @@ renders `<div>` · `data-slot="alert-dialog-header"`
 
 _No parameters of its own._
 
+## `<AlertDialogMedia>`
+renders `<div>` · `data-slot="alert-dialog-media"`
+
+_No parameters of its own._
+
 ## `<AlertDialogTitle>`
 renders `<h2>` · `data-slot="alert-dialog-title"`
 
 _No parameters of its own._
+
+## `<AlertDialogTrigger>`
+renders `<button>` · `data-slot="alert-dialog-trigger"`
+
+| Parameter | Type | Default | |
+|---|---|---|---|
+| `Target` | `string` | `default!` |  |
+| `Variant` | `string` | `"default"` | **required** |
+| `Size` | `string` | `"default"` |  |
 
 ## `<AlertTitle>`
 renders `<div>` · `data-slot="alert-title"`
@@ -70,10 +109,27 @@ _No parameters of its own._
 ## `<Avatar>`
 renders `<span>` · `data-slot="avatar"`
 
+| Parameter | Type | Default | |
+|---|---|---|---|
+| `Size` | `string` | `"default"` |  |
+
+## `<AvatarBadge>`
+renders `<span>` · `data-slot="avatar-badge"`
+
 _No parameters of its own._
 
 ## `<AvatarFallback>`
 renders `<span>` · `data-slot="avatar-fallback"`
+
+_No parameters of its own._
+
+## `<AvatarGroup>`
+renders `<div>` · `data-slot="avatar-group"`
+
+_No parameters of its own._
+
+## `<AvatarGroupCount>`
+renders `<span>` · `data-slot="avatar-group-count"`
 
 _No parameters of its own._
 
@@ -216,7 +272,10 @@ _No parameters of its own._
 ## `<DialogFooter>`
 renders `<div>` · `data-slot="dialog-footer"`
 
-_No parameters of its own._
+| Parameter | Type | Default | |
+|---|---|---|---|
+| `ShowCloseButton` | `bool` | — |  |
+| `CloseLabel` | `string` | `"Close"` |  |
 
 ## `<DialogHeader>`
 renders `<div>` · `data-slot="dialog-header"`
@@ -242,6 +301,16 @@ renders `<div>` · `data-slot="dropdown-menu"`
 
 _No parameters of its own._
 
+## `<DropdownMenuCheckboxItem>`
+renders `<input>` · `data-slot="dropdown-menu-checkbox-item"`
+
+| Parameter | Type | Default | |
+|---|---|---|---|
+| `Name` | `string?` | — |  |
+| `Value` | `string` | `"true"` |  |
+| `Checked` | `bool` | — |  |
+| `Disabled` | `bool` | — |  |
+
 ## `<DropdownMenuContent>`
 renders `<div>` · `data-slot="dropdown-menu-content"`
 
@@ -250,6 +319,7 @@ renders `<div>` · `data-slot="dropdown-menu-content"`
 | `Id` | `string` | `default!` |  |
 | `Align` | `string` | `"start"` | **required** |
 | `Side` | `string` | `"bottom"` |  |
+| `SideOffset` | `int` | `4` |  |
 
 ## `<DropdownMenuGroup>`
 renders `<div>` · `data-slot="dropdown-menu-group"`
@@ -264,17 +334,60 @@ renders `<a>` · `data-slot="dropdown-menu-item"`
 | `Href` | `string?` | — |  |
 | `Variant` | `string` | `"default"` |  |
 | `Disabled` | `bool` | — |  |
+| `Inset` | `bool` | — |  |
 | `Type` | `string` | `"button"` |  |
 
 ## `<DropdownMenuLabel>`
 renders `<div>` · `data-slot="dropdown-menu-label"`
 
+| Parameter | Type | Default | |
+|---|---|---|---|
+| `Inset` | `bool` | — |  |
+
+## `<DropdownMenuRadioGroup>`
+renders `<div>` · `data-slot="dropdown-menu-radio-group"`
+
 _No parameters of its own._
+
+## `<DropdownMenuRadioItem>`
+renders `<label>` · `data-slot="dropdown-menu-radio-item"`
+
+| Parameter | Type | Default | |
+|---|---|---|---|
+| `Name` | `string?` | — |  |
+| `Value` | `string?` | — |  |
+| `Checked` | `bool` | — |  |
+| `Disabled` | `bool` | — |  |
 
 ## `<DropdownMenuSeparator>`
 renders `<div>` · `data-slot="dropdown-menu-separator"`
 
 _No parameters of its own._
+
+## `<DropdownMenuShortcut>`
+renders `<span>` · `data-slot="dropdown-menu-shortcut"`
+
+_No parameters of its own._
+
+## `<DropdownMenuSub>`
+renders `<div>` · `data-slot="dropdown-menu-sub"`
+
+_No parameters of its own._
+
+## `<DropdownMenuSubContent>`
+renders `<div>` · `data-slot="dropdown-menu-sub-content"`
+
+| Parameter | Type | Default | |
+|---|---|---|---|
+| `Id` | `string` | `default!` |  |
+
+## `<DropdownMenuSubTrigger>`
+renders `<button>` · `data-slot="dropdown-menu-sub-trigger"`
+
+| Parameter | Type | Default | |
+|---|---|---|---|
+| `Target` | `string` | `default!` |  |
+| `Inset` | `bool` | — | **required** |
 
 ## `<DropdownMenuTrigger>`
 renders `<button>` · `data-slot="dropdown-menu-trigger"`
@@ -414,7 +527,9 @@ _No parameters of its own._
 ## `<Select>`
 renders `<select>` · `data-slot="select"`
 
-_No parameters of its own._
+| Parameter | Type | Default | |
+|---|---|---|---|
+| `Size` | `string` | `"default"` |  |
 
 ## `<SelectItem>`
 renders `<option>` · `data-slot="select-item"`
@@ -445,7 +560,9 @@ _No parameters of its own._
 ## `<Switch>`
 renders `<input>` · `data-slot="switch"`
 
-_No parameters of its own._
+| Parameter | Type | Default | |
+|---|---|---|---|
+| `Size` | `string` | `"default"` |  |
 
 ## `<Table>`
 renders `<div>` · `data-slot="table-container"`
@@ -493,6 +610,7 @@ renders `<div>` · `data-slot="tabs"`
 | Parameter | Type | Default | |
 |---|---|---|---|
 | `Value` | `string?` | — |  |
+| `Orientation` | `string` | `"horizontal"` |  |
 
 ## `<TabsContent>`
 renders `<div>` · `data-slot="tabs-content"`
@@ -505,7 +623,9 @@ renders `<div>` · `data-slot="tabs-content"`
 ## `<TabsList>`
 renders `<div>` · `data-slot="tabs-list"`
 
-_No parameters of its own._
+| Parameter | Type | Default | |
+|---|---|---|---|
+| `Variant` | `string` | `"default"` |  |
 
 ## `<TabsTrigger>`
 renders `<button>` · `data-slot="tabs-trigger"`
@@ -541,6 +661,7 @@ renders `<div>` · `data-slot="tooltip-content"`
 |---|---|---|---|
 | `Id` | `string` | `default!` |  |
 | `Side` | `string` | `"top"` | **required** |
+| `SideOffset` | `int` | `6` |  |
 
 ## `<TooltipTrigger>`
 renders `<button>` · `data-slot="tooltip-trigger"`

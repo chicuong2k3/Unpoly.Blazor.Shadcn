@@ -76,6 +76,12 @@
         "inline-block"
       ],
       "why": "Same as dropdown-menu."
+    },
+    "dropdown-menu-sub": {
+      "classes": [
+        "relative"
+      ],
+      "why": "Radix nests submenus through a portal. The popover API does not nest, so ui.js opens the child popover from the parent row and this element is the positioning context."
     }
   },
   "dropped": {
@@ -189,7 +195,8 @@
     "Table": "table",
     "FormField": "form-item",
     "PaginationPrevious": "pagination-link",
-    "PaginationNext": "pagination-link"
+    "PaginationNext": "pagination-link",
+    "AlertDialog": "alert-dialog-content"
   },
   "asChildButton": {
     "$comment": [
@@ -209,6 +216,14 @@
     },
     "dropdown-menu-trigger": {
       "variant": "outline",
+      "size": "default"
+    },
+    "alert-dialog-trigger": {
+      "variant": "default",
+      "size": "default"
+    },
+    "alert-dialog-action": {
+      "variant": "default",
       "size": "default"
     }
   },

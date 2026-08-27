@@ -4,9 +4,12 @@
    role="switch" is what tells a screen reader the difference — without it this is a checkbox
    that merely looks unusual. The thumb is ::after in ui.behavior.css. *@
 
-<input type="checkbox" role="switch" data-slot="switch" class="@Classes" @attributes="AdditionalAttributes" />
+<input type="checkbox" role="switch" data-slot="switch" data-size="@Size" class="@Classes" @attributes="AdditionalAttributes" />
 
 @code {
+    /// <summary>default | sm</summary>
+    [Parameter] public string Size { get; set; } = "default";
+
     const string Base =
         "peer group/switch inline-flex shrink-0 items-center rounded-full border " +
         "border-transparent shadow-xs transition-all outline-none focus-visible:border-ring " +

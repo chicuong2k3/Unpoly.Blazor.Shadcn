@@ -20,10 +20,13 @@
    drawn panel, the sizing the call site asked for (`max-w-[170px]`, `w-full`) has to move to the
    visible control — and guessing which classes those are by subtracting the recipe leaves
    `pr-9` and the aria-invalid rules behind to shift the wrapper's layout. *@
-<select data-slot="select" data-wrapper-class="@Class" class="@Classes"
+<select data-slot="select" data-size="@Size" data-wrapper-class="@Class" class="@Classes"
         @attributes="AdditionalAttributes">@ChildContent</select>
 
 @code {
+    /// <summary>default | sm. ui.js copies it onto the trigger it draws.</summary>
+    [Parameter] public string Size { get; set; } = "default";
+
     const string Base =
         "hover:border-ring/60";
 
