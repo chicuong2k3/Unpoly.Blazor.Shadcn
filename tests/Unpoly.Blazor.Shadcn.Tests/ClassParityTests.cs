@@ -115,6 +115,7 @@ public class ClassParityTests : BunitContext
 
         theirs.ExceptWith(Deviations.DroppedFor(slot));
         ours.ExceptWith(Deviations.AddedFor(slot));
+        ours.ExceptWith(Deviations.ComposedFor(slot));
 
         // A token stands in for whichever of its upstream classes this slot actually used, so it
         // cancels them on both sides. Cancelling nothing means the component reached for the

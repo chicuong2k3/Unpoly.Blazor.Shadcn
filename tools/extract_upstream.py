@@ -55,6 +55,9 @@ def balanced(text: str, start: int, open_ch='(', close_ch=')') -> str:
 
 CVA_DECL = re.compile(r'const\s+(\w+)\s*=\s*cva\s*\(')
 SLOT = re.compile(r'data-slot="([\w-]+)"')
+# The JSX element the slot sits on, read backwards from the attribute. A plain HTML tag can be
+# scaffolded; a Radix primitive is a decision someone has to make, and is reported as such.
+ELEMENT = re.compile(r'<([A-Za-z][\w.]*)\b[^>]*?$', re.S)
 CN_CALL = re.compile(r'className=\{cn\s*\(')
 
 
@@ -112,7 +115,9 @@ def parse_slots(text: str, cvas: dict) -> dict[str, dict]:
     marks = [(m.group(1), m.start(), m.end()) for m in SLOT.finditer(text)]
 
     for i, (slot, start, end) in enumerate(marks):
-        entry = {'base': [], 'variants': {}, 'defaults': {}}
+        before = ELEMENT.search(text[:start])
+        entry = {'base': [], 'variants': {}, 'defaults': {},
+                 'element': before.group(1) if before else None}
 
         # Only look as far as the next data-slot. Several shadcn components render a wrapper with
         # a slot and no className directly above a child that has one; searching past the
@@ -158,8 +163,9 @@ def main() -> int:
         cvas.update(parse_cva(text))
 
     result = {}
-    for text in sources.values():
+    for path, text in sources.items():
         for slot, entry in parse_slots(text, cvas).items():
+            entry['file'] = path.stem
             result[slot] = entry
 
     text = json.dumps(dict(sorted(result.items())), indent=2) + '\n'

@@ -17,6 +17,10 @@ import sys
 import urllib.request
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent
+CLASSES = ROOT / 'tests' / 'Unpoly.Blazor.Shadcn.Tests' / 'upstream-classes.json'
+
+# Slots that will never have a component, read from the scaffolder so there is one list.
+NEVER: set[str] = set()
 UPSTREAM = ROOT / 'upstream'
 COMPONENTS = ROOT / 'src' / 'Unpoly.Blazor.Shadcn' / 'Components'
 INDEX_URL = 'https://ui.shadcn.com/r/index.json'
@@ -116,24 +120,48 @@ def registry_index():
 
 
 def main():
+    global NEVER
+    sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
+    import scaffold_components
+    NEVER = set(scaffold_components.NOT_PORTED)
+
     up = upstream_components()
     mine = ours()
     print('=' * 78)
     print('COMPONENT COVERAGE')
     print('=' * 78)
 
-    if '--online' in sys.argv:
-        try:
-            everything = registry_index()
-            ported = set(up)
-            missing = [n for n in everything if n not in ported]
-            print(f'shadcn publishes {len(everything)} ui components; this port has {len(ported)}.')
-            if missing:
-                print('not ported yet:')
-                for i in range(0, len(missing), 6):
-                    print('  ' + '  '.join(f'{n:<22}' for n in missing[i:i + 6]))
-        except Exception as e:                                   # noqa: BLE001
-            print(f'(registry index unavailable: {e})')
+    # A file being vendored says only that it was downloaded. Implemented means every slot it
+    # declares is rendered by a component here, or is listed as never-ported with a reason.
+    classes = json.loads(CLASSES.read_text(encoding='utf-8'))
+    served = set()
+    for path in COMPONENTS.glob('*.razor'):
+        served |= set(re.findall(r'data-slot="([\w-]+)"', path.read_text(encoding='utf-8')))
+
+    by_file = {}
+    for slot, entry in classes.items():
+        by_file.setdefault(entry.get('file', '?'), set()).add(slot)
+
+    done, partial, absent = [], [], []
+    for name, slots in sorted(by_file.items()):
+        covered = {s for s in slots if s in served or s in NEVER}
+        if not slots or covered == slots:
+            done.append(name)
+        elif covered:
+            partial.append((name, len(slots - covered), len(slots)))
+        else:
+            absent.append(name)
+
+    print(f'{len(done)} implemented, {len(partial)} partial, {len(absent)} not started '
+          f'(of {len(by_file)} vendored)')
+    if partial:
+        print('partial:')
+        for n, missing_n, total in partial:
+            print(f'  {n:24} {missing_n} of {total} slots left')
+    if absent:
+        print('not started:')
+        for i in range(0, len(absent), 5):
+            print('  ' + '  '.join(f'{n:<22}' for n in absent[i:i + 5]))
 
     print()
     print('=' * 78)

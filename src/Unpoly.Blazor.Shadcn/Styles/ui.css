@@ -18,7 +18,12 @@
 :root {
     --radius: 0.625rem;
 
-    --background: oklch(1 0 0);
+    /* The page is a shade of grey and a card is white, so a card is separated by ground rather
+       than by a line. shadcn's default has both at pure white and draws a border between them;
+       this library does not, which is the one place its default theme departs from shadcn's.
+       Tokens are not part of the parity contract — class strings are — so this costs nothing
+       there, and `[data-theme="notebook"]` is the opposite look for anyone who wants lines. */
+    --background: oklch(0.98 0 0);
     --foreground: oklch(0.145 0 0);
     --card: oklch(1 0 0);
     --card-foreground: oklch(0.145 0 0);
@@ -70,8 +75,11 @@
        These map Tailwind's own namespaces onto runtime custom properties, so a theme file can
        change them from :root without touching a single class string — which is why adding
        them costs nothing in parity. See themes/README.md for what does and does not transfer. */
-    --elevation-1: 0 1px 2px 0 rgb(0 0 0 / 0.05);
-    --elevation-2: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+    /* Slightly more present than Tailwind's defaults, because they are now doing the work a
+       border used to do. Still soft: a card that announces itself is a card competing with its
+       own contents. */
+    --elevation-1: 0 1px 2px 0 rgb(0 0 0 / 0.06);
+    --elevation-2: 0 1px 3px 0 rgb(0 0 0 / 0.08), 0 1px 2px -1px rgb(0 0 0 / 0.06);
     --elevation-3: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
     --elevation-4: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
 
@@ -92,6 +100,7 @@
 }
 
 .dark {
+    /* Same idea inverted: the page is the darker of the two and the card lifts off it. */
     --background: oklch(0.145 0 0);
     --foreground: oklch(0.985 0 0);
     --card: oklch(0.205 0 0);

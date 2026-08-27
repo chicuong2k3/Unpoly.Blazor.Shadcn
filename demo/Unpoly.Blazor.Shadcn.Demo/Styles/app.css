@@ -6,7 +6,10 @@
    property — nothing a theme sets is resolved by Tailwind at build time. An app that wants only
    one theme puts data-theme on <html> and ships one file.
    Read themes/README.md for what each can and cannot reproduce. */
-@import "../../../themes/md3.css";
+@import "../../../themes/vercel.css";
+@import "../../../themes/supabase.css";
+@import "../../../themes/modern-minimal.css";
+@import "../../../themes/notebook.css";
 @import "../../../themes/cupertino.css";
 @import "../../../themes/fluent.css";
 

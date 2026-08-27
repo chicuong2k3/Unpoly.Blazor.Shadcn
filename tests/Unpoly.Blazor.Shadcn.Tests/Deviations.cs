@@ -33,6 +33,7 @@ public static class Deviations
         public Dictionary<string, JsonElement> Subject { get; set; } = [];
         public Dictionary<string, JsonElement> AsChildButton { get; set; } = [];
         public Dictionary<string, JsonElement> DefaultVariant { get; set; } = [];
+        public Dictionary<string, JsonElement> Composed { get; set; } = [];
     }
 
     static readonly Lazy<File_> Loaded = new(() =>
@@ -47,6 +48,16 @@ public static class Deviations
         Loaded.Value.Tokens
             .Where(kv => !kv.Key.StartsWith('$'))
             .ToDictionary(kv => kv.Key, kv => kv.Value.EnumerateArray().Select(e => e.GetString()!).ToArray());
+
+    /// <summary>
+    /// Classes a slot has because it renders another component of this library, as upstream
+    /// does. They belong to that component, so they are subtracted rather than compared.
+    /// </summary>
+    public static IReadOnlyList<string> ComposedFor(string slot) =>
+        Loaded.Value.Composed.TryGetValue(slot, out var v) && v.ValueKind == JsonValueKind.Object
+        && v.TryGetProperty("classes", out var c)
+            ? c.EnumerateArray().Select(e => e.GetString()!).ToArray()
+            : [];
 
     public static IReadOnlyList<string> AddedFor(string slot) =>
         Loaded.Value.Added.TryGetValue(slot, out var e) ? e.Classes : [];

@@ -11,7 +11,18 @@ A theme is a `:root` block. Import one after `ui.css`:
 Or ship several and switch at runtime by scoping each to `[data-theme="…"]` — the demo does
 exactly that, and it costs nothing because every token is a runtime custom property.
 
-## Can shadcn become Material Design 3, Cupertino or Fluent?
+## What is here
+
+Four generated from [tweakcn](https://tweakcn.com) — `vercel`, `supabase`,
+`modern-minimal`, `notebook` — and two written by hand as ports of another design
+language: `cupertino` and `fluent`. The generated four are the ones to start from; they
+were built for shadcn and sit on its shapes without argument.
+
+`md3` used to be here and was removed. Material fights shadcn rather than dressing it:
+pill buttons beside 12dp cards, a state-layer model shadcn does not have, and a ripple
+that cannot be faked. What it produced read as neither one thing nor the other.
+
+## Can shadcn become Cupertino or Fluent?
 
 **Partly, and the boundary is sharp enough to state exactly.** A design language is not a
 palette. shadcn tokenises colour and one radius and writes the rest as literal utility classes,
@@ -22,28 +33,22 @@ What this library adds beyond shadcn to widen that boundary — `--elevation-1..
 `--radius-control`, `--ease-ui`, `--duration-ui`, `--control-h`, `--control-text` — are all
 additive theme keys. They change no class string, so they cost nothing in parity.
 
-| | Material 3 | Cupertino | Fluent 2 |
-|---|---|---|---|
-| Colour roles | ✅ maps 1:1 | ✅ | ✅ |
-| Corner shape | ✅ needs `--radius-control` for pill buttons beside 12dp cards | ✅ | ✅ |
-| Elevation | ✅ via `--elevation-*` | ✅ (barely used, which is itself the look) | ✅ |
-| Motion | ✅ easing and duration | ✅ | ✅ |
-| Density / hit target | ✅ via `--control-h` | ✅ 44pt | ✅ 32px |
-| State model | ⚠️ approximated with a `::before` overlay | ✅ nothing to reproduce | ⚠️ focus bar added as a rule |
-| Signature interaction | ❌ no ripple | ✅ n/a | ❌ no reveal highlight, no acrylic |
-| Type scale | ❌ 15 named roles vs `text-sm`/`text-xs` | ⚠️ tracking only | ❌ 9 ramps |
-| Corner curve | — | ❌ no squircle in CSS anywhere yet | — |
+| | Cupertino | Fluent 2 |
+|---|---|---|
+| Colour roles | ✅ | ✅ |
+| Corner shape | ✅ | ✅ |
+| Elevation | ✅ (barely used, which is itself the look) | ✅ |
+| Motion | ✅ | ✅ |
+| Density / hit target | ✅ 44pt | ✅ 32px |
+| State model | ✅ nothing to reproduce | ⚠️ focus bar added as a rule |
+| Signature interaction | ✅ n/a | ❌ no reveal highlight, no acrylic |
+| Type scale | ⚠️ tracking only | ❌ 9 ramps |
+| Corner curve | ❌ no squircle in CSS anywhere yet | — |
 
 **Cupertino is the one that essentially works.** Apple's system is colour, radius, spacing and
 type; it has no state-layer model and uses shadow sparingly, so almost nothing of it needs to
 live in markup. The two gaps are the continuous "squircle" corner, which no browser can draw,
 and the type scale.
-
-**Material 3 gets close enough to read as Material, and is not Material.** Its colour and shape
-systems map cleanly. Its *state* system does not: shadcn darkens a control's own colour on hover,
-Material puts a translucent layer of the foreground colour over it at 8/10/12%. `md3.css`
-reproduces that with a pseudo-element — no class string changes — but the ripple is a rendered
-element with a JavaScript-driven origin, and there is no honest way to fake it here.
 
 **Fluent 2 is mostly colour and its very small radii**, which change the character more than you
 would expect. The reveal highlight and acrylic material are out of reach; the focused-input

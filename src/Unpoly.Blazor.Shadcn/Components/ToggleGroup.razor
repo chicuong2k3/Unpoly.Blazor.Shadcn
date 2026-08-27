@@ -1,0 +1,19 @@
+@inherits UiComponentBase
+
+@* A row of toggles. `Multiple` decides whether the items are checkboxes or radios, which is the
+   DOM's own version of Radix's type="single" | "multiple" — and it means the group posts either
+   a list of values or one value with no JavaScript involved. *@
+
+<div data-slot="toggle-group" role="group" data-variant="@Variant" data-size="@Size"
+     class="@Classes" @attributes="AdditionalAttributes">@ChildContent</div>
+
+@code {
+    [Parameter] public string Variant { get; set; } = "default";
+    [Parameter] public string Size { get; set; } = "default";
+
+    const string Base =
+        "group/toggle-group flex w-fit items-center gap-[--spacing(var(--gap))] rounded-md " +
+        "data-[spacing=default]:data-[variant=outline]:shadow-xs";
+
+    string Classes => Cn(Base, Class);
+}

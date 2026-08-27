@@ -1,0 +1,19 @@
+@inherits UiComponentBase
+
+@* A button that lives inside an input's frame — the eye on a password field, the unit on a
+   number field. Smaller than a standalone button by default, because it sits in a 36px box. *@
+
+<button type="@Type" data-slot="input-group-button" class="@Classes"
+        @attributes="AdditionalAttributes">@ChildContent</button>
+
+@code {
+    [Parameter] public string Type { get; set; } = "button";
+    [Parameter] public string Variant { get; set; } = "ghost";
+
+    /// <summary>xs | sm | icon-xs | icon-sm</summary>
+    [Parameter] public string Size { get; set; } = "xs";
+
+    const string Base = "";
+
+    string Classes => Cn(Base, Class);
+}

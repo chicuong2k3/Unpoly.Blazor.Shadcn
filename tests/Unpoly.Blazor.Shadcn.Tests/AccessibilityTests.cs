@@ -257,6 +257,82 @@ public class AccessibilityTests : BunitContext
         Assert.Equal("button", trigger.GetAttribute("type"));
     }
 
+    // ---- the components added with the platform, not with a framework ----------------------
+
+    [Fact]
+    public void A_sheet_trigger_says_it_opens_a_dialog()
+    {
+        // A sheet IS a dialog — it just arrives from an edge — so it must announce itself as one.
+        var trigger = Render<SheetTrigger>(p => p.Add(t => t.Target, "s")).Find("button");
+
+        Assert.Equal("dialog", trigger.GetAttribute("aria-haspopup"));
+    }
+
+    [Fact]
+    public void A_popover_trigger_says_it_opens_something_and_that_it_is_closed()
+    {
+        // aria-expanded must be present and false before the first click. Absent means "this is
+        // not a disclosure", which describes a different control entirely.
+        var trigger = Render<PopoverTrigger>(p => p.Add(t => t.Target, "p")).Find("button");
+
+        Assert.Equal("dialog", trigger.GetAttribute("aria-haspopup"));
+        Assert.Equal("false", trigger.GetAttribute("aria-expanded"));
+    }
+
+    [Fact]
+    public void A_hover_card_trigger_is_a_real_link_when_it_points_somewhere()
+    {
+        // The whole point: a hover card previews what a link points at, and the link has to work
+        // for everyone who never hovers — touch, keyboard, screen reader.
+        var trigger = Render<HoverCardTrigger>(p => p
+            .Add(t => t.Target, "h")
+            .Add(t => t.Href, "/profile/marta"));
+
+        Assert.Equal("/profile/marta", trigger.Find("a").GetAttribute("href"));
+    }
+
+    [Fact]
+    public void A_toggle_is_announced_as_a_pressed_button_not_as_a_checkbox()
+    {
+        // It is an <input type=checkbox> underneath, because that is what posts. Announced as a
+        // checkbox it would be described wrongly: this is a button that stays in.
+        var input = Render<Toggle>(p => p.Add(t => t.Checked, true)).Find("input");
+
+        Assert.Equal("button", input.GetAttribute("role"));
+        Assert.Equal("true", input.GetAttribute("aria-pressed"));
+    }
+
+    [Fact]
+    public void A_toggle_group_is_announced_as_a_group()
+    {
+        var group = Render<ToggleGroup>().Find("[data-slot=toggle-group]");
+
+        Assert.Equal("group", group.GetAttribute("role"));
+    }
+
+    [Fact]
+    public void A_single_select_toggle_group_uses_radios_so_the_browser_enforces_one_choice()
+    {
+        // Not a rendering detail: radios give arrow-key navigation and one-of-many semantics for
+        // free, and they post one value. Checkboxes would give neither.
+        var single = Render<ToggleGroupItem>(p => p.Add(i => i.Name, "view")).Find("input");
+        var multi = Render<ToggleGroupItem>(p => p
+            .Add(i => i.Name, "view")
+            .Add(i => i.Multiple, true)).Find("input");
+
+        Assert.Equal("radio", single.GetAttribute("type"));
+        Assert.Equal("checkbox", multi.GetAttribute("type"));
+    }
+
+    [Fact]
+    public void A_collapsible_is_a_details_element_so_it_works_with_no_script_at_all()
+    {
+        var collapsible = Render<Collapsible>();
+
+        Assert.Equal("DETAILS", collapsible.Find("[data-slot=collapsible]").TagName);
+        Assert.Equal("SUMMARY", Render<CollapsibleTrigger>().Find("[data-slot=collapsible-trigger]").TagName);
+    }
+
     // ---- labelling -------------------------------------------------------------------------
 
     [Fact]

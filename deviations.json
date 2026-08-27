@@ -80,6 +80,20 @@
         "relative"
       ],
       "why": "Radix nests submenus through a portal. The popover API does not nest, so ui.js opens the child popover from the parent row and this element is the positioning context."
+    },
+    "popover": {
+      "classes": [
+        "relative",
+        "inline-block"
+      ],
+      "why": "Radix renders the panel through a portal, so its root needs no positioning. ui.js measures the trigger in place, so the root is the positioning context."
+    },
+    "hover-card": {
+      "classes": [
+        "relative",
+        "inline-block"
+      ],
+      "why": "Same as popover."
     }
   },
   "dropped": {
@@ -194,7 +208,11 @@
     "FormField": "form-item",
     "PaginationPrevious": "pagination-link",
     "PaginationNext": "pagination-link",
-    "AlertDialog": "alert-dialog-content"
+    "AlertDialog": "alert-dialog-content",
+    "Sheet": "sheet-content",
+    "ScrollArea": "scroll-area",
+    "NativeSelect": "native-select",
+    "InputGroupControl": "input-group-control"
   },
   "asChildButton": {
     "$comment": [
@@ -223,6 +241,22 @@
     "alert-dialog-action": {
       "variant": "default",
       "size": "default"
+    },
+    "sheet-trigger": {
+      "variant": "outline",
+      "size": "default"
+    },
+    "sheet-close": {
+      "variant": "outline",
+      "size": "default"
+    },
+    "popover-trigger": {
+      "variant": "outline",
+      "size": "default"
+    },
+    "alert-dialog-cancel": {
+      "variant": "outline",
+      "size": "default"
     }
   },
   "defaultVariant": {
@@ -242,6 +276,74 @@
     "PaginationNext": {
       "variant": "ghost",
       "size": "default"
+    }
+  },
+  "composed": {
+    "$comment": [
+      "Slots that render another component of this library, as upstream does. Its classes appear",
+      "in the output but belong to it, so the parity test subtracts them — and the generator must",
+      "NOT write them into the component, or they would land after the slot's own classes and win",
+      "the merge, which is exactly backwards."
+    ],
+    "item-separator": {
+      "classes": [
+        "bg-border",
+        "shrink-0",
+        "data-[orientation=horizontal]:h-px",
+        "data-[orientation=horizontal]:w-full",
+        "data-[orientation=vertical]:h-full",
+        "data-[orientation=vertical]:w-px"
+      ],
+      "component": "Separator"
+    },
+    "button-group-separator": {
+      "classes": [
+        "bg-border",
+        "shrink-0",
+        "data-[orientation=horizontal]:h-px",
+        "data-[orientation=horizontal]:w-full",
+        "data-[orientation=vertical]:h-full",
+        "data-[orientation=vertical]:w-px"
+      ],
+      "component": "Separator"
+    },
+    "input-group-control": {
+      "classes": [
+        "border-input",
+        "min-w-0",
+        "w-full",
+        "px-3",
+        "outline-none",
+        "transition-[color,box-shadow]",
+        "placeholder:text-muted-foreground",
+        "selection:bg-primary",
+        "selection:text-primary-foreground",
+        "file:inline-flex",
+        "file:h-7",
+        "file:border-0",
+        "file:bg-transparent",
+        "file:text-sm",
+        "file:font-medium",
+        "file:text-foreground",
+        "disabled:pointer-events-none",
+        "disabled:cursor-not-allowed",
+        "disabled:opacity-50",
+        "hover:border-ring/60",
+        "focus-visible:border-ring",
+        "focus-visible:ring-ring/50",
+        "aria-invalid:border-destructive",
+        "aria-invalid:ring-destructive/20",
+        "dark:aria-invalid:ring-destructive/40",
+        "h-control",
+        "text-control",
+        "rounded-md",
+        "py-1",
+        "shadow-xs",
+        "border",
+        "flex",
+        "focus-visible:ring-[3px]"
+      ],
+      "component": "Input or Textarea, whose own classes are checked on their own slots"
     }
   }
 }

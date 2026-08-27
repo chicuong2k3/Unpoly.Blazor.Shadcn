@@ -297,9 +297,15 @@
     panel.style.left = `${Math.round(left)}px`
   }
 
-  up.compiler('[data-slot="dropdown-menu-trigger"], [data-slot="popover-trigger"]', (trigger) => {
+  up.compiler('[data-slot="dropdown-menu-trigger"], [data-slot="popover-trigger"], ' +
+              '[data-slot="dropdown-menu-sub-trigger"]', (trigger) => {
     const panel = document.getElementById(trigger.dataset.target)
     if (!panel) return
+
+    // Radix lets a popover be positioned against something other than its trigger. Same idea:
+    // the nearest [data-slot=popover-anchor] wins if there is one.
+    const anchor = trigger.closest('[data-slot="popover"]')
+      ?.querySelector('[data-slot="popover-anchor"]') || trigger
 
     const onToggle = (event) => {
       if (event.newState !== 'open') { trigger.setAttribute('aria-expanded', 'false'); return }
@@ -373,6 +379,60 @@
 
     return () => {
       close()
+      trigger.removeEventListener('pointerenter', open)
+      trigger.removeEventListener('pointerleave', close)
+      trigger.removeEventListener('focus', open)
+      trigger.removeEventListener('blur', close)
+      document.removeEventListener('keydown', onKey)
+    }
+  })
+
+  // =============================================================================================
+  // HoverCard
+  // =============================================================================================
+  // A popover that opens on hover. It is decoration by definition — anything only reachable by
+  // pointing at it is unreachable to a keyboard and to a touch screen — so the trigger stays a
+  // real link or button and this only adds the preview. Focus opens it too, and Escape closes
+  // it, because a keyboard user should be able to reach the same content the mouse gets.
+  //
+  // The pointer is allowed to travel from the trigger into the panel without it closing, which
+  // is the one thing that makes a hover card usable and the one thing implementations forget.
+
+  up.compiler('[data-slot="hover-card-trigger"]', (trigger) => {
+    const panel = document.getElementById(trigger.dataset.target)
+    if (!panel) return
+    let openTimer, closeTimer
+
+    const open = () => {
+      clearTimeout(closeTimer)
+      openTimer = setTimeout(() => {
+        panel.showPopover()
+        place(panel, trigger, panel.dataset.align, panel.dataset.side, 8)
+      }, Number(trigger.dataset.delay ?? 600))
+    }
+
+    // A grace period, not an immediate close: the gap between the trigger and the panel is a
+    // few pixels of nothing, and leaving through it must not count as leaving.
+    const close = () => {
+      clearTimeout(openTimer)
+      closeTimer = setTimeout(() => {
+        if (panel.matches(':popover-open')) panel.hidePopover()
+      }, 150)
+    }
+
+    const onKey = (event) => { if (event.key === 'Escape') { clearTimeout(openTimer); panel.hidePopover() } }
+
+    trigger.addEventListener('pointerenter', open)
+    trigger.addEventListener('pointerleave', close)
+    trigger.addEventListener('focus', open)
+    trigger.addEventListener('blur', close)
+    panel.addEventListener('pointerenter', () => clearTimeout(closeTimer))
+    panel.addEventListener('pointerleave', close)
+    document.addEventListener('keydown', onKey)
+
+    return () => {
+      clearTimeout(openTimer)
+      clearTimeout(closeTimer)
       trigger.removeEventListener('pointerenter', open)
       trigger.removeEventListener('pointerleave', close)
       trigger.removeEventListener('focus', open)

@@ -59,8 +59,19 @@
     /* ---- Accordion ------------------------------------------------------------------
        <details>/<summary> is the whole state machine, so an accordion works with JavaScript
        off and survives a fragment swap without a compiler. */
-    [data-slot="accordion-trigger"]::-webkit-details-marker { display: none; }
-    [data-slot="accordion-trigger"]::marker { content: ""; }
+    [data-slot="accordion-trigger"]::-webkit-details-marker,
+    [data-slot="collapsible-trigger"]::-webkit-details-marker { display: none; }
+    [data-slot="accordion-trigger"]::marker,
+    [data-slot="collapsible-trigger"]::marker { content: ""; }
+    [data-slot="collapsible-trigger"] { cursor: pointer; list-style: none; }
+
+    /* ScrollArea: the platform's own thin scrollbar, in the theme's colours. Radix draws its own
+       with a resize observer and a computed thumb; this is most of the look for none of the
+       script, and it still works with the wheel, a trackpad, the keyboard and a touch screen. */
+    [data-slot="scroll-area-viewport"] {
+        scrollbar-width: thin;
+        scrollbar-color: var(--border) transparent;
+    }
     [data-slot="accordion-item"][open] [data-chevron] { rotate: 180deg; }
     [data-slot="accordion-item"][open] [data-slot="accordion-content"] { animation: sh-accordion-down 200ms ease-out; }
 
@@ -138,6 +149,25 @@
         transition: opacity 150ms;
     }
     .toastify[data-slot="sonner-toast"] .toast-close:hover { opacity: 1; }
+
+    /* ---- surfaces are separated by ground, not by a line -----------------------------
+       shadcn draws a border around every card, panel and menu. This library does not: the page
+       is grey, the surface is white, and elevation says which is on top. It reads quieter and
+       stops a dense screen turning into a grid of boxes.
+
+       Scoped to the surfaces, NOT done by setting --border: transparent — that would take the
+       table's row dividers, the separator and every control's edge with it. A field with no
+       edge is not a field, and a table with no rules is a wall of text.
+
+       An app that wants the lines back sets `data-theme="notebook"`, or writes one rule:
+           [data-slot="card"] { border-color: var(--border); } */
+    [data-slot="card"],
+    [data-slot="alert"],
+    [data-slot="dropdown-menu-content"],
+    [data-slot="dropdown-menu-sub-content"],
+    [data-slot="select-content"],
+    [data-slot="dialog-content"],
+    [data-slot="alert-dialog-content"] { border-color: transparent; }
 
     /* ---- Checkbox / RadioGroup / Switch ----------------------------------------------
        Radix draws these as <button role="checkbox"> with a hidden input alongside. On static

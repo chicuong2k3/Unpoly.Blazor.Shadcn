@@ -41,6 +41,10 @@ def load():
     added = {k: v['classes'] for k, v in dev['added'].items()}
     dropped = {k: v['classes'] for k, v in dev.get('dropped', {}).items()}
     subject = {k: v for k, v in dev.get('subject', {}).items() if not k.startswith('$')}
+    # A composed slot gets only its own upstream classes; the component it renders brings its.
+    for slot in dev.get('composed', {}):
+        if not slot.startswith('$'):
+            added.pop(slot, None)
     return classes, tokens, added, dropped, subject
 
 

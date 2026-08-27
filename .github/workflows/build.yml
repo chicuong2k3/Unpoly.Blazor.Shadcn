@@ -29,6 +29,7 @@ jobs:
           python tools/sync_variants.py --check
           python tools/gen_api.py --check
           python tools/fetch_upstream.py --check
+          python tools/gen_themes.py --check
 
       # Not a --check: it reports, and a gap is a decision rather than a build break.
       - name: API coverage report

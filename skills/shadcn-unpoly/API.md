@@ -106,6 +106,13 @@ renders `<div>` · `data-slot="alert-title"`
 
 _No parameters of its own._
 
+## `<AspectRatio>`
+renders `<div>` · `data-slot="aspect-ratio"`
+
+| Parameter | Type | Default | |
+|---|---|---|---|
+| `Ratio` | `string` | `"16 / 9"` |  |
+
 ## `<Avatar>`
 renders `<span>` · `data-slot="avatar"`
 
@@ -198,6 +205,18 @@ renders `<a>` · `data-slot="button"`
 | `Href` | `string?` | — |  |
 | `Type` | `string` | `"submit"` |  |
 
+## `<ButtonGroup>`
+renders `<div>` · `data-slot="button-group"`
+
+_No parameters of its own._
+
+## `<ButtonGroupSeparator>`
+`data-slot="button-group-separator"`
+
+| Parameter | Type | Default | |
+|---|---|---|---|
+| `Orientation` | `string` | `"vertical"` |  |
+
 ## `<Card>`
 renders `<div>` · `data-slot="card"`
 
@@ -235,6 +254,23 @@ _No parameters of its own._
 
 ## `<Checkbox>`
 renders `<input>` · `data-slot="checkbox"`
+
+_No parameters of its own._
+
+## `<Collapsible>`
+renders `<details>` · `data-slot="collapsible"`
+
+| Parameter | Type | Default | |
+|---|---|---|---|
+| `Open` | `bool` | — |  |
+
+## `<CollapsibleContent>`
+renders `<div>` · `data-slot="collapsible-content"`
+
+_No parameters of its own._
+
+## `<CollapsibleTrigger>`
+renders `<summary>` · `data-slot="collapsible-trigger"`
 
 _No parameters of its own._
 
@@ -398,6 +434,86 @@ renders `<button>` · `data-slot="dropdown-menu-trigger"`
 | `Variant` | `string` | `"outline"` | **required** |
 | `Size` | `string` | `"default"` |  |
 
+## `<Empty>`
+renders `<div>` · `data-slot="empty"`
+
+_No parameters of its own._
+
+## `<EmptyContent>`
+renders `<div>` · `data-slot="empty-content"`
+
+_No parameters of its own._
+
+## `<EmptyDescription>`
+renders `<div>` · `data-slot="empty-description"`
+
+_No parameters of its own._
+
+## `<EmptyHeader>`
+renders `<div>` · `data-slot="empty-header"`
+
+_No parameters of its own._
+
+## `<EmptyIcon>`
+renders `<div>` · `data-slot="empty-icon"`
+
+_No parameters of its own._
+
+## `<EmptyTitle>`
+renders `<div>` · `data-slot="empty-title"`
+
+_No parameters of its own._
+
+## `<Field>`
+renders `<div>` · `data-slot="field"`
+
+_No parameters of its own._
+
+## `<FieldContent>`
+renders `<div>` · `data-slot="field-content"`
+
+_No parameters of its own._
+
+## `<FieldDescription>`
+renders `<p>` · `data-slot="field-description"`
+
+_No parameters of its own._
+
+## `<FieldError>`
+renders `<div>` · `data-slot="field-error"`
+
+_No parameters of its own._
+
+## `<FieldGroup>`
+renders `<div>` · `data-slot="field-group"`
+
+_No parameters of its own._
+
+## `<FieldLabel>`
+renders `<div>` · `data-slot="field-label"`
+
+_No parameters of its own._
+
+## `<FieldLegend>`
+renders `<legend>` · `data-slot="field-legend"`
+
+_No parameters of its own._
+
+## `<FieldSeparator>`
+renders `<div>` · `data-slot="field-separator"`
+
+_No parameters of its own._
+
+## `<FieldSeparatorContent>`
+renders `<span>` · `data-slot="field-separator-content"`
+
+_No parameters of its own._
+
+## `<FieldSet>`
+renders `<fieldset>` · `data-slot="field-set"`
+
+_No parameters of its own._
+
 ## `<FormDescription>`
 renders `<p>` · `data-slot="form-description"`
 
@@ -433,6 +549,29 @@ renders `<p>` · `data-slot="form-message"`
 |---|---|---|---|
 | `Message` | `string?` | — |  |
 
+## `<HoverCard>`
+renders `<div>` · `data-slot="hover-card"`
+
+_No parameters of its own._
+
+## `<HoverCardContent>`
+renders `<div>` · `data-slot="hover-card-content"`
+
+| Parameter | Type | Default | |
+|---|---|---|---|
+| `Id` | `string` | `default!` |  |
+| `Align` | `string` | `"center"` | **required** |
+| `Side` | `string` | `"bottom"` |  |
+
+## `<HoverCardTrigger>`
+renders `<a>` · `data-slot="hover-card-trigger"`
+
+| Parameter | Type | Default | |
+|---|---|---|---|
+| `Target` | `string` | `default!` |  |
+| `Href` | `string?` | — | **required** |
+| `Delay` | `int` | `600` |  |
+
 ## `<Icon>`
 renders `<svg>`
 
@@ -449,8 +588,137 @@ renders `<input>` · `data-slot="input"`
 |---|---|---|---|
 | `Type` | `string` | `"text"` |  |
 
+## `<InputGroup>`
+renders `<div>` · `data-slot="input-group"`
+
+_No parameters of its own._
+
+## `<InputGroupAddon>`
+renders `<div>` · `data-slot="input-group-addon"`
+
+_No parameters of its own._
+
+## `<InputGroupButton>`
+renders `<button>` · `data-slot="input-group-button"`
+
+| Parameter | Type | Default | |
+|---|---|---|---|
+| `Type` | `string` | `"button"` |  |
+| `Variant` | `string` | `"ghost"` |  |
+| `Size` | `string` | `"xs"` |  |
+
+## `<InputGroupControl>`
+`data-slot="input-group-control"`
+
+| Parameter | Type | Default | |
+|---|---|---|---|
+| `Multiline` | `bool` | — |  |
+| `Type` | `string` | `"text"` |  |
+| `Value` | `string?` | — |  |
+
+## `<InputOtpGroup>`
+renders `<div>` · `data-slot="input-otp-group"`
+
+_No parameters of its own._
+
+## `<InputOtpSeparator>`
+renders `<div>` · `data-slot="input-otp-separator"`
+
+_No parameters of its own._
+
+## `<Item>`
+renders `<a>` · `data-slot="item"`
+
+| Parameter | Type | Default | |
+|---|---|---|---|
+| `Href` | `string?` | — |  |
+| `Variant` | `string` | `"default"` |  |
+| `Size` | `string` | `"default"` |  |
+
+## `<ItemActions>`
+renders `<div>` · `data-slot="item-actions"`
+
+_No parameters of its own._
+
+## `<ItemContent>`
+renders `<div>` · `data-slot="item-content"`
+
+_No parameters of its own._
+
+## `<ItemDescription>`
+renders `<p>` · `data-slot="item-description"`
+
+_No parameters of its own._
+
+## `<ItemFooter>`
+renders `<div>` · `data-slot="item-footer"`
+
+_No parameters of its own._
+
+## `<ItemGroup>`
+renders `<div>` · `data-slot="item-group"`
+
+_No parameters of its own._
+
+## `<ItemHeader>`
+renders `<div>` · `data-slot="item-header"`
+
+_No parameters of its own._
+
+## `<ItemMedia>`
+renders `<div>` · `data-slot="item-media"`
+
+_No parameters of its own._
+
+## `<ItemSeparator>`
+`data-slot="item-separator"`
+
+_No parameters of its own._
+
+## `<ItemTitle>`
+renders `<div>` · `data-slot="item-title"`
+
+_No parameters of its own._
+
+## `<Kbd>`
+renders `<kbd>` · `data-slot="kbd"`
+
+_No parameters of its own._
+
+## `<KbdGroup>`
+renders `<kbd>` · `data-slot="kbd-group"`
+
+_No parameters of its own._
+
 ## `<Label>`
 renders `<label>` · `data-slot="label"`
+
+_No parameters of its own._
+
+## `<NativeSelect>`
+renders `<div>` · `data-slot="native-select-wrapper"`
+
+| Parameter | Type | Default | |
+|---|---|---|---|
+| `Size` | `string` | `"default"` |  |
+
+## `<NativeSelectOptgroup>`
+renders `<optgroup>` · `data-slot="native-select-optgroup"`
+
+| Parameter | Type | Default | |
+|---|---|---|---|
+| `Label` | `string?` | — |  |
+
+## `<NativeSelectOption>`
+renders `<option>` · `data-slot="native-select-option"`
+
+| Parameter | Type | Default | |
+|---|---|---|---|
+| `Value` | `string?` | — |  |
+| `Selected` | `bool` | — |  |
+
+## `<NativeSelectWrapper>`
+renders `<div>` · `data-slot="native-select-wrapper"`
 
 _No parameters of its own._
 
@@ -506,6 +774,50 @@ renders `<span>`
 | `Label` | `string` | `"Previous"` |  |
 | `AriaLabel` | `string` | `"Go to previous page"` |  |
 
+## `<Popover>`
+renders `<div>` · `data-slot="popover"`
+
+_No parameters of its own._
+
+## `<PopoverAnchor>`
+renders `<div>` · `data-slot="popover-anchor"`
+
+_No parameters of its own._
+
+## `<PopoverContent>`
+renders `<div>` · `data-slot="popover-content"`
+
+| Parameter | Type | Default | |
+|---|---|---|---|
+| `Id` | `string` | `default!` |  |
+| `Align` | `string` | `"center"` | **required** |
+| `Side` | `string` | `"bottom"` |  |
+| `SideOffset` | `int` | `4` |  |
+
+## `<PopoverDescription>`
+renders `<p>` · `data-slot="popover-description"`
+
+_No parameters of its own._
+
+## `<PopoverHeader>`
+renders `<div>` · `data-slot="popover-header"`
+
+_No parameters of its own._
+
+## `<PopoverTitle>`
+renders `<div>` · `data-slot="popover-title"`
+
+_No parameters of its own._
+
+## `<PopoverTrigger>`
+renders `<button>` · `data-slot="popover-trigger"`
+
+| Parameter | Type | Default | |
+|---|---|---|---|
+| `Target` | `string` | `default!` |  |
+| `Variant` | `string` | `"outline"` | **required** |
+| `Size` | `string` | `"default"` |  |
+
 ## `<Progress>`
 renders `<div>` · `data-slot="progress"`
 
@@ -524,6 +836,11 @@ renders `<input>` · `data-slot="radio-group-item"`
 
 _No parameters of its own._
 
+## `<ScrollArea>`
+renders `<div>` · `data-slot="scroll-area"`
+
+_No parameters of its own._
+
 ## `<Select>`
 renders `<select>` · `data-slot="select"`
 
@@ -539,6 +856,11 @@ renders `<option>` · `data-slot="select-item"`
 | `Value` | `string?` | — |  |
 | `Selected` | `bool` | — |  |
 
+## `<SelectItemIndicator>`
+renders `<span>` · `data-slot="select-item-indicator"`
+
+_No parameters of its own._
+
 ## `<Separator>`
 renders `<div>` · `data-slot="separator"`
 
@@ -546,6 +868,54 @@ renders `<div>` · `data-slot="separator"`
 |---|---|---|---|
 | `Orientation` | `string` | `"horizontal"` |  |
 | `Decorative` | `bool` | `true` |  |
+
+## `<Sheet>`
+renders `<dialog>` · `data-slot="sheet"`
+
+| Parameter | Type | Default | |
+|---|---|---|---|
+| `Id` | `string` | `default!` |  |
+| `Side` | `string` | `"right"` | **required** |
+| `Dismissable` | `bool` | `true` |  |
+| `ShowCloseButton` | `bool` | `true` |  |
+| `CloseLabel` | `string` | `"Close"` |  |
+
+## `<SheetClose>`
+renders `<button>` · `data-slot="sheet-close"`
+
+| Parameter | Type | Default | |
+|---|---|---|---|
+| `Variant` | `string` | `"outline"` |  |
+| `Size` | `string` | `"default"` |  |
+
+## `<SheetDescription>`
+renders `<p>` · `data-slot="sheet-description"`
+
+_No parameters of its own._
+
+## `<SheetFooter>`
+renders `<div>` · `data-slot="sheet-footer"`
+
+_No parameters of its own._
+
+## `<SheetHeader>`
+renders `<div>` · `data-slot="sheet-header"`
+
+_No parameters of its own._
+
+## `<SheetTitle>`
+renders `<h2>` · `data-slot="sheet-title"`
+
+_No parameters of its own._
+
+## `<SheetTrigger>`
+renders `<button>` · `data-slot="sheet-trigger"`
+
+| Parameter | Type | Default | |
+|---|---|---|---|
+| `Target` | `string` | `default!` |  |
+| `Variant` | `string` | `"outline"` | **required** |
+| `Size` | `string` | `"default"` |  |
 
 ## `<Skeleton>`
 renders `<div>` · `data-slot="skeleton"`
@@ -648,6 +1018,39 @@ renders `<textarea>` · `data-slot="textarea"`
 | Parameter | Type | Default | |
 |---|---|---|---|
 | `Value` | `string?` | — |  |
+
+## `<Toggle>`
+renders `<input>` · `data-slot="toggle"`
+
+| Parameter | Type | Default | |
+|---|---|---|---|
+| `Name` | `string?` | — |  |
+| `Value` | `string` | `"true"` |  |
+| `Checked` | `bool` | — |  |
+| `Disabled` | `bool` | — |  |
+| `Variant` | `string` | `"default"` |  |
+| `Size` | `string` | `"default"` |  |
+
+## `<ToggleGroup>`
+renders `<div>` · `data-slot="toggle-group"`
+
+| Parameter | Type | Default | |
+|---|---|---|---|
+| `Variant` | `string` | `"default"` |  |
+| `Size` | `string` | `"default"` |  |
+
+## `<ToggleGroupItem>`
+renders `<label>` · `data-slot="toggle-group-item"`
+
+| Parameter | Type | Default | |
+|---|---|---|---|
+| `Name` | `string?` | — |  |
+| `Value` | `string?` | — |  |
+| `Checked` | `bool` | — |  |
+| `Disabled` | `bool` | — |  |
+| `Multiple` | `bool` | — |  |
+| `Variant` | `string` | `"default"` |  |
+| `Size` | `string` | `"default"` |  |
 
 ## `<Tooltip>`
 renders `<span>` · `data-slot="tooltip"`

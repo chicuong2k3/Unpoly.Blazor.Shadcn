@@ -1,0 +1,32 @@
+@inherits UiComponentBase
+
+@* The field inside an input group's frame. It is an <Input> or a <Textarea> with the group's own
+   border and ring removed, because the frame around it already draws both — two rings on one
+   control is the giveaway that a group was assembled rather than composed. *@
+
+@if (Multiline)
+{
+    <Textarea data-slot="input-group-control" Class="@Classes" Value="@Value"
+              @attributes="AdditionalAttributes" />
+}
+else
+{
+    <Input data-slot="input-group-control" Type="@Type" Class="@Classes"
+           @attributes="AdditionalAttributes" />
+}
+
+@code {
+    /// <summary>Renders a <see cref="Textarea"/> instead of an <see cref="Input"/>.</summary>
+    [Parameter] public bool Multiline { get; set; }
+
+    [Parameter] public string Type { get; set; } = "text";
+
+    /// <summary>Only meaningful when Multiline — a textarea's value is its content.</summary>
+    [Parameter] public string? Value { get; set; }
+
+    const string Base =
+        "flex-1 resize-none rounded-none border-0 bg-transparent py-3 shadow-none " +
+        "focus-visible:ring-0 dark:bg-transparent";
+
+    string Classes => Cn(Base, Class);
+}
