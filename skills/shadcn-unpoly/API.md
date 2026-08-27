@@ -252,6 +252,44 @@ renders `<div>` · `data-slot="card-title"`
 
 _No parameters of its own._
 
+## `<Carousel>`
+renders `<div>` · `data-slot="carousel"`
+
+| Parameter | Type | Default | |
+|---|---|---|---|
+| `Orientation` | `string` | `"horizontal"` |  |
+| `AriaLabel` | `string` | `"Carousel"` |  |
+
+## `<CarouselContent>`
+renders `<div>` · `data-slot="carousel-content"`
+
+| Parameter | Type | Default | |
+|---|---|---|---|
+| `Orientation` | `string` | `"horizontal"` |  |
+
+## `<CarouselItem>`
+renders `<div>` · `data-slot="carousel-item"`
+
+| Parameter | Type | Default | |
+|---|---|---|---|
+| `Orientation` | `string` | `"horizontal"` |  |
+
+## `<CarouselNext>`
+renders `<button>` · `data-slot="carousel-next"`
+
+| Parameter | Type | Default | |
+|---|---|---|---|
+| `Label` | `string` | `"Next slide"` |  |
+| `Orientation` | `string` | `"horizontal"` |  |
+
+## `<CarouselPrevious>`
+renders `<button>` · `data-slot="carousel-previous"`
+
+| Parameter | Type | Default | |
+|---|---|---|---|
+| `Label` | `string` | `"Previous slide"` |  |
+| `Orientation` | `string` | `"horizontal"` |  |
+
 ## `<Checkbox>`
 renders `<input>` · `data-slot="checkbox"`
 
@@ -537,7 +575,10 @@ _No parameters of its own._
 ## `<Field>`
 renders `<div>` · `data-slot="field"`
 
-_No parameters of its own._
+| Parameter | Type | Default | |
+|---|---|---|---|
+| `Orientation` | `string` | `"vertical"` |  |
+| `Invalid` | `bool` | — |  |
 
 ## `<FieldContent>`
 renders `<div>` · `data-slot="field-content"`
@@ -567,7 +608,9 @@ _No parameters of its own._
 ## `<FieldLegend>`
 renders `<legend>` · `data-slot="field-legend"`
 
-_No parameters of its own._
+| Parameter | Type | Default | |
+|---|---|---|---|
+| `Variant` | `string` | `"legend"` |  |
 
 ## `<FieldSeparator>`
 renders `<div>` · `data-slot="field-separator"`
@@ -666,7 +709,9 @@ _No parameters of its own._
 ## `<InputGroupAddon>`
 renders `<div>` · `data-slot="input-group-addon"`
 
-_No parameters of its own._
+| Parameter | Type | Default | |
+|---|---|---|---|
+| `Align` | `string` | `"inline-start"` |  |
 
 ## `<InputGroupButton>`
 renders `<button>` · `data-slot="input-group-button"`
@@ -923,6 +968,31 @@ renders `<input>` · `data-slot="radio-group-item"`
 
 _No parameters of its own._
 
+## `<ResizableHandle>`
+renders `<div>` · `data-slot="resizable-handle"`
+
+| Parameter | Type | Default | |
+|---|---|---|---|
+| `WithHandle` | `bool` | — |  |
+| `Orientation` | `string` | `"vertical"` |  |
+| `AriaLabel` | `string` | `"Resize"` |  |
+
+## `<ResizablePanel>`
+renders `<div>` · `data-slot="resizable-panel"`
+
+| Parameter | Type | Default | |
+|---|---|---|---|
+| `DefaultSize` | `double` | `1` |  |
+| `MinSize` | `double` | `0.1` |  |
+| `Style` | `string?` | — |  |
+
+## `<ResizablePanelGroup>`
+renders `<div>` · `data-slot="resizable-panel-group"`
+
+| Parameter | Type | Default | |
+|---|---|---|---|
+| `Orientation` | `string` | `"horizontal"` |  |
+
 ## `<ScrollArea>`
 renders `<div>` · `data-slot="scroll-area"`
 
@@ -1008,6 +1078,18 @@ renders `<button>` · `data-slot="sheet-trigger"`
 renders `<div>` · `data-slot="skeleton"`
 
 _No parameters of its own._
+
+## `<Slider>`
+renders `<input>` · `data-slot="slider"`
+
+| Parameter | Type | Default | |
+|---|---|---|---|
+| `Min` | `double` | — |  |
+| `Max` | `double` | `100` |  |
+| `Step` | `string` | `"1"` |  |
+| `Value` | `double?` | — |  |
+| `Disabled` | `bool` | — |  |
+| `Orientation` | `string` | `"horizontal"` |  |
 
 ## `<Spinner>`
 `data-slot="spinner"`
@@ -1132,6 +1214,7 @@ renders `<div>` · `data-slot="toggle-group"`
 |---|---|---|---|
 | `Variant` | `string` | `"default"` |  |
 | `Size` | `string` | `"default"` |  |
+| `Spacing` | `int` | — |  |
 
 ## `<ToggleGroupItem>`
 renders `<label>` · `data-slot="toggle-group-item"`
@@ -1145,6 +1228,7 @@ renders `<label>` · `data-slot="toggle-group-item"`
 | `Multiple` | `bool` | — |  |
 | `Variant` | `string` | `"default"` |  |
 | `Size` | `string` | `"default"` |  |
+| `Spacing` | `int` | — |  |
 
 ## `<Tooltip>`
 renders `<span>` · `data-slot="tooltip"`

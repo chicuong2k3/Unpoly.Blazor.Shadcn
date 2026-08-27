@@ -1,0 +1,19 @@
+@* A real <input type="range">, so it already has drag, arrow keys, Home, End, Page Up and Page
+   Down, announces its value as it moves, and posts under its own name. *@
+<div class="w-full max-w-sm space-y-6">
+    <Field>
+        <FieldLabel For="volume">Volume</FieldLabel>
+        <Slider id="volume" name="volume" Value="60" />
+    </Field>
+
+    <Field>
+        <FieldLabel For="budget">Budget</FieldLabel>
+        <Slider id="budget" name="budget" Min="0" Max="500" Step="50" Value="200" />
+        <FieldDescription>Steps of 50, enforced by the input rather than by a check afterwards.</FieldDescription>
+    </Field>
+
+    <Field>
+        <FieldLabel For="locked">Disabled</FieldLabel>
+        <Slider id="locked" Value="30" Disabled />
+    </Field>
+</div>

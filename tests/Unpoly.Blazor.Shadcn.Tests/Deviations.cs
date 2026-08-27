@@ -34,6 +34,7 @@ public static class Deviations
         public Dictionary<string, JsonElement> AsChildButton { get; set; } = [];
         public Dictionary<string, JsonElement> DefaultVariant { get; set; } = [];
         public Dictionary<string, JsonElement> Composed { get; set; } = [];
+        public Dictionary<string, JsonElement> ByCvaName { get; set; } = [];
     }
 
     static readonly Lazy<File_> Loaded = new(() =>
@@ -91,6 +92,16 @@ public static class Deviations
     /// cannot see it. Keyed by component, because three of them render pagination-link and only
     /// one is icon-sized.
     /// </summary>
+    /// <summary>
+    /// The cva recipe a slot's classes really come from, when the recipe carries no data-slot of
+    /// its own. Compared against the wrong slot, such a component looks like it renders far too
+    /// much — which is what an empty expectation always looks like.
+    /// </summary>
+    public static string? CvaFor(string slot) =>
+        Loaded.Value.ByCvaName.TryGetValue(slot, out var v) && v.ValueKind == JsonValueKind.String
+            ? v.GetString()
+            : null;
+
     public static IReadOnlyDictionary<string, string> DefaultVariantFor(string component) =>
         Loaded.Value.DefaultVariant.TryGetValue(component, out var v) && v.ValueKind == JsonValueKind.Object
             ? v.EnumerateObject().ToDictionary(p => p.Name, p => p.Value.GetString()!)

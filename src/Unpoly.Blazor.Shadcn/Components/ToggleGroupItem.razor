@@ -3,7 +3,8 @@
 @* All items in one group share a Name, which is what makes them a group in the DOM. Radio when
    the group is single-select, checkbox when it is not — pass Multiple to say which. *@
 
-<label data-slot="toggle-group-item" data-variant="@Variant" data-size="@Size" class="@Classes" @attributes="AdditionalAttributes">
+<label data-slot="toggle-group-item" data-variant="@Variant" data-size="@Size"
+       data-spacing="@Spacing" class="@Classes" @attributes="AdditionalAttributes">
     <input type="@(Multiple ? "checkbox" : "radio")" class="sr-only peer" name="@Name"
            value="@Value" checked="@Checked" disabled="@Disabled"
            aria-pressed="@(Checked ? "true" : "false")" />
@@ -22,13 +23,16 @@
     [Parameter] public string Variant { get; set; } = "default";
     [Parameter] public string Size { get; set; } = "default";
 
+    /// <summary>Must match the group's. Upstream reads it from React context; Razor has none.</summary>
+    [Parameter] public int Spacing { get; set; }
+
     const string Base =
         "inline-flex items-center justify-center gap-2 rounded-md text-control font-medium " +
         "whitespace-nowrap transition-[color,box-shadow] outline-none hover:bg-muted " +
         "hover:text-muted-foreground focus-visible:border-ring focus-visible:ring-[3px] " +
         "focus-visible:ring-ring/50 disabled:pointer-events-none disabled:opacity-50 " +
         "aria-invalid:border-destructive aria-invalid:ring-destructive/20 " +
-        "data-[state=on]:bg-accent data-[state=on]:text-accent-foreground " +
+        "has-[:checked]:bg-accent has-[:checked]:text-accent-foreground " +
         "dark:aria-invalid:ring-destructive/40 [&_svg]:pointer-events-none [&_svg]:shrink-0 " +
         "[&_svg:not([class*='size-'])]:size-4 w-auto min-w-0 shrink-0 px-3 focus:z-10 " +
         "focus-visible:z-10 data-[spacing=0]:rounded-none data-[spacing=0]:shadow-none " +

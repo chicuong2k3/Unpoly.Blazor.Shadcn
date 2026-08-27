@@ -45,12 +45,16 @@ def load():
     for slot in dev.get('composed', {}):
         if not slot.startswith('$'):
             added.pop(slot, None)
-    return classes, tokens, added, dropped, subject
+    by_cva = {k: v for k, v in dev.get('byCvaName', {}).items() if not k.startswith('$')}
+    return classes, tokens, added, dropped, subject, by_cva
 
 
 # Slots whose variant is chosen at runtime by a C# switch, written by tools/sync_variants.py.
 # Everything else renders its default variant as part of its base.
-RUNTIME_VARIANTS = {'button', 'badge', 'alert', 'pagination-link'}
+RUNTIME_VARIANTS = {'button', 'badge', 'alert', 'pagination-link', 'sheet-content',
+                    'carousel-content', 'carousel-item', 'carousel-previous',
+                    'carousel-next', 'field', 'input-group-addon',
+                    'input-group-button'}
 
 
 def upstream_default(entry, slot):
@@ -107,7 +111,7 @@ def wrap_csharp(classes):
     return '\n'.join(body) + ';\n'
 
 
-def rewrite(path: pathlib.Path, classes, tokens, added, dropped, subject):
+def rewrite(path: pathlib.Path, classes, tokens, added, dropped, subject, by_cva):
     text = path.read_text(encoding='utf-8')
     markup = text.split('@code', 1)[0]
 
@@ -123,7 +127,10 @@ def rewrite(path: pathlib.Path, classes, tokens, added, dropped, subject):
     if slot not in classes:
         return text, slot
 
-    wanted = ours(upstream_default(classes[slot], slot), slot, tokens, added, dropped)
+    # A recipe that carries no data-slot of its own is read by cva name; its deviations still
+    # belong to the slot the element ends up with.
+    entry = classes.get(by_cva.get(slot), classes[slot])
+    wanted = ours(upstream_default(entry, slot), slot, tokens, added, dropped)
     # Several shadcn roots carry no className at all — Accordion, Breadcrumb, Tooltip. There is
     # nothing to write, and anything the component adds of its own has to be declared in
     # deviations.added, which the parity test enforces.
@@ -143,12 +150,12 @@ def rewrite(path: pathlib.Path, classes, tokens, added, dropped, subject):
 
 
 def main():
-    classes, tokens, added, dropped, subject = load()
+    classes, tokens, added, dropped, subject, by_cva = load()
     changed, skipped = [], []
 
     for path in sorted(COMPONENTS.glob('*.razor')):
         original = path.read_text(encoding='utf-8')
-        updated, slot = rewrite(path, classes, tokens, added, dropped, subject)
+        updated, slot = rewrite(path, classes, tokens, added, dropped, subject, by_cva)
         if slot is None or slot not in classes:
             skipped.append(path.stem)
             continue

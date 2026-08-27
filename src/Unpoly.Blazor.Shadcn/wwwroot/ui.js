@@ -912,6 +912,188 @@
     return () => control.destroy()
   })
 
+  // =============================================================================================
+  // data-state on a native <dialog>
+  // =============================================================================================
+  // shadcn animates its overlays with data-[state=open] and data-[state=closed], which Radix
+  // sets as it mounts and unmounts. A <dialog> has no such attribute — it has an `open` property
+  // and nothing else — so every one of those classes matched nothing and the panels appeared and
+  // vanished with no transition at all.
+  //
+  // The close half has to outlive the close: `closed` is set, the animation is allowed to run,
+  // and only then is the attribute cleared. Reading the duration from the element rather than
+  // hardcoding one means a theme that slows the animation down does not get it cut short.
+
+  up.compiler('dialog[data-slot]', (dialog) => {
+    const panel = dialog.firstElementChild || dialog
+
+    const opened = () => { panel.dataset.state = 'open' }
+
+    const closing = () => {
+      panel.dataset.state = 'closed'
+      const ms = parseFloat(getComputedStyle(panel).animationDuration) * 1000 || 0
+      setTimeout(() => { if (!dialog.open) delete panel.dataset.state }, ms)
+    }
+
+    // showModal() fires no event of its own, so the open state is watched rather than hooked.
+    const watch = new MutationObserver(() => (dialog.open ? opened() : closing()))
+    watch.observe(dialog, { attributes: true, attributeFilter: ['open'] })
+    if (dialog.open) opened()
+
+    return () => watch.disconnect()
+  })
+
+  // =============================================================================================
+  // Slider — the filled part of the track
+  // =============================================================================================
+  // The input draws its own track and thumb; what it has no element for is the filled portion to
+  // the left of the thumb. That is one gradient stop, so this keeps a percentage in a custom
+  // property and CSS does the rest. Without it the slider still works — it is the fill that is
+  // missing, not the control, which is why this is a compiler and not a requirement.
+
+  up.compiler('input[type="range"][data-slot="slider"]', (input) => {
+    const paint = () => {
+      const min = Number(input.min || 0)
+      const max = Number(input.max || 100)
+      const span = max - min
+      input.style.setProperty('--slider-fill', span ? `${((input.value - min) / span) * 100}%` : '0%')
+    }
+
+    input.addEventListener('input', paint)
+    paint()
+
+    return () => input.removeEventListener('input', paint)
+  })
+
+  // =============================================================================================
+  // Carousel — the two arrows, and only the two arrows
+  // =============================================================================================
+  // Scroll-snap is the carousel. These buttons scroll it by one slide and disable themselves at
+  // each end, which is what upstream's canScrollPrev/canScrollNext do. They ship hidden and are
+  // revealed here, because an arrow that cannot scroll is worse than no arrow.
+
+  up.compiler('[data-slot="carousel"]', (root) => {
+    const scroller = root.querySelector('[data-slot="carousel-content"]')
+    if (!scroller) return
+
+    const buttons = [...root.querySelectorAll('[data-carousel-scroll]')]
+    const vertical = root.dataset.orientation === 'vertical'
+
+    const step = () => {
+      const item = scroller.querySelector('[data-slot="carousel-item"]')
+      // One slide, or one viewport when the slides are narrower than it.
+      return item ? (vertical ? item.offsetHeight : item.offsetWidth)
+                  : (vertical ? scroller.clientHeight : scroller.clientWidth)
+    }
+
+    const sync = () => {
+      const pos = vertical ? scroller.scrollTop : scroller.scrollLeft
+      const max = (vertical ? scroller.scrollHeight - scroller.clientHeight
+                            : scroller.scrollWidth - scroller.clientWidth)
+      for (const button of buttons) {
+        const back = button.dataset.carouselScroll === '-1'
+        // A fractional scroll position never reaches the exact maximum, so round.
+        button.disabled = back ? pos <= 1 : pos >= max - 1
+      }
+    }
+
+    const onClick = (event) => {
+      const button = event.currentTarget
+      const by = Number(button.dataset.carouselScroll) * step()
+      scroller.scrollBy(vertical ? { top: by, behavior: 'smooth' } : { left: by, behavior: 'smooth' })
+    }
+
+    for (const button of buttons) {
+      button.hidden = false
+      button.addEventListener('click', onClick)
+    }
+    scroller.addEventListener('scroll', sync, { passive: true })
+    sync()
+
+    return () => {
+      for (const button of buttons) button.removeEventListener('click', onClick)
+      scroller.removeEventListener('scroll', sync)
+    }
+  })
+
+  // =============================================================================================
+  // Resizable — dragging the divider, and moving it from the keyboard
+  // =============================================================================================
+  // The handle rewrites flex-grow on the panel either side of it. Nothing else changes, so a drag
+  // costs one style recalculation per pointer move rather than a render.
+  //
+  // Arrow keys move it too. A divider only a pointer can move is a divider that half the people
+  // using it cannot move at all, and role=separator promises otherwise.
+
+  up.compiler('[data-slot="resizable-handle"]', (handle) => {
+    const group = handle.closest('[data-slot="resizable-panel-group"]')
+    const before = handle.previousElementSibling
+    const after = handle.nextElementSibling
+    if (!group || !before || !after) return
+
+    const vertical = group.dataset.orientation === 'vertical'
+    const min = (el) => Number(el.dataset.minSize || 0.1)
+
+    // The pair's total grow is preserved, so the rest of the group never moves.
+    const total = () => Number(getComputedStyle(before).flexGrow) + Number(getComputedStyle(after).flexGrow)
+
+    const apply = (share) => {
+      const sum = total()
+      const clamped = Math.min(Math.max(share, min(before)), sum - min(after))
+      before.style.flexGrow = String(clamped)
+      after.style.flexGrow = String(sum - clamped)
+      handle.setAttribute('aria-valuenow', String(Math.round((clamped / sum) * 100)))
+    }
+
+    const fromPointer = (event) => {
+      const box = group.getBoundingClientRect()
+      const at = vertical ? (event.clientY - box.top) / box.height
+                          : (event.clientX - box.left) / box.width
+      apply(at * total())
+    }
+
+    const onMove = (event) => { event.preventDefault(); fromPointer(event) }
+
+    const stop = () => {
+      delete handle.dataset.dragging
+      window.removeEventListener('pointermove', onMove)
+      window.removeEventListener('pointerup', stop)
+    }
+
+    const onDown = (event) => {
+      event.preventDefault()
+      handle.dataset.dragging = ''
+      handle.focus()
+      window.addEventListener('pointermove', onMove)
+      window.addEventListener('pointerup', stop)
+    }
+
+    const onKey = (event) => {
+      const nudge = { ArrowLeft: -1, ArrowUp: -1, ArrowRight: 1, ArrowDown: 1 }[event.key]
+      if (nudge === undefined && event.key !== 'Home' && event.key !== 'End') return
+      event.preventDefault()
+
+      const sum = total()
+      const now = Number(getComputedStyle(before).flexGrow)
+      if (event.key === 'Home') apply(min(before))
+      else if (event.key === 'End') apply(sum - min(after))
+      else apply(now + nudge * sum * (event.shiftKey ? 0.1 : 0.02))
+    }
+
+    handle.setAttribute('aria-valuemin', '0')
+    handle.setAttribute('aria-valuemax', '100')
+    apply(Number(getComputedStyle(before).flexGrow))
+
+    handle.addEventListener('pointerdown', onDown)
+    handle.addEventListener('keydown', onKey)
+
+    return () => {
+      stop()
+      handle.removeEventListener('pointerdown', onDown)
+      handle.removeEventListener('keydown', onKey)
+    }
+  })
+
   // Anything outside Unpoly's world — a head's own app.js, a page script — reaches these.
   // `toast` is global on purpose: that is sonner's API, and the call sites read the same.
   window.toast = toast

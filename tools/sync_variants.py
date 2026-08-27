@@ -72,13 +72,16 @@ def sync_button(classes, tokens, added, dropped):
     return path, text
 
 
-def sync_razor(name, slot, cs_property, upstream_group, classes, tokens, added, dropped):
+def sync_razor(name, slot, cs_property, upstream_group, classes, tokens, added, dropped,
+               base_slot=None):
     """`cs_property` is the C# parameter (PascalCase); `upstream_group` is cva's key (lowercase).
 
     They are not the same word, and conflating them writes an empty switch — which compiles, and
     then throws SwitchExpressionException on the first render.
     """
     entry = classes[slot]
+    # A recipe read by cva name still writes its deviations under the slot it lands on.
+    slot = base_slot or slot
     path = SRC / 'Components' / f'{name}.razor'
     text = path.read_text(encoding='utf-8')
     text = replace_between(
@@ -94,6 +97,25 @@ def main():
         sync_button(classes, tokens, added, dropped),
         sync_razor('Badge', 'badge', 'Variant', 'variant', classes, tokens, added, dropped),
         sync_razor('Alert', 'alert', 'Variant', 'variant', classes, tokens, added, dropped),
+        # Not every shadcn variant goes through cva. These four are written inline as
+        # `side === "right" && "…"`, which is the same thing said differently — and reading them
+        # as base is how SheetContent came to carry all four edges at once.
+        sync_razor('Sheet', 'sheet-content', 'Side', 'side', classes, tokens, added, dropped),
+        sync_razor('CarouselContent', 'carousel-content', 'Orientation', 'orientation',
+                   classes, tokens, added, dropped),
+        sync_razor('CarouselItem', 'carousel-item', 'Orientation', 'orientation',
+                   classes, tokens, added, dropped),
+        sync_razor('CarouselPrevious', 'carousel-previous', 'Orientation', 'orientation',
+                   classes, tokens, added, dropped),
+        sync_razor('CarouselNext', 'carousel-next', 'Orientation', 'orientation',
+                   classes, tokens, added, dropped),
+        sync_razor('Field', 'field', 'Orientation', 'orientation', classes, tokens, added, dropped),
+        sync_razor('InputGroupAddon', 'input-group-addon', 'Align', 'align',
+                   classes, tokens, added, dropped),
+        # By cva name, not by slot: this one renders a <Button>, so the element in the DOM says
+        # data-slot="button" and its own size table belongs to no slot at all.
+        sync_razor('InputGroupButton', '$cva:inputGroupButtonVariants', 'Size', 'size',
+                   classes, tokens, added, dropped, base_slot='input-group-button'),
     ]
 
     stale = [p.name for p, t in writes if p.read_text(encoding='utf-8') != t]

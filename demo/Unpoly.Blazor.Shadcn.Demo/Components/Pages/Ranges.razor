@@ -1,0 +1,35 @@
+@page "/components/ranges"
+
+<PageTitle>Slider, Carousel, Resizable — Unpoly.Blazor.Shadcn</PageTitle>
+
+<h1 class="doc-h1">Slider, carousel, resizable</h1>
+<p class="doc-lede">
+    Three components where the platform had already solved most of the problem, and the port is
+    mostly the decision to stop reimplementing it.
+</p>
+
+<h2 class="doc-h2">Slider</h2>
+<p class="doc-note">
+    Radix builds a slider from five divs, a pointer-event graph and a roving tab index, and spends
+    most of that code re-implementing what <code>&lt;input type="range"&gt;</code> already does —
+    including the part that is never reimplemented correctly, announcing the value as it changes.
+    So the root here <i>is</i> the input. The cost: one thumb, not two. A range with a lower and an
+    upper bound is two inputs with two names, which is also what a server wants to read.
+</p>
+<Example Source="SliderExample.razor"><SliderExample /></Example>
+
+<h2 class="doc-h2">Carousel</h2>
+<p class="doc-note">
+    Embla exists because Safari's scroll-snap was unusable in 2019. It is fine now, so this is CSS
+    scroll-snap and the arrows are all that is left in JavaScript. With scripting off it still
+    swipes and still scrolls; the arrows hide rather than sit there dead.
+</p>
+<Example Source="CarouselExample.razor"><CarouselExample /></Example>
+
+<h2 class="doc-h2">Resizable</h2>
+<p class="doc-note">
+    The handle rewrites <code>flex-grow</code> on the panel either side of it, so a drag costs one
+    style recalculation rather than a render. Arrow keys move it too — <code>role="separator"</code>
+    promises that, and a divider only a pointer can move is one half the people using it cannot.
+</p>
+<Example Source="ResizableExample.razor"><ResizableExample /></Example>

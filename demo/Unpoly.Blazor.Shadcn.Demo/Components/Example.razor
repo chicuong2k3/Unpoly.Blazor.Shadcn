@@ -51,8 +51,24 @@
     static string Trim(string text)
     {
         var lines = text.Replace("\r\n", "\n").Split('\n').ToList();
-        while (lines.Count > 0 && (lines[0].StartsWith('@') || lines[0].Length == 0))
-            lines.RemoveAt(0);
+        // A Razor comment spans lines, and only its first one starts with '@'. Dropping lines by
+        // that test alone beheaded the comment and left the rest of it — and a dangling *@ — at
+        // the top of every sample, which is what the samples had been showing.
+        while (lines.Count > 0)
+        {
+            if (lines[0].Trim().Length == 0) { lines.RemoveAt(0); continue; }
+
+            if (lines[0].TrimStart().StartsWith("@*"))
+            {
+                var end = lines.FindIndex(l => l.Contains("*@"));
+                if (end < 0) break;
+                lines.RemoveRange(0, end + 1);
+                continue;
+            }
+
+            if (lines[0].StartsWith('@') && !lines[0].StartsWith("@code")) { lines.RemoveAt(0); continue; }
+            break;
+        }
 
         var code = lines.FindIndex(l => l.StartsWith("@code"));
         if (code >= 0) lines = lines[..code];

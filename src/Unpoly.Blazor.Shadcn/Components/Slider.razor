@@ -1,0 +1,42 @@
+@inherits UiComponentBase
+
+@* <input type="range">.
+
+   Radix builds a slider out of five divs, a pointer-event graph and a roving tab index, and then
+   spends most of its code re-implementing what the input already does: drag, arrow keys, Home,
+   End, Page Up, Page Down, the step grid, the disabled state, and — the part that is never
+   reimplemented correctly — announcing the value as it changes, in the user's own units.
+
+   So the root here IS the input, and the track, the filled range and the thumb are the three
+   pseudo-elements the browser gives it, styled in ui.behavior.css with upstream's own colours.
+
+   What this cannot do is two thumbs. A range with a lower and an upper bound is two inputs with
+   two names, and pretending otherwise would mean rebuilding the whole thing. Two named inputs is
+   also what a server wants to read, so the honest shape and the useful one agree. *@
+
+<input type="range" data-slot="slider" min="@Min" max="@Max" step="@Step" value="@Value"
+       disabled="@Disabled" data-disabled="@(Disabled ? "" : null)"
+       data-orientation="@Orientation" class="@Classes"
+       @attributes="AdditionalAttributes" />
+
+@code {
+    [Parameter] public double Min { get; set; }
+    [Parameter] public double Max { get; set; } = 100;
+
+    /// <summary>The step grid. "any" turns it off; the default matches upstream's.</summary>
+    [Parameter] public string Step { get; set; } = "1";
+
+    [Parameter] public double? Value { get; set; }
+
+    [Parameter] public bool Disabled { get; set; }
+
+    /// <summary>"horizontal" or "vertical". Vertical is CSS only — the input is unchanged.</summary>
+    [Parameter] public string Orientation { get; set; } = "horizontal";
+
+    const string Base =
+        "relative w-full touch-none select-none data-[disabled]:opacity-50 " +
+        "data-[orientation=vertical]:h-full data-[orientation=vertical]:min-h-44 " +
+        "data-[orientation=vertical]:w-auto";
+
+    string Classes => Cn(Base, Class);
+}

@@ -12,9 +12,23 @@
   ],
   "tokens": {
     "$comment": [
-      "The only substitutions. shadcn hardcodes the control height and font size, which pins",
-      "every consumer to one control size; these two read --control-h and --control-text so one",
-      "library can dress a 46px storefront and a 36px back office. Nothing else is substituted."
+      "Two kinds of substitution, and only two.",
+      "",
+      "shadcn hardcodes the control height and font size, which pins every consumer to one control",
+      "size; h-control and text-control read --control-h and --control-text so one library can dress",
+      "a 46px storefront and a 36px back office.",
+      "",
+      "And Radix draws a checkbox, a radio and a switch as a <button> carrying data-state, with a",
+      "hidden input alongside. Here the real input IS the control, because on static SSR it is the",
+      "only thing that posts and the only thing that can be focused — so the state lives in :checked,",
+      "which the browser maintains, rather than in an attribute JavaScript would have to keep in step.",
+      "Without this substitution those classes match nothing and the checked state has no colour at",
+      "Without this substitution those classes match nothing and the checked state has no colour at",
+      "all: the bug that shipped, and the reason each one is written down here.",
+      "",
+      "A token name is matched wherever it appears, so it must be a name that can only ever mean the",
+      "substitution. `bg-input` was tried and was wrong for exactly that reason — every component",
+      "that legitimately says bg-input had it cancelled on one side of the comparison only."
     ],
     "h-control": [
       "h-9"
@@ -26,6 +40,30 @@
     ],
     "size-control": [
       "size-9"
+    ],
+    "checked:bg-primary": [
+      "data-[state=checked]:bg-primary"
+    ],
+    "checked:border-primary": [
+      "data-[state=checked]:border-primary"
+    ],
+    "checked:text-primary-foreground": [
+      "data-[state=checked]:text-primary-foreground"
+    ],
+    "dark:checked:bg-primary": [
+      "dark:data-[state=checked]:bg-primary"
+    ],
+    "not-checked:bg-input": [
+      "data-[state=unchecked]:bg-input"
+    ],
+    "dark:not-checked:bg-input/80": [
+      "dark:data-[state=unchecked]:bg-input/80"
+    ],
+    "has-[:checked]:bg-accent": [
+      "data-[state=on]:bg-accent"
+    ],
+    "has-[:checked]:text-accent-foreground": [
+      "data-[state=on]:text-accent-foreground"
     ]
   },
   "added": {
@@ -194,6 +232,14 @@
         "[&_svg:not([class*='text-'])]:text-muted-foreground"
       ],
       "why": "Radix's SelectItem is a div in a listbox. Here it is an <option> — the thing that actually posts, and the thing a phone renders as its own wheel. The OS draws it, so none of these classes reach anything. ui.js applies the same recipe to the themed row it draws beside the native control."
+    },
+    "slider": {
+      "classes": [
+        "flex",
+        "items-center",
+        "data-[orientation=vertical]:flex-col"
+      ],
+      "why": "Upstream's root is a <div> holding a track and a thumb, so it is a flex container. Here the root IS the <input type=range>, and display:flex on a range input destroys the box model the browser draws its own track and thumb inside — the track vanished and only the thumb was left, a lone circle floating in the row. The remaining layout classes (relative, w-full, touch-none, select-none) are harmless on an input and are kept."
     }
   },
   "subject": {
@@ -259,6 +305,18 @@
     },
     "alert-dialog-cancel": {
       "variant": "outline",
+      "size": "default"
+    },
+    "carousel-previous": {
+      "variant": "outline",
+      "size": "icon"
+    },
+    "carousel-next": {
+      "variant": "outline",
+      "size": "icon"
+    },
+    "input-group-button": {
+      "variant": "ghost",
       "size": "default"
     }
   },
@@ -352,5 +410,15 @@
       "classes": [],
       "component": "Command"
     }
+  },
+  "byCvaName": {
+    "$comment": [
+      "Slots whose class list is a cva that carries no data-slot of its own. InputGroupButton",
+      "renders a <Button>, so in the DOM the element says data-slot=\"button\" and its own size",
+      "table — the one that makes it small enough to sit inside a 36px control — belongs to no",
+      "slot at all. Without this it had no classes whatsoever and rendered as browser chrome",
+      "inside a styled box."
+    ],
+    "input-group-button": "$cva:inputGroupButtonVariants"
   }
 }

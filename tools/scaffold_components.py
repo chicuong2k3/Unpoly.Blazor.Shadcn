@@ -35,6 +35,10 @@ FAMILIES = {
     'aspect-ratio', 'button-group', 'collapsible', 'empty', 'field', 'hover-card', 'input-group',
     'input-otp', 'item', 'kbd', 'native-select', 'popover', 'scroll-area', 'sheet', 'spinner', 'toggle',
     'toggle-group',
+    # command and the code block, hand-written
+    'command',
+    # this batch: the platform answers each one
+    'slider', 'resizable', 'carousel',
 }
 
 # Slots that will never have a component here, with the reason. Reported separately from "not
@@ -53,6 +57,11 @@ NOT_PORTED = {
     'radio-group-indicator': 'the dot is ::after on the input',
     'checkbox-indicator': 'the tick is ::after on the input',
     'form-control': 'Slot.Root is asChild; the control is written into FormField directly',
+    # <input type=range> draws its own three parts, and a pseudo-element cannot be a component.
+    # ui.behavior.css styles them with upstream's colours.
+    'slider-track': '::-webkit-slider-runnable-track on the input',
+    'slider-range': 'the filled part is a gradient on the track; no element exists',
+    'slider-thumb': '::-webkit-slider-thumb on the input',
 }
 
 # React needs a portal to escape overflow and stacking context, and an overlay element to dim

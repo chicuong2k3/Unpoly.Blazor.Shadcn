@@ -1,0 +1,88 @@
+#!/usr/bin/env python3
+"""Fails when a component styles itself by a data- attribute it never renders.
+
+Half of shadcn's appearance is keyed off attributes React sets: `data-[state=checked]:bg-primary`,
+`data-[orientation=vertical]:flex-col`, `data-[side=right]:border-l`. Port the class string
+without the attribute and the rule matches nothing — no error, no warning, no colour. The switch
+shipped with no background in either state that way, and every Field in the library laid itself
+out as a row for the same reason.
+
+This reads the .razor source rather than a render, because most of these attributes are
+conditional: `data-disabled` appears only when the component is disabled, and a default render
+proves nothing either way. What matters is whether the component can ever emit it.
+
+    python tools/check_data_attributes.py           # report
+    python tools/check_data_attributes.py --check   # CI: non-zero when something is unaccounted for
+"""
+import pathlib
+import re
+import sys
+
+ROOT = pathlib.Path(__file__).resolve().parent.parent
+COMPONENTS = ROOT / 'src' / 'Unpoly.Blazor.Shadcn' / 'Components'
+
+# `data-[x=y]:` at the start of a variant chain is this element's own state. `group-data-`,
+# `peer-data-` and `in-data-` describe an ancestor's or a sibling's, which this element does not
+# set and must not be blamed for.
+SELF = re.compile(r'(?<![\w-])(group-|peer-|in-)?data-\[([a-z-]+)[=\]]')
+EMITS = re.compile(r'\bdata-([a-z-]+)=')
+
+# Attributes ui.js writes at runtime, with the compiler that writes each one. An entry here is a
+# promise that the JavaScript keeps it in step; anything not here belongs in the markup.
+BY_COMPILER = {
+    'Sheet.data-state': "up.compiler('dialog[data-slot]')",
+    'Tabs.data-state': 'up.compiler(\'[data-slot="tabs"]\')',
+    'TabsTrigger.data-state': 'up.compiler(\'[data-slot="tabs"]\')',
+    'CommandItem.data-selected': 'up.compiler(\'[data-slot="command"]\')',
+    'DropdownMenuSubTrigger.data-state': 'up.compiler(\'[data-slot="dropdown-menu"]\')',
+    'DropdownMenuSubContent.data-state': 'up.compiler(\'[data-slot="dropdown-menu"]\')',
+    'DropdownMenuContent.data-state': 'up.compiler(\'[data-slot="dropdown-menu"]\')',
+    'HoverCardContent.data-state': 'up.compiler(\'[data-slot="hover-card"]\')',
+    'PopoverContent.data-state': 'up.compiler(\'[data-slot="popover"]\')',
+    'InputOtpSlot.data-active': 'up.compiler(\'[data-slot="input-otp"]\')',
+    'CodeBlock.data-copied': 'up.compiler(\'[data-slot="code-block-copy"]\')',
+    'ResizableHandle.data-dragging': 'up.compiler(\'[data-slot="resizable-handle"]\')',
+}
+
+# Attributes a CALLER sets, because the state they describe is the caller's to know.
+BY_CALLER = {
+    'TableRow.data-state': 'a row is selected by whatever renders the table',
+}
+
+# Attributes rendered by the component this one composes, as upstream composes it too.
+BY_COMPOSITION = {
+    'ButtonGroupSeparator.data-orientation': '<Separator> renders it from the Orientation passed in',
+}
+
+
+def main() -> int:
+    problems = []
+    checked = 0
+    for path in sorted(COMPONENTS.glob('*.razor')):
+        source = path.read_text(encoding='utf-8')
+        wanted = {m.group(2) for m in SELF.finditer(source) if not m.group(1)}
+        emitted = set(EMITS.findall(source))
+        for attribute in sorted(wanted - emitted):
+            key = f'{path.stem}.data-{attribute}'
+            if key in BY_COMPILER or key in BY_CALLER or key in BY_COMPOSITION:
+                continue
+            problems.append(f'{path.stem}: styles itself with data-[{attribute}=…] '
+                            f'and never renders data-{attribute}')
+        checked += 1
+
+    for line in problems:
+        print(line, file=sys.stderr)
+
+    if problems:
+        print(f'\n{len(problems)} rules that match nothing. Render the attribute, or add it to '
+              f'BY_COMPILER/BY_CALLER with what does.', file=sys.stderr)
+        return 1
+
+    print(f'{checked} components: every data- rule has an attribute to match '
+          f'({len(BY_COMPILER)} set by a compiler, {len(BY_CALLER)} by the caller, '
+          f'{len(BY_COMPOSITION)} by a composed component)')
+    return 0
+
+
+if __name__ == '__main__':
+    raise SystemExit(main())

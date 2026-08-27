@@ -33,10 +33,15 @@ public class ClassParityTests : BunitContext
         Skip.If(slot is null || !Upstream.Has(slot), $"no upstream component for '{slot ?? name}'");
 
         // Where shadcn uses asChild with a Button, the element IS a button here and is expected
-        // to wear the button recipe — which the button parity tests check on its own.
+        // to wear the button recipe — which the button parity tests check on its own. The slot's
+        // own classes come after it, because that is the order upstream composes them in:
+        // Button does cn(buttonVariants(...), className), so the caller's string wins the merge.
+        // Carousel's arrows are the ones that need it — they override size and shape.
         var expected = Deviations.AsChildButton(slot!) is { } chosen
-            ? Upstream.Slot("button").WithAll(chosen)
-            : Upstream.Slot(slot!).WithAll(Deviations.DefaultVariantFor(name));
+            ? [.. Upstream.Slot("button").WithAll(chosen),
+               .. Upstream.Slot(Deviations.CvaFor(slot!) ?? slot!)
+                          .WithAll(Deviations.DefaultVariantFor(name))]
+            : Upstream.Slot(Deviations.CvaFor(slot!) ?? slot!).WithAll(Deviations.DefaultVariantFor(name));
 
         AssertSameClasses(slot!, subject.GetAttribute("class"), expected);
     }

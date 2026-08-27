@@ -1,0 +1,11 @@
+@* Drag the divider, or focus it and use the arrow keys — hold Shift for a bigger step, Home and
+   End to push it to either edge. role="separator" promises a keyboard can move it, so it can. *@
+<ResizablePanelGroup Class="h-52 w-full max-w-2xl rounded-lg border">
+    <ResizablePanel DefaultSize="1" MinSize="0.2" Class="flex items-center justify-center p-4">
+        <span class="text-sm font-medium">Files</span>
+    </ResizablePanel>
+    <ResizableHandle WithHandle />
+    <ResizablePanel DefaultSize="2" MinSize="0.3" Class="flex items-center justify-center p-4">
+        <span class="text-sm font-medium">Editor</span>
+    </ResizablePanel>
+</ResizablePanelGroup>

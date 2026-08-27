@@ -167,7 +167,8 @@
     [data-slot="dropdown-menu-sub-content"],
     [data-slot="select-content"],
     [data-slot="dialog-content"],
-    [data-slot="alert-dialog-content"] { border-color: transparent; }
+    [data-slot="alert-dialog-content"],
+    [data-slot="code-block"] { border-color: transparent; }
 
     /* ---- Checkbox / RadioGroup / Switch ----------------------------------------------
        Radix draws these as <button role="checkbox"> with a hidden input alongside. On static
@@ -255,6 +256,135 @@
        highlight follows the keyboard as well as the pointer, which is why it is an attribute and
        not :hover — otherwise arrowing down leaves the mouse's row lit and two rows look chosen. */
     [data-slot="command-input"]::-webkit-search-cancel-button { margin-inline-start: 0.25rem; }
+
+    /* ---- Menu items that are buttons --------------------------------------------------
+       Radix draws every menu item as a <div>, which fills its row. Here an item that navigates
+       is an <a> and an item that acts is a <button> — and a button sizes to fit-content even
+       with display:flex, because the UA gives form controls their own intrinsic width. So the
+       label was left-aligned in a box as wide as its text, the hover highlight stopped short of
+       the menu edge, and clicking the empty strip beside it did nothing.
+
+       One rule rather than a w-full in each recipe: the class lists are generated from shadcn
+       and this is not shadcn's problem to have. */
+    button[data-slot="dropdown-menu-item"],
+    button[data-slot="dropdown-menu-checkbox-item"],
+    button[data-slot="dropdown-menu-radio-item"],
+    button[data-slot="dropdown-menu-sub-trigger"],
+    button[data-slot="context-menu-item"],
+    button[data-slot="context-menu-checkbox-item"],
+    button[data-slot="context-menu-radio-item"],
+    button[data-slot="context-menu-sub-trigger"],
+    button[data-slot="menubar-item"],
+    button[data-slot="menubar-checkbox-item"],
+    button[data-slot="menubar-radio-item"],
+    button[data-slot="menubar-sub-trigger"],
+    button[data-slot="command-item"],
+    button[data-slot="combobox-item"],
+    button[data-slot="sidebar-menu-button"],
+    button[data-slot="sidebar-menu-sub-button"] { width: 100%; }
+
+    /* ---- Slider ----------------------------------------------------------------------
+       The three parts Radix builds out of divs are the three parts the input already has. The
+       colours are upstream's, moved here because a pseudo-element cannot be a component.
+
+       The filled range has no element in either engine, so it is a gradient stop on the track at
+       --slider-fill, which ui.js keeps in step with the value. Without JavaScript the track is
+       plain and the slider still works — you lose the fill, not the control. */
+    input[type="range"][data-slot="slider"] {
+        appearance: none;
+        background: transparent;
+        cursor: pointer;
+        /* Tall enough for the thumb, which overflows the track exactly as it does upstream: a
+           6px rule with a 16px handle riding on it. Left at the browser default the thumb is
+           clipped top and bottom. */
+        block-size: 1rem;
+        inline-size: 100%;
+    }
+    input[type="range"][data-slot="slider"]:disabled { cursor: not-allowed; }
+
+    /* One vendor pseudo-element per rule, never a list. An engine that does not know one
+       selector drops the WHOLE list, so combining these loses the track in every browser — which
+       is what happened here: the thumb drew, the track did not, and the slider read as a lone
+       circle floating in the row. */
+    input[type="range"][data-slot="slider"]::-webkit-slider-runnable-track {
+        height: 0.375rem;                       /* h-1.5, as upstream's track */
+        border-radius: 9999px;
+        background: linear-gradient(to right,
+            var(--primary) 0 var(--slider-fill, 0%),
+            var(--muted) var(--slider-fill, 0%) 100%);
+    }
+    input[type="range"][data-slot="slider"]::-moz-range-track {
+        height: 0.375rem;
+        border-radius: 9999px;
+        background: linear-gradient(to right,
+            var(--primary) 0 var(--slider-fill, 0%),
+            var(--muted) var(--slider-fill, 0%) 100%);
+    }
+
+    /* -moz- and -webkit- must be written as separate rules: one invalid selector in a list drops
+       the whole list, so combining them silently loses the thumb in every browser. */
+    input[type="range"][data-slot="slider"]::-webkit-slider-thumb {
+        appearance: none;
+        width: 1rem; height: 1rem;              /* size-4 */
+        margin-top: -0.3125rem;                 /* centres the thumb on the track */
+        border-radius: 9999px;
+        border: 1px solid var(--primary);
+        background: #fff;
+        box-shadow: var(--elevation-1, 0 1px 2px 0 rgb(0 0 0 / 0.05));
+        transition: box-shadow var(--duration-ui, 150ms) var(--ease-ui, ease);
+    }
+    input[type="range"][data-slot="slider"]::-moz-range-thumb {
+        width: 1rem; height: 1rem;
+        border-radius: 9999px;
+        border: 1px solid var(--primary);
+        background: #fff;
+        box-shadow: var(--elevation-1, 0 1px 2px 0 rgb(0 0 0 / 0.05));
+    }
+    input[type="range"][data-slot="slider"]:hover::-webkit-slider-thumb {
+        box-shadow: 0 0 0 4px var(--ring);      /* hover:ring-4 */
+    }
+    input[type="range"][data-slot="slider"]:focus-visible::-webkit-slider-thumb {
+        box-shadow: 0 0 0 4px var(--ring);      /* focus-visible:ring-4 */
+    }
+    input[type="range"][data-slot="slider"]:hover::-moz-range-thumb,
+    input[type="range"][data-slot="slider"]:focus-visible::-moz-range-thumb {
+        box-shadow: 0 0 0 4px var(--ring);
+    }
+    input[type="range"][data-slot="slider"]:focus-visible { outline: none; }
+    input[type="range"][data-slot="slider"][data-orientation="vertical"] {
+        writing-mode: vertical-lr;
+        direction: rtl;
+    }
+
+    /* ---- Carousel --------------------------------------------------------------------
+       Scroll-snap is the carousel. Embla exists because Safari's implementation was unusable in
+       2019; it is fine now, and what remains in JavaScript is the two arrows. */
+    [data-slot="carousel-content"] {
+        overflow-x: auto;
+        scroll-snap-type: x mandatory;
+        scrollbar-width: none;                  /* the arrows and the swipe are the affordance */
+        overscroll-behavior-x: contain;         /* stops a swipe becoming a back-navigation */
+    }
+    [data-slot="carousel-content"]::-webkit-scrollbar { display: none; }
+    [data-slot="carousel-item"] { scroll-snap-align: start; }
+
+    [data-orientation="vertical"] > [data-slot="carousel-content"] {
+        overflow-x: hidden;
+        overflow-y: auto;
+        scroll-snap-type: y mandatory;
+        max-height: 100%;
+    }
+
+    /* ---- Resizable -------------------------------------------------------------------
+       The handle is the only moving part: its compiler writes flex-grow on the two panels it
+       sits between. Everything else is ordinary flex. */
+    [data-slot="resizable-panel-group"][data-orientation="vertical"] { flex-direction: column; }
+    [data-slot="resizable-panel"] { overflow: hidden; }
+    [data-slot="resizable-handle"] { cursor: col-resize; touch-action: none; }
+    [data-slot="resizable-handle"][aria-orientation="horizontal"] { cursor: row-resize; }
+    [data-slot="resizable-handle"]:hover, [data-slot="resizable-handle"][data-dragging] {
+        background-color: var(--ring);
+    }
 
     /* ---- Select ----------------------------------------------------------------------
        The bare <select>, before ui.js reaches it and after it if scripting is off. The OS draws
