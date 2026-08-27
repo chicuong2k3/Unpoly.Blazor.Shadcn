@@ -46,7 +46,8 @@ def load():
         if not slot.startswith('$'):
             added.pop(slot, None)
     by_cva = {k: v for k, v in dev.get('byCvaName', {}).items() if not k.startswith('$')}
-    return classes, tokens, added, dropped, subject, by_cva
+    multi = {k: v for k, v in dev.get('multiSlot', {}).items() if not k.startswith('$')}
+    return classes, tokens, added, dropped, subject, by_cva, multi
 
 
 # Slots whose variant is chosen at runtime by a C# switch, written by tools/sync_variants.py.
@@ -111,7 +112,7 @@ def wrap_csharp(classes):
     return '\n'.join(body) + ';\n'
 
 
-def rewrite(path: pathlib.Path, classes, tokens, added, dropped, subject, by_cva):
+def rewrite(path: pathlib.Path, classes, tokens, added, dropped, subject, by_cva, multi):
     text = path.read_text(encoding='utf-8')
     markup = text.split('@code', 1)[0]
 
@@ -140,7 +141,19 @@ def rewrite(path: pathlib.Path, classes, tokens, added, dropped, subject, by_cva
     if '    const string Base =' in text:
         start = text.index('    const string Base =')
         end = text.index(';\n', start) + 2
-        return text[:start] + '    const string Base =\n' + wrap_csharp(wanted) + text[end:], slot
+        text = text[:start] + '    const string Base =\n' + wrap_csharp(wanted) + text[end:]
+
+        # A component that renders several classed elements keeps one const per slot.
+        for const, extra in multi.get(path.stem, {}).items():
+            marker = f'    const string {const} ='
+            if marker not in text or extra not in classes:
+                continue
+            more = ours(upstream_default(classes[extra], extra), extra, tokens, added, dropped)
+            at = text.index(marker)
+            stop = text.index(';\n', at) + 2
+            text = text[:at] + marker + '\n' + wrap_csharp(more) + text[stop:]
+
+        return text, slot
 
     inline = INLINE_CN.search(text)
     if inline:
@@ -150,12 +163,12 @@ def rewrite(path: pathlib.Path, classes, tokens, added, dropped, subject, by_cva
 
 
 def main():
-    classes, tokens, added, dropped, subject, by_cva = load()
+    classes, tokens, added, dropped, subject, by_cva, multi = load()
     changed, skipped = [], []
 
     for path in sorted(COMPONENTS.glob('*.razor')):
         original = path.read_text(encoding='utf-8')
-        updated, slot = rewrite(path, classes, tokens, added, dropped, subject, by_cva)
+        updated, slot = rewrite(path, classes, tokens, added, dropped, subject, by_cva, multi)
         if slot is None or slot not in classes:
             skipped.append(path.stem)
             continue

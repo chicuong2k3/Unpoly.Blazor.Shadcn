@@ -72,8 +72,11 @@ def sync_button(classes, tokens, added, dropped):
     return path, text
 
 
+PENDING: dict[pathlib.Path, str] = {}
+
+
 def sync_razor(name, slot, cs_property, upstream_group, classes, tokens, added, dropped,
-               base_slot=None):
+               base_slot=None, member='VariantClass'):
     """`cs_property` is the C# parameter (PascalCase); `upstream_group` is cva's key (lowercase).
 
     They are not the same word, and conflating them writes an empty switch — which compiles, and
@@ -83,11 +86,14 @@ def sync_razor(name, slot, cs_property, upstream_group, classes, tokens, added, 
     # A recipe read by cva name still writes its deviations under the slot it lands on.
     slot = base_slot or slot
     path = SRC / 'Components' / f'{name}.razor'
-    text = path.read_text(encoding='utf-8')
+    # A second recipe on the same component must be written on top of the first, not on top of
+    # what is still on disk — otherwise the last one wins and the others are silently lost.
+    text = PENDING.get(path) or path.read_text(encoding='utf-8')
     text = replace_between(
-        text, f'    string VariantClass => {cs_property} switch\n    {{\n', '    };\n',
+        text, f'    string {member} => {cs_property} switch\n    {{\n', '    };\n',
         arms(slot, upstream_group, entry, tokens, added, dropped, ' ' * 8,
              entry['defaults'].get(upstream_group, 'default')))
+    PENDING[path] = text
     return path, text
 
 
@@ -110,6 +116,21 @@ def main():
         sync_razor('CarouselNext', 'carousel-next', 'Orientation', 'orientation',
                    classes, tokens, added, dropped),
         sync_razor('Field', 'field', 'Orientation', 'orientation', classes, tokens, added, dropped),
+        # The sidebar keeps three recipes on one component, because upstream renders three nested
+        # elements from one call and each has its own. A member name per switch is the only way to
+        # write more than one of them in a single .razor.
+        sync_razor('Sidebar', 'sidebar-gap', 'Variant', 'variant', classes, tokens, added, dropped,
+                   member='GapVariant'),
+        sync_razor('Sidebar', 'sidebar-container', 'Variant', 'variant', classes, tokens, added,
+                   dropped, member='ContainerVariant'),
+        sync_razor('Sidebar', 'sidebar-container', 'Side', 'side', classes, tokens, added, dropped,
+                   member='ContainerSide'),
+        sync_razor('SidebarMenuButton', 'sidebar-menu-button', 'Variant', 'variant', classes,
+                   tokens, added, dropped),
+        sync_razor('SidebarMenuButton', 'sidebar-menu-button', 'Size', 'size', classes, tokens,
+                   added, dropped, member='SizeClass'),
+        sync_razor('SidebarMenuSubButton', 'sidebar-menu-sub-button', 'Size', 'size', classes,
+                   tokens, added, dropped, member='SizeClass'),
         sync_razor('InputGroupAddon', 'input-group-addon', 'Align', 'align',
                    classes, tokens, added, dropped),
         # By cva name, not by slot: this one renders a <Button>, so the element in the DOM says
@@ -118,7 +139,10 @@ def main():
                    classes, tokens, added, dropped, base_slot='input-group-button'),
     ]
 
-    stale = [p.name for p, t in writes if p.read_text(encoding='utf-8') != t]
+    final = {}
+    for path, text in writes:
+        final[path] = text
+    stale = [p.name for p, t in final.items() if p.read_text(encoding='utf-8') != t]
 
     if '--check' in sys.argv:
         if stale:
@@ -128,9 +152,9 @@ def main():
         print('variant recipes match shadcn')
         return 0
 
-    for path, text in writes:
+    for path, text in final.items():
         path.write_text(text, encoding='utf-8')
-    print('rewrote: ' + ', '.join(p.name for p, _ in writes))
+    print('rewrote: ' + ', '.join(sorted({p.name for p in final})))
     return 0
 
 

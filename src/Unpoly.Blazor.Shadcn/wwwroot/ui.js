@@ -700,6 +700,50 @@
   })
 
   // =============================================================================================
+  // Sidebar — the open state, and where it is kept
+  // =============================================================================================
+  // In a `sidebar_state` cookie, which is also where shadcn keeps it. That is the whole design:
+  // the server reads the cookie, renders the right state on the first paint, and there is no
+  // flash of a sidebar opening itself. This only has to keep the two in step afterwards.
+  //
+  // The trigger and the rail ship hidden and are revealed here. With no JavaScript there is
+  // nothing to toggle, and a control that does nothing is worse than one that is absent — the
+  // sidebar stays open and every link in it is still reachable.
+
+  up.compiler('[data-sidebar-toggle]', (control) => {
+    const wrapper = control.closest('[data-slot="sidebar-wrapper"]') || document.body
+
+    const sidebars = () => [...wrapper.querySelectorAll('[data-slot="sidebar"]')]
+
+    const onClick = () => {
+      const open = wrapper.dataset.state !== 'expanded'
+      wrapper.dataset.state = open ? 'expanded' : 'collapsed'
+
+      for (const sidebar of sidebars()) {
+        sidebar.dataset.state = open ? 'expanded' : 'collapsed'
+        // data-collapsible carries the MODE only while collapsed, which is what upstream does
+        // and what every group-data-[collapsible=icon] selector expects.
+        sidebar.dataset.collapsible = open ? '' : (sidebar.dataset.mode || 'offcanvas')
+      }
+
+      // A year, path-wide, and SameSite=Lax so it survives an ordinary navigation from elsewhere
+      // without being sent on a cross-site request.
+      document.cookie = `sidebar_state=${open}; path=/; max-age=31536000; samesite=lax`
+      control.setAttribute('aria-expanded', String(open))
+    }
+
+    // Remember the mode before the first collapse clears the attribute.
+    for (const sidebar of sidebars()) {
+      if (sidebar.dataset.collapsible) sidebar.dataset.mode = sidebar.dataset.collapsible
+    }
+
+    control.hidden = false
+    control.setAttribute('aria-expanded', String(wrapper.dataset.state === 'expanded'))
+    control.addEventListener('click', onClick)
+    return () => control.removeEventListener('click', onClick)
+  })
+
+  // =============================================================================================
   // Tooltip
   // =============================================================================================
   // Hover AND focus, because a tooltip only reachable by mouse is a tooltip half the users never

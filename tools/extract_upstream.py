@@ -219,8 +219,15 @@ def parse_slots(text: str, cvas: dict) -> dict[str, dict]:
                 call = balanced(args, used.end() - 1)
                 args = args.replace(call, '')
 
-            args = take_conditionals(args, text, entry)
+            args = take_conditionals(args, text, entry, open_tag)
             entry['base'] += [c for c in classes(args) if c not in entry['base']]
+        else:
+            # An element that takes no className prop writes its classes as a plain string.
+            # Sidebar does, and read only through cn() it looked like an element with no styling
+            # at all — including the `group peer` that every collapsed-state selector keys off.
+            plain = re.search(r'className="([^"]*)"', window)
+            if plain:
+                entry['base'] = [c for c in plain.group(1).split() if c]
 
         out[slot] = entry
     return out
@@ -230,7 +237,12 @@ def parse_slots(text: str, cvas: dict) -> dict[str, dict]:
 # shadcn goes through cva: about a third are written inline like this, and reading them as part of
 # the base is how SheetContent ended up carrying right-0, left-0, top-0 and bottom-0 at once —
 # every side at the same time, with the winner decided by nothing but source order.
-CONDITIONAL = re.compile(r'(\w+)\s*===\s*"([^"]+)"\s*(&&|\?)\s*')
+# One test, or several on the same prop joined by ||. Sidebar writes
+# `variant === "floating" || variant === "inset" ? A : B`, and reading only the first test named
+# the other branch "not-floating" — so the default value, "sidebar", matched no key at all and
+# the generated switch threw on its own default.
+CONDITIONAL = re.compile(
+    r'(\w+)\s*===\s*"([^"]+)"((?:\s*\|\|\s*\1\s*===\s*"[^"]+")*)\s*(&&|\?)\s*')
 
 
 def prop_values(text: str, prop: str) -> list[str]:
@@ -239,14 +251,21 @@ def prop_values(text: str, prop: str) -> list[str]:
     return re.findall(r'"([^"]+)"', m.group(1)) if m else []
 
 
-def take_conditionals(args: str, file_text: str, entry: dict) -> str:
-    """Moves every inline conditional out of `args` and into entry['variants']."""
+def take_conditionals(args: str, file_text: str, entry: dict, upto: int) -> str:
+    """Moves every inline conditional out of `args` and into entry['variants'].
+
+    `upto` is where this element begins in the file, and it is what makes the prop's default
+    right: the default is the value THIS component's signature gives it, which is the last such
+    line before the element rather than the first in the file. sidebar.tsx declares four
+    components with a `size` prop, and reading from the top gave the sub-button the trigger's.
+    """
     while True:
         m = CONDITIONAL.search(args)
         if not m:
             return args
 
-        prop, key, form = m.group(1), m.group(2), m.group(3)
+        prop, form = m.group(1), m.group(4)
+        keys = [m.group(2), *re.findall(r'"([^"]+)"', m.group(3) or '')]
         rest = args[m.end():]
 
         def literals(src: str) -> tuple[list[str], int]:
@@ -261,7 +280,8 @@ def take_conditionals(args: str, file_text: str, entry: dict) -> str:
             return classes(src[:end]), end
 
         taken, consumed = literals(rest)
-        entry['variants'].setdefault(prop, {})[key] = taken
+        for key in keys:
+            entry['variants'].setdefault(prop, {})[key] = taken
 
         if form == '?':
             gap = len(rest[consumed:]) - len(rest[consumed:].lstrip())
@@ -270,17 +290,17 @@ def take_conditionals(args: str, file_text: str, entry: dict) -> str:
                 at += 1
                 at += len(rest[at:]) - len(rest[at:].lstrip())
                 other, used = literals(rest[at:])
-                # The branch not taken belongs to the prop's other value. Two-valued props are
-                # the only shape shadcn writes this way, so the union names it; if it somehow
-                # does not, say so in the key rather than inventing a name.
-                values = [v for v in prop_values(file_text, prop) if v != key]
-                entry['variants'][prop][values[0] if len(values) == 1 else f'not-{key}'] = other
+                # The branch not taken belongs to every value the condition did not name, which
+                # the prop's TypeScript union lists. Where it lists none, say so in the key
+                # rather than inventing a name that reads like a real variant.
+                values = [v for v in prop_values(file_text, prop) if v not in keys]
+                for value in values or ['not-' + '-'.join(keys)]:
+                    entry['variants'][prop][value] = other
                 consumed = at + used
 
-        # Whatever the form, the default is the value the component's own signature gives it.
-        default = re.search(rf'\b{prop}\s*=\s*"([^"]+)"', file_text)
-        if default:
-            entry['defaults'][prop] = default.group(1)
+        signature = re.findall(rf'\b{prop}\s*=\s*"([^"]+)"', file_text[:upto])
+        if signature:
+            entry['defaults'][prop] = signature[-1]
 
         args = args[:m.start()] + rest[consumed:]
 

@@ -1,0 +1,83 @@
+@inherits UiComponentBase
+
+@* Three nested elements, as upstream: the group that carries the state, a spacer that reserves
+   the width in the document flow, and the fixed panel itself. The spacer is what stops the page
+   content jumping when the panel collapses — the panel is position:fixed and takes no space, so
+   something has to hold it.
+
+   `group` and `peer` on the root are load-bearing, not decoration: every collapsed-state
+   selector in this family is written group-data-[collapsible=icon], and <SidebarInset> keys its
+   own margin off peer-data-. *@
+
+<div data-slot="sidebar" data-state="@(Open ? "expanded" : "collapsed")"
+     data-collapsible="@(Open ? "" : Collapsible)" data-variant="@Variant" data-side="@Side"
+     class="@Classes" @attributes="AdditionalAttributes">
+    <div data-slot="sidebar-gap" class="@GapClasses"></div>
+    <div data-slot="sidebar-container" class="@ContainerClasses">
+        <div data-slot="sidebar-inner" class="@InnerClasses">@ChildContent</div>
+    </div>
+</div>
+
+@code {
+    /// <summary>Must match the provider's. Razor has no context to read it from.</summary>
+    [Parameter] public bool Open { get; set; } = true;
+
+    /// <summary>offcanvas — slides away entirely | icon — narrows to icons | none.</summary>
+    [Parameter] public string Collapsible { get; set; } = "offcanvas";
+
+    /// <summary>sidebar | floating | inset</summary>
+    [Parameter] public string Variant { get; set; } = "sidebar";
+
+    /// <summary>left | right</summary>
+    [Parameter] public string Side { get; set; } = "left";
+
+    const string Base =
+        "group peer hidden text-sidebar-foreground md:block";
+
+    string GapVariant => Variant switch
+    {
+        "floating" => "group-data-[collapsible=icon]:w-[calc(var(--sidebar-width-icon)+(--spacing(4)))]",
+        "inset" => "group-data-[collapsible=icon]:w-[calc(var(--sidebar-width-icon)+(--spacing(4)))]",
+        _ => "group-data-[collapsible=icon]:w-(--sidebar-width-icon)",
+    };
+
+    string ContainerVariant => Variant switch
+    {
+        "floating" => "p-2 group-data-[collapsible=icon]:w-[calc(var(--sidebar-width-icon)+(--spacing(4))+2px)]",
+        "inset" => "p-2 group-data-[collapsible=icon]:w-[calc(var(--sidebar-width-icon)+(--spacing(4))+2px)]",
+        _ => "group-data-[collapsible=icon]:w-(--sidebar-width-icon) group-data-[side=left]:border-r group-data-[side=right]:border-l",
+    };
+
+    string ContainerSide => Side switch
+    {
+        "right" => "right-0 group-data-[collapsible=offcanvas]:right-[calc(var(--sidebar-width)*-1)]",
+        _ => "left-0 group-data-[collapsible=offcanvas]:left-[calc(var(--sidebar-width)*-1)]",
+    };
+
+    string Classes => Cn(Base, Class);
+
+    string GapClasses => Cn(GapBase, GapVariant);
+
+    string ContainerClasses => Cn(ContainerBase, ContainerSide, ContainerVariant);
+
+    string InnerClasses => Cn(InnerBase);
+
+    const string GapBase =
+        "relative w-(--sidebar-width) bg-transparent transition-[width] duration-200 " +
+        "ease-linear group-data-[collapsible=offcanvas]:w-0 " +
+        "group-data-[side=right]:rotate-180 " +
+        "group-data-[collapsible=icon]:w-(--sidebar-width-icon)";
+
+    const string ContainerBase =
+        "fixed inset-y-0 z-10 hidden h-svh w-(--sidebar-width) transition-[left,right,width] " +
+        "duration-200 ease-linear md:flex left-0 " +
+        "group-data-[collapsible=offcanvas]:left-[calc(var(--sidebar-width)*-1)] " +
+        "group-data-[collapsible=icon]:w-(--sidebar-width-icon) " +
+        "group-data-[side=left]:border-r group-data-[side=right]:border-l";
+
+    const string InnerBase =
+        "flex h-full w-full flex-col bg-sidebar group-data-[variant=floating]:rounded-lg " +
+        "group-data-[variant=floating]:border " +
+        "group-data-[variant=floating]:border-sidebar-border " +
+        "group-data-[variant=floating]:shadow-sm";
+}

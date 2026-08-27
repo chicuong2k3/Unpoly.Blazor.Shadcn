@@ -2312,7 +2312,12 @@
     "file": "checkbox"
   },
   "checkbox-indicator": {
-    "base": [],
+    "base": [
+      "grid",
+      "place-content-center",
+      "text-current",
+      "transition-none"
+    ],
     "variants": {},
     "defaults": {},
     "element": "CheckboxPrimitive.Indicator",
@@ -2376,7 +2381,11 @@
     "file": "combobox"
   },
   "combobox-chip-remove": {
-    "base": [],
+    "base": [
+      "-ml-1",
+      "opacity-50",
+      "hover:opacity-100"
+    ],
     "variants": {},
     "defaults": {},
     "element": null,
@@ -2521,7 +2530,15 @@
     "file": "combobox"
   },
   "combobox-item-indicator": {
-    "base": [],
+    "base": [
+      "pointer-events-none",
+      "absolute",
+      "right-2",
+      "flex",
+      "size-4",
+      "items-center",
+      "justify-center"
+    ],
     "variants": {},
     "defaults": {},
     "element": "ComboboxPrimitive.ItemIndicator",
@@ -2577,7 +2594,11 @@
     "file": "combobox"
   },
   "combobox-trigger-icon": {
-    "base": [],
+    "base": [
+      "pointer-events-none",
+      "size-4",
+      "text-muted-foreground"
+    ],
     "variants": {},
     "defaults": {},
     "element": "ChevronDownIcon",
@@ -2607,7 +2628,11 @@
     "file": "command"
   },
   "command-empty": {
-    "base": [],
+    "base": [
+      "py-6",
+      "text-center",
+      "text-sm"
+    ],
     "variants": {},
     "defaults": {},
     "element": "CommandPrimitive.Empty",
@@ -2649,7 +2674,14 @@
     "file": "command"
   },
   "command-input-wrapper": {
-    "base": [],
+    "base": [
+      "flex",
+      "h-9",
+      "items-center",
+      "gap-2",
+      "border-b",
+      "px-3"
+    ],
     "variants": {},
     "defaults": {},
     "element": "div",
@@ -2976,7 +3008,26 @@
     "file": "dialog"
   },
   "dialog-close": {
-    "base": [],
+    "base": [
+      "absolute",
+      "top-4",
+      "right-4",
+      "rounded-xs",
+      "opacity-70",
+      "ring-offset-background",
+      "transition-opacity",
+      "hover:opacity-100",
+      "focus:ring-2",
+      "focus:ring-ring",
+      "focus:ring-offset-2",
+      "focus:outline-hidden",
+      "disabled:pointer-events-none",
+      "data-[state=open]:bg-accent",
+      "data-[state=open]:text-muted-foreground",
+      "[&_svg]:pointer-events-none",
+      "[&_svg]:shrink-0",
+      "[&_svg:not([class*='size-'])]:size-4"
+    ],
     "variants": {},
     "defaults": {},
     "element": "DialogPrimitive.Close",
@@ -3725,7 +3776,15 @@
     "file": "field"
   },
   "field-separator-content": {
-    "base": [],
+    "base": [
+      "relative",
+      "mx-auto",
+      "block",
+      "w-fit",
+      "bg-background",
+      "px-2",
+      "text-muted-foreground"
+    ],
     "variants": {},
     "defaults": {},
     "element": "span",
@@ -3976,7 +4035,10 @@
     "file": "input-group"
   },
   "input-group-button": {
-    "base": [],
+    "base": [
+      "group-has-data-[slot=combobox-clear]/input-group:hidden",
+      "data-pressed:bg-transparent"
+    ],
     "variants": {},
     "defaults": {},
     "element": "InputGroupButton",
@@ -4876,7 +4938,17 @@
     "file": "native-select"
   },
   "native-select-icon": {
-    "base": [],
+    "base": [
+      "pointer-events-none",
+      "absolute",
+      "top-1/2",
+      "right-3.5",
+      "size-4",
+      "-translate-y-1/2",
+      "text-muted-foreground",
+      "opacity-50",
+      "select-none"
+    ],
     "variants": {},
     "defaults": {},
     "element": "ChevronDownIcon",
@@ -4903,7 +4975,12 @@
     "file": "native-select"
   },
   "native-select-wrapper": {
-    "base": [],
+    "base": [
+      "group/native-select",
+      "relative",
+      "w-fit",
+      "has-[select:disabled]:opacity-50"
+    ],
     "variants": {},
     "defaults": {},
     "element": "div",
@@ -5324,7 +5401,13 @@
     "file": "progress"
   },
   "progress-indicator": {
-    "base": [],
+    "base": [
+      "h-full",
+      "w-full",
+      "flex-1",
+      "bg-primary",
+      "transition-all"
+    ],
     "variants": {},
     "defaults": {},
     "element": "ProgressPrimitive.Indicator",
@@ -5341,7 +5424,12 @@
     "file": "radio-group"
   },
   "radio-group-indicator": {
-    "base": [],
+    "base": [
+      "relative",
+      "flex",
+      "items-center",
+      "justify-center"
+    ],
     "variants": {},
     "defaults": {},
     "element": "RadioGroupPrimitive.Indicator",
@@ -5464,14 +5552,27 @@
     "file": "scroll-area"
   },
   "scroll-area-thumb": {
-    "base": [],
+    "base": [
+      "relative",
+      "flex-1",
+      "rounded-full",
+      "bg-border"
+    ],
     "variants": {},
     "defaults": {},
     "element": "ScrollAreaPrimitive.ScrollAreaThumb",
     "file": "scroll-area"
   },
   "scroll-area-viewport": {
-    "base": [],
+    "base": [
+      "size-full",
+      "rounded-[inherit]",
+      "transition-[color,box-shadow]",
+      "outline-none",
+      "focus-visible:ring-[3px]",
+      "focus-visible:ring-ring/50",
+      "focus-visible:outline-1"
+    ],
     "variants": {},
     "defaults": {},
     "element": "ScrollAreaPrimitive.Viewport",
@@ -5565,7 +5666,14 @@
     "file": "select"
   },
   "select-item-indicator": {
-    "base": [],
+    "base": [
+      "absolute",
+      "right-2",
+      "flex",
+      "size-3.5",
+      "items-center",
+      "justify-center"
+    ],
     "variants": {},
     "defaults": {},
     "element": "span",
@@ -5840,7 +5948,13 @@
     "file": "sheet"
   },
   "sidebar": {
-    "base": [],
+    "base": [
+      "group",
+      "peer",
+      "hidden",
+      "text-sidebar-foreground",
+      "md:block"
+    ],
     "variants": {},
     "defaults": {},
     "element": "div",
@@ -5871,11 +5985,15 @@
         ]
       },
       "variant": {
+        "floating": [
+          "p-2",
+          "group-data-[collapsible=icon]:w-[calc(var(--sidebar-width-icon)+(--spacing(4))+2px)]"
+        ],
         "inset": [
           "p-2",
           "group-data-[collapsible=icon]:w-[calc(var(--sidebar-width-icon)+(--spacing(4))+2px)]"
         ],
-        "not-inset": [
+        "sidebar": [
           "group-data-[collapsible=icon]:w-(--sidebar-width-icon)",
           "group-data-[side=left]:border-r",
           "group-data-[side=right]:border-l"
@@ -5929,10 +6047,13 @@
     ],
     "variants": {
       "variant": {
+        "floating": [
+          "group-data-[collapsible=icon]:w-[calc(var(--sidebar-width-icon)+(--spacing(4)))]"
+        ],
         "inset": [
           "group-data-[collapsible=icon]:w-[calc(var(--sidebar-width-icon)+(--spacing(4)))]"
         ],
-        "not-inset": [
+        "sidebar": [
           "group-data-[collapsible=icon]:w-(--sidebar-width-icon)"
         ]
       }
@@ -6038,7 +6159,17 @@
     "file": "sidebar"
   },
   "sidebar-inner": {
-    "base": [],
+    "base": [
+      "flex",
+      "h-full",
+      "w-full",
+      "flex-col",
+      "bg-sidebar",
+      "group-data-[variant=floating]:rounded-lg",
+      "group-data-[variant=floating]:border",
+      "group-data-[variant=floating]:border-sidebar-border",
+      "group-data-[variant=floating]:shadow-sm"
+    ],
     "variants": {},
     "defaults": {},
     "element": "div",
@@ -6315,7 +6446,7 @@
       }
     },
     "defaults": {
-      "size": "icon"
+      "size": "md"
     },
     "element": "Comp",
     "file": "sidebar"
@@ -6439,7 +6570,23 @@
     "file": "slider"
   },
   "slider-thumb": {
-    "base": [],
+    "base": [
+      "block",
+      "size-4",
+      "shrink-0",
+      "rounded-full",
+      "border",
+      "border-primary",
+      "bg-white",
+      "shadow-sm",
+      "ring-ring/50",
+      "transition-[color,box-shadow]",
+      "hover:ring-4",
+      "focus-visible:ring-4",
+      "focus-visible:outline-hidden",
+      "disabled:pointer-events-none",
+      "disabled:opacity-50"
+    ],
     "variants": {},
     "defaults": {},
     "element": "SliderPrimitive.Thumb",
@@ -6558,7 +6705,11 @@
     "file": "table"
   },
   "table-container": {
-    "base": [],
+    "base": [
+      "relative",
+      "w-full",
+      "overflow-x-auto"
+    ],
     "variants": {},
     "defaults": {},
     "element": "div",

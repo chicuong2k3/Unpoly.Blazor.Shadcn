@@ -1,0 +1,64 @@
+@inherits UiComponentBase
+
+@* A row in the sidebar. An <a> when it goes somewhere — which is nearly always — so Unpoly
+   follows it, middle-click opens a tab and the status bar shows the destination.
+
+   Active is a parameter, but with [up-nav] on <SidebarMenu> you rarely need it: Unpoly compares
+   each href with the address bar and marks the match, which keeps working after a fragment swap
+   because the swap is what changes the address bar. aria-current is set from the same flag,
+   because .up-current is a class and a class tells a screen reader nothing. *@
+
+@if (Href is not null)
+{
+    <a href="@Href" data-slot="sidebar-menu-button" data-size="@Size" data-variant="@Variant"
+       data-active="@(Active ? "true" : null)" aria-current="@(Active ? "page" : null)"
+       class="@Classes" @attributes="AdditionalAttributes">@ChildContent</a>
+}
+else
+{
+    <button type="button" data-slot="sidebar-menu-button" data-size="@Size" data-variant="@Variant"
+            data-active="@(Active ? "true" : null)" aria-pressed="@(Active ? "true" : null)"
+            class="@Classes" @attributes="AdditionalAttributes">@ChildContent</button>
+}
+
+@code {
+    [Parameter] public string? Href { get; set; }
+
+    /// <summary>default | outline</summary>
+    [Parameter] public string Variant { get; set; } = "default";
+
+    /// <summary>default | sm | lg</summary>
+    [Parameter] public string Size { get; set; } = "default";
+
+    [Parameter] public bool Active { get; set; }
+
+    const string Base =
+        "peer/menu-button flex w-full items-center gap-2 overflow-hidden rounded-md p-2 " +
+        "text-left text-control ring-sidebar-ring outline-hidden " +
+        "transition-[width,height,padding] " +
+        "group-has-data-[sidebar=menu-action]/menu-item:pr-8 " +
+        "group-data-[collapsible=icon]:size-8! group-data-[collapsible=icon]:p-2! " +
+        "hover:bg-sidebar-accent hover:text-sidebar-accent-foreground focus-visible:ring-2 " +
+        "active:bg-sidebar-accent active:text-sidebar-accent-foreground " +
+        "disabled:pointer-events-none disabled:opacity-50 aria-disabled:pointer-events-none " +
+        "aria-disabled:opacity-50 data-[active=true]:bg-sidebar-accent " +
+        "data-[active=true]:font-medium data-[active=true]:text-sidebar-accent-foreground " +
+        "data-[state=open]:hover:bg-sidebar-accent " +
+        "data-[state=open]:hover:text-sidebar-accent-foreground [&>span:last-child]:truncate " +
+        "[&>svg]:size-4 [&>svg]:shrink-0 h-8";
+
+    string VariantClass => Variant switch
+    {
+        "outline" => "bg-background shadow-[0_0_0_1px_var(--sidebar-border)] hover:bg-sidebar-accent hover:text-sidebar-accent-foreground hover:shadow-[0_0_0_1px_var(--sidebar-accent)]",
+        _ => "hover:bg-sidebar-accent hover:text-sidebar-accent-foreground",
+    };
+
+    string SizeClass => Size switch
+    {
+        "lg" => "h-12 text-control group-data-[collapsible=icon]:p-0!",
+        "sm" => "h-7 text-xs",
+        _ => "h-8 text-control",
+    };
+
+    string Classes => Cn(Base, VariantClass, SizeClass, Class);
+}

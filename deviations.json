@@ -164,39 +164,6 @@
       ],
       "why": "Upstream draws the border and the stacking on a Popup primitive that has no slot of its own. In the top layer z-50 is inert, but the panel is styled the same either way and one class is cheaper than a second code path."
     },
-    "combobox-trigger-icon": {
-      "classes": [
-        "ml-2",
-        "opacity-50",
-        "shrink-0"
-      ],
-      "why": "Upstream positions this chevron from the trigger with a descendant selector. Here it is a component a caller can place, so it carries its own spacing."
-    },
-    "combobox-item-indicator": {
-      "classes": [
-        "ml-auto",
-        "opacity-0",
-        "shrink-0",
-        "size-4"
-      ],
-      "why": "Radix hides the indicator by not rendering it. Static SSR renders every row once and the compiler cannot re-render, so the tick is always in the DOM at opacity-0 and the selected row reveals it."
-    },
-    "combobox-clear": {
-      "classes": [
-        "opacity-60",
-        "hover:opacity-100"
-      ],
-      "why": "Upstream leaves this unstyled and expects the caller to dress it; a bare button here would be browser chrome."
-    },
-    "combobox-chip-remove": {
-      "classes": [
-        "ml-0.5",
-        "opacity-60",
-        "hover:opacity-100",
-        "rounded-sm"
-      ],
-      "why": "Same: upstream ships no classes for it, and an unstyled button inside a chip is not a chip."
-    },
     "combobox-trigger": {
       "classes": [
         "w-full",
@@ -204,6 +171,25 @@
         "font-normal"
       ],
       "why": "A combobox trigger shows a value, not a label: it fills its field, puts the chevron at the far end, and does not embolden what the user chose. Upstream gets all three from the call site, which a component cannot rely on."
+    },
+    "combobox-trigger-icon": {
+      "classes": [
+        "shrink-0"
+      ],
+      "why": "<Icon> ships shrink-0 on every icon, because an icon that shrinks inside a flex row is the single most common way one ends up an ellipse. Upstream writes it per call site instead."
+    },
+    "combobox-item-indicator": {
+      "classes": [
+        "shrink-0"
+      ],
+      "why": "<Icon> ships shrink-0 on every icon, because an icon that shrinks inside a flex row is the single most common way one ends up an ellipse. Upstream writes it per call site instead."
+    },
+    "combobox-clear": {
+      "classes": [
+        "opacity-60",
+        "hover:opacity-100"
+      ],
+      "why": "Upstream ships no classes for it at all; an unstyled button here is browser chrome."
     }
   },
   "dropped": {
@@ -349,7 +335,14 @@
       "rather than classes of its own. There is no cloneElement in Blazor, so the trigger IS the",
       "button — and the expected classes are the button's, checked by the button parity tests.",
       "Each entry names the button variant and size the component renders, so the comparison is",
-      "against the recipe it actually asks for rather than cva's default."
+      "against the recipe it actually asks for rather than cva's default.",
+      "",
+      "withSlotClasses says the slot ALSO carries classes of its own, which upstream passes as the",
+      "Button's className — so the expectation is the recipe followed by them, in that order,",
+      "because that is the order Button composes them in. Carousel's arrows need it: they override",
+      "the button's size and shape. Most do not, and dialog-close must not — upstream gives that",
+      "slot to two different elements, the corner X inside DialogContent and the Close a caller",
+      "puts in a footer, and this component is the second."
     ],
     "dialog-trigger": {
       "variant": "default",
@@ -389,15 +382,18 @@
     },
     "carousel-previous": {
       "variant": "outline",
-      "size": "icon"
+      "size": "icon",
+      "withSlotClasses": true
     },
     "carousel-next": {
       "variant": "outline",
-      "size": "icon"
+      "size": "icon",
+      "withSlotClasses": true
     },
     "input-group-button": {
       "variant": "ghost",
-      "size": "default"
+      "size": "default",
+      "withSlotClasses": true
     },
     "combobox-trigger": {
       "variant": "outline",
@@ -410,6 +406,11 @@
     "drawer-close": {
       "variant": "outline",
       "size": "default"
+    },
+    "sidebar-trigger": {
+      "variant": "ghost",
+      "size": "icon-sm",
+      "withSlotClasses": true
     }
   },
   "defaultVariant": {
@@ -501,6 +502,56 @@
     "command-dialog": {
       "classes": [],
       "component": "Command"
+    },
+    "sidebar-separator": {
+      "classes": [
+        "bg-border",
+        "shrink-0",
+        "data-[orientation=horizontal]:h-px",
+        "data-[orientation=horizontal]:w-full",
+        "data-[orientation=vertical]:h-full",
+        "data-[orientation=vertical]:w-px"
+      ],
+      "component": "Separator"
+    },
+    "sidebar-input": {
+      "classes": [
+        "h-control",
+        "min-w-0",
+        "rounded-md",
+        "border",
+        "border-input",
+        "bg-transparent",
+        "px-3",
+        "py-1",
+        "text-control",
+        "shadow-xs",
+        "transition-[color,box-shadow]",
+        "outline-none",
+        "selection:bg-primary",
+        "selection:text-primary-foreground",
+        "file:inline-flex",
+        "file:h-7",
+        "file:border-0",
+        "file:bg-transparent",
+        "file:text-sm",
+        "file:font-medium",
+        "file:text-foreground",
+        "placeholder:text-muted-foreground",
+        "disabled:pointer-events-none",
+        "disabled:cursor-not-allowed",
+        "disabled:opacity-50",
+        "dark:bg-input/30",
+        "focus-visible:border-ring",
+        "focus-visible:ring-[3px]",
+        "focus-visible:ring-ring/50",
+        "aria-invalid:border-destructive",
+        "aria-invalid:ring-destructive/20",
+        "hover:border-ring/60",
+        "dark:aria-invalid:ring-destructive/40"
+      ],
+      "component": "Input",
+      "why": "What <Input> brings, minus anything sidebar-input's own list repeats: subtracting a class the slot itself declares would take it off the rendered side only, and it would then read as missing."
     }
   },
   "byCvaName": {
@@ -512,5 +563,19 @@
       "inside a styled box."
     ],
     "input-group-button": "$cva:inputGroupButtonVariants"
+  },
+  "multiSlot": {
+    "$comment": [
+      "Components that render more than one classed element from a single call, as a C# const",
+      "per slot. Sidebar is the only one so far and it needs three: the group that carries the",
+      "state, a spacer that reserves the width in the document flow, and the fixed panel. The",
+      "spacer is what stops the page jumping when the panel collapses — the panel is fixed and",
+      "takes no space, so something has to hold it."
+    ],
+    "Sidebar": {
+      "GapBase": "sidebar-gap",
+      "ContainerBase": "sidebar-container",
+      "InnerBase": "sidebar-inner"
+    }
   }
 }

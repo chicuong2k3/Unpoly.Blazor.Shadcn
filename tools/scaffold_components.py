@@ -39,7 +39,7 @@ FAMILIES = {
     'command',
     # this batch: the platform answers each one
     'slider', 'resizable', 'carousel', 'context-menu', 'menubar', 'navigation-menu',
-    'drawer', 'combobox',
+    'drawer', 'combobox', 'sidebar',
 }
 
 # Slots that will never have a component here, with the reason. Reported separately from "not

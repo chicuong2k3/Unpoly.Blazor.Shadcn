@@ -1472,6 +1472,153 @@ renders `<button>` · `data-slot="sheet-trigger"`
 | `Variant` | `string` | `"outline"` | **required** |
 | `Size` | `string` | `"default"` |  |
 
+## `<Sidebar>`
+renders `<div>` · `data-slot="sidebar"`
+
+| Parameter | Type | Default | |
+|---|---|---|---|
+| `Open` | `bool` | `true` |  |
+| `Collapsible` | `string` | `"offcanvas"` |  |
+| `Variant` | `string` | `"sidebar"` |  |
+| `Side` | `string` | `"left"` |  |
+
+## `<SidebarContent>`
+renders `<div>` · `data-slot="sidebar-content"`
+
+_No parameters of its own._
+
+## `<SidebarFooter>`
+renders `<div>` · `data-slot="sidebar-footer"`
+
+_No parameters of its own._
+
+## `<SidebarGroup>`
+renders `<div>` · `data-slot="sidebar-group"`
+
+_No parameters of its own._
+
+## `<SidebarGroupAction>`
+renders `<button>` · `data-slot="sidebar-group-action"`
+
+| Parameter | Type | Default | |
+|---|---|---|---|
+| `AriaLabel` | `string` | `default!` |  |
+
+## `<SidebarGroupContent>`
+renders `<div>` · `data-slot="sidebar-group-content"`
+
+_No parameters of its own._
+
+## `<SidebarGroupLabel>`
+renders `<div>` · `data-slot="sidebar-group-label"`
+
+_No parameters of its own._
+
+## `<SidebarHeader>`
+renders `<div>` · `data-slot="sidebar-header"`
+
+_No parameters of its own._
+
+## `<SidebarInput>`
+`data-slot="sidebar-input"`
+
+_No parameters of its own._
+
+## `<SidebarInset>`
+renders `<main>` · `data-slot="sidebar-inset"`
+
+_No parameters of its own._
+
+## `<SidebarMenu>`
+renders `<ul>` · `data-slot="sidebar-menu"`
+
+_No parameters of its own._
+
+## `<SidebarMenuAction>`
+renders `<button>` · `data-slot="sidebar-menu-action"`
+
+| Parameter | Type | Default | |
+|---|---|---|---|
+| `AriaLabel` | `string` | `default!` |  |
+| `ShowOnHover` | `bool` | — | **required** |
+
+## `<SidebarMenuBadge>`
+renders `<div>` · `data-slot="sidebar-menu-badge"`
+
+| Parameter | Type | Default | |
+|---|---|---|---|
+| `AriaHidden` | `bool` | `true` |  |
+
+## `<SidebarMenuButton>`
+renders `<a>` · `data-slot="sidebar-menu-button"`
+
+| Parameter | Type | Default | |
+|---|---|---|---|
+| `Href` | `string?` | — |  |
+| `Variant` | `string` | `"default"` |  |
+| `Size` | `string` | `"default"` |  |
+| `Active` | `bool` | — |  |
+
+## `<SidebarMenuItem>`
+renders `<li>` · `data-slot="sidebar-menu-item"`
+
+_No parameters of its own._
+
+## `<SidebarMenuSkeleton>`
+renders `<div>` · `data-slot="sidebar-menu-skeleton"`
+
+| Parameter | Type | Default | |
+|---|---|---|---|
+| `ShowIcon` | `bool` | — |  |
+| `Width` | `string` | `"70%"` |  |
+
+## `<SidebarMenuSub>`
+renders `<ul>` · `data-slot="sidebar-menu-sub"`
+
+_No parameters of its own._
+
+## `<SidebarMenuSubButton>`
+renders `<a>` · `data-slot="sidebar-menu-sub-button"`
+
+| Parameter | Type | Default | |
+|---|---|---|---|
+| `Href` | `string` | `default!` |  |
+| `Size` | `string` | `"md"` | **required** |
+| `Active` | `bool` | — |  |
+
+## `<SidebarMenuSubItem>`
+renders `<li>` · `data-slot="sidebar-menu-sub-item"`
+
+_No parameters of its own._
+
+## `<SidebarProvider>`
+renders `<div>` · `data-slot="sidebar-wrapper"`
+
+| Parameter | Type | Default | |
+|---|---|---|---|
+| `Open` | `bool` | `true` |  |
+| `Width` | `string` | `"16rem"` |  |
+| `IconWidth` | `string` | `"3rem"` |  |
+| `Style` | `string?` | — |  |
+
+## `<SidebarRail>`
+renders `<button>` · `data-slot="sidebar-rail"`
+
+_No parameters of its own._
+
+## `<SidebarSeparator>`
+`data-slot="sidebar-separator"`
+
+_No parameters of its own._
+
+## `<SidebarTrigger>`
+renders `<button>` · `data-slot="sidebar-trigger"`
+
+| Parameter | Type | Default | |
+|---|---|---|---|
+| `AriaLabel` | `string` | `"Toggle sidebar"` |  |
+| `Controls` | `string?` | — |  |
+
 ## `<Skeleton>`
 renders `<div>` · `data-slot="skeleton"`
 

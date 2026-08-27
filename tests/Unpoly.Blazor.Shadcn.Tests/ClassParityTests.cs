@@ -37,11 +37,26 @@ public class ClassParityTests : BunitContext
         // own classes come after it, because that is the order upstream composes them in:
         // Button does cn(buttonVariants(...), className), so the caller's string wins the merge.
         // Carousel's arrows are the ones that need it — they override size and shape.
-        var expected = Deviations.AsChildButton(slot!) is { } chosen
-            ? [.. Upstream.Slot("button").WithAll(chosen),
-               .. Upstream.Slot(Deviations.CvaFor(slot!) ?? slot!)
-                          .WithAll(Deviations.DefaultVariantFor(name))]
-            : Upstream.Slot(Deviations.CvaFor(slot!) ?? slot!).WithAll(Deviations.DefaultVariantFor(name));
+        IReadOnlyList<string> expected;
+        if (Deviations.AsChildButton(slot!) is { } chosen)
+        {
+            expected = Upstream.Slot("button").WithAll(chosen);
+
+            // Only when the slot carries classes of its own, which upstream passes as the
+            // Button's className — recipe first, then them, because that is the order Button
+            // composes them in and the order that decides the merge.
+            if (chosen.ContainsKey("withSlotClasses"))
+            {
+                expected = [.. expected,
+                            .. Upstream.Slot(Deviations.CvaFor(slot!) ?? slot!)
+                                       .WithAll(Deviations.DefaultVariantFor(name))];
+            }
+        }
+        else
+        {
+            expected = Upstream.Slot(Deviations.CvaFor(slot!) ?? slot!)
+                               .WithAll(Deviations.DefaultVariantFor(name));
+        }
 
         AssertSameClasses(slot!, subject.GetAttribute("class"), expected);
     }

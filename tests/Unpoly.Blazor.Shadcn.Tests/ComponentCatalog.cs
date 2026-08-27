@@ -60,6 +60,9 @@ public static class ComponentCatalog
         ["ComboboxTrigger"] = new() { ["Target"] = "cb" },
         ["ComboboxItem"] = new() { ["Value"] = "a" },
         ["ComboboxChip"] = new() { ["Value"] = "a" },
+        ["SidebarGroupAction"] = new() { ["AriaLabel"] = "Add a project" },
+        ["SidebarMenuAction"] = new() { ["AriaLabel"] = "More actions for Inbox" },
+        ["SidebarMenuSubButton"] = new() { ["Href"] = "/x" },
     };
 
     public static IEnumerable<Type> All =>

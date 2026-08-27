@@ -31,6 +31,13 @@ EMITS = re.compile(r'\bdata-([a-z-]+)=')
 # promise that the JavaScript keeps it in step; anything not here belongs in the markup.
 BY_COMPILER = {
     'Sheet.data-state': "up.compiler('dialog[data-slot]')",
+    'Dialog.data-state': "up.compiler('dialog[data-slot]')",
+    # A sidebar row can BE the trigger for a menu or a collapsible section, which is where
+    # upstream's data-[state=open] on it comes from. When it is, it carries popovertarget and the
+    # popover compiler marks it like any other trigger. When it is not, the rule simply never
+    # fires, which is correct.
+    'SidebarMenuButton.data-state': "up.compiler('[popover][data-slot]')",
+    'SidebarMenuAction.data-state': "up.compiler('[popover][data-slot]')",
     'Tabs.data-state': 'up.compiler(\'[data-slot="tabs"]\')',
     'TabsTrigger.data-state': 'up.compiler(\'[data-slot="tabs"]\')',
     'CommandItem.data-selected': 'up.compiler(\'[data-slot="command"]\')',

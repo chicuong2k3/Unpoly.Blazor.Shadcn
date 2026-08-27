@@ -83,7 +83,9 @@ public static class Deviations
     /// <returns>The button variant and size it renders, or null when it is not one of these.</returns>
     public static IReadOnlyDictionary<string, string>? AsChildButton(string slot) =>
         Loaded.Value.AsChildButton.TryGetValue(slot, out var v) && v.ValueKind == JsonValueKind.Object
-            ? v.EnumerateObject().ToDictionary(p => p.Name, p => p.Value.GetString()!)
+            // withSlotClasses is a bool rather than a variant name; ToString keeps one dictionary
+            // rather than two, and the caller only ever asks whether the key is there.
+            ? v.EnumerateObject().ToDictionary(p => p.Name, p => p.Value.ToString())
             : null;
 
     /// <summary>
