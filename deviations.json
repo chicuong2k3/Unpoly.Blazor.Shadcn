@@ -418,6 +418,48 @@
         "[.border-t]:pt-(--card-spacing)"
       ],
       "why": "shadcn's newer Card publishes its padding as --card-spacing, so a child can pull out by exactly the amount the card pushed in — one number used twice, with nothing to keep in step. That is what the Edge to Edge section on its docs page is built on, and the new-york-v4 source vendored here predates it: the property was never set, so `-mx-(--card-spacing)` resolved to nothing and the region was not edge to edge at all. The literals are replaced by the property, which is the same 24px by default."
+    },
+    "context-menu-checkbox-item": {
+      "classes": [
+        "pe-8",
+        "ps-2"
+      ],
+      "why": "The indicator sits on the END edge, as shadcn's current stylesheet draws it: the item is `pr-8 pl-1.5` and the indicator `absolute right-2`. The new-york-v4 source vendored here still has Radix's old start-side layout, and a tick on the left of every row is the first thing anyone comparing against shadcn.com sees."
+    },
+    "context-menu-radio-item": {
+      "classes": [
+        "pe-8",
+        "ps-2"
+      ],
+      "why": "The indicator sits on the END edge, as shadcn's current stylesheet draws it: the item is `pr-8 pl-1.5` and the indicator `absolute right-2`. The new-york-v4 source vendored here still has Radix's old start-side layout, and a tick on the left of every row is the first thing anyone comparing against shadcn.com sees."
+    },
+    "dropdown-menu-checkbox-item": {
+      "classes": [
+        "pe-8",
+        "ps-2"
+      ],
+      "why": "The indicator sits on the END edge, as shadcn's current stylesheet draws it: the item is `pr-8 pl-1.5` and the indicator `absolute right-2`. The new-york-v4 source vendored here still has Radix's old start-side layout, and a tick on the left of every row is the first thing anyone comparing against shadcn.com sees."
+    },
+    "dropdown-menu-radio-item": {
+      "classes": [
+        "pe-8",
+        "ps-2"
+      ],
+      "why": "The indicator sits on the END edge, as shadcn's current stylesheet draws it: the item is `pr-8 pl-1.5` and the indicator `absolute right-2`. The new-york-v4 source vendored here still has Radix's old start-side layout, and a tick on the left of every row is the first thing anyone comparing against shadcn.com sees."
+    },
+    "menubar-checkbox-item": {
+      "classes": [
+        "pe-8",
+        "ps-2"
+      ],
+      "why": "The indicator sits on the END edge, as shadcn's current stylesheet draws it: the item is `pr-8 pl-1.5` and the indicator `absolute right-2`. The new-york-v4 source vendored here still has Radix's old start-side layout, and a tick on the left of every row is the first thing anyone comparing against shadcn.com sees."
+    },
+    "menubar-radio-item": {
+      "classes": [
+        "pe-8",
+        "ps-2"
+      ],
+      "why": "The indicator sits on the END edge, as shadcn's current stylesheet draws it: the item is `pr-8 pl-1.5` and the indicator `absolute right-2`. The new-york-v4 source vendored here still has Radix's old start-side layout, and a tick on the left of every row is the first thing anyone comparing against shadcn.com sees."
     }
   },
   "dropped": {
@@ -578,6 +620,48 @@
         "[.border-t]:pt-6"
       ],
       "why": "shadcn's newer Card publishes its padding as --card-spacing, so a child can pull out by exactly the amount the card pushed in — one number used twice, with nothing to keep in step. That is what the Edge to Edge section on its docs page is built on, and the new-york-v4 source vendored here predates it: the property was never set, so `-mx-(--card-spacing)` resolved to nothing and the region was not edge to edge at all. The literals are replaced by the property, which is the same 24px by default."
+    },
+    "context-menu-checkbox-item": {
+      "classes": [
+        "pl-8",
+        "pr-2"
+      ],
+      "why": "The indicator sits on the END edge, as shadcn's current stylesheet draws it: the item is `pr-8 pl-1.5` and the indicator `absolute right-2`. The new-york-v4 source vendored here still has Radix's old start-side layout, and a tick on the left of every row is the first thing anyone comparing against shadcn.com sees."
+    },
+    "context-menu-radio-item": {
+      "classes": [
+        "pl-8",
+        "pr-2"
+      ],
+      "why": "The indicator sits on the END edge, as shadcn's current stylesheet draws it: the item is `pr-8 pl-1.5` and the indicator `absolute right-2`. The new-york-v4 source vendored here still has Radix's old start-side layout, and a tick on the left of every row is the first thing anyone comparing against shadcn.com sees."
+    },
+    "dropdown-menu-checkbox-item": {
+      "classes": [
+        "pl-8",
+        "pr-2"
+      ],
+      "why": "The indicator sits on the END edge, as shadcn's current stylesheet draws it: the item is `pr-8 pl-1.5` and the indicator `absolute right-2`. The new-york-v4 source vendored here still has Radix's old start-side layout, and a tick on the left of every row is the first thing anyone comparing against shadcn.com sees."
+    },
+    "dropdown-menu-radio-item": {
+      "classes": [
+        "pl-8",
+        "pr-2"
+      ],
+      "why": "The indicator sits on the END edge, as shadcn's current stylesheet draws it: the item is `pr-8 pl-1.5` and the indicator `absolute right-2`. The new-york-v4 source vendored here still has Radix's old start-side layout, and a tick on the left of every row is the first thing anyone comparing against shadcn.com sees."
+    },
+    "menubar-checkbox-item": {
+      "classes": [
+        "pl-8",
+        "pr-2"
+      ],
+      "why": "The indicator sits on the END edge, as shadcn's current stylesheet draws it: the item is `pr-8 pl-1.5` and the indicator `absolute right-2`. The new-york-v4 source vendored here still has Radix's old start-side layout, and a tick on the left of every row is the first thing anyone comparing against shadcn.com sees."
+    },
+    "menubar-radio-item": {
+      "classes": [
+        "pl-8",
+        "pr-2"
+      ],
+      "why": "The indicator sits on the END edge, as shadcn's current stylesheet draws it: the item is `pr-8 pl-1.5` and the indicator `absolute right-2`. The new-york-v4 source vendored here still has Radix's old start-side layout, and a tick on the left of every row is the first thing anyone comparing against shadcn.com sees."
     }
   },
   "subject": {

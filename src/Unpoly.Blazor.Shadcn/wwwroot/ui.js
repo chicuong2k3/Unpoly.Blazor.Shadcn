@@ -465,6 +465,10 @@
         return
       }
       const item = event.target.closest('[data-slot$="-item"]')
+      // Focus follows the pointer, as Radix's data-highlighted does: the row lights up under
+      // the mouse, and the arrow keys continue from wherever the pointer left off. Without
+      // this only Tab and the arrows highlighted anything, and the menu read as inert.
+      if (item && panel.contains(item) && !item.hasAttribute('data-disabled')) item.focus()
       if (item && item.parentElement?.closest('[data-slot]') !== null) {
         hoverTimer = setTimeout(() => {
           for (const open of panel.querySelectorAll(':scope ~ * [data-slot$="sub-content"]:popover-open')) open.hidePopover()
@@ -679,16 +683,16 @@
       const side = panel.dataset.side
 
       if (side) {
-        // side places against the TRIGGER's edge rather than the pointer — upstream's side
-        // prop. A context menu normally has no side; this exists for the few cases where the
-        // menu belongs to the box rather than to the click.
-        const a = trigger.getBoundingClientRect()
-        const centreX = a.left + a.width / 2 - box.width / 2
-        const centreY = a.top + a.height / 2 - box.height / 2
-        const spot = side === 'top' ? [centreX, a.top - box.height - 4]
-          : side === 'bottom' ? [centreX, a.bottom + 4]
-          : side === 'left' ? [a.left - box.width - 4, centreY]
-          : [a.right + 4, centreY]
+        // side chooses which side of the CURSOR the menu opens on — it still belongs to the
+        // click, exactly where the pointer is, and only the direction it grows in changes.
+        // The first version anchored it to the trigger box, which put the menu nowhere near
+        // the mouse: a context menu that opens away from the click reads as someone else's.
+        const px = event.clientX || trigger.getBoundingClientRect().left
+        const py = event.clientY || trigger.getBoundingClientRect().bottom
+        const spot = side === 'top' ? [px - box.width / 2, py - box.height - 2]
+          : side === 'bottom' ? [px - box.width / 2, py + 2]
+          : side === 'left' ? [px - box.width - 2, py - box.height / 2]
+          : [px + 2, py - box.height / 2]
         put(panel, { left: Math.max(8, Math.min(spot[0], window.innerWidth - box.width - 8)) },
             Math.max(8, Math.min(spot[1], window.innerHeight - box.height - 8)))
         trigger.setAttribute('aria-expanded', 'true')
@@ -721,6 +725,7 @@
     return () => {
       trigger.removeEventListener('contextmenu', onContextMenu)
       panel.removeEventListener('toggle', onToggle)
+      panel.removeEventListener('pointerover', onHighlight)
     }
   })
 
@@ -958,6 +963,15 @@
       filter()
     }
 
+    // The recipe styles data-highlighted and nothing set it: the list never responded to the
+    // mouse. One attribute follows the pointer; focus stays in the input, as Radix keeps it.
+    const onHighlight = (event) => {
+      const item = event.target.closest('[data-slot="combobox-item"]')
+      if (!item || item.disabled) return
+      for (const other of items()) delete other.dataset.highlighted
+      item.dataset.highlighted = 'true'
+    }
+
     // Focusing the box opens the list. Only typing did, so a chips combobox showed nothing at
     // all until you had already typed a character — and the two examples built on it looked
     // completely inert. Every combobox opens on focus; this one had a trigger for the button
@@ -993,6 +1007,7 @@
     input?.addEventListener('click', onFocus)
     clear?.addEventListener('click', onClear)
     panel.addEventListener('toggle', onToggle)
+    panel.addEventListener('pointerover', onHighlight)
     filter()
     syncClear()
 
