@@ -242,6 +242,24 @@
   // No request, no history: this is a local view switch. A tab that should be linkable is a link
   // with [up-target] instead, and needs none of this.
 
+  // Which physical edge "start" and "end" mean. Everything below places by reading order, not by
+  // screen order — a dropdown aligned to the start of its trigger hangs off the RIGHT edge in
+  // Arabic, and aligning it left there is the same bug as writing ml-auto in a stylesheet.
+  const rtl = (element) => getComputedStyle(element).direction === 'rtl'
+
+  // A [popover] gets `inset: 0; margin: auto` from the UA stylesheet, so setting only `left`
+  // leaves it over-constrained — and which of the two the browser then ignores depends on the
+  // writing direction. In LTR it drops `right` and the panel lands where you asked; in RTL it
+  // drops LEFT, and every menu in the library sat against the far edge of the window instead of
+  // against its trigger. Releasing the other three insets is what makes the number mean
+  // something. This was invisible in English, which is why it survived.
+  function put(panel, left, top) {
+    panel.style.insetInline = 'auto'
+    panel.style.insetBlock = 'auto'
+    panel.style.left = `${Math.round(left)}px`
+    panel.style.top = `${Math.round(top)}px`
+  }
+
   up.compiler('[data-slot="tabs"]', (root) => {
     const triggers = [...root.querySelectorAll('[data-slot="tabs-trigger"]')]
     const panels = [...root.querySelectorAll('[data-slot="tabs-content"]')]
@@ -261,7 +279,9 @@
 
     // Arrow keys move between tabs, which is the part of the APG pattern people actually notice.
     const onKey = (event) => {
-      const step = { ArrowRight: 1, ArrowLeft: -1, Home: -Infinity, End: Infinity }[event.key]
+      const forward = rtl(root) ? 'ArrowLeft' : 'ArrowRight'
+      const back = rtl(root) ? 'ArrowRight' : 'ArrowLeft'
+      const step = { [back]: -1, [forward]: 1, Home: -Infinity, End: Infinity }[event.key]
       if (step === undefined || !event.target.matches('[data-slot="tabs-trigger"]')) return
       event.preventDefault()
       const from = triggers.indexOf(event.target)
@@ -315,18 +335,20 @@
   function place(panel, anchor, align = 'start', side = 'bottom', offset = 4) {
     const a = anchor.getBoundingClientRect()
     const p = panel.getBoundingClientRect()
+    const flip = rtl(anchor)
 
     let top = side === 'top' ? a.top - p.height - offset : a.bottom + offset
-    let left = align === 'end' ? a.right - p.width
+    const toStart = flip ? a.right - p.width : a.left
+    const toEnd = flip ? a.left : a.right - p.width
+    let left = align === 'end' ? toEnd
       : align === 'center' ? a.left + (a.width - p.width) / 2
-      : a.left
+      : toStart
 
     // Stay on screen. A menu half off the right edge is a menu with unreachable items.
     left = Math.max(8, Math.min(left, window.innerWidth - p.width - 8))
     if (top + p.height > window.innerHeight - 8) top = Math.max(8, a.top - p.height - offset)
 
-    panel.style.top = `${Math.round(top)}px`
-    panel.style.left = `${Math.round(left)}px`
+    put(panel, left, top)
   }
 
   // Every trigger that opens a panel anchored to itself: a dropdown, a popover, a submenu row,
@@ -368,29 +390,40 @@
     }
   })
 
+  // A submenu opens away from the parent along the reading direction, and falls back to the
+  // other side when there is no room. Both halves flip under RTL: opening to the right in
+  // Arabic puts the submenu on top of the menu it came from.
   function placeBeside(panel, row) {
     const a = row.getBoundingClientRect()
     const p = panel.getBoundingClientRect()
-    let left = a.right - 4
-    if (left + p.width > window.innerWidth - 8) left = Math.max(8, a.left - p.width + 4)
-    panel.style.left = `${Math.round(left)}px`
-    panel.style.top = `${Math.round(Math.min(a.top - 4, window.innerHeight - p.height - 8))}px`
+    const flip = rtl(row)
+    let left = flip ? a.left - p.width + 4 : a.right - 4
+    if (flip) {
+      if (left < 8) left = Math.min(a.right - 4, window.innerWidth - p.width - 8)
+    } else if (left + p.width > window.innerWidth - 8) {
+      left = Math.max(8, a.left - p.width + 4)
+    }
+    put(panel, left, Math.min(a.top - 4, window.innerHeight - p.height - 8))
   }
 
   // Keyboard within an open menu, for all three families. Radix roves focus; so does this.
-  // Right opens a submenu and Left closes one, which is what the APG asks for and what makes a
-  // nested menu usable with no pointer at all.
+  // The key that opens a submenu is the one pointing along the reading direction — Right in
+  // English, Left in Arabic — and the other one closes it. The APG says so, and hard-coding
+  // Right leaves an RTL user opening a submenu with the key that visually points back at the
+  // menu they came from.
   up.compiler('[data-slot="dropdown-menu-content"], [data-slot="context-menu-content"], ' +
               '[data-slot="menubar-content"], [data-slot="dropdown-menu-sub-content"], ' +
               '[data-slot="context-menu-sub-content"], [data-slot="menubar-sub-content"]',
               (panel) => {
     const onKey = (event) => {
-      if (event.key === 'ArrowRight' && document.activeElement?.matches('[aria-haspopup=menu]')) {
+      const forward = rtl(panel) ? 'ArrowLeft' : 'ArrowRight'
+      const back = rtl(panel) ? 'ArrowRight' : 'ArrowLeft'
+      if (event.key === forward && document.activeElement?.matches('[aria-haspopup=menu]')) {
         event.preventDefault()
         document.activeElement.click()
         return
       }
-      if (event.key === 'ArrowLeft' && panel.getAttribute('data-slot').includes('sub-content')) {
+      if (event.key === back && panel.getAttribute('data-slot').includes('sub-content')) {
         event.preventDefault()
         panel.hidePopover()
         return
@@ -433,8 +466,9 @@
       const x = at ? at.left : event.clientX
       const y = at ? at.bottom : event.clientY
 
-      panel.style.left = `${Math.round(Math.min(x, window.innerWidth - box.width - 8))}px`
-      panel.style.top = `${Math.round(Math.min(y, window.innerHeight - box.height - 8))}px`
+      const left = rtl(trigger) ? x - box.width : x
+      put(panel, Math.max(8, Math.min(left, window.innerWidth - box.width - 8)),
+          Math.min(y, window.innerHeight - box.height - 8))
       trigger.setAttribute('aria-expanded', 'true')
       panel.querySelector('[data-slot$="-item"]:not([data-disabled])')?.focus()
     }
@@ -484,8 +518,10 @@
       const all = triggers()
       const at = all.indexOf(event.target.closest('[data-slot="menubar-trigger"]'))
       if (at < 0) return
-      if (event.key === 'ArrowRight') { event.preventDefault(); all[(at + 1) % all.length].focus() }
-      else if (event.key === 'ArrowLeft') { event.preventDefault(); all[(at - 1 + all.length) % all.length].focus() }
+      const forward = rtl(bar) ? 'ArrowLeft' : 'ArrowRight'
+      const back = rtl(bar) ? 'ArrowRight' : 'ArrowLeft'
+      if (event.key === forward) { event.preventDefault(); all[(at + 1) % all.length].focus() }
+      else if (event.key === back) { event.preventDefault(); all[(at - 1 + all.length) % all.length].focus() }
       else if (event.key === 'ArrowDown') { event.preventDefault(); openMenuFor(all[at]) }
     }
 
@@ -1080,10 +1116,11 @@
         boxes[i - 1].value = ''
         boxes[i - 1].focus()
         sync()
-      } else if (event.key === 'ArrowLeft' && i > 0) {
+      } else if (event.key === (rtl(root) ? 'ArrowRight' : 'ArrowLeft') && i > 0) {
         event.preventDefault()
         boxes[i - 1].focus()
-      } else if (event.key === 'ArrowRight' && i < boxes.length - 1) {
+      } else if (event.key === (rtl(root) ? 'ArrowLeft' : 'ArrowRight')
+                 && i < boxes.length - 1) {
         event.preventDefault()
         boxes[i + 1].focus()
       }
@@ -1462,8 +1499,10 @@
                   : (vertical ? scroller.clientHeight : scroller.clientWidth)
     }
 
+    const sign = () => (!vertical && rtl(scroller) ? -1 : 1)
+
     const sync = () => {
-      const pos = vertical ? scroller.scrollTop : scroller.scrollLeft
+      const pos = vertical ? scroller.scrollTop : scroller.scrollLeft * sign()
       const max = (vertical ? scroller.scrollHeight - scroller.clientHeight
                             : scroller.scrollWidth - scroller.clientWidth)
       for (const button of buttons) {
@@ -1476,7 +1515,8 @@
     const onClick = (event) => {
       const button = event.currentTarget
       const by = Number(button.dataset.carouselScroll) * step()
-      scroller.scrollBy(vertical ? { top: by, behavior: 'smooth' } : { left: by, behavior: 'smooth' })
+      scroller.scrollBy(vertical ? { top: by, behavior: 'smooth' }
+                                 : { left: by * sign(), behavior: 'smooth' })
     }
 
     for (const button of buttons) {
@@ -1523,8 +1563,9 @@
 
     const fromPointer = (event) => {
       const box = group.getBoundingClientRect()
-      const at = vertical ? (event.clientY - box.top) / box.height
-                          : (event.clientX - box.left) / box.width
+      const across = rtl(group) ? (box.right - event.clientX) / box.width
+                                : (event.clientX - box.left) / box.width
+      const at = vertical ? (event.clientY - box.top) / box.height : across
       apply(at * total())
     }
 
@@ -1545,7 +1586,9 @@
     }
 
     const onKey = (event) => {
-      const nudge = { ArrowLeft: -1, ArrowUp: -1, ArrowRight: 1, ArrowDown: 1 }[event.key]
+      const nudge = rtl(group)
+        ? { ArrowRight: -1, ArrowUp: -1, ArrowLeft: 1, ArrowDown: 1 }[event.key]
+        : { ArrowLeft: -1, ArrowUp: -1, ArrowRight: 1, ArrowDown: 1 }[event.key]
       if (nudge === undefined && event.key !== 'Home' && event.key !== 'End') return
       event.preventDefault()
 

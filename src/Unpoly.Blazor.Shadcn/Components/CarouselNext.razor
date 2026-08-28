@@ -1,6 +1,6 @@
 @inherits UiComponentBase
 
-<button type="button" data-slot="carousel-next" data-carousel-scroll="1" hidden
+<button type="button" data-slot="carousel-next" data-orientation="@Orientation" data-carousel-scroll="1" hidden
         class="@Classes" @attributes="AdditionalAttributes">
     <Icon Name="arrow-right" />
     <span class="sr-only">@Label</span>
@@ -13,12 +13,12 @@
     [Parameter] public string Orientation { get; set; } = "horizontal";
 
     const string Base =
-        "absolute size-8 rounded-full";
+        "absolute size-8 rounded-full rtl:data-[orientation=horizontal]:[&_svg]:rotate-180";
 
     string VariantClass => Orientation switch
     {
         "vertical" => "-bottom-12 left-1/2 -translate-x-1/2 rotate-90",
-        _ => "top-1/2 -right-12 -translate-y-1/2",
+        _ => "top-1/2 -end-12 -translate-y-1/2",
     };
 
     string Classes => Cn(ButtonVariants.Of("outline", "icon"), Base, VariantClass, Class);

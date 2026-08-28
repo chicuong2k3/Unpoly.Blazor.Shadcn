@@ -8,7 +8,7 @@
     <select data-slot="native-select" data-size="@Size" class="@Classes"
             @attributes="AdditionalAttributes">@ChildContent</select>
     <Icon Name="chevron-down" data-slot="native-select-icon"
-          Class="pointer-events-none absolute top-1/2 right-3 size-4 -translate-y-1/2 opacity-50" />
+          Class="pointer-events-none absolute top-1/2 end-3 size-4 -translate-y-1/2 opacity-50" />
 </div>
 
 @code {
@@ -17,7 +17,7 @@
 
     const string Base =
         "h-control w-full min-w-0 appearance-none rounded-md border border-input " +
-        "bg-transparent px-3 py-2 pr-9 text-control shadow-xs transition-[color,box-shadow] " +
+        "bg-transparent px-3 py-2 pe-9 text-control shadow-xs transition-[color,box-shadow] " +
         "outline-none selection:bg-primary selection:text-primary-foreground " +
         "placeholder:text-muted-foreground disabled:pointer-events-none " +
         "disabled:cursor-not-allowed data-[size=sm]:h-8 data-[size=sm]:py-1 dark:bg-input/30 " +

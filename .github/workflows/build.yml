@@ -63,6 +63,11 @@ jobs:
       - name: The demo matches shadcn's docs index
         run: python tools/check_pages.py --check
 
+      # A side named by the screen rather than by the reading direction. AccordionTrigger said
+      # text-left, which left-aligns Arabic, and it was one of forty.
+      - name: Every side is named in reading order
+        run: python tools/check_rtl.py --check
+
       # A control that does nothing when clicked. AlertDialog shipped inert for as long as it
       # existed, because an attribute selector is exact and nothing said so.
       - name: Every interactive control is operated by something

@@ -70,6 +70,141 @@
     ],
     "[button]:text-start": [
       "[button]:text-left"
+    ],
+    "ps-2": [
+      "pl-2"
+    ],
+    "ps-3": [
+      "pl-3"
+    ],
+    "ps-4": [
+      "pl-4"
+    ],
+    "ps-8": [
+      "pl-8"
+    ],
+    "data-[inset]:ps-8": [
+      "data-[inset]:pl-8"
+    ],
+    "pe-2": [
+      "pr-2"
+    ],
+    "pe-2.5": [
+      "pr-2.5"
+    ],
+    "pe-3": [
+      "pr-3"
+    ],
+    "pe-8": [
+      "pr-8"
+    ],
+    "pe-9": [
+      "pr-9"
+    ],
+    "has-data-[slot=combobox-chip-remove]:pe-0": [
+      "has-data-[slot=combobox-chip-remove]:pr-0"
+    ],
+    "group-has-data-[sidebar=menu-action]/menu-item:pe-8": [
+      "group-has-data-[sidebar=menu-action]/menu-item:pr-8"
+    ],
+    "ms-auto": [
+      "ml-auto"
+    ],
+    "ms-1": [
+      "ml-1"
+    ],
+    "-ms-1": [
+      "-ml-1"
+    ],
+    "-ms-4": [
+      "-ml-4"
+    ],
+    "after:ms-1": [
+      "after:ml-1"
+    ],
+    "before:me-1": [
+      "before:mr-1"
+    ],
+    "md:peer-data-[variant=inset]:ms-0": [
+      "md:peer-data-[variant=inset]:ml-0"
+    ],
+    "md:peer-data-[variant=inset]:peer-data-[state=collapsed]:ms-2": [
+      "md:peer-data-[variant=inset]:peer-data-[state=collapsed]:ml-2"
+    ],
+    "has-[>button]:ms-[-0.45rem]": [
+      "has-[>button]:ml-[-0.45rem]"
+    ],
+    "has-[>button]:me-[-0.45rem]": [
+      "has-[>button]:mr-[-0.45rem]"
+    ],
+    "has-[>kbd]:ms-[-0.35rem]": [
+      "has-[>kbd]:ml-[-0.35rem]"
+    ],
+    "has-[>kbd]:me-[-0.35rem]": [
+      "has-[>kbd]:mr-[-0.35rem]"
+    ],
+    "start-2": [
+      "left-2"
+    ],
+    "start-3": [
+      "left-3"
+    ],
+    "end-1": [
+      "right-1"
+    ],
+    "end-3": [
+      "right-3"
+    ],
+    "end-4": [
+      "right-4"
+    ],
+    "group-data-[orientation=vertical]/attachment:end-3": [
+      "group-data-[orientation=vertical]/attachment:right-3"
+    ],
+    "-start-12": [
+      "-left-12"
+    ],
+    "-end-12": [
+      "-right-12"
+    ],
+    "group-data-[orientation=vertical]/tabs:after:-end-1": [
+      "group-data-[orientation=vertical]/tabs:after:-right-1"
+    ],
+    "first:border-s": [
+      "first:border-l"
+    ],
+    "first:rounded-s-md": [
+      "first:rounded-l-md"
+    ],
+    "last:rounded-e-md": [
+      "last:rounded-r-md"
+    ],
+    "data-[spacing=0]:first:rounded-s-md": [
+      "data-[spacing=0]:first:rounded-l-md"
+    ],
+    "data-[spacing=0]:last:rounded-e-md": [
+      "data-[spacing=0]:last:rounded-r-md"
+    ],
+    "data-[spacing=0]:data-[variant=outline]:border-s-0": [
+      "data-[spacing=0]:data-[variant=outline]:border-l-0"
+    ],
+    "data-[spacing=0]:data-[variant=outline]:first:border-s": [
+      "data-[spacing=0]:data-[variant=outline]:first:border-l"
+    ],
+    "md:text-start": [
+      "md:text-left"
+    ],
+    "border-e": [
+      "border-r"
+    ],
+    "border-s": [
+      "border-l"
+    ],
+    "start-0": [
+      "left-0"
+    ],
+    "[&:has([role=checkbox])]:pe-0": [
+      "[&:has([role=checkbox])]:pr-0"
     ]
   },
   "added": {
@@ -212,6 +347,30 @@
         "has-data-[slot=alert-action]:pe-20"
       ],
       "why": "AlertAction does not exist in the new-york-v4 source this port vendors, but shadcn documents it and the docs render it. Its geometry is taken from shadcn's own stylesheet — .cn-alert-action is absolute at the trailing top corner, and .cn-alert reserves the room with has-data-[slot=alert-action]:pr-18. pe- rather than pr-, so it swaps sides under dir=\"rtl\"."
+    },
+    "carousel-next": {
+      "classes": [
+        "rtl:data-[orientation=horizontal]:[&_svg]:rotate-180"
+      ],
+      "why": "An arrow glyph points along the reading direction. The button already moved to the end edge; the arrow inside it has to turn too, or \"next\" points back at the slide you came from. Only on the horizontal branch — a vertical carousel is rotated 90 degrees already and its direction has nothing to do with the writing direction."
+    },
+    "carousel-previous": {
+      "classes": [
+        "rtl:data-[orientation=horizontal]:[&_svg]:rotate-180"
+      ],
+      "why": "Same as carousel-next."
+    },
+    "sidebar-menu-sub": {
+      "classes": [
+        "rtl:-translate-x-px"
+      ],
+      "why": "The hairline nudge that sits the list against its own border. The border is border-s now, so it is on the other edge under RTL and the nudge follows it. Tailwind has no logical translate, so this is the rtl: variant rather than a different utility."
+    },
+    "sidebar-menu-sub-button": {
+      "classes": [
+        "rtl:translate-x-px"
+      ],
+      "why": "Same as sidebar-menu-sub, other way."
     }
   },
   "dropped": {

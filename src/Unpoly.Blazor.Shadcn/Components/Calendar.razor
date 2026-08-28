@@ -22,13 +22,13 @@
         <div data-slot="calendar-nav" class="mb-2 flex items-center justify-between gap-2">
             <a href="@MonthUrl(Month.AddMonths(-1))"
                class="@Cn(ButtonVariants.Of("ghost", "icon-sm"))"
-               aria-label="@PreviousLabel"><Icon Name="chevron-left" /></a>
+               aria-label="@PreviousLabel"><Icon Name="chevron-left" Class="rtl:rotate-180" /></a>
 
             <span class="text-sm font-medium" aria-live="polite">@Month.ToString("MMMM yyyy")</span>
 
             <a href="@MonthUrl(Month.AddMonths(1))"
                class="@Cn(ButtonVariants.Of("ghost", "icon-sm"))"
-               aria-label="@NextLabel"><Icon Name="chevron-right" /></a>
+               aria-label="@NextLabel"><Icon Name="chevron-right" Class="rtl:rotate-180" /></a>
         </div>
     }
 
