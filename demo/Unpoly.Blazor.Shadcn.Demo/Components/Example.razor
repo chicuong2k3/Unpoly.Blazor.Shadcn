@@ -21,6 +21,13 @@
         <Card Class="border border-dashed">
             <CardContent Class="flex flex-wrap items-start gap-4 px-6">@ChildContent</CardContent>
         </Card>
+
+        @* Where a sample's own request lands. Several examples post a form with
+           up-target=".preview" to show that the control really submits — and there was no
+           .preview anywhere in the page, so Unpoly resolved the target, found nothing, and
+           did nothing. Every one of those samples looked broken in exactly the way a dead
+           button looks broken. *@
+        <div class="preview"></div>
     </TabsContent>
 
     <TabsContent Value="code" Hidden>

@@ -7,11 +7,16 @@
    Putting the media and the text inside it positions them absolutely too and they escape the
    card, which is the mistake it invites. Its own content should be a name and nothing else —
    `<span class="sr-only">Open acme-invoice.pdf</span>` — because a link with no text is a link a
-   screen reader announces as its own URL. *@
+   screen reader announces as its own URL.
+
+   [up-follow=false] because the thing on the other end is a FILE. Unpoly follows every link by
+   default and swaps the response into the page; a PDF is not a fragment, so the click was
+   swallowed and nothing happened — which is exactly what "the trigger does not work" looks
+   like. A caller whose trigger really does open a page can splat up-follow="true" back on. *@
 
 @if (Href is not null)
 {
-    <a href="@Href" data-slot="attachment-trigger" class="@Classes"
+    <a href="@Href" data-slot="attachment-trigger" up-follow="false" class="@Classes"
        @attributes="AdditionalAttributes">@ChildContent</a>
 }
 else

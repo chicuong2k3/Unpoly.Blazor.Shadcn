@@ -7,9 +7,10 @@
    screen — the preview — goes INSIDE the trigger, not above it. Putting it above left a bubble
    containing nothing but the words "Show more".
 
-   And the label has to swap, or the control says "Show more" while the text is already shown.
-   React swaps it from state; here the element's own [open] does it, so there is nothing to keep
-   in step: two spans, and the group-open variant picks which one is on screen. *@
+   And the control has to go once the text is shown. There is no "Show less" here: the whole
+   point of the control is to reveal the rest, and once it is revealed the row is only in the
+   way. The element's own [open] hides it, so there is nothing to keep in step — and the
+   summary still holds the preview, so a second click on the text folds it back. *@
 <div class="flex w-full max-w-sm flex-col gap-8">
     <Bubble Variant="muted">
         <BubbleContent>How can I help you today?</BubbleContent>
@@ -24,11 +25,9 @@
                         subtle in dark mode. I checked the dialog, menu, and drawer paths because
                         each one renders focusable controls inside a layered surface.
                     </span>
-                    <span class="@ButtonVariants.Of("link", "default", "h-auto gap-1 self-start p-0 text-muted-foreground")">
-                        <span class="group-open/more:hidden">Show more</span>
-                        <span class="hidden group-open/more:inline">Show less</span>
-                        <Icon Name="chevron-down"
-                              Class="size-4 transition-transform group-open/more:rotate-180" />
+                    <span class="@ButtonVariants.Of("link", "default", "h-auto gap-1 self-start p-0 text-muted-foreground group-open/more:hidden")">
+                        Show more
+                        <Icon Name="chevron-down" Class="size-4" />
                     </span>
                 </CollapsibleTrigger>
                 <CollapsibleContent Class="mt-2 flex flex-col gap-2">

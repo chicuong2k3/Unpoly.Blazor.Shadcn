@@ -1987,3 +1987,5 @@ renders `<button>` · `data-slot="tooltip-trigger"`
 |---|---|---|---|
 | `Target` | `string` | `default!` |  |
 | `Delay` | `int` | `200` | **required** |
+| `Variant` | `string?` | — |  |
+| `Size` | `string` | `"default"` |  |

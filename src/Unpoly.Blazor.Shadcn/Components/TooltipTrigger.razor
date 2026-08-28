@@ -5,7 +5,7 @@
    <button> and not a <span> — an icon with a tooltip nobody can tab to is decoration. *@
 
 <button type="button" data-slot="tooltip-trigger" data-target="@Target" data-delay="@Delay"
-        aria-describedby="@Target" class="@Class" @attributes="AdditionalAttributes">@ChildContent</button>
+        aria-describedby="@Target" class="@Classes" @attributes="AdditionalAttributes">@ChildContent</button>
 
 @code {
     /// <summary>The id of the <see cref="TooltipContent"/> it opens.</summary>
@@ -13,4 +13,15 @@
 
     /// <summary>Milliseconds of hover before it appears. Focus opens after the same delay.</summary>
     [Parameter] public int Delay { get; set; } = 200;
+
+    /// <summary>
+    /// The button recipe, as on every other trigger here. Null — the default — renders no
+    /// recipe at all, which is what a trigger wrapping something already styled wants; naming
+    /// a variant gives the ordinary button.
+    /// </summary>
+    [Parameter] public string? Variant { get; set; }
+
+    [Parameter] public string Size { get; set; } = "default";
+
+    string Classes => Variant is null ? Class ?? "" : ButtonVariants.Of(Variant, Size, Class);
 }

@@ -2314,12 +2314,6 @@
   .group-open\/more\:hidden:is(:where(.group\/more):is([open], :popover-open, :open) *) {
     display: none;
   }
-  .group-open\/more\:inline:is(:where(.group\/more):is([open], :popover-open, :open) *) {
-    display: inline;
-  }
-  .group-open\/more\:rotate-180:is(:where(.group\/more):is([open], :popover-open, :open) *) {
-    rotate: 180deg;
-  }
   .group-focus-within\/menu-item\:opacity-100:is(:where(.group\/menu-item):focus-within *) {
     opacity: 100%;
   }
