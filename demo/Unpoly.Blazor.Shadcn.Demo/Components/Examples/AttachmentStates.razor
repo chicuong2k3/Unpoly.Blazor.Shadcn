@@ -1,0 +1,30 @@
+@* Upload state is the caller to know, so it is a parameter rather than something the component
+   guesses. Idle draws a dashed border, error a destructive one. *@
+<div class="flex w-[320px] flex-col gap-3">
+    <Attachment State="idle">
+        <AttachmentMedia><Icon Name="file" /></AttachmentMedia>
+        <AttachmentContent>
+            <AttachmentTitle>nda-2026.docx</AttachmentTitle>
+            <AttachmentDescription>Waiting to upload</AttachmentDescription>
+        </AttachmentContent>
+    </Attachment>
+
+    <Attachment>
+        <AttachmentMedia><Spinner Class="size-4" /></AttachmentMedia>
+        <AttachmentContent>
+            <AttachmentTitle>rate-card.xlsx</AttachmentTitle>
+            <AttachmentDescription>Uploading — 62%</AttachmentDescription>
+        </AttachmentContent>
+    </Attachment>
+
+    <Attachment State="error">
+        <AttachmentMedia><Icon Name="triangle-alert" /></AttachmentMedia>
+        <AttachmentContent>
+            <AttachmentTitle>scan.pdf</AttachmentTitle>
+            <AttachmentDescription>Too large — 24 MB of 10 MB</AttachmentDescription>
+        </AttachmentContent>
+        <AttachmentActions>
+            <AttachmentAction AriaLabel="Remove scan.pdf"><Icon Name="x" /></AttachmentAction>
+        </AttachmentActions>
+    </Attachment>
+</div>

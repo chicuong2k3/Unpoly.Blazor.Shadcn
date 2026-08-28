@@ -1,0 +1,11 @@
+@* An InputGroup keeps its own frame, so the joining is between the frame and the button rather
+   than around the raw input. *@
+<form method="get" class="w-[460px]">
+    <ButtonGroup>
+        <InputGroup Class="rounded-e-none">
+            <InputGroupAddon><Icon Name="search" /></InputGroupAddon>
+            <InputGroupControl name="q" type="search" placeholder="Search orders…" />
+        </InputGroup>
+        <Button Type="submit" Variant="outline" Class="rounded-s-none border-s-0">Search</Button>
+    </ButtonGroup>
+</form>

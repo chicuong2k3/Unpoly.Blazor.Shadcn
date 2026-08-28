@@ -1,0 +1,25 @@
+@* The trigger is `absolute inset-0`: an invisible sheet over the whole card, not a wrapper
+   around it. Nest the media and the text inside and they position absolutely too and escape the
+   card. Its own content should be a name and nothing else, because a link with no text is
+   announced as its own URL. *@
+<div class="flex w-[320px] flex-col gap-3">
+    <Attachment>
+        <AttachmentMedia><Icon Name="file" /></AttachmentMedia>
+        <AttachmentContent>
+            <AttachmentTitle>acme-msa.pdf</AttachmentTitle>
+            <AttachmentDescription>Opens in a tab</AttachmentDescription>
+        </AttachmentContent>
+        <AttachmentTrigger Href="/files/acme-msa.pdf">
+            <span class="sr-only">Open acme-msa.pdf</span>
+        </AttachmentTrigger>
+    </Attachment>
+
+    <Attachment>
+        <AttachmentMedia><Icon Name="file" /></AttachmentMedia>
+        <AttachmentContent>
+            <AttachmentTitle>draft.md</AttachmentTitle>
+            <AttachmentDescription>A button, for something that is not a URL</AttachmentDescription>
+        </AttachmentContent>
+        <AttachmentTrigger><span class="sr-only">Preview draft.md</span></AttachmentTrigger>
+    </Attachment>
+</div>

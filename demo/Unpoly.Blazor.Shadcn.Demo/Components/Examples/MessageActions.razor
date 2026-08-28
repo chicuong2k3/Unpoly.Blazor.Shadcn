@@ -1,0 +1,28 @@
+@* Actions on a turn. They are buttons in a form, so each one posts and the row it changes is
+   swapped — no client state, and the count that comes back is the server's. *@
+<Message Class="w-[440px]">
+    <MessageAvatar><Avatar><AvatarFallback>ML</AvatarFallback></Avatar></MessageAvatar>
+    <MessageContent>
+        <Bubble Variant="muted"><BubbleContent>Perfect, thank you.</BubbleContent></Bubble>
+        <MessageFooter Class="gap-1">
+            @foreach (var (action, icon, label) in Actions)
+            {
+                <form method="post" action="@($"/messages/9/{action}")" up-target=":origin">
+                    <AntiforgeryToken />
+                    <Button Variant="ghost" Size="icon-sm" Type="submit" aria-label="@label">
+                        <Icon Name="@icon" />
+                    </Button>
+                </form>
+            }
+        </MessageFooter>
+    </MessageContent>
+</Message>
+
+@code {
+    static readonly (string Action, string Icon, string Label)[] Actions =
+    [
+        ("copy", "copy", "Copy this message"),
+        ("react", "heart", "React to this message"),
+        ("reply", "message-circle", "Reply to this message"),
+    ];
+}

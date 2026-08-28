@@ -1,0 +1,23 @@
+@* Height is a class on the content. Past about 85vh a bottom drawer stops reading as a drawer
+   and starts reading as a page that failed to load properly. *@
+<div class="flex flex-wrap items-center gap-3">
+    <DrawerTrigger Target="drawer-short">Short</DrawerTrigger>
+    <Drawer Id="drawer-short" Class="max-h-[35vh]">
+        <DrawerHeader><DrawerTitle>A third of the screen</DrawerTitle></DrawerHeader>
+        <DrawerFooter><DrawerClose>Close</DrawerClose></DrawerFooter>
+    </Drawer>
+
+    <DrawerTrigger Target="drawer-tall">Tall</DrawerTrigger>
+    <Drawer Id="drawer-tall" Class="max-h-[85vh]">
+        <DrawerHeader><DrawerTitle>Most of it</DrawerTitle></DrawerHeader>
+        <ScrollArea Class="flex-1 px-4">
+            <div class="flex flex-col gap-3 pb-4 text-sm text-muted-foreground">
+                @foreach (var n in Enumerable.Range(1, 12))
+                {
+                    <p>Line @n — enough to make the panel scroll.</p>
+                }
+            </div>
+        </ScrollArea>
+        <DrawerFooter><DrawerClose>Close</DrawerClose></DrawerFooter>
+    </Drawer>
+</div>

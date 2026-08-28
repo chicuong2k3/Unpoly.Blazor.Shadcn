@@ -1,0 +1,19 @@
+<ButtonGroup>
+    <Button Variant="outline">Filter</Button>
+    <PopoverTrigger Target="bg-pop" Variant="outline" Size="icon" aria-label="Filter options">
+        <Icon Name="settings" />
+    </PopoverTrigger>
+    <PopoverContent Id="bg-pop" Align="end" Class="w-64 p-4">
+        <div class="flex flex-col gap-3">
+            <div class="text-sm font-medium">Filters</div>
+            <Field Orientation="horizontal">
+                <Checkbox id="bgf-paid" name="paid" value="yes" checked />
+                <FieldLabel For="bgf-paid">Paid only</FieldLabel>
+            </Field>
+            <Field Orientation="horizontal">
+                <Checkbox id="bgf-refund" name="refunded" value="yes" />
+                <FieldLabel For="bgf-refund">Refunded</FieldLabel>
+            </Field>
+        </div>
+    </PopoverContent>
+</ButtonGroup>

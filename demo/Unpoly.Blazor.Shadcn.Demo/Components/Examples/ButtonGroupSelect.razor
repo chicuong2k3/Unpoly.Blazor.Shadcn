@@ -1,0 +1,14 @@
+@* A real <select> joined to a button. It posts, it brings the OS picker on a phone, and the
+   joining is two border-radius classes. *@
+<form method="get" class="w-[420px]">
+    <ButtonGroup>
+        <Select name="currency" aria-label="Currency" Class="w-28 rounded-e-none">
+            <SelectItem Value="usd" Selected>USD</SelectItem>
+            <SelectItem Value="eur">EUR</SelectItem>
+            <SelectItem Value="vnd">VND</SelectItem>
+        </Select>
+        <Input name="amount" type="number" placeholder="0.00" aria-label="Amount"
+               Class="rounded-none border-x-0" />
+        <Button Type="submit" Variant="outline" Class="rounded-s-none">Convert</Button>
+    </ButtonGroup>
+</form>

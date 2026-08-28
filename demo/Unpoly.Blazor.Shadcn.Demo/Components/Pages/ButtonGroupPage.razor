@@ -4,9 +4,62 @@
 
 <h1 class="doc-h1">Button Group</h1>
 <p class="doc-lede">
-    Buttons joined into one control, with the rounding and the shared edges handled for you.
+    Buttons joined into one control, with the rounding and the shared edges handled for you. The
+    buttons themselves stay ordinary buttons — which is what lets a select, an input or a popover
+    trigger sit in the same group.
+</p>
+<p class="doc-note">
+    Not the same thing as <a href="/components/toggle-group">Toggle Group</a>: a button group is
+    several actions that happen to sit together, and a toggle group is one value chosen from
+    several. If the thing has a state that persists, it is the other one.
 </p>
 
-<Example Source="ButtonGroupExample.razor">
-    <ButtonGroupExample />
-</Example>
+<h2 class="doc-h2">Basic</h2>
+<Example Source="ButtonGroupExample.razor"><ButtonGroupExample /></Example>
+
+<h2 class="doc-h2">Orientation</h2>
+<Example Source="ButtonGroupOrientation.razor"><ButtonGroupOrientation /></Example>
+
+<h2 class="doc-h2">Size</h2>
+<Example Source="ButtonGroupSize.razor"><ButtonGroupSize /></Example>
+
+<h2 class="doc-h2">Nested</h2>
+<Example Source="ButtonGroupNested.razor"><ButtonGroupNested /></Example>
+
+<h2 class="doc-h2">Separator</h2>
+<p class="doc-note">
+    A rule between two buttons that are joined but not the same kind of thing. It takes the
+    group's own colour, which is why upstream gives that slot <code>bg-input</code> rather than
+    <code>bg-border</code>.
+</p>
+<Example Source="ButtonGroupSeparatorExample.razor"><ButtonGroupSeparatorExample /></Example>
+
+<h2 class="doc-h2">Split</h2>
+<p class="doc-note">
+    A default action and a menu of the others, as two separate buttons — so the common case is one
+    click and the menu never gets in its way.
+</p>
+<Example Source="ButtonGroupSplit.razor"><ButtonGroupSplit /></Example>
+
+<h2 class="doc-h2">Input</h2>
+<Example Source="ButtonGroupInput.razor"><ButtonGroupInput /></Example>
+
+<h2 class="doc-h2">Input Group</h2>
+<Example Source="ButtonGroupInputGroup.razor"><ButtonGroupInputGroup /></Example>
+
+<h2 class="doc-h2">Dropdown Menu</h2>
+<Example Source="ButtonGroupDropdown.razor"><ButtonGroupDropdown /></Example>
+
+<h2 class="doc-h2">Select</h2>
+<Example Source="ButtonGroupSelect.razor"><ButtonGroupSelect /></Example>
+
+<h2 class="doc-h2">Popover</h2>
+<Example Source="ButtonGroupPopover.razor"><ButtonGroupPopover /></Example>
+
+<h2 class="doc-h2">RTL</h2>
+<p class="doc-note">
+    The rounding is written with logical corners — <code>rounded-s</code> and
+    <code>rounded-e</code> — so the joined ends swap with the direction and the group does not
+    come apart.
+</p>
+<Example Source="ButtonGroupRtl.razor"><ButtonGroupRtl /></Example>

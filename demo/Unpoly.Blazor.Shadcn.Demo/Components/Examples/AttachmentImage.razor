@@ -1,0 +1,15 @@
+@* A thumbnail rather than an icon. Real width and height on the image so the card does not
+   change size as it loads, and the media stays aria-hidden — the file name is beside it. *@
+<Attachment Class="w-[320px]">
+    <AttachmentMedia Variant="image" aria-hidden="true">
+        <img src="https://placehold.co/80" alt="" width="80" height="80" loading="lazy"
+             class="size-10 rounded object-cover" />
+    </AttachmentMedia>
+    <AttachmentContent>
+        <AttachmentTitle>front-cover.jpg</AttachmentTitle>
+        <AttachmentDescription>1.4 MB</AttachmentDescription>
+    </AttachmentContent>
+    <AttachmentTrigger Href="/files/front-cover.jpg">
+        <span class="sr-only">Open front-cover.jpg</span>
+    </AttachmentTrigger>
+</Attachment>

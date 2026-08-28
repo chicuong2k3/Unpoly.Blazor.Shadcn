@@ -759,8 +759,14 @@
   .max-h-96 {
     max-height: calc(var(--spacing) * 96);
   }
+  .max-h-\[35vh\] {
+    max-height: 35vh;
+  }
   .max-h-\[70vh\] {
     max-height: 70vh;
+  }
+  .max-h-\[85vh\] {
+    max-height: 85vh;
   }
   .max-h-\[300px\] {
     max-height: 300px;
@@ -1424,9 +1430,17 @@
   .rounded-xs {
     border-radius: var(--radius-xs);
   }
+  .rounded-s {
+    border-start-start-radius: 0.25rem;
+    border-end-start-radius: 0.25rem;
+  }
   .rounded-s-none {
     border-start-start-radius: 0;
     border-end-start-radius: 0;
+  }
+  .rounded-e {
+    border-start-end-radius: 0.25rem;
+    border-end-end-radius: 0.25rem;
   }
   .rounded-e-none {
     border-start-end-radius: 0;
@@ -1449,6 +1463,10 @@
   .border-8 {
     border-style: var(--tw-border-style);
     border-width: 8px;
+  }
+  .border-x-0 {
+    border-inline-style: var(--tw-border-style);
+    border-inline-width: 0px;
   }
   .border-y {
     border-block-style: var(--tw-border-style);
@@ -3692,6 +3710,15 @@
     margin-top: calc(var(--spacing) * -1);
   }
   @media (width >= 40rem) {
+    .sm\:\!inset-auto {
+      inset: auto !important;
+    }
+    .sm\:\!top-1\/2 {
+      top: calc(1 / 2 * 100%) !important;
+    }
+    .sm\:\!left-1\/2 {
+      left: calc(1 / 2 * 100%) !important;
+    }
     .sm\:block {
       display: block;
     }
@@ -3704,11 +3731,22 @@
     .sm\:table-cell {
       display: table-cell;
     }
+    .sm\:\!max-w-lg {
+      max-width: var(--container-lg) !important;
+    }
     .sm\:max-w-lg {
       max-width: var(--container-lg);
     }
     .sm\:max-w-sm {
       max-width: var(--container-sm);
+    }
+    .sm\:\!-translate-x-1\/2 {
+      --tw-translate-x: calc(calc(1 / 2 * 100%) * -1) !important;
+      translate: var(--tw-translate-x) var(--tw-translate-y) !important;
+    }
+    .sm\:\!-translate-y-1\/2 {
+      --tw-translate-y: calc(calc(1 / 2 * 100%) * -1) !important;
+      translate: var(--tw-translate-x) var(--tw-translate-y) !important;
     }
     .sm\:grid-cols-2 {
       grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -3721,6 +3759,9 @@
     }
     .sm\:gap-2\.5 {
       gap: calc(var(--spacing) * 2.5);
+    }
+    .sm\:\!rounded-lg {
+      border-radius: var(--radius) !important;
     }
     .sm\:text-left {
       text-align: left;

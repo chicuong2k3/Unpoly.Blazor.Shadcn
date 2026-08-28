@@ -4,13 +4,40 @@
 
 <h1 class="doc-h1">Attachment</h1>
 <p class="doc-lede">
-    A file attached to a message: its thumbnail, its name and size, and what you can do with it. shadcn ships it with the AI components; nothing about it is specific to a model, and the demo's file manager and chat blocks both use it.
+    A file attached to a message: its thumbnail, its name and size, and what you can do with it.
+    shadcn ships it with the AI components; nothing about it is specific to a model, and the demo's
+    file manager and chat blocks both use it.
 </p>
 
+<h2 class="doc-h2">Basic</h2>
+<Example Source="AttachmentTriggerExample.razor"><AttachmentTriggerExample /></Example>
+
+<h2 class="doc-h2">Image</h2>
+<Example Source="AttachmentImage.razor"><AttachmentImage /></Example>
+
+<h2 class="doc-h2">States</h2>
 <p class="doc-note">
-    Message, Bubble, Attachment, Marker and the scroller. The scroller follows the newest message
-    only while you are already at the bottom — scroll up to read something and it stops, which is
-    the behaviour every chat needs and most get wrong in one direction or the other.
-    <code>overflow-anchor</code> does that half in CSS; the browser has had it since 2018.
+    Upload state is the caller's to know, so it is a parameter rather than something the component
+    guesses at.
 </p>
+<Example Source="AttachmentStates.razor"><AttachmentStates /></Example>
+
+<h2 class="doc-h2">Sizes</h2>
+<Example Source="AttachmentSizes.razor"><AttachmentSizes /></Example>
+
+<h2 class="doc-h2">Group</h2>
+<Example Source="AttachmentGroupExample.razor"><AttachmentGroupExample /></Example>
+
+<h2 class="doc-h2">Trigger</h2>
+<p class="doc-note">
+    <code>absolute inset-0</code>: an invisible sheet over the whole card, not a wrapper around it.
+    Nesting the media and the text inside positions them absolutely too and they escape the card —
+    which is the mistake it invites.
+</p>
+<Example Source="AttachmentTriggerExample.razor"><AttachmentTriggerExample /></Example>
+
+<h2 class="doc-h2">In a conversation</h2>
 <Example Source="ConversationExample.razor"><ConversationExample /></Example>
+
+<h2 class="doc-h2">RTL</h2>
+<Example Source="AttachmentRtl.razor"><AttachmentRtl /></Example>

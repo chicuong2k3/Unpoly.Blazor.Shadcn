@@ -1,0 +1,18 @@
+@* The split button: a default action, and a menu of the others. The two are separate buttons, so
+   the common case is one click and the menu never gets in its way. *@
+<ButtonGroup>
+    <Button>Publish</Button>
+    <ButtonGroupSeparator />
+    <DropdownMenu>
+        <DropdownMenuTrigger Target="bg-split" Variant="default" Size="icon"
+                             aria-label="More publish options">
+            <Icon Name="chevron-down" />
+        </DropdownMenuTrigger>
+        <DropdownMenuContent Id="bg-split" Align="end" Class="w-48">
+            <DropdownMenuItem>Publish and notify</DropdownMenuItem>
+            <DropdownMenuItem>Schedule…</DropdownMenuItem>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem>Save as a draft</DropdownMenuItem>
+        </DropdownMenuContent>
+    </DropdownMenu>
+</ButtonGroup>
