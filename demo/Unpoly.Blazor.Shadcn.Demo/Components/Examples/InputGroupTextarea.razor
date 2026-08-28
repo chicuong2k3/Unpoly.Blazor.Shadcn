@@ -1,0 +1,10 @@
+@* A textarea in a group grows the frame rather than being squeezed by it, which is what the
+   has-[>textarea] rule in the recipe is for. The toolbar goes on its own row underneath. *@
+<InputGroup Class="w-[460px] items-end">
+    <Textarea name="body" rows="3" placeholder="Write a message…" aria-label="Message"
+              Class="resize-none border-0 shadow-none focus-visible:ring-0" />
+    <InputGroupAddon Align="block-end" Class="justify-between">
+        <span class="text-xs text-muted-foreground">Markdown supported</span>
+        <InputGroupButton Variant="default" Size="sm"><Icon Name="send" />Send</InputGroupButton>
+    </InputGroupAddon>
+</InputGroup>

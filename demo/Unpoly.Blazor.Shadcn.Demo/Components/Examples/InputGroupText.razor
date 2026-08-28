@@ -1,0 +1,13 @@
+@* A unit or a prefix, which is the case where a placeholder will not do: "$" has to stay visible
+   while the number is typed. *@
+<div class="flex w-[360px] flex-col gap-4">
+    <InputGroup>
+        <InputGroupAddon><span class="text-sm">$</span></InputGroupAddon>
+        <InputGroupControl name="price" type="number" placeholder="0.00" />
+        <InputGroupAddon Align="inline-end"><span class="text-xs text-muted-foreground">USD</span></InputGroupAddon>
+    </InputGroup>
+    <InputGroup>
+        <InputGroupAddon><span class="text-sm text-muted-foreground">https://</span></InputGroupAddon>
+        <InputGroupControl name="url" placeholder="shop.example.com" />
+    </InputGroup>
+</div>

@@ -1,0 +1,8 @@
+<InputOtp Name="code-off" Length="4">
+    <InputOtpGroup>
+        @foreach (var i in Enumerable.Range(1, 4))
+        {
+            <InputOtpSlot First="@(i == 1)" disabled AriaLabel="@($"Digit {i} of 4")" />
+        }
+    </InputOtpGroup>
+</InputOtp>

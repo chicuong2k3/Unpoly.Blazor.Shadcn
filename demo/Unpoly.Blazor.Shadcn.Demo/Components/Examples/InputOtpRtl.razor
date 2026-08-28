@@ -1,0 +1,12 @@
+@* The boxes fill from the reading edge, and so does the caret. Both come from the document
+   direction; nothing about the compiler changes. *@
+<div dir="rtl">
+    <InputOtp Name="code-rtl" Length="4">
+        <InputOtpGroup>
+            @foreach (var i in Enumerable.Range(1, 4))
+            {
+                <InputOtpSlot First="@(i == 1)" inputmode="numeric" AriaLabel="@($"خانة {i} من 4")" />
+            }
+        </InputOtpGroup>
+    </InputOtp>
+</div>

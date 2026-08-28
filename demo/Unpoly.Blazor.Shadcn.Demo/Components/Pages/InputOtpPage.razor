@@ -4,9 +4,47 @@
 
 <h1 class="doc-h1">Input OTP</h1>
 <p class="doc-lede">
-    Six real inputs, not one hidden field with painted boxes. It posts without JavaScript, <code>autocomplete="one-time-code"</code> lets a phone offer the code it has just received, and nothing needs rehydrating after a swap.
+    Six real inputs, not one hidden field with painted boxes. It posts without JavaScript,
+    <code>autocomplete="one-time-code"</code> on the first box lets a phone offer the code it has
+    just received, and nothing needs rehydrating after a fragment swap.
+</p>
+<p class="doc-note">
+    The compiler adds only what typing expects: advance on entry, retreat <i>and</i> clear on
+    backspace, and a paste of the whole code filling every box. The server sees one value, because
+    a hidden input is kept in step — six named fields would push the joining into every handler.
 </p>
 
-<Example Source="InputOtpExample.razor">
-    <InputOtpExample />
-</Example>
+<h2 class="doc-h2">Basic</h2>
+<Example Source="InputOtpExample.razor"><InputOtpExample /></Example>
+
+<h2 class="doc-h2">Separator</h2>
+<Example Source="InputOtpSeparatorExample.razor"><InputOtpSeparatorExample /></Example>
+
+<h2 class="doc-h2">Four Digits</h2>
+<Example Source="InputOtpFourDigits.razor"><InputOtpFourDigits /></Example>
+
+<h2 class="doc-h2">Pattern</h2>
+<p class="doc-note">
+    <code>inputmode</code> and <code>pattern</code> bring the numeric keypad up on a phone and
+    reject a letter before a request exists. Both are attributes, and both are the platform's.
+</p>
+<Example Source="InputOtpPattern.razor"><InputOtpPattern /></Example>
+
+<h2 class="doc-h2">Alphanumeric</h2>
+<Example Source="InputOtpAlphanumeric.razor"><InputOtpAlphanumeric /></Example>
+
+<h2 class="doc-h2">Disabled</h2>
+<Example Source="InputOtpDisabled.razor"><InputOtpDisabled /></Example>
+
+<h2 class="doc-h2">Invalid</h2>
+<p class="doc-note">
+    The error belongs to the field, not to one box: which digit was wrong is not knowable, and
+    marking the last one is a guess the reader has to undo.
+</p>
+<Example Source="InputOtpInvalid.razor"><InputOtpInvalid /></Example>
+
+<h2 class="doc-h2">Form</h2>
+<Example Source="InputOtpForm.razor"><InputOtpForm /></Example>
+
+<h2 class="doc-h2">RTL</h2>
+<Example Source="InputOtpRtl.razor"><InputOtpRtl /></Example>

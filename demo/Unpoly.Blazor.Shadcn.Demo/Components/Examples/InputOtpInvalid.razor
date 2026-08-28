@@ -1,0 +1,13 @@
+@* The error belongs to the field, not to one box: which digit was wrong is not knowable, and
+   marking the last one is a guess a reader has to undo. *@
+<Field Invalid Class="w-fit">
+    <InputOtp Name="code-bad" Length="6" aria-describedby="otp-error">
+        <InputOtpGroup>
+            @foreach (var i in Enumerable.Range(1, 6))
+            {
+                <InputOtpSlot First="@(i == 1)" aria-invalid="true" AriaLabel="@($"Digit {i} of 6")" />
+            }
+        </InputOtpGroup>
+    </InputOtp>
+    <FieldError id="otp-error">That code has expired. We have sent another.</FieldError>
+</Field>

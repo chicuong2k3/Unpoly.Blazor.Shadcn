@@ -1,0 +1,11 @@
+@* inputmode and pattern are what bring the numeric keypad up on a phone and reject a letter
+   before a request exists. Both are attributes, and both are the platform's. *@
+<InputOtp Name="code-pattern" Length="6">
+    <InputOtpGroup>
+        @foreach (var i in Enumerable.Range(1, 6))
+        {
+            <InputOtpSlot First="@(i == 1)" inputmode="numeric" pattern="[0-9]"
+                          AriaLabel="@($"Digit {i} of 6")" />
+        }
+    </InputOtpGroup>
+</InputOtp>
