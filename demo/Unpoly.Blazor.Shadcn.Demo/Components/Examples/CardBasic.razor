@@ -1,16 +1,36 @@
-<Card Class="w-[360px]">
+@* shadcn's own: a sign-in card. The header carries a title, a description and an action on the
+   trailing edge — CardAction is a grid cell the header opens when one is present, not something
+   positioned. *@
+<Card Class="w-full max-w-sm">
     <CardHeader>
-        <CardTitle>Monthly revenue</CardTitle>
-        <CardDescription>Compared with the same period last year.</CardDescription>
+        <CardTitle>Login to your account</CardTitle>
+        <CardDescription>Enter your email below to login to your account</CardDescription>
         <CardAction>
-            <Button Variant="ghost" Size="icon" aria-label="More"><Icon Name="ellipsis" /></Button>
+            <Button Variant="link">Sign Up</Button>
         </CardAction>
     </CardHeader>
     <CardContent>
-        <p class="num text-3xl font-semibold tracking-tight">$42,180</p>
-        <p class="mt-1 text-sm text-muted-foreground">+12.4% year over year</p>
+        <form id="card-login" method="post" action="/login" up-target="#preview-card-basic" up-disable>
+            <AntiforgeryToken />
+            <div class="flex flex-col gap-6">
+                <div class="grid gap-2">
+                    <Label For="card-email">Email</Label>
+                    <Input id="card-email" name="email" type="email" placeholder="m&#64;example.com" required />
+                </div>
+                <div class="grid gap-2">
+                    <div class="flex items-center">
+                        <Label For="card-password">Password</Label>
+                        <a href="/account" class="ms-auto inline-block text-sm underline-offset-4 hover:underline">
+                            Forgot your password?
+                        </a>
+                    </div>
+                    <Input id="card-password" name="password" type="password" required />
+                </div>
+            </div>
+        </form>
     </CardContent>
-    <CardFooter class="border-t">
-        <Button Variant="outline" Size="sm" Class="w-full">View report</Button>
+    <CardFooter Class="flex-col gap-2">
+        <Button Type="submit" form="card-login" Class="w-full">Login</Button>
+        <Button Variant="outline" Class="w-full">Login with Google</Button>
     </CardFooter>
 </Card>

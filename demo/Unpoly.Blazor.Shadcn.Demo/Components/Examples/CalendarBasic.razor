@@ -1,4 +1,6 @@
 @* A table of days, each one a real radio input. Choosing one posts under `day`, and the browser
-   gives the arrow keys, Home and End within the group for nothing. *@
-<Calendar Name="day" Month="@(new DateOnly(2026, 3, 1))" Today="@(new DateOnly(2026, 3, 11))"
-          Class="w-fit rounded-lg border p-3" />
+   gives the arrow keys, Home and End within the group for nothing.
+
+   No month is pinned: it opens on the current one, as shadcn's does. Pinning a date made the
+   demo show the same March forever, which is the one thing a calendar should never do. *@
+<Calendar Name="day" Class="w-fit rounded-lg border p-3" />

@@ -1,13 +1,43 @@
-@* The gap between the parts is one class on the root, and the padding is one on each part —
-   which is what lets a dense dashboard card and a marketing card be the same component. *@
-<div class="flex flex-wrap items-start gap-4">
-    <Card Class="w-64 gap-2 py-4">
-        <CardHeader Class="px-4"><CardTitle Class="text-sm">Dense</CardTitle></CardHeader>
-        <CardContent Class="px-4 text-sm text-muted-foreground">gap-2, py-4, px-4.</CardContent>
-    </Card>
+@* --card-spacing is the one number the card and everything in it read. shadcn changes it with a
+   toggle group and React state; here the radios ARE the state and the class comes off the one
+   that is checked, so the whole demo is CSS reading the DOM. *@
+<div class="mx-auto grid w-full max-w-sm gap-4
+            [&:has(input[value='4']:checked)_[data-slot=card]]:[--card-spacing:calc(var(--spacing)*4)]
+            [&:has(input[value='5']:checked)_[data-slot=card]]:[--card-spacing:calc(var(--spacing)*5)]
+            [&:has(input[value='6']:checked)_[data-slot=card]]:[--card-spacing:calc(var(--spacing)*6)]
+            [&:has(input[value='8']:checked)_[data-slot=card]]:[--card-spacing:calc(var(--spacing)*8)]">
+    <fieldset class="flex justify-center gap-0">
+        <legend class="sr-only">Card spacing</legend>
+        @foreach (var (value, label) in Steps)
+        {
+            <label class="cursor-pointer border border-input px-3 py-1.5 text-sm first:rounded-s-md last:rounded-e-md not-first:border-s-0 has-[:checked]:bg-accent has-[:checked]:text-accent-foreground">
+                <input type="radio" name="card-spacing" value="@value" class="sr-only"
+                       checked="@(value == "6")" />
+                @label
+            </label>
+        }
+    </fieldset>
 
-    <Card Class="w-64 gap-8 py-8">
-        <CardHeader Class="px-8"><CardTitle>Airy</CardTitle></CardHeader>
-        <CardContent Class="px-8 text-sm text-muted-foreground">gap-8, py-8, px-8.</CardContent>
-    </Card>
+    <div>
+        <Card>
+            <CardHeader>
+                <CardTitle>Spacing</CardTitle>
+                <CardDescription>Every part reads the same number.</CardDescription>
+            </CardHeader>
+            <CardContent>
+                <p class="text-sm text-muted-foreground">
+                    The padding above, beside and below this text is one custom property. Change
+                    it and the header, the content and the footer move together.
+                </p>
+            </CardContent>
+            <CardFooter Class="border-t">
+                <Button Variant="outline" Size="sm" Class="w-full">Save</Button>
+            </CardFooter>
+        </Card>
+    </div>
 </div>
+
+@code {
+    static readonly (string Value, string Label)[] Steps =
+        [("4", "16px"), ("5", "20px"), ("6", "24px"), ("8", "32px")];
+}

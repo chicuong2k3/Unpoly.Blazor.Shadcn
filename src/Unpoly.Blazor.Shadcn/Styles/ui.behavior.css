@@ -234,6 +234,16 @@
     }
     .toastify[data-slot="sonner-toast"] .toast-close:hover { opacity: 1; }
 
+    /* ---- the card publishes its own padding ------------------------------------------
+       Everything in a card reads --card-spacing, so a child can pull out by exactly the amount
+       the card pushed in — that is the whole of the edge-to-edge pattern, one number used twice.
+
+       :where(), so both rules have ZERO specificity. The value has to be beatable by a single
+       utility class on the card, which is how a caller changes it; an inline style, which is
+       where this started, cannot be beaten by anything at all. */
+    :where([data-slot="card"]) { --card-spacing: calc(var(--spacing) * 6); }
+    :where([data-slot="card"][data-size="sm"]) { --card-spacing: calc(var(--spacing) * 4); }
+
     /* ---- surfaces are separated by ground, not by a line -----------------------------
        shadcn draws a border around every card, panel and menu. This library does not: the page
        is grey, the surface is white, and elevation says which is on top. It reads quieter and

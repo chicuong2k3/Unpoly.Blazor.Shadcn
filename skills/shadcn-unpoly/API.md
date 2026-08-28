@@ -330,7 +330,9 @@ renders `<div>` · `data-slot="calendar"`
 ## `<Card>`
 renders `<div>` · `data-slot="card"`
 
-_No parameters of its own._
+| Parameter | Type | Default | |
+|---|---|---|---|
+| `Size` | `string` | `"default"` |  |
 
 ## `<CardAction>`
 renders `<div>` · `data-slot="card-action"`

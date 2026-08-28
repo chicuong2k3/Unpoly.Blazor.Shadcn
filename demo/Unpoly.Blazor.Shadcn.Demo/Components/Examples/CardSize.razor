@@ -1,19 +1,55 @@
-@* A card has no size variant: it is as wide as you make it and as tall as its content. What
-   changes with size is the padding and the type, both of which are classes. *@
-<div class="flex flex-wrap items-start gap-4">
-    <Card Class="w-56 gap-3 py-4">
-        <CardHeader Class="px-4">
-            <CardTitle Class="text-sm">Compact</CardTitle>
-            <CardDescription class="text-xs">Tighter padding.</CardDescription>
+@* Size is the card's own padding, published as --card-spacing — so everything inside moves with
+   it and nothing has to be told twice. sm is 16px, the default 24px. *@
+<div class="flex w-full max-w-2xl flex-wrap items-start gap-4">
+    <Card Size="sm" class="w-full max-w-xs">
+        <CardHeader>
+            <CardTitle>Scheduled reports</CardTitle>
+            <CardDescription>Weekly snapshots. No more manual exports.</CardDescription>
         </CardHeader>
-        <CardContent Class="px-4 text-sm">$4,180</CardContent>
+        <CardContent>
+            <ul class="grid gap-2 py-2 text-sm">
+                @foreach (var line in Lines)
+                {
+                    <li class="flex gap-2">
+                        <Icon Name="chevron-right" Class="mt-0.5 size-4 shrink-0 text-muted-foreground rtl:rotate-180" />
+                        <span>@line</span>
+                    </li>
+                }
+            </ul>
+        </CardContent>
+        <CardFooter Class="flex-col gap-2">
+            <Button Size="sm" Class="w-full">Set up scheduled reports</Button>
+            <Button Variant="outline" Size="sm" Class="w-full">See what&#39;s new</Button>
+        </CardFooter>
     </Card>
 
-    <Card Class="w-72">
+    <Card Class="w-full max-w-xs">
         <CardHeader>
-            <CardTitle>Default</CardTitle>
-            <CardDescription>What the component ships with.</CardDescription>
+            <CardTitle>Scheduled reports</CardTitle>
+            <CardDescription>The same card at the default size.</CardDescription>
         </CardHeader>
-        <CardContent><span class="num text-2xl font-semibold">$42,180</span></CardContent>
+        <CardContent>
+            <ul class="grid gap-2 py-2 text-sm">
+                @foreach (var line in Lines)
+                {
+                    <li class="flex gap-2">
+                        <Icon Name="chevron-right" Class="mt-0.5 size-4 shrink-0 text-muted-foreground rtl:rotate-180" />
+                        <span>@line</span>
+                    </li>
+                }
+            </ul>
+        </CardContent>
+        <CardFooter Class="flex-col gap-2">
+            <Button Class="w-full">Set up scheduled reports</Button>
+        </CardFooter>
     </Card>
 </div>
+
+@code {
+    static readonly string[] Lines =
+    [
+        "Choose a schedule (daily, or weekly).",
+        "Send to channels or specific teammates.",
+        "Include charts, tables, and key metrics.",
+    ];
+}

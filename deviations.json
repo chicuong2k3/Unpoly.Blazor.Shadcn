@@ -391,6 +391,33 @@
         "has-[>button]:hover:bg-muted/50"
       ],
       "why": "Tailwind drops the whole candidate: a comma separates candidates in its parser, so `has-[>a,>button]:hover:bg-muted/50` compiles to NOTHING and emits no warning. The effect is that an attachment card carrying a trigger never tinted under the pointer — the one affordance that says the whole card is clickable — and it looked like the trigger was not there. Written as two candidates, which is the same selector twice."
+    },
+    "card": {
+      "classes": [
+        "gap-(--card-spacing)",
+        "py-(--card-spacing)"
+      ],
+      "why": "shadcn's newer Card publishes its padding as --card-spacing, so a child can pull out by exactly the amount the card pushed in — one number used twice, with nothing to keep in step. That is what the Edge to Edge section on its docs page is built on, and the new-york-v4 source vendored here predates it: the property was never set, so `-mx-(--card-spacing)` resolved to nothing and the region was not edge to edge at all. The literals are replaced by the property, which is the same 24px by default."
+    },
+    "card-header": {
+      "classes": [
+        "px-(--card-spacing)",
+        "[.border-b]:pb-(--card-spacing)"
+      ],
+      "why": "shadcn's newer Card publishes its padding as --card-spacing, so a child can pull out by exactly the amount the card pushed in — one number used twice, with nothing to keep in step. That is what the Edge to Edge section on its docs page is built on, and the new-york-v4 source vendored here predates it: the property was never set, so `-mx-(--card-spacing)` resolved to nothing and the region was not edge to edge at all. The literals are replaced by the property, which is the same 24px by default."
+    },
+    "card-content": {
+      "classes": [
+        "px-(--card-spacing)"
+      ],
+      "why": "shadcn's newer Card publishes its padding as --card-spacing, so a child can pull out by exactly the amount the card pushed in — one number used twice, with nothing to keep in step. That is what the Edge to Edge section on its docs page is built on, and the new-york-v4 source vendored here predates it: the property was never set, so `-mx-(--card-spacing)` resolved to nothing and the region was not edge to edge at all. The literals are replaced by the property, which is the same 24px by default."
+    },
+    "card-footer": {
+      "classes": [
+        "px-(--card-spacing)",
+        "[.border-t]:pt-(--card-spacing)"
+      ],
+      "why": "shadcn's newer Card publishes its padding as --card-spacing, so a child can pull out by exactly the amount the card pushed in — one number used twice, with nothing to keep in step. That is what the Edge to Edge section on its docs page is built on, and the new-york-v4 source vendored here predates it: the property was never set, so `-mx-(--card-spacing)` resolved to nothing and the region was not edge to edge at all. The literals are replaced by the property, which is the same 24px by default."
     }
   },
   "dropped": {
@@ -524,6 +551,33 @@
         "relative"
       ],
       "why": "Upstream's panel is positioned by a Base UI positioner element that wraps it, so `relative` on the content is harmless there. Here the content IS the popover, and `relative` beat the [popover] rule that makes it fixed — so the panel was laid out in flow and `top` offset it from where it already sat. Near the top of a page that looks right; further down it drifts by exactly the scroll offset, and the panel opens hundreds of pixels above the viewport. Measured: style.top 522px, rendered at -902."
+    },
+    "card": {
+      "classes": [
+        "gap-6",
+        "py-6"
+      ],
+      "why": "shadcn's newer Card publishes its padding as --card-spacing, so a child can pull out by exactly the amount the card pushed in — one number used twice, with nothing to keep in step. That is what the Edge to Edge section on its docs page is built on, and the new-york-v4 source vendored here predates it: the property was never set, so `-mx-(--card-spacing)` resolved to nothing and the region was not edge to edge at all. The literals are replaced by the property, which is the same 24px by default."
+    },
+    "card-header": {
+      "classes": [
+        "px-6",
+        "[.border-b]:pb-6"
+      ],
+      "why": "shadcn's newer Card publishes its padding as --card-spacing, so a child can pull out by exactly the amount the card pushed in — one number used twice, with nothing to keep in step. That is what the Edge to Edge section on its docs page is built on, and the new-york-v4 source vendored here predates it: the property was never set, so `-mx-(--card-spacing)` resolved to nothing and the region was not edge to edge at all. The literals are replaced by the property, which is the same 24px by default."
+    },
+    "card-content": {
+      "classes": [
+        "px-6"
+      ],
+      "why": "shadcn's newer Card publishes its padding as --card-spacing, so a child can pull out by exactly the amount the card pushed in — one number used twice, with nothing to keep in step. That is what the Edge to Edge section on its docs page is built on, and the new-york-v4 source vendored here predates it: the property was never set, so `-mx-(--card-spacing)` resolved to nothing and the region was not edge to edge at all. The literals are replaced by the property, which is the same 24px by default."
+    },
+    "card-footer": {
+      "classes": [
+        "px-6",
+        "[.border-t]:pt-6"
+      ],
+      "why": "shadcn's newer Card publishes its padding as --card-spacing, so a child can pull out by exactly the amount the card pushed in — one number used twice, with nothing to keep in step. That is what the Edge to Edge section on its docs page is built on, and the new-york-v4 source vendored here predates it: the property was never set, so `-mx-(--card-spacing)` resolved to nothing and the region was not edge to edge at all. The literals are replaced by the property, which is the same 24px by default."
     }
   },
   "subject": {

@@ -2,8 +2,11 @@
    clicking anywhere on it toggles the box. A label wrapping a control needs no `for`, no id and
    no handler — the platform gives you the hit target for free, and it is the difference between
    a checkbox you aim at and a card you press. *@
-<div dir="rtl">
-    <FieldGroup Class="max-w-sm">
+@* The wrapper needs a width of its own. It is a flex item in the example's card, so it shrinks
+   to its content — and its content is a FieldGroup asking for w-full, which is 100% of nothing.
+   Every field came out zero pixels wide with the text wrapping one letter per line. *@
+<div dir="rtl" class="w-full max-w-sm">
+    <FieldGroup>
         <Field Orientation="horizontal">
             <Checkbox id="rtl-terms" name="terms" />
             <FieldLabel For="rtl-terms">قبول الشروط والأحكام</FieldLabel>

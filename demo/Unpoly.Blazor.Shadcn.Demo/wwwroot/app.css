@@ -1378,6 +1378,9 @@
   .justify-items-start {
     justify-items: start;
   }
+  .gap-\(--card-spacing\) {
+    gap: var(--card-spacing);
+  }
   .gap-0 {
     gap: 0px;
   }
@@ -1876,11 +1879,11 @@
   .px-6 {
     padding-inline: calc(var(--spacing) * 6);
   }
-  .px-8 {
-    padding-inline: calc(var(--spacing) * 8);
-  }
   .px-12 {
     padding-inline: calc(var(--spacing) * 12);
+  }
+  .py-\(--card-spacing\) {
+    padding-block: var(--card-spacing);
   }
   .py-0\.5 {
     padding-block: calc(var(--spacing) * 0.5);
@@ -2423,11 +2426,12 @@
   .\[content-visibility\:auto\] {
     content-visibility: auto;
   }
+  .not-first\:border-s-0:not(:first-child) {
+    border-inline-start-style: var(--tw-border-style);
+    border-inline-start-width: 0px;
+  }
   .not-checked\:bg-input:not(:checked) {
     background-color: var(--input);
-  }
-  .group-open\/folder\:rotate-90:is(:where(.group\/folder):is([open], :popover-open, :open) *) {
-    rotate: 90deg;
   }
   .group-open\/more\:hidden:is(:where(.group\/more):is([open], :popover-open, :open) *) {
     display: none;
@@ -4171,9 +4175,6 @@
   .rtl\:rotate-180:where(:dir(rtl), [dir="rtl"], [dir="rtl"] *) {
     rotate: 180deg;
   }
-  .rtl\:group-open\/folder\:-rotate-90:where(:dir(rtl), [dir="rtl"], [dir="rtl"] *):is(:where(.group\/folder):is([open], :popover-open, :open) *) {
-    rotate: calc(90deg * -1);
-  }
   .dark\:border-input:where(.dark, .dark *) {
     border-color: var(--input);
   }
@@ -4472,17 +4473,29 @@
   .\[\&\:has\(\[role\=checkbox\]\)\]\:pe-0:has([role=checkbox]) {
     padding-inline-end: 0px;
   }
+  .\[\&\:has\(input\[value\=\'4\'\]\:checked\)_\[data-slot\=card\]\]\:\[--card-spacing\:calc\(var\(--spacing\)\*4\)\]:has(input[value='4']:checked) [data-slot=card] {
+    --card-spacing: calc(var(--spacing) * 4);
+  }
+  .\[\&\:has\(input\[value\=\'5\'\]\:checked\)_\[data-slot\=card\]\]\:\[--card-spacing\:calc\(var\(--spacing\)\*5\)\]:has(input[value='5']:checked) [data-slot=card] {
+    --card-spacing: calc(var(--spacing) * 5);
+  }
+  .\[\&\:has\(input\[value\=\'6\'\]\:checked\)_\[data-slot\=card\]\]\:\[--card-spacing\:calc\(var\(--spacing\)\*6\)\]:has(input[value='6']:checked) [data-slot=card] {
+    --card-spacing: calc(var(--spacing) * 6);
+  }
+  .\[\&\:has\(input\[value\=\'8\'\]\:checked\)_\[data-slot\=card\]\]\:\[--card-spacing\:calc\(var\(--spacing\)\*8\)\]:has(input[value='8']:checked) [data-slot=card] {
+    --card-spacing: calc(var(--spacing) * 8);
+  }
+  .\[\.border-b\]\:pb-\(--card-spacing\):is(.border-b) {
+    padding-bottom: var(--card-spacing);
+  }
   .\[\.border-b\]\:pb-3:is(.border-b) {
     padding-bottom: calc(var(--spacing) * 3);
   }
-  .\[\.border-b\]\:pb-6:is(.border-b) {
-    padding-bottom: calc(var(--spacing) * 6);
+  .\[\.border-t\]\:pt-\(--card-spacing\):is(.border-t) {
+    padding-top: var(--card-spacing);
   }
   .\[\.border-t\]\:pt-3:is(.border-t) {
     padding-top: calc(var(--spacing) * 3);
-  }
-  .\[\.border-t\]\:pt-6:is(.border-t) {
-    padding-top: calc(var(--spacing) * 6);
   }
   .\[a\]\:underline:is(a) {
     text-decoration-line: underline;
@@ -4911,6 +4924,12 @@
   [data-variant=legend] + .\[\[data-variant\=legend\]\+\&\]\:-mt-1\.5 {
     margin-top: calc(var(--spacing) * -1.5);
   }
+  [open] > * > .\[\[open\]\>\*\>\&\]\:rotate-90 {
+    rotate: 90deg;
+  }
+  [open] > * > .rtl\:\[\[open\]\>\*\>\&\]\:-rotate-90:where(:dir(rtl), [dir="rtl"], [dir="rtl"] *) {
+    rotate: calc(90deg * -1);
+  }
   @media (hover: hover) {
     a.\[a\&\]\:hover\:bg-accent:hover {
       background-color: var(--accent);
@@ -5154,6 +5173,12 @@
   }
   .toastify[data-slot="sonner-toast"] .toast-close:hover {
     opacity: 1;
+  }
+  :where([data-slot="card"]) {
+    --card-spacing: calc(var(--spacing) * 6);
+  }
+  :where([data-slot="card"][data-size="sm"]) {
+    --card-spacing: calc(var(--spacing) * 4);
   }
   [data-slot="card"], [data-slot="alert"], [data-slot="dropdown-menu-content"], [data-slot="dropdown-menu-sub-content"], [data-slot="select-content"], [data-slot="dialog-content"], [data-slot="alert-dialog-content"], [data-slot="code-block"] {
     border-color: var(--surface-border);

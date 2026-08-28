@@ -32,10 +32,14 @@
         ? @<div class="flex items-center gap-2 rounded-md px-2 py-1 ps-7">
               <Icon Name="file" Class="size-4 text-muted-foreground" />@name
           </div>
-        : @<Collapsible Class="group/folder">
+        : @<Collapsible>
               <CollapsibleTrigger Class="flex cursor-pointer items-center gap-2 rounded-md px-2 py-1 hover:bg-accent">
+                  @* [[open]>&] — "when the details I am a direct child of is open". A named
+                     group would not do: nested folders all carry group/folder, and
+                     group-open/folder matches ANY open ancestor, so every subfolder's chevron
+                     followed the outermost one and sat rotated whether it was open or not. *@
                   <Icon Name="chevron-right"
-                        Class="size-4 text-muted-foreground transition-transform group-open/folder:rotate-90 rtl:rotate-180 rtl:group-open/folder:-rotate-90" />
+                        Class="size-4 text-muted-foreground transition-transform [[open]>*>&]:rotate-90 rtl:rotate-180 rtl:[[open]>*>&]:-rotate-90" />
                   <Icon Name="folder" Class="size-4 text-muted-foreground" />@name
               </CollapsibleTrigger>
               <CollapsibleContent Class="ms-4 border-s ps-2">
