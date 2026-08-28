@@ -20,11 +20,17 @@
                 <BubbleContent Type="submit" name="reply" value="@value">@label</BubbleContent>
             </Bubble>
         }
-        <Bubble Variant="tinted" Align="end">
-            <BubbleContent Href="/components/bubble">Read the docs instead</BubbleContent>
-        </Bubble>
     </BubbleGroup>
 </form>
+
+@* OUTSIDE the form. Unpoly resolves a link's options from the nearest ancestor that carries
+   them, so a link inside this form inherited its up-target=".preview" — it fetched the docs
+   page, tried to extract a fragment that is not in it, and threw. The bubble looked dead and
+   the console said `Cannot read properties of undefined`. A link is not part of the form
+   anyway; it is the other thing this section is called after. *@
+<Bubble Variant="tinted" Align="end" Class="w-full max-w-sm">
+    <BubbleContent Href="/components/button">Read the button docs instead</BubbleContent>
+</Bubble>
 
 @code {
     static readonly (string Value, string Label)[] Replies =

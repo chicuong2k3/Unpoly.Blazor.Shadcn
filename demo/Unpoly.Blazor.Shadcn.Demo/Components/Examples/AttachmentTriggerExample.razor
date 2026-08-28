@@ -1,35 +1,56 @@
 @* The trigger is `absolute inset-0`: an invisible sheet over the whole card, not a wrapper
    around it. Nest the media and the text inside and they position absolutely too and escape the
-   card. Its own content should be a name and nothing else, because a link with no text is
+   card. Its own content should be a name and nothing else, because a control with no text is
    announced as its own URL.
 
-   Two forms, and both have to actually do something. The link opens the file in a tab —
-   target="_blank" as shadcn's own example does, so the thread you were reading stays where it
-   was. The button posts, because a button outside a form with no handler is inert, and inert is
-   indistinguishable from broken. *@
-<div class="flex w-[320px] flex-col gap-3">
+   "Open a link or dialog", as shadcn puts it, and both are here. The link opens the file in a
+   tab — target="_blank", as shadcn's own accessibility note writes it — so the thread you were
+   reading stays where it was. The dialog is for a preview: a preview is not a page, and it has
+   nowhere to navigate to.
+
+   The trigger sits BEHIND the actions in the stacking order, so an AttachmentAction and the
+   trigger never trap each other. Both stay separately focusable and clickable. *@
+<div class="flex w-[340px] flex-col gap-3">
     <Attachment>
         <AttachmentMedia><Icon Name="file" /></AttachmentMedia>
         <AttachmentContent>
             <AttachmentTitle>acme-msa.pdf</AttachmentTitle>
             <AttachmentDescription>Opens in a tab</AttachmentDescription>
         </AttachmentContent>
-        <AttachmentTrigger Href="/files/acme-msa.pdf" target="_blank" rel="noreferrer">
-            <span class="sr-only">Open acme-msa.pdf</span>
+        <AttachmentActions>
+            <AttachmentAction AriaLabel="Remove acme-msa.pdf"><Icon Name="x" /></AttachmentAction>
+        </AttachmentActions>
+        <AttachmentTrigger Href="/files/acme-msa.pdf" target="_blank" rel="noreferrer"
+                           aria-label="Open acme-msa.pdf">
         </AttachmentTrigger>
     </Attachment>
 
-    <form method="post" action="/files/draft.md/preview" up-target=".preview" up-disable>
-        <AntiforgeryToken />
-        <Attachment>
-            <AttachmentMedia><Icon Name="file" /></AttachmentMedia>
-            <AttachmentContent>
-                <AttachmentTitle>draft.md</AttachmentTitle>
-                <AttachmentDescription>A button, for something that is not a URL</AttachmentDescription>
-            </AttachmentContent>
-            <AttachmentTrigger name="file" value="draft.md">
-                <span class="sr-only">Preview draft.md</span>
-            </AttachmentTrigger>
-        </Attachment>
-    </form>
+    <Attachment>
+        <AttachmentMedia><Icon Name="file-text" /></AttachmentMedia>
+        <AttachmentContent>
+            <AttachmentTitle>research-summary.pdf</AttachmentTitle>
+            <AttachmentDescription>Open preview dialog</AttachmentDescription>
+        </AttachmentContent>
+        <AttachmentActions>
+            <AttachmentAction AriaLabel="Copy link to research-summary.pdf"><Icon Name="copy" /></AttachmentAction>
+            <AttachmentAction AriaLabel="Remove research-summary.pdf"><Icon Name="x" /></AttachmentAction>
+        </AttachmentActions>
+        <AttachmentTrigger Dialog="attachment-preview"
+                           aria-label="Preview research-summary.pdf">
+        </AttachmentTrigger>
+    </Attachment>
 </div>
+
+<Dialog Id="attachment-preview" Class="sm:max-w-md">
+    <DialogHeader>
+        <DialogTitle>research-summary.pdf</DialogTitle>
+        <DialogDescription>PDF · 2.4 MB · uploaded 4 March 2026</DialogDescription>
+    </DialogHeader>
+    <div class="flex h-40 items-center justify-center rounded-md border border-dashed text-sm text-muted-foreground">
+        The preview would render here.
+    </div>
+    <DialogFooter>
+        <DialogClose>Close</DialogClose>
+        <Button Href="/files/research-summary.pdf" target="_blank" rel="noreferrer">Open the file</Button>
+    </DialogFooter>
+</Dialog>

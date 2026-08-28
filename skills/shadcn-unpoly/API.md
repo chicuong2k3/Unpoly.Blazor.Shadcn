@@ -174,6 +174,7 @@ renders `<a>` · `data-slot="attachment-trigger"`
 | Parameter | Type | Default | |
 |---|---|---|---|
 | `Href` | `string?` | — |  |
+| `Dialog` | `string?` | — |  |
 | `Type` | `string` | `"submit"` |  |
 
 ## `<Avatar>`

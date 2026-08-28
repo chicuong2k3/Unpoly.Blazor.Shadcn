@@ -38,9 +38,7 @@ NATIVE = (
 
 # Slots with no behaviour at all, and why. A control that does nothing on purpose is fine; a
 # control that does nothing by accident is the bug this file exists for.
-INERT = {
-    'attachment-trigger': 'a link laid over the card — the anchor is the behaviour',
-}
+INERT = {}
 
 
 def js() -> str:

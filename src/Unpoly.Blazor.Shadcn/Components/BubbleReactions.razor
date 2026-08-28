@@ -13,7 +13,8 @@
     const string Base =
         "absolute z-10 flex w-fit shrink-0 items-center justify-center gap-1 rounded-full " +
         "bg-muted px-1.5 py-0.5 text-control ring-3 ring-card has-[button]:p-0 " +
-        "[&>button]:rounded-full";
+        "[&>button]:rounded-full has-[button]:ring-0 [&>button]:ring-3 [&>button]:ring-card " +
+        "[&>button]:hover:bg-foreground/10";
 
     string SideClass => Side switch
     {

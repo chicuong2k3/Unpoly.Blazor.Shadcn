@@ -368,9 +368,13 @@
     },
     "bubble-reactions": {
       "classes": [
-        "[&>button]:rounded-full"
+        "[&>button]:rounded-full",
+        "has-[button]:ring-0",
+        "[&>button]:ring-3",
+        "[&>button]:ring-card",
+        "[&>button]:hover:bg-foreground/10"
       ],
-      "why": "The pill is rounded-full and has-[button]:p-0 lets a control fill it — but the control keeps the button recipe's rounded-md, so hovering painted a rounded SQUARE inside a circle. Nothing is wrong at rest, which is why it survived: it only shows under the pointer, and only on the two examples that put a control in a reaction slot."
+      "why": "Three things, all invisible in a screenshot and all obvious with a pointer. The pill is rounded-full and has-[button]:p-0 lets a control fill it, but the control keeps the recipe's rounded-md — so hovering painted a rounded SQUARE inside a circle. The ring stayed on the pill, so the outer 3px of the visible circle was not part of the button and hovering there did nothing: the tooltip looked like it needed a click. And the ghost hover is bg-accent, which in shadcn's own palette is the same oklch as bg-muted — the pill's own colour — so the hover changed nothing at all. The ring moves to the control, and the hover tints against the foreground instead of matching the surface it sits on."
     },
     "attachment": {
       "classes": [

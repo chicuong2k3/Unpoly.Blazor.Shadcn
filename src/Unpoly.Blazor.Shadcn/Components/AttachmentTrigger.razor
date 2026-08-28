@@ -21,15 +21,29 @@
 }
 else
 {
-    <button type="@Type" data-slot="attachment-trigger" class="@Classes"
-            @attributes="AdditionalAttributes">@ChildContent</button>
+    <button type="@(Dialog is null ? Type : "button")" data-slot="attachment-trigger"
+            data-target="@Dialog" aria-haspopup="@(Dialog is null ? null : "dialog")"
+            class="@Classes" @attributes="AdditionalAttributes">@ChildContent</button>
 }
 
 @code {
     [Parameter] public string? Href { get; set; }
 
     /// <summary>
-    /// submit | button, for the no-Href branch. Submit is the default because a button that is
+    /// The id of a &lt;Dialog&gt; this opens. shadcn documents the trigger as making the whole
+    /// card "open a link or dialog", and the dialog half needs somewhere to point: a preview of
+    /// the file is a dialog, not a page. Setting it forces type="button", because a trigger that
+    /// opens a dialog must not also submit the form it sits in.
+    ///
+    /// Named Dialog, not Target as on every other trigger here, because THIS one can be an
+    /// anchor: Blazor matches component parameters case-insensitively, so a caller writing
+    /// target="_blank" bound the HTML attribute to the parameter and the anchor lost its
+    /// target — silently, and only the tab that never opened said so.
+    /// </summary>
+    [Parameter] public string? Dialog { get; set; }
+
+    /// <summary>
+    /// submit | button, for the no-Href, no-Dialog branch. Submit is the default because a button that is
     /// not in a form and has no handler does nothing at all — which is what this rendered
     /// before, and it is indistinguishable from a broken component. Put it in a form and the
     /// card posts; the server decides what opening that attachment means.

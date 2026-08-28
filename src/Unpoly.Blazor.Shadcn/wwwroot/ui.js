@@ -207,7 +207,8 @@
   // [data-slot="dialog-trigger"] does not match alert-dialog-trigger, so every AlertDialog in
   // the library was inert — the button rendered, nothing bound to it, and no error said so.
   up.compiler('[data-slot="dialog-trigger"], [data-slot="sheet-trigger"], '
-            + '[data-slot="alert-dialog-trigger"]', (trigger) => {
+            + '[data-slot="alert-dialog-trigger"], '
+            + '[data-slot="attachment-trigger"][data-target]', (trigger) => {
     const open = (event) => {
       const target = document.getElementById(trigger.dataset.target)
       if (!target) return
