@@ -1,6 +1,6 @@
 @* The whole thing. The server sees one field, not six — the compiler keeps a hidden input in
    step, because six named fields would push the joining into every handler that reads it. *@
-<form method="post" action="/verify" up-target=".preview" up-disable class="flex flex-col gap-4">
+<form id="input-otp-form" method="post" action="/verify" up-target="#preview-input-otp-form" up-disable class="flex flex-col gap-4">
     <AntiforgeryToken />
     <Field Class="w-fit">
         <FieldLabel>Verification code</FieldLabel>

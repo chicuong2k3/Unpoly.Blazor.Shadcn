@@ -1,6 +1,6 @@
 @* The composer shape: a textarea and its send button in one frame. The frame carries the focus
    ring, because :focus-within is what makes a composite control look focused. *@
-<form method="post" action="/chat/1/messages" up-target=".chat-thread:after" up-disable
+<form id="textarea-button-form" method="post" action="/chat/1/messages" up-target=".chat-thread:after" up-disable
       class="w-[460px]">
     <AntiforgeryToken />
     <InputGroup Class="items-end">

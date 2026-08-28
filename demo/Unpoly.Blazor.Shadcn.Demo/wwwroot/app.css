@@ -5017,7 +5017,7 @@
     opacity: 0;
     transition: opacity 120ms ease-out;
   }
-  [data-slot="tooltip-content"][data-state="delayed-open"] {
+  [data-slot="tooltip-content"][data-state="delayed-open"], [data-slot="tooltip-content"]:popover-open {
     opacity: 1;
   }
   [data-slot="button"].up-active {

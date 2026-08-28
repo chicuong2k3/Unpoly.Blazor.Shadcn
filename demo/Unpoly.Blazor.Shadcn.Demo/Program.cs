@@ -51,11 +51,20 @@ app.Use(async (ctx, next) =>
             : string.Join(", ", form.Where(f => f.Key != "__RequestVerificationToken")
                                     .Select(f => $"{f.Key}={f.Value}"));
 
+        // Answer with the element the client asked for. Unpoly needs the target to exist in
+        // BOTH the page and the response, and each sample now targets its own #preview-… slot,
+        // so the reply has to carry that id — the id is read from X-Up-Target rather than
+        // guessed. The root keeps the shape the page started with and the styling goes on the
+        // child, so a second submit swaps the same element as the first.
+        var id = ctx.UpTargets().Select(t => t.Trim())
+                    .FirstOrDefault(t => t.StartsWith('#'))?[1..] ?? "";
+
         ctx.Response.ContentType = "text/html; charset=utf-8";
         await ctx.Response.WriteAsync(
-            "<div class=\"preview mt-2 rounded-md border border-dashed px-3 py-2 text-sm "
+            $"<div id=\"{System.Net.WebUtility.HtmlEncode(id)}\" class=\"preview\">"
+            + "<div class=\"mt-2 rounded-md border border-dashed px-3 py-2 text-sm "
             + "text-muted-foreground\">POST " + System.Net.WebUtility.HtmlEncode(path) + " — "
-            + System.Net.WebUtility.HtmlEncode(fields) + "</div>");
+            + System.Net.WebUtility.HtmlEncode(fields) + "</div></div>");
         return;
     }
 

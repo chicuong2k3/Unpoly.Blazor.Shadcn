@@ -29,7 +29,7 @@
     <Bubble Variant="destructive">
         <BubbleContent>Are you sure I can run this command?</BubbleContent>
         <BubbleReactions>
-            <form method="post" action="/chat/1/run" up-target=".preview" up-disable>
+            <form id="bubble-reactions-example-form" method="post" action="/chat/1/run" up-target="#preview-bubble-reactions-example" up-disable>
                 <AntiforgeryToken />
                 <Button Variant="ghost" Size="xs" Type="submit">Yes, run it</Button>
             </form>

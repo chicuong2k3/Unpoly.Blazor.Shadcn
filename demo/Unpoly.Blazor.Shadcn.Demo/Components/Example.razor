@@ -22,12 +22,15 @@
             <CardContent Class="flex flex-wrap items-start gap-4 px-6">@ChildContent</CardContent>
         </Card>
 
-        @* Where a sample's own request lands. Several examples post a form with
-           up-target=".preview" to show that the control really submits — and there was no
-           .preview anywhere in the page, so Unpoly resolved the target, found nothing, and
-           did nothing. Every one of those samples looked broken in exactly the way a dead
-           button looks broken. *@
-        <div class="preview"></div>
+        @* Where a sample's own request lands, and it has an ID.
+
+           It used to be `class="preview"` on every example, which meant eleven identical
+           targets on a page. Unpoly resolved `.preview` to the FIRST one in the document, so a
+           form near the bottom answered into a card near the top — and swapping a fragment that
+           far from the form left its [up-disable] bookkeeping pointing at replaced elements,
+           which threw inside Unpoly on the next submit. One name, one element. *@
+        <div id="@PreviewId" class="preview"></div>
+
     </TabsContent>
 
     <TabsContent Value="code" Hidden>
@@ -38,6 +41,16 @@
 @code {
     /// <summary>File name of the sample, e.g. "ButtonVariants.razor".</summary>
     [Parameter, EditorRequired] public string Source { get; set; } = default!;
+
+    /// <summary>
+    /// The id of this example's answer slot, derived from the sample's own file name so a
+    /// sample can name it without anything having to agree twice: ButtonSpinner.razor targets
+    /// #preview-button-spinner.
+    /// </summary>
+    string PreviewId => "preview-" + string.Concat(
+        Path.GetFileNameWithoutExtension(Source)
+            .Select((c, i) => char.IsUpper(c) && i > 0 ? "-" + char.ToLowerInvariant(c)
+                                                       : char.ToLowerInvariant(c).ToString()));
 
     [Parameter] public RenderFragment? ChildContent { get; set; }
 

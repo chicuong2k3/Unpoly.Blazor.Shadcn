@@ -1,7 +1,7 @@
 @* The whole thing: validate on blur without leaving the page, post on submit, and never persist
    anything on a validating request. up-validate fires the same handler with X-Up-Validate set;
    the server answers 422 and Unpoly swaps the field back carrying its error. *@
-<form method="post" action="/account/email" up-target=".preview" up-disable class="w-[420px]">
+<form id="input-email-form" method="post" action="/account/email" up-target="#preview-input-form" up-disable class="w-[420px]">
     <AntiforgeryToken />
     <FieldGroup>
         <Field>

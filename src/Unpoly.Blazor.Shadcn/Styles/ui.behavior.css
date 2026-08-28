@@ -164,8 +164,17 @@
     [popover]:popover-open { animation: sh-dialog-in 120ms ease-out; }
 
     /* ---- Tooltip --------------------------------------------------------------------- */
+    /* Visible when it is OPEN, not when one particular attribute says so. The tooltip
+       compiler sets data-state="delayed-open" after showPopover(), and the generic handler
+       that mirrors popover state onto data-state then overwrote it with "open" — so the panel
+       was in the top layer, positioned, and painted at opacity 0. Hovering did nothing
+       visible, which reads as "the tooltip only works if you click it".
+
+       The delay still lives in the timer that calls showPopover(). This rule only decides
+       whether an open tooltip can be seen, and the answer is yes. */
     [data-slot="tooltip-content"] { opacity: 0; transition: opacity 120ms ease-out; }
-    [data-slot="tooltip-content"][data-state="delayed-open"] { opacity: 1; }
+    [data-slot="tooltip-content"][data-state="delayed-open"],
+    [data-slot="tooltip-content"]:popover-open { opacity: 1; }
 
     /* ---- Button, while Unpoly has a request in flight ---------------------------------
        Unpoly marks the element that started a request with `.up-active`. On a submit button
