@@ -1,0 +1,17 @@
+@page "/components/chart"
+
+<PageTitle>Chart — Unpoly.Blazor.Shadcn</PageTitle>
+
+<h1 class="doc-h1">Chart</h1>
+<p class="doc-lede">
+    The useful half of <code>ChartContainer</code>: one custom property per series, so whatever draws and whatever labels read the same colour from one place. What draws is yours.
+</p>
+
+<p class="doc-note">
+    <code>ChartContainer</code> upstream does two things: declares one custom property per series,
+    so whatever draws and whatever labels read the same colour from one place, and carries a wall
+    of <code>[&amp;_.recharts-*]</code> selectors for a library this port does not ship. The first
+    is the useful half and it is what <code>&lt;Chart&gt;</code> keeps. What draws is yours — and
+    a real charting library, when you need one, renders inside this and reads the same properties.
+</p>
+<Example Source="ChartExample.razor"><ChartExample /></Example>

@@ -1,0 +1,27 @@
+@page "/components/field"
+
+<PageTitle>Field — Unpoly.Blazor.Shadcn</PageTitle>
+
+<h1 class="doc-h1">Field</h1>
+<p class="doc-lede">
+    shadcn's newer, more structured form set. <code>Orientation</code> is an attribute rather than a class because the recipe keys off it — vertical, horizontal for a checkbox row, or responsive, which stacks below <code>@@md</code> and turns at it.
+</p>
+
+<h2 class="doc-h2">Field</h2>
+
+<Example Source="FormFieldBasic.razor">
+    <FormFieldBasic />
+</Example>
+
+<h2 class="doc-h2">Field with an error</h2>
+
+<Example Source="FormFieldError.razor">
+    <FormFieldError />
+</Example>
+
+<h2 class="doc-h2">Fieldset and fields</h2>
+
+<p class="doc-note">shadcn's newer, more structured form set. <code>&lt;FormField&gt;</code> is the compact composition over the same primitives — use whichever fits.</p>
+<Example Source="FieldExample.razor">
+    <FieldExample />
+</Example>

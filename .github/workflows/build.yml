@@ -53,6 +53,10 @@ jobs:
       - name: Every data- rule has an attribute to match
         run: python tools/check_data_attributes.py --check
 
+      # The demo's pages are named and ordered as shadcn documents them, so a URL is guessable.
+      - name: The demo matches shadcn's docs index
+        run: python tools/check_pages.py --check
+
       # A component nobody can look at is a component nobody reviews.
       - name: Every component is shown in the demo
         run: python tools/check_demo.py --check

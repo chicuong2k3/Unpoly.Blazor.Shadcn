@@ -1,0 +1,17 @@
+@page "/components/slider"
+
+<PageTitle>Slider — Unpoly.Blazor.Shadcn</PageTitle>
+
+<h1 class="doc-h1">Slider</h1>
+<p class="doc-lede">
+    <code>&lt;input type="range"&gt;</code>. Radix builds a slider from five divs and a roving tab index and spends most of that code reimplementing what the input already does — including the part that is never reimplemented correctly, announcing the value as it changes.
+</p>
+
+<p class="doc-note">
+    Radix builds a slider from five divs, a pointer-event graph and a roving tab index, and spends
+    most of that code re-implementing what <code>&lt;input type="range"&gt;</code> already does —
+    including the part that is never reimplemented correctly, announcing the value as it changes.
+    So the root here <i>is</i> the input. The cost: one thumb, not two. A range with a lower and an
+    upper bound is two inputs with two names, which is also what a server wants to read.
+</p>
+<Example Source="SliderExample.razor"><SliderExample /></Example>

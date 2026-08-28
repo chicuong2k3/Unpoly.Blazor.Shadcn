@@ -1,0 +1,16 @@
+@page "/components/navigation-menu"
+
+<PageTitle>Navigation Menu — Unpoly.Blazor.Shadcn</PageTitle>
+
+<h1 class="doc-h1">Navigation Menu</h1>
+<p class="doc-lede">
+    A <code>&lt;nav&gt;</code> around a real <code>&lt;ul&gt;</code>, so the landmark and the item count are announced. Each panel is its own popover in the top layer rather than a slot in one shared viewport.
+</p>
+
+<p class="doc-note">
+    A <code>&lt;nav&gt;</code> around a real <code>&lt;ul&gt;</code>. Radix animates every panel
+    through one shared viewport so they cross-fade; each panel here is its own popover in the top
+    layer instead — no cross-fade, and in exchange nothing clips it and there is no z-index to
+    lose. Put <code>[up-nav]</code> on it and Unpoly marks the current link.
+</p>
+<Example Source="NavigationMenuExample.razor"><NavigationMenuExample /></Example>

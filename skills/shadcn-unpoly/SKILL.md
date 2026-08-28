@@ -19,8 +19,16 @@ Two files next to this one, both worth opening before you write markup:
 
 There is a runnable demo at `demo/` — every component with its source, all 26 blocks, a theme
 switcher, a live Customizer and a ⌘K search: `dotnet run --project demo/Unpoly.Blazor.Shadcn.Demo`.
-The demo is built entirely from this library, including its own code blocks and command palette,
-which is the only honest way to show that the components are enough to build something.
+It is built entirely from this library, including its own code blocks and command palette, which
+is the only honest way to show that the components are enough to build something.
+
+**Its pages are shadcn's pages.** One component each, in shadcn's own order, at the same slug:
+`ui.shadcn.com/docs/components/alert-dialog` is `/components/alert-dialog` here. The list is
+`upstream/doc-components.txt`, fetched from shadcn's docs index and committed, and
+`tools/check_pages.py` fails the build if a page, a name or the sidebar order ever drifts from
+it. Four pages are this port's own — Icon, Code Block, Stepper, Tags Input — and they sit in a
+separate group called "Beyond shadcn", because pretending they are shadcn is the one thing this
+library must not do.
 
 ## The translation rules
 

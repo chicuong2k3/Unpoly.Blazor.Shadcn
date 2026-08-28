@@ -1,0 +1,17 @@
+@page "/components/calendar"
+
+<PageTitle>Calendar — Unpoly.Blazor.Shadcn</PageTitle>
+
+<h1 class="doc-h1">Calendar</h1>
+<p class="doc-lede">
+    A month, as a table — because a calendar is one, and every screen reader already knows how to read one. Each day is a real radio input, so choosing one posts and the browser supplies the arrow keys.
+</p>
+
+<p class="doc-note">
+    A <code>&lt;table&gt;</code>, because a calendar is one and every screen reader already knows
+    how to read it. Each day is a real radio input, so choosing one posts and the browser supplies
+    the arrow keys — no roving tabindex, no key handlers, no state. For picking a single date in a
+    form, <code>DatePicker</code> is smaller still; this is for when the shape of the month is the
+    information.
+</p>
+<Example Source="CalendarExample.razor"><CalendarExample /></Example>

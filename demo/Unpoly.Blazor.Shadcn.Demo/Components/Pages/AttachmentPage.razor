@@ -1,0 +1,16 @@
+@page "/components/attachment"
+
+<PageTitle>Attachment — Unpoly.Blazor.Shadcn</PageTitle>
+
+<h1 class="doc-h1">Attachment</h1>
+<p class="doc-lede">
+    A file attached to a message: its thumbnail, its name and size, and what you can do with it. shadcn ships it with the AI components; nothing about it is specific to a model, and the demo's file manager and chat blocks both use it.
+</p>
+
+<p class="doc-note">
+    Message, Bubble, Attachment, Marker and the scroller. The scroller follows the newest message
+    only while you are already at the bottom — scroll up to read something and it stops, which is
+    the behaviour every chat needs and most get wrong in one direction or the other.
+    <code>overflow-anchor</code> does that half in CSS; the browser has had it since 2018.
+</p>
+<Example Source="ConversationExample.razor"><ConversationExample /></Example>

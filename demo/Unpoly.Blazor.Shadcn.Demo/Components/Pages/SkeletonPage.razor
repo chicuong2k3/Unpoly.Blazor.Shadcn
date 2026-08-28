@@ -1,0 +1,12 @@
+@page "/components/skeleton"
+
+<PageTitle>Skeleton — Unpoly.Blazor.Shadcn</PageTitle>
+
+<h1 class="doc-h1">Skeleton</h1>
+<p class="doc-lede">
+    Worth knowing where this belongs: on static SSR the server finishes rendering before a byte reaches the browser, so a skeleton the server draws is one nobody sees. It is for <code>[up-placeholder]</code>, which means it lives in a <code>&lt;template&gt;</code>.
+</p>
+
+<Example Source="SkeletonExample.razor">
+    <SkeletonExample />
+</Example>

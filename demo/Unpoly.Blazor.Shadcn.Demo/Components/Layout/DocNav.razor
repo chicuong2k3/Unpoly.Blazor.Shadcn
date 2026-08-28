@@ -1,76 +1,142 @@
 @* The sidebar, built out of the library: ItemGroup, Item and ScrollArea, not a list of bare
    anchors with hand-written classes.
 
+   The component list is shadcn's own — upstream/doc-components.txt, fetched from its docs index
+   and committed — in shadcn's own order, which is alphabetical with one page each. Someone who
+   knows those docs can guess the URL here: /docs/components/alert-dialog becomes
+   /components/alert-dialog. tools/check_pages.py fails the build if the two ever disagree.
+
    [up-nav] is what marks the current page — Unpoly compares each href with the address bar and
    adds .up-current. No active-route parameter, no state, and it keeps working after a fragment
    swap because the swap is what updates the address bar. *@
 
 <ScrollArea Class="h-[calc(100dvh-4rem)] w-56 shrink-0 py-6 pr-2" up-nav>
-    @foreach (var (heading, links) in Sections)
-    {
-        <ItemGroup Class="mb-4">
-            <ItemHeader Class="px-3 py-1">
-                <ItemTitle Class="text-xs font-semibold tracking-wide uppercase opacity-60">
-                    @heading
-                </ItemTitle>
-            </ItemHeader>
+    <ItemGroup Class="mb-4">
+        <ItemHeader Class="px-3 py-1">
+            <ItemTitle Class="text-xs font-semibold tracking-wide uppercase opacity-60">
+                Getting started
+            </ItemTitle>
+        </ItemHeader>
+        @foreach (var (label, href) in Start)
+        {
+            <Item Href="@href" Size="sm" Class="doc-nav-item rounded-md px-3 py-1.5">
+                <ItemContent><ItemTitle Class="text-sm font-normal">@label</ItemTitle></ItemContent>
+            </Item>
+        }
+    </ItemGroup>
 
-            @foreach (var (label, href) in links)
-            {
-                <Item Href="@href" Size="sm" Class="doc-nav-item rounded-md px-3 py-1.5">
-                    <ItemContent>
-                        <ItemTitle Class="text-sm font-normal">@label</ItemTitle>
-                    </ItemContent>
-                </Item>
-            }
-        </ItemGroup>
-    }
+    <ItemGroup Class="mb-4">
+        <ItemHeader Class="px-3 py-1">
+            <ItemTitle Class="text-xs font-semibold tracking-wide uppercase opacity-60">
+                Components
+            </ItemTitle>
+        </ItemHeader>
+        @foreach (var (label, href) in Components)
+        {
+            <Item Href="@href" Size="sm" Class="doc-nav-item rounded-md px-3 py-1.5">
+                <ItemContent><ItemTitle Class="text-sm font-normal">@label</ItemTitle></ItemContent>
+            </Item>
+        }
+    </ItemGroup>
+
+    <ItemGroup Class="mb-4">
+        <ItemHeader Class="px-3 py-1">
+            <ItemTitle Class="text-xs font-semibold tracking-wide uppercase opacity-60">
+                Beyond shadcn
+            </ItemTitle>
+        </ItemHeader>
+        @foreach (var (label, href) in Extra)
+        {
+            <Item Href="@href" Size="sm" Class="doc-nav-item rounded-md px-3 py-1.5">
+                <ItemContent><ItemTitle Class="text-sm font-normal">@label</ItemTitle></ItemContent>
+            </Item>
+        }
+    </ItemGroup>
 </ScrollArea>
 
 @code {
-    static readonly (string Heading, (string Label, string Href)[] Links)[] Sections =
+    static readonly (string Label, string Href)[] Start =
     [
-        ("Getting started",
-        [
-            ("Overview", "/"),
-            ("Theming", "/theming"),
-            ("Blocks", "/blocks"),
-        ]),
-        ("Forms",
-        [
-            ("Button", "/components/button"),
-            ("Form controls", "/components/form"),
-            ("Select", "/components/select"),
-            ("Toggles", "/components/toggles"),
-            ("Slider, carousel, resizable", "/components/ranges"),
-        ]),
-        ("Overlays",
-        [
-            ("Dialog", "/components/dialog"),
-            ("Overlays", "/components/overlays"),
-            ("Dropdown menu", "/components/dropdown-menu"),
-            ("Command", "/components/command"),
-            ("Menus", "/components/menus"),
-            ("Combobox", "/components/combobox"),
-        ]),
-        ("Display",
-        [
-            ("Card", "/components/card"),
-            ("Badge", "/components/badge"),
-            ("Table", "/components/table"),
-            ("Avatar", "/components/avatar"),
-            ("Icon", "/components/icon"),
-            ("Feedback", "/components/feedback"),
-            ("Calendar, chart, chat", "/components/data"),
-        ]),
-        ("Structure",
-        [
-            ("Layout", "/components/layout"),
-            ("Sidebar", "/components/sidebar"),
-            ("Tabs", "/components/tabs"),
-            ("Accordion", "/components/accordion"),
-            ("Disclosure", "/components/disclosure"),
-            ("Navigation", "/components/navigation"),
-        ]),
+        ("Overview", "/"),
+        ("Theming", "/theming"),
+        ("Blocks", "/blocks"),
+    ];
+
+    /// <summary>shadcn's list, in shadcn's order. Generated from upstream/doc-components.txt.</summary>
+    static readonly (string Label, string Href)[] Components =
+    [
+        ("Accordion", "/components/accordion"),
+        ("Alert", "/components/alert"),
+        ("Alert Dialog", "/components/alert-dialog"),
+        ("Aspect Ratio", "/components/aspect-ratio"),
+        ("Attachment", "/components/attachment"),
+        ("Avatar", "/components/avatar"),
+        ("Badge", "/components/badge"),
+        ("Breadcrumb", "/components/breadcrumb"),
+        ("Bubble", "/components/bubble"),
+        ("Button", "/components/button"),
+        ("Button Group", "/components/button-group"),
+        ("Calendar", "/components/calendar"),
+        ("Card", "/components/card"),
+        ("Carousel", "/components/carousel"),
+        ("Chart", "/components/chart"),
+        ("Checkbox", "/components/checkbox"),
+        ("Collapsible", "/components/collapsible"),
+        ("Combobox", "/components/combobox"),
+        ("Command", "/components/command"),
+        ("Context Menu", "/components/context-menu"),
+        ("Data Table", "/components/data-table"),
+        ("Date Picker", "/components/date-picker"),
+        ("Dialog", "/components/dialog"),
+        ("Direction", "/components/direction"),
+        ("Drawer", "/components/drawer"),
+        ("Dropdown Menu", "/components/dropdown-menu"),
+        ("Empty", "/components/empty"),
+        ("Field", "/components/field"),
+        ("Hover Card", "/components/hover-card"),
+        ("Input", "/components/input"),
+        ("Input Group", "/components/input-group"),
+        ("Input OTP", "/components/input-otp"),
+        ("Item", "/components/item"),
+        ("Kbd", "/components/kbd"),
+        ("Label", "/components/label"),
+        ("Marker", "/components/marker"),
+        ("Menubar", "/components/menubar"),
+        ("Message", "/components/message"),
+        ("Message Scroller", "/components/message-scroller"),
+        ("Native Select", "/components/native-select"),
+        ("Navigation Menu", "/components/navigation-menu"),
+        ("Pagination", "/components/pagination"),
+        ("Popover", "/components/popover"),
+        ("Progress", "/components/progress"),
+        ("Radio Group", "/components/radio-group"),
+        ("Resizable", "/components/resizable"),
+        ("Scroll Area", "/components/scroll-area"),
+        ("Select", "/components/select"),
+        ("Separator", "/components/separator"),
+        ("Sheet", "/components/sheet"),
+        ("Sidebar", "/components/sidebar"),
+        ("Skeleton", "/components/skeleton"),
+        ("Slider", "/components/slider"),
+        ("Spinner", "/components/spinner"),
+        ("Switch", "/components/switch"),
+        ("Table", "/components/table"),
+        ("Tabs", "/components/tabs"),
+        ("Textarea", "/components/textarea"),
+        ("Toast", "/components/toast"),
+        ("Toggle", "/components/toggle"),
+        ("Toggle Group", "/components/toggle-group"),
+        ("Tooltip", "/components/tooltip"),
+        ("Typography", "/components/typography"),
+    ];
+
+    /// <summary>This port's own. Separate, because pretending they are shadcn is the one thing
+    /// this library must not do.</summary>
+    static readonly (string Label, string Href)[] Extra =
+    [
+        ("Icon", "/components/icon"),
+        ("Code Block", "/components/code-block"),
+        ("Stepper", "/components/stepper"),
+        ("Tags Input", "/components/tags-input"),
     ];
 }

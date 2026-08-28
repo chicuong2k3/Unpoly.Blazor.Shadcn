@@ -1,0 +1,33 @@
+@page "/components/combobox"
+
+<PageTitle>Combobox — Unpoly.Blazor.Shadcn</PageTitle>
+
+<h1 class="doc-h1">Combobox</h1>
+<p class="doc-lede">
+    A text box that filters a list and posts what was chosen. The last clause is the one that matters: a combobox that keeps its value in JavaScript is useless to a form.
+</p>
+
+<h2 class="doc-h2">One value</h2>
+
+<p class="doc-note">
+    Underneath is an <code>&lt;input type="hidden"&gt;</code>. That is why the value survives a
+    fragment swap and why the server needs no JSON to read it.
+</p>
+<Example Source="ComboboxExample.razor"><ComboboxExample /></Example>
+
+<h2 class="doc-h2">Several</h2>
+
+<p class="doc-note">
+    One hidden input per chip, all under the same name — which is how HTML has always posted a
+    list, and it means the submission itself involves no script.
+</p>
+<Example Source="ComboboxMultipleExample.razor"><ComboboxMultipleExample /></Example>
+
+<h2 class="doc-h2">When the list is a catalogue</h2>
+
+<p class="doc-note">
+    Filtering in the browser is right for a list the server already sent. For ten thousand rows,
+    put <code>up-autosubmit</code> and <code>up-target</code> on the input and let the server
+    answer — <code>&lt;ComboboxList&gt;</code> is the fragment it swaps, and the markup is
+    otherwise identical.
+</p>

@@ -4,18 +4,11 @@
 
 <h1 class="doc-h1">Sidebar</h1>
 <p class="doc-lede">
-    Twenty-three components, and one decision that shapes all of them: where the open state lives.
+    Twenty-three components, and one decision that shapes all of them: the open state is a <code>sidebar_state</code> cookie, which is where shadcn keeps it too. The server reads it and the first paint is already right.
 </p>
-<p class="doc-note">
-    In a <code>sidebar_state</code> cookie, which is where shadcn keeps it too. The server reads
-    it and passes <code>Open</code>, so the first paint is already right — no flash of a sidebar
-    opening itself, and no client state to lose in a fragment swap. The trigger and the rail ship
-    hidden and reveal themselves: with no JavaScript there is nothing to toggle, and the honest
-    fallback is a sidebar that stays open with every link still in it.
-</p>
-<Example Source="SidebarExample.razor"><SidebarExample /></Example>
 
 <h2 class="doc-h2">Reading the cookie</h2>
+
 <p class="doc-note">
     One line in the page that renders the layout. Nothing else in the library needs to know.
 </p>

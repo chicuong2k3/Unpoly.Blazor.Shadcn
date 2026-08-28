@@ -11,6 +11,7 @@ source, and the test suite never needs the network.
 """
 import json
 import pathlib
+import re
 import sys
 import urllib.request
 
@@ -51,16 +52,55 @@ def fetch(name: str) -> str | None:
     return files[0]['content']
 
 
+DOCS_INDEX = 'https://ui.shadcn.com/docs/components'
+
+
+def fetch_doc_order() -> list[str]:
+    """The components shadcn documents, in the order its own sidebar lists them.
+
+    The demo has one page per entry at /components/<slug>, so someone who knows those docs can
+    guess a URL here. Committed rather than fetched at check time, so CI needs no network and a
+    change to shadcn's index arrives as a diff somebody reads.
+    """
+    request = urllib.request.Request(DOCS_INDEX, headers={'User-Agent': 'Mozilla/5.0'})
+    html = urllib.request.urlopen(request, timeout=40).read().decode('utf-8', 'replace')
+    seen, order = set(), []
+    for slug in re.findall(r'/docs/components/([a-z0-9-]+)', html):
+        if slug not in seen:
+            seen.add(slug)
+            order.append(slug)
+    # The framework pages that sit above the component list are not components.
+    return [s for s in order if s not in ('base', 'aria', 'radix', 'questionnaire')]
+
+
 def main() -> int:
     OUT.mkdir(exist_ok=True)
+
+    index = OUT / 'doc-components.txt'
 
     if '--check' in sys.argv:
         missing = [n for n in COMPONENTS if not (OUT / f'{n}.tsx').exists()]
         if missing:
             print('not vendored (fine if the registry has no source for them): '
                   + ', '.join(missing))
-        print(f'upstream/ complete ({len(COMPONENTS)} components)')
+        if not index.exists():
+            print('upstream/doc-components.txt is missing — run this without --check',
+                  file=sys.stderr)
+            return 1
+        print(f'upstream/ complete ({len(COMPONENTS)} components, '
+              f'{len(index.read_text(encoding="utf-8").splitlines())} lines of docs index)')
         return 0
+
+    header = [
+        '# The components shadcn documents, in the order its own sidebar lists them — which',
+        '# is alphabetical, one page each. Fetched from ' + DOCS_INDEX + ' and committed, so',
+        '# tools/check_pages.py needs no network.',
+        '#',
+        '# The demo has one page per line, at /components/<slug>, in this order. Anyone who',
+        "# knows shadcn's docs can guess the URL, which is the point.",
+    ]
+    index.write_text('\n'.join(header + fetch_doc_order()) + '\n', encoding='utf-8')
+    print('  doc-components.txt')
 
     missing = []
     for name in COMPONENTS:
