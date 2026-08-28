@@ -501,8 +501,14 @@
       const item = event.target.closest('[data-slot$="-item"]')
       if (!item || item.closest('[data-slot$="-sub-trigger"]') || item.hasAttribute('data-disabled')) return
       // The chain, not just this panel: an item in a submenu closes the menu it hangs off too.
+      // Every family listed by NAME — the first version said [data-slot$="menu-content"], and
+      // "menubar-content" does not end in "menu-content", so a menubar item never closed its
+      // menu. An ends-with shortcut that reads as covering a family is worse than a list.
       for (const open of document.querySelectorAll(
-             '[data-slot$="menu-content"]:popover-open, [data-slot$="sub-content"]:popover-open')) {
+             '[data-slot="dropdown-menu-content"]:popover-open, '
+             + '[data-slot="context-menu-content"]:popover-open, '
+             + '[data-slot="menubar-content"]:popover-open, '
+             + '[data-slot$="sub-content"]:popover-open')) {
         open.hidePopover()
       }
     }

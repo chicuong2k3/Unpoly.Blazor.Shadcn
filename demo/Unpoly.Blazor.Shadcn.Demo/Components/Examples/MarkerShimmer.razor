@@ -1,9 +1,11 @@
-@* Waiting. animate-pulse rather than a spinner, because a marker is a word in a line of text and
-   a turning circle in a sentence is a distraction rather than a signal. *@
+@* Waiting, said in the text itself: `shimmer` sweeps a highlight through the glyphs, which is
+   shadcn's own treatment for a marker that is thinking. This demo used animate-pulse for months
+   because the shimmer utility did not exist here yet — it does now, and this page is where it
+   is documented. *@
 <div class="flex flex-wrap items-center gap-3">
-    <Marker Class="animate-pulse">
-        <MarkerIcon><Icon Name="loader-circle" Class="size-3" /></MarkerIcon>
-        <MarkerContent>Thinking</MarkerContent>
+    <Marker>
+        <MarkerIcon><Icon Name="loader-circle" Class="size-3 animate-spin" /></MarkerIcon>
+        <MarkerContent Class="shimmer">Thinking…</MarkerContent>
     </Marker>
-    <Marker Variant="border" Class="animate-pulse"><MarkerContent>Searching the docs</MarkerContent></Marker>
+    <Marker Variant="border"><MarkerContent Class="shimmer">Reading 4 files</MarkerContent></Marker>
 </div>
