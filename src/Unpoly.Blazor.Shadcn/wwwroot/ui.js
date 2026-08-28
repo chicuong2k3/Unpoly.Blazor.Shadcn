@@ -1115,7 +1115,7 @@
       openTimer = setTimeout(() => {
         panel.showPopover()
         place(panel, trigger, panel.dataset.align, panel.dataset.side, 8)
-      }, Number(trigger.dataset.delay ?? 600))
+      }, Number(trigger.dataset.openDelay ?? 600))
     }
 
     // A grace period, not an immediate close: the gap between the trigger and the panel is a
@@ -1124,7 +1124,7 @@
       clearTimeout(openTimer)
       closeTimer = setTimeout(() => {
         if (panel.matches(':popover-open')) panel.hidePopover()
-      }, 150)
+      }, Number(trigger.dataset.closeDelay ?? 300))
     }
 
     const onKey = (event) => { if (event.key === 'Escape') { clearTimeout(openTimer); panel.hidePopover() } }

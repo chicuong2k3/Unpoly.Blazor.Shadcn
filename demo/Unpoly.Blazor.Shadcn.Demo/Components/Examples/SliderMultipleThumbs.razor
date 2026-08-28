@@ -1,0 +1,10 @@
+@* The same thing said plainly: there is no two-thumb control here, and the reason is that
+   <input type="range"> has one. Rebuilding it would mean rebuilding the drag, the arrow keys, the
+   step grid and the announcement — which is exactly the code the platform is being used to avoid. *@
+<div class="flex w-[420px] flex-col gap-3">
+    <Slider name="from" Min="0" Max="100" Value="25" aria-label="From" />
+    <Slider name="to" Min="0" Max="100" Value="75" aria-label="To" />
+    <p class="text-sm text-muted-foreground">
+        Two named inputs. The server reads <code>from</code> and <code>to</code>.
+    </p>
+</div>

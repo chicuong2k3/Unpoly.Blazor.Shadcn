@@ -1,0 +1,10 @@
+@* The useful case on this stack: the server raises it. Ctx.UpEmit("flash:show", …) sends an
+   X-Up-Events header, one line in ui.js turns it into a toast, and the handler that did the work
+   is the thing that announces it — no flash cookie, no session state, no second request. *@
+<form method="post" action="/orders/3201/refund" up-target=".preview" up-disable>
+    <AntiforgeryToken />
+    <Button Type="submit" Variant="outline">Refund — the server raises the toast</Button>
+</form>
+
+<pre data-slot="code-block-pre" class="mt-4 overflow-x-auto rounded-md border bg-card p-3 text-[12.5px]"><code>// in the handler
+Ctx.UpEmit("flash:show", new { text = "Refunded $248.00", kind = "success" });</code></pre>

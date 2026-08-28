@@ -1,0 +1,20 @@
+@* shadcn's "Next.js" section swaps the anchor for a router Link. There is no router here: it is
+   an <a href>, and Unpoly follows it. up-target swaps only the list, so the page keeps its scroll
+   and the filters above it are untouched; up-preload fetches the next page on hover, which on a
+   list people page through is most of the perceived speed. *@
+<Pagination>
+    <PaginationContent>
+        <PaginationItem>
+            <PaginationPrevious Href="?page=2" up-target="[data-list]" up-preload />
+        </PaginationItem>
+        <PaginationItem>
+            <PaginationLink Href="?page=3" IsActive up-target="[data-list]">3</PaginationLink>
+        </PaginationItem>
+        <PaginationItem>
+            <PaginationLink Href="?page=4" up-target="[data-list]" up-preload>4</PaginationLink>
+        </PaginationItem>
+        <PaginationItem>
+            <PaginationNext Href="?page=4" up-target="[data-list]" up-preload />
+        </PaginationItem>
+    </PaginationContent>
+</Pagination>

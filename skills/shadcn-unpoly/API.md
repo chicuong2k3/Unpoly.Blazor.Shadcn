@@ -1042,7 +1042,8 @@ renders `<a>` · `data-slot="hover-card-trigger"`
 |---|---|---|---|
 | `Target` | `string` | `default!` |  |
 | `Href` | `string?` | — | **required** |
-| `Delay` | `int` | `600` |  |
+| `OpenDelay` | `int` | `600` |  |
+| `CloseDelay` | `int` | `300` |  |
 
 ## `<Icon>`
 renders `<svg>`

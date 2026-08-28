@@ -4,14 +4,35 @@
 
 <h1 class="doc-h1">Slider</h1>
 <p class="doc-lede">
-    <code>&lt;input type="range"&gt;</code>. Radix builds a slider from five divs and a roving tab index and spends most of that code reimplementing what the input already does — including the part that is never reimplemented correctly, announcing the value as it changes.
+    <code>&lt;input type="range"&gt;</code>. Radix builds a slider from five divs, a pointer-event
+    graph and a roving tab index, and spends most of that code reimplementing what the input
+    already does — including the part that is never reimplemented correctly, announcing the value
+    as it changes, in the user's own units.
 </p>
 
-<p class="doc-note">
-    Radix builds a slider from five divs, a pointer-event graph and a roving tab index, and spends
-    most of that code re-implementing what <code>&lt;input type="range"&gt;</code> already does —
-    including the part that is never reimplemented correctly, announcing the value as it changes.
-    So the root here <i>is</i> the input. The cost: one thumb, not two. A range with a lower and an
-    upper bound is two inputs with two names, which is also what a server wants to read.
-</p>
+<h2 class="doc-h2">Basic</h2>
 <Example Source="SliderExample.razor"><SliderExample /></Example>
+
+<h2 class="doc-h2">Range</h2>
+<p class="doc-note">
+    A lower and an upper bound is two inputs with two names, which is also what a server wants to
+    read — so the honest shape and the useful one agree.
+</p>
+<Example Source="SliderRange.razor"><SliderRange /></Example>
+
+<h2 class="doc-h2">Multiple Thumbs</h2>
+<p class="doc-note">
+    There is no two-thumb control here, and the reason is that the input has one. Rebuilding it
+    would mean rebuilding the drag, the arrow keys, the step grid and the announcement — which is
+    exactly the code the platform is being used to avoid.
+</p>
+<Example Source="SliderMultipleThumbs.razor"><SliderMultipleThumbs /></Example>
+
+<h2 class="doc-h2">Vertical</h2>
+<Example Source="SliderVertical.razor"><SliderVertical /></Example>
+
+<h2 class="doc-h2">Disabled</h2>
+<Example Source="SliderDisabled.razor"><SliderDisabled /></Example>
+
+<h2 class="doc-h2">RTL</h2>
+<Example Source="SliderRtl.razor"><SliderRtl /></Example>

@@ -4,9 +4,26 @@
 
 <h1 class="doc-h1">Hover Card</h1>
 <p class="doc-lede">
-    A preview on hover — and on focus, because a card only a mouse can reach is a card half the readers never see.
+    A preview on hover — and on focus, because a card only a mouse can reach is a card half the
+    readers never see.
 </p>
 
-<Example Source="HoverCardExample.razor">
-    <HoverCardExample />
-</Example>
+<h2 class="doc-h2">Basic</h2>
+<Example Source="HoverCardBasic.razor"><HoverCardBasic /></Example>
+
+<h2 class="doc-h2">Trigger Delays</h2>
+<p class="doc-note">
+    The two delays are different numbers for a reason: opening slowly stops a card appearing every
+    time the pointer crosses a link, and closing slowly lets you move onto the card without it
+    vanishing under you.
+</p>
+<Example Source="HoverCardDelays.razor"><HoverCardDelays /></Example>
+
+<h2 class="doc-h2">Sides</h2>
+<Example Source="HoverCardSides.razor"><HoverCardSides /></Example>
+
+<h2 class="doc-h2">Positioning</h2>
+<Example Source="HoverCardPositioning.razor"><HoverCardPositioning /></Example>
+
+<h2 class="doc-h2">RTL</h2>
+<Example Source="HoverCardRtl.razor"><HoverCardRtl /></Example>

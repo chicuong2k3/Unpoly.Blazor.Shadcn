@@ -4,9 +4,36 @@
 
 <h1 class="doc-h1">Pagination</h1>
 <p class="doc-lede">
-    Links, not buttons: a page is a URL, so it can be shared, opened in a tab and reached by the back button.
+    Links, not buttons: a page is a URL, so it can be shared, opened in a tab and reached by the
+    back button. A click handler gives you none of the three.
 </p>
 
-<Example Source="PaginationExample.razor">
-    <PaginationExample />
-</Example>
+<h2 class="doc-h2">Basic</h2>
+<Example Source="PaginationExample.razor"><PaginationExample /></Example>
+
+<h2 class="doc-h2">Simple</h2>
+<Example Source="PaginationSimple.razor"><PaginationSimple /></Example>
+
+<h2 class="doc-h2">Icons Only</h2>
+<p class="doc-note">
+    They still need names: an arrow announced as "button" is a button nobody can identify in a
+    list of them.
+</p>
+<Example Source="PaginationIconsOnly.razor"><PaginationIconsOnly /></Example>
+
+<h2 class="doc-h2">Next.js</h2>
+<p class="doc-note">
+    shadcn's section here swaps the anchor for a router <code>Link</code>. There is no router: it
+    is an <code>&lt;a href&gt;</code> and Unpoly follows it. <code>up-target</code> swaps only the
+    list, so the page keeps its scroll and the filters above it are untouched, and
+    <code>up-preload</code> fetches the next page on hover — which on a list people page through
+    is most of the perceived speed.
+</p>
+<Example Source="PaginationRouter.razor"><PaginationRouter /></Example>
+
+<h2 class="doc-h2">RTL</h2>
+<p class="doc-note">
+    The arrows flip, because "previous" is a direction in the reading order rather than on the
+    screen. It is the one place a mirrored layout usually gets wrong.
+</p>
+<Example Source="PaginationRtl.razor"><PaginationRtl /></Example>

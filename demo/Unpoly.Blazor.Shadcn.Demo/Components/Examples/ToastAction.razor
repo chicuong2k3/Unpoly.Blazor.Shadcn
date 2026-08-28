@@ -1,0 +1,8 @@
+@* A toast with something to do. Keep it to an undo or a link: a toast disappears, so anything
+   that has to be done cannot live only in one. *@
+<div class="flex flex-wrap items-center gap-3">
+    <Button Variant="outline"
+            onclick="toast('Order archived', { action: { text: 'Undo', onClick: () => toast('Restored') } })">
+        With an undo
+    </Button>
+</div>

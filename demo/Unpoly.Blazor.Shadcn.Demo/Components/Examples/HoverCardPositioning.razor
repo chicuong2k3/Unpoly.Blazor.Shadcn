@@ -1,0 +1,9 @@
+@* Align picks the edge, Side the direction, and both are hints: the compiler flips them when
+   there is no room, because a card half off the screen is worse than one on the other side. *@
+<div class="flex flex-wrap items-center gap-6">
+    <HoverCardTrigger Target="hc-start" Class="underline underline-offset-4">start</HoverCardTrigger>
+    <HoverCardContent Id="hc-start" Align="start" Class="w-56 p-3 text-sm">Left edges line up.</HoverCardContent>
+
+    <HoverCardTrigger Target="hc-end" Class="underline underline-offset-4">end</HoverCardTrigger>
+    <HoverCardContent Id="hc-end" Align="end" Class="w-56 p-3 text-sm">Right edges line up.</HoverCardContent>
+</div>
