@@ -4031,9 +4031,6 @@
     .sm\:table-cell {
       display: table-cell;
     }
-    .sm\:w-\[32rem\] {
-      width: 32rem;
-    }
     .sm\:\!max-w-lg {
       max-width: var(--container-lg) !important;
     }
@@ -5015,6 +5012,12 @@
   }
   [data-slot="command-dialog"] {
     margin-block-start: 12vh;
+    inline-size: min(32rem, calc(100vw - 2rem));
+  }
+  [data-slot="command-dialog"] > [data-slot="command"] {
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    box-shadow: var(--elevation-4);
   }
   [data-slot="dialog"]::backdrop, [data-slot="alert-dialog"]::backdrop, [data-slot="command-dialog"]::backdrop, [data-slot="sheet"]::backdrop {
     background: rgb(0 0 0 / 0.5);

@@ -9,11 +9,13 @@
 
    Bind it to a key with Key; the default is the one everybody already tries. *@
 
-@* The box is DialogContent's: upstream renders the palette inside one, which is where the
-   width, the border and the shadow come from. Without them the palette was as wide as its
-   longest row — 215 pixels of full-screen modal. *@
+@* The box — the width, the border, the shadow — is the FRAME's, in ui.behavior.css with the
+   other dialog frame rules. Upstream gets it from DialogContent; here the class list on the
+   inner <Command> has to stay exactly the plain Command recipe, because parity compares this
+   component by that shared slot. Without the frame rules the palette was as wide as its
+   longest row: 215 pixels of full-screen modal. *@
 <dialog id="@Id" data-slot="command-dialog" data-command-key="@Key" data-dismissable>
-    <Command Class="@Cn("flex w-full max-w-[calc(100vw-2rem)] flex-col overflow-hidden rounded-lg border bg-popover text-popover-foreground shadow-lg sm:w-[32rem]", Class)"
+    <Command Class="@Cn("flex h-full w-full flex-col overflow-hidden rounded-md bg-popover text-popover-foreground", Class)"
              @attributes="AdditionalAttributes">
         @* Named for a screen reader; the placeholder is not a label. *@
         <h2 class="sr-only">@Title</h2>

@@ -32,7 +32,17 @@
         color: inherit;
         overflow: visible;
     }
-    [data-slot="command-dialog"] { margin-block-start: 12vh; }
+    [data-slot="command-dialog"] {
+        margin-block-start: 12vh;
+        inline-size: min(32rem, calc(100vw - 2rem));
+    }
+    /* The box upstream's DialogContent supplies. On the frame's child rather than in the class
+       list, because parity compares the inner <Command> against the plain command recipe. */
+    [data-slot="command-dialog"] > [data-slot="command"] {
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        box-shadow: var(--elevation-4);
+    }
 
     [data-slot="dialog"]::backdrop,
     [data-slot="alert-dialog"]::backdrop,

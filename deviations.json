@@ -418,16 +418,6 @@
         "[.border-t]:pt-(--card-spacing)"
       ],
       "why": "shadcn's newer Card publishes its padding as --card-spacing, so a child can pull out by exactly the amount the card pushed in — one number used twice, with nothing to keep in step. That is what the Edge to Edge section on its docs page is built on, and the new-york-v4 source vendored here predates it: the property was never set, so `-mx-(--card-spacing)` resolved to nothing and the region was not edge to edge at all. The literals are replaced by the property, which is the same 24px by default."
-    },
-    "command-dialog": {
-      "classes": [
-        "max-w-[calc(100vw-2rem)]",
-        "rounded-lg",
-        "border",
-        "shadow-lg",
-        "sm:w-[32rem]"
-      ],
-      "why": "Upstream renders the palette inside DialogContent, which is where the width, the border and the shadow come from; here the <dialog> is a bare frame and the Command is the box, so it has to carry them itself. Without them the palette was as wide as its longest row — a 215-pixel full-screen modal, off in the corner because command-dialog was also missing from the margin:auto rule."
     }
   },
   "dropped": {
@@ -588,12 +578,6 @@
         "[.border-t]:pt-6"
       ],
       "why": "shadcn's newer Card publishes its padding as --card-spacing, so a child can pull out by exactly the amount the card pushed in — one number used twice, with nothing to keep in step. That is what the Edge to Edge section on its docs page is built on, and the new-york-v4 source vendored here predates it: the property was never set, so `-mx-(--card-spacing)` resolved to nothing and the region was not edge to edge at all. The literals are replaced by the property, which is the same 24px by default."
-    },
-    "command-dialog": {
-      "classes": [
-        "rounded-md"
-      ],
-      "why": "Replaced by rounded-lg: the palette wears DialogContent's box here, and that box is rounded-lg. Keeping both would draw nothing different and read as a mistake."
     }
   },
   "subject": {
