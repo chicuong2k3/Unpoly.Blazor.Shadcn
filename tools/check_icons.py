@@ -20,6 +20,11 @@ import sys
 ROOT = pathlib.Path(__file__).resolve().parent.parent
 UPSTREAM = ROOT / 'upstream'
 COMPONENTS = ROOT / 'src' / 'Unpoly.Blazor.Shadcn' / 'Components'
+REGISTRY = ROOT / 'src' / 'Unpoly.Blazor.Shadcn' / 'LucideIcons.g.cs'
+RAZOR = [ROOT / 'src', ROOT / 'demo']
+
+NAMED = re.compile(r'<Icon[^>]*?Name="([a-z0-9-]+)"')
+REGISTERED = re.compile(r'\["([a-z0-9-]+)"\]\s*=')
 
 FUNCTION = re.compile(r'\nfunction\s+(\w+)\s*\(')
 SLOT = re.compile(r'data-slot="([\w-]+)"')
@@ -101,6 +106,23 @@ def main() -> int:
                 problems.append(f'{who}: shadcn draws {names} inside [data-slot={slot}] '
                                 f'and this renders none')
 
+    # An <Icon> with a name the registry does not have renders an empty box and says nothing.
+    # "Loud enough in review" was the claim; it was not — Badge With Icon and Button With Icon
+    # both shipped with invisible icons, and the demo looked like a deliberate text-only badge.
+    known = set(REGISTERED.findall(REGISTRY.read_text(encoding='utf-8')))
+    unknown = {}
+    for root in RAZOR:
+        for path in root.rglob('*.razor'):
+            if 'obj' in path.parts or 'bin' in path.parts:
+                continue
+            for name in NAMED.findall(path.read_text(encoding='utf-8')):
+                if name not in known:
+                    unknown.setdefault(name, []).append(path.relative_to(ROOT).as_posix())
+    for name, where in sorted(unknown.items()):
+        problems.append(f'<Icon Name="{name}"> is not in LucideIcons — it renders nothing. '
+                        f'Add it with tools/gen_icons.py --add {name}. Used in: '
+                        + ', '.join(sorted(set(where))[:3]))
+
     for line in sorted(set(problems)):
         print(line, file=sys.stderr)
 
@@ -110,7 +132,8 @@ def main() -> int:
         return 1
 
     print(f'{checked} components that draw an icon upstream draw one here '
-          f'({len(MASKED)} drawn by CSS instead, each named)')
+          f'({len(MASKED)} drawn by CSS instead, each named); '
+          f'{len(known)} icons shipped, every <Icon Name> resolves to one')
     return 0
 
 

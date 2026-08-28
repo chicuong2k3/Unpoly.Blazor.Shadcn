@@ -278,6 +278,9 @@
   .inset-s-1\/2 {
     inset-inline-start: calc(1 / 2 * 100%);
   }
+  .end-4 {
+    inset-inline-end: calc(var(--spacing) * 4);
+  }
   .-top-12 {
     top: calc(var(--spacing) * -12);
   }
@@ -292,6 +295,12 @@
   }
   .top-1\/2 {
     top: calc(1 / 2 * 100%);
+  }
+  .top-2 {
+    top: calc(var(--spacing) * 2);
+  }
+  .top-3 {
+    top: calc(var(--spacing) * 3);
   }
   .top-3\.5 {
     top: calc(var(--spacing) * 3.5);
@@ -1498,10 +1507,6 @@
     border-bottom-style: var(--tw-border-style);
     border-bottom-width: 1px;
   }
-  .border-b-0 {
-    border-bottom-style: var(--tw-border-style);
-    border-bottom-width: 0px;
-  }
   .border-b-2 {
     border-bottom-style: var(--tw-border-style);
     border-bottom-width: 2px;
@@ -1730,9 +1735,6 @@
   }
   .px-12 {
     padding-inline: calc(var(--spacing) * 12);
-  }
-  .py-0 {
-    padding-block: 0px;
   }
   .py-0\.5 {
     padding-block: calc(var(--spacing) * 0.5);
@@ -2983,6 +2985,12 @@
     @supports (color: color-mix(in lab, red, red)) {
       --tw-ring-color: color-mix(in oklab, var(--destructive) 20%, transparent);
     }
+  }
+  .has-data-\[slot\=alert-action\]\:pe-20:has([data-slot="alert-action"]) {
+    padding-inline-end: calc(var(--spacing) * 20);
+  }
+  .has-data-\[slot\=alert-action\]\:pr-18:has([data-slot="alert-action"]) {
+    padding-right: calc(var(--spacing) * 18);
   }
   .has-data-\[slot\=alert-dialog-media\]\:grid-rows-\[auto_auto_1fr\]:has([data-slot="alert-dialog-media"]) {
     grid-template-rows: auto auto 1fr;

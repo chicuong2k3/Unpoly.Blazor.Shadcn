@@ -2,6 +2,8 @@ arrow-down
 arrow-left
 arrow-right
 arrow-up
+badge-check
+bookmark
 calendar
 check
 chevron-down
@@ -15,6 +17,7 @@ circle
 circle-alert
 circle-check
 circle-x
+clock
 copy
 download
 ellipsis
@@ -23,7 +26,10 @@ external-link
 eye
 eye-off
 file
+file-text
 folder
+git-branch
+git-fork
 grip-vertical
 heart
 info

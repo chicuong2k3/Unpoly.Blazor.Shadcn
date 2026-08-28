@@ -1,16 +1,23 @@
-@* The rule between items is `border-b` on the item, so removing it is removing a class. *@
-<div class="flex flex-col gap-8">
-    <Accordion Class="w-[420px]">
-        <AccordionItem Name="b1" Open><AccordionTrigger>With rules</AccordionTrigger>
-            <AccordionContent>The default.</AccordionContent></AccordionItem>
-        <AccordionItem Name="b1"><AccordionTrigger>Second</AccordionTrigger>
-            <AccordionContent>And a rule above it.</AccordionContent></AccordionItem>
-    </Accordion>
+@* shadcn's own: a border and a radius on the accordion, px-4 on each item so the text clears the
+   rule, and last:border-b-0 so the bottom rule does not double up with the box. *@
+<Accordion Class="max-w-lg rounded-lg border">
+    @foreach (var (value, trigger, content) in Items)
+    {
+        <AccordionItem Name="borders" Open="@(value == "billing")" Class="border-b px-4 last:border-b-0">
+            <AccordionTrigger>@trigger</AccordionTrigger>
+            <AccordionContent>@content</AccordionContent>
+        </AccordionItem>
+    }
+</Accordion>
 
-    <Accordion Class="w-[420px]">
-        <AccordionItem Name="b2" Class="border-b-0" Open><AccordionTrigger>Without</AccordionTrigger>
-            <AccordionContent>Separated by space instead.</AccordionContent></AccordionItem>
-        <AccordionItem Name="b2" Class="border-b-0"><AccordionTrigger>Second</AccordionTrigger>
-            <AccordionContent>No rule.</AccordionContent></AccordionItem>
-    </Accordion>
-</div>
+@code {
+    static readonly (string Value, string Trigger, string Content)[] Items =
+    [
+        ("billing", "How does billing work?",
+         "We offer monthly and annual subscription plans. Billing is charged at the beginning of each cycle, and you can cancel anytime. All plans include automatic backups, 24/7 support, and unlimited team members."),
+        ("security", "Is my data secure?",
+         "Yes. We use end-to-end encryption, SOC 2 Type II compliance, and regular third-party security audits. All data is encrypted at rest and in transit using industry-standard protocols."),
+        ("integration", "What integrations do you support?",
+         "We integrate with 500+ popular tools including Slack, Zapier, Salesforce, HubSpot, and more. You can also build custom integrations using our REST API and webhooks."),
+    ];
+}

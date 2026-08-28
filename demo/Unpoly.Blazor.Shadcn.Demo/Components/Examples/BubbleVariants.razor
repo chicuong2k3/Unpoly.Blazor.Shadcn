@@ -1,13 +1,37 @@
-<div class="flex w-[440px] flex-col items-start gap-2">
-    @foreach (var v in Variants)
-    {
-        <Bubble Variant="@v"><BubbleContent>@v</BubbleContent></Bubble>
-    }
-</div>
+@* Every variant with something to say, and the side alternating, because a bubble reads as a
+   message only when it sits where a message would. A colour swatch labelled "tinted" does not
+   show whether the tint is legible on a real sentence. *@
+<div class="flex w-full max-w-sm flex-col gap-8">
+    <Bubble><BubbleContent>This is the default primary bubble.</BubbleContent></Bubble>
 
-@code {
-    static readonly string[] Variants =
-    [
-        "default", "secondary", "muted", "tinted", "outline", "ghost", "destructive",
-    ];
-}
+    <Bubble Variant="secondary" Align="end">
+        <BubbleContent>This is the secondary variant.</BubbleContent>
+    </Bubble>
+
+    <Bubble Variant="muted">
+        <BubbleContent>
+            This one is muted. It uses a lower emphasis colour for the chat bubble.
+        </BubbleContent>
+        <BubbleReactions role="img" aria-label="Reaction: thumbs up"><span>👍</span></BubbleReactions>
+    </Bubble>
+
+    <Bubble Variant="tinted" Align="end">
+        <BubbleContent>
+            This one is tinted. The tint is a softer colour derived from the primary colour.
+        </BubbleContent>
+    </Bubble>
+
+    <Bubble Variant="outline"><BubbleContent>We can also use an outlined variant.</BubbleContent></Bubble>
+
+    <Bubble Variant="destructive" Align="end">
+        <BubbleContent>Or a destructive variant with a reaction.</BubbleContent>
+        <BubbleReactions role="img" aria-label="Reaction: fire"><span>🔥</span></BubbleReactions>
+    </Bubble>
+
+    <Bubble Variant="ghost">
+        <BubbleContent>
+            Ghost bubbles are for assistant text and anything else that should not be framed.
+            They take the full width of the container.
+        </BubbleContent>
+    </Bubble>
+</div>

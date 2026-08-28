@@ -1,23 +1,40 @@
-@* Upload state is the caller to know, so it is a parameter rather than something the component
-   guesses. Idle draws a dashed border, error a destructive one. *@
-<div class="flex w-[320px] flex-col gap-3">
-    <Attachment State="idle">
-        <AttachmentMedia><Icon Name="file" /></AttachmentMedia>
+@* Upload state is the caller's to know, so it is a parameter rather than something the component
+   guesses. Every row carries the control that state implies — remove, or cancel. *@
+<div class="flex w-full max-w-sm flex-col gap-2">
+    <Attachment State="idle" Class="w-full">
+        <AttachmentMedia><Icon Name="clock" /></AttachmentMedia>
         <AttachmentContent>
-            <AttachmentTitle>nda-2026.docx</AttachmentTitle>
-            <AttachmentDescription>Waiting to upload</AttachmentDescription>
+            <AttachmentTitle>selected-file.pdf</AttachmentTitle>
+            <AttachmentDescription>Ready to upload</AttachmentDescription>
         </AttachmentContent>
+        <AttachmentActions>
+            <AttachmentAction AriaLabel="Remove selected-file.pdf"><Icon Name="x" /></AttachmentAction>
+        </AttachmentActions>
     </Attachment>
 
-    <Attachment>
-        <AttachmentMedia><Spinner Class="size-4" /></AttachmentMedia>
+    <Attachment State="uploading" Class="w-full">
+        <AttachmentMedia><Spinner /></AttachmentMedia>
         <AttachmentContent>
-            <AttachmentTitle>rate-card.xlsx</AttachmentTitle>
-            <AttachmentDescription>Uploading — 62%</AttachmentDescription>
+            <AttachmentTitle>design-system.zip</AttachmentTitle>
+            <AttachmentDescription>Uploading · 64%</AttachmentDescription>
         </AttachmentContent>
+        <AttachmentActions>
+            <AttachmentAction AriaLabel="Cancel upload"><Icon Name="x" /></AttachmentAction>
+        </AttachmentActions>
     </Attachment>
 
-    <Attachment State="error">
+    <Attachment State="processing" Class="w-full">
+        <AttachmentMedia><Icon Name="file-text" /></AttachmentMedia>
+        <AttachmentContent>
+            <AttachmentTitle>market-research.pdf</AttachmentTitle>
+            <AttachmentDescription>Processing document</AttachmentDescription>
+        </AttachmentContent>
+        <AttachmentActions>
+            <AttachmentAction AriaLabel="Remove market-research.pdf"><Icon Name="x" /></AttachmentAction>
+        </AttachmentActions>
+    </Attachment>
+
+    <Attachment State="error" Class="w-full">
         <AttachmentMedia><Icon Name="triangle-alert" /></AttachmentMedia>
         <AttachmentContent>
             <AttachmentTitle>scan.pdf</AttachmentTitle>

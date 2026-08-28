@@ -1,0 +1,67 @@
+# Every example shadcn renders on a component docs page, in page order. The source of
+# each is vendored under examples/, from shadcn-ui/ui/apps/v4/examples/base.
+#
+# One line per page: <slug>: <example> <example> ...
+accordion: accordion-demo accordion-basic accordion-multiple accordion-disabled accordion-borders accordion-card accordion-rtl
+alert: alert-demo alert-basic alert-destructive alert-action alert-colors alert-rtl
+alert-dialog: alert-dialog-demo alert-dialog-basic alert-dialog-small alert-dialog-media alert-dialog-small-media alert-dialog-destructive alert-dialog-rtl
+aspect-ratio: aspect-ratio-demo aspect-ratio-square aspect-ratio-portrait aspect-ratio-rtl
+attachment: attachment-demo attachment-image attachment-states attachment-sizes attachment-group attachment-trigger
+avatar: avatar-demo avatar-basic avatar-badge avatar-badge-icon avatar-group avatar-group-count avatar-group-count-icon avatar-size avatar-dropdown avatar-rtl
+badge: badge-demo badge-variants badge-icon badge-spinner badge-link badge-colors badge-rtl
+breadcrumb: breadcrumb-demo breadcrumb-basic breadcrumb-separator breadcrumb-dropdown breadcrumb-ellipsis breadcrumb-link breadcrumb-rtl
+bubble: bubble-demo bubble-variants bubble-alignment bubble-group-demo bubble-link-button bubble-reactions bubble-collapsible bubble-tooltip bubble-popover
+button: button-demo button-size button-default button-outline button-secondary button-ghost button-destructive button-link button-icon button-with-icon button-rounded button-spinner button-group-demo button-render button-rtl
+button-group: button-group-demo button-group-orientation button-group-size button-group-nested button-group-separator button-group-split button-group-input button-group-input-group button-group-dropdown button-group-select button-group-popover button-group-rtl
+calendar: calendar-demo calendar-hijri calendar-basic calendar-range calendar-caption calendar-presets calendar-time calendar-booked-dates calendar-custom-days calendar-week-numbers calendar-rtl
+card: card-demo card-small card-spacing card-edge-to-edge card-image card-rtl
+carousel: carousel-demo carousel-size carousel-spacing carousel-orientation carousel-api carousel-plugin carousel-rtl
+chart: chart-demo chart-example chart-example-grid chart-example-axis chart-example-tooltip chart-example-legend chart-tooltip chart-rtl
+checkbox: checkbox-demo checkbox-invalid checkbox-basic checkbox-description checkbox-disabled checkbox-group checkbox-table checkbox-rtl
+collapsible: collapsible-demo collapsible-basic collapsible-settings collapsible-file-tree collapsible-rtl
+combobox: combobox-demo combobox-basic combobox-multiple combobox-clear combobox-groups combobox-custom combobox-invalid combobox-disabled combobox-auto-highlight combobox-popup combobox-input-group combobox-rtl
+command: command-demo command-basic command-shortcuts command-groups command-scrollable command-rtl
+context-menu: context-menu-demo context-menu-basic context-menu-submenu context-menu-shortcuts context-menu-groups context-menu-icons context-menu-checkboxes context-menu-radio context-menu-destructive context-menu-sides context-menu-rtl
+data-table: data-table-demo data-table-rtl
+date-picker: date-picker-demo date-picker-basic date-picker-range date-picker-dob date-picker-input date-picker-time date-picker-natural-language date-picker-rtl
+dialog: dialog-demo dialog-close-button dialog-no-close-button dialog-sticky-footer dialog-scrollable-content dialog-rtl
+direction: card-rtl
+drawer: drawer-demo drawer-sides drawer-swipe-handle drawer-nested drawer-non-modal drawer-snap-points drawer-dialog
+dropdown-menu: dropdown-menu-demo dropdown-menu-basic dropdown-menu-submenu dropdown-menu-shortcuts dropdown-menu-icons dropdown-menu-checkboxes dropdown-menu-checkboxes-icons dropdown-menu-radio-group dropdown-menu-radio-icons dropdown-menu-destructive dropdown-menu-avatar dropdown-menu-complex dropdown-menu-rtl
+empty: empty-demo empty-outline empty-background empty-avatar empty-avatar-group empty-input-group empty-rtl
+field: field-demo field-input field-textarea field-select field-slider field-fieldset field-checkbox field-radio field-switch field-choice-card field-group field-rtl field-responsive
+hover-card: hover-card-demo hover-card-sides hover-card-rtl
+input: input-demo input-basic input-field input-fieldgroup input-disabled input-invalid input-file input-inline input-grid input-required input-badge input-input-group input-button-group input-form input-rtl
+input-group: input-group-demo input-group-inline-start input-group-inline-end input-group-block-start input-group-block-end input-group-icon input-group-text input-group-button input-group-kbd input-group-dropdown input-group-spinner input-group-textarea input-group-custom input-group-rtl
+input-otp: input-otp-demo input-otp-pattern input-otp-separator input-otp-disabled input-otp-controlled input-otp-invalid input-otp-four-digits input-otp-alphanumeric input-otp-form input-otp-rtl
+item: item-demo item-variant item-size item-icon item-avatar item-image item-group item-header item-link item-dropdown item-rtl
+kbd: kbd-demo kbd-group kbd-button kbd-tooltip kbd-input-group kbd-rtl
+label: label-demo field-demo label-rtl
+marker: marker-demo marker-variants marker-status marker-shimmer marker-separator marker-border marker-icon marker-link-button
+menubar: menubar-demo menubar-checkbox menubar-radio menubar-submenu menubar-icons menubar-rtl
+message: message-demo message-avatar message-group message-header-footer message-actions message-attachment
+message-scroller: message-scroller-demo message-scroller-anchoring message-scroller-group-chat message-scroller-previous-context message-scroller-streaming message-scroller-opening-position message-scroller-load-history message-scroller-animation message-scroller-commands message-scroller-visibility message-scroller-scrollable
+native-select: native-select-demo native-select-groups native-select-disabled native-select-invalid native-select-rtl
+navigation-menu: navigation-menu-demo navigation-menu-rtl
+pagination: pagination-demo pagination-simple pagination-icons-only pagination-rtl
+popover: popover-demo popover-basic popover-alignments popover-form popover-rtl
+progress: progress-demo progress-label progress-controlled progress-rtl
+radio-group: radio-group-demo radio-group-description radio-group-choice-card radio-group-fieldset radio-group-disabled radio-group-invalid radio-group-rtl
+resizable: resizable-demo resizable-vertical resizable-handle resizable-rtl
+scroll-area: scroll-area-demo scroll-area-horizontal-demo scroll-area-rtl
+select: select-demo select-align-item select-groups select-scrollable select-disabled select-invalid select-rtl
+separator: separator-demo separator-vertical separator-menu separator-list separator-rtl
+sheet: sheet-demo sheet-side sheet-no-close-button sheet-rtl
+sidebar: sidebar-demo
+skeleton: skeleton-demo skeleton-avatar skeleton-card skeleton-text skeleton-form skeleton-table skeleton-rtl
+slider: slider-demo slider-range slider-multiple slider-vertical slider-controlled slider-disabled slider-rtl
+spinner: spinner-demo spinner-custom spinner-size spinner-button spinner-badge spinner-input-group spinner-empty spinner-rtl
+switch: switch-demo switch-description switch-choice-card switch-disabled switch-invalid switch-sizes switch-rtl
+table: table-demo table-footer table-actions table-rtl
+tabs: tabs-demo tabs-line tabs-vertical tabs-disabled tabs-icons tabs-rtl
+textarea: textarea-demo textarea-field textarea-disabled textarea-invalid textarea-button textarea-rtl
+toast: toast-demo toast-types toast-promise
+toggle: toggle-demo toggle-outline toggle-text toggle-sizes toggle-disabled toggle-rtl
+toggle-group: toggle-group-demo toggle-group-outline toggle-group-sizes toggle-group-spacing toggle-group-vertical toggle-group-disabled toggle-group-font-weight-selector toggle-group-rtl
+tooltip: tooltip-demo tooltip-sides tooltip-keyboard tooltip-disabled tooltip-rtl
+typography: 

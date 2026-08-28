@@ -203,7 +203,11 @@
   // showModal() gives the focus trap, the inert background, Escape and the top layer. None of
   // that is worth reimplementing, and all of it is what Radix spends most of its bytes on.
 
-  up.compiler('[data-slot="dialog-trigger"], [data-slot="sheet-trigger"]', (trigger) => {
+  // alert-dialog-trigger belongs here too. It was missing, and an attribute selector is exact:
+  // [data-slot="dialog-trigger"] does not match alert-dialog-trigger, so every AlertDialog in
+  // the library was inert — the button rendered, nothing bound to it, and no error said so.
+  up.compiler('[data-slot="dialog-trigger"], [data-slot="sheet-trigger"], '
+            + '[data-slot="alert-dialog-trigger"]', (trigger) => {
     const open = (event) => {
       const target = document.getElementById(trigger.dataset.target)
       if (!target) return
@@ -214,8 +218,11 @@
     return () => trigger.removeEventListener('click', open)
   })
 
-  // A close button anywhere inside the dialog, including the corner X.
-  up.compiler('[data-slot="dialog-close"], [data-slot="sheet-close"]', (button) => {
+  // A close button anywhere inside the dialog, including the corner X. [data-dialog-close] is
+  // the attribute a component sets when it wants this behaviour under a different slot name —
+  // AlertDialogCancel does, and its own comment said so while nothing bound it.
+  up.compiler('[data-slot="dialog-close"], [data-slot="sheet-close"], [data-dialog-close]',
+              (button) => {
     const close = (event) => { event.preventDefault(); button.closest('dialog')?.close() }
     button.addEventListener('click', close)
     return () => button.removeEventListener('click', close)

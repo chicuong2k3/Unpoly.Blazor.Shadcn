@@ -1,0 +1,10 @@
+@* shadcn's own shape: the control lives in <AlertAction>, pinned to the trailing top corner, and
+   the alert reserves the room for it. A link or a form submit, never a click handler — so it
+   works before any JavaScript and a middle click opens it in a tab. *@
+<Alert Class="max-w-md">
+    <AlertTitle>Dark mode is now available</AlertTitle>
+    <AlertDescription>Enable it under your profile settings to get started.</AlertDescription>
+    <AlertAction>
+        <Button Size="xs" Href="/settings/appearance">Enable</Button>
+    </AlertAction>
+</Alert>

@@ -1,3 +1,7 @@
-<Badge Variant="secondary"><Icon Name="check" />Paid</Badge>
-<Badge Variant="destructive"><Icon Name="triangle-alert" />Overdue</Badge>
-<Badge Href="/components/badge">Linked badge</Badge>
+@* An icon leads or trails depending on where you write it — the badge is a flex row with a gap,
+   so source order is the only thing that decides. shadcn marks the two with
+   data-icon="inline-start|end"; here nothing needs marking, because nothing reads it. *@
+<div class="flex flex-wrap items-center gap-2">
+    <Badge Variant="secondary"><Icon Name="badge-check" />Verified</Badge>
+    <Badge Variant="outline">Bookmark<Icon Name="bookmark" /></Badge>
+</div>

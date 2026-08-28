@@ -37,6 +37,11 @@ renders `<div>` · `data-slot="alert"`
 |---|---|---|---|
 | `Variant` | `string` | `"default"` |  |
 
+## `<AlertAction>`
+renders `<div>` · `data-slot="alert-action"`
+
+_No parameters of its own._
+
 ## `<AlertDescription>`
 renders `<div>` · `data-slot="alert-description"`
 

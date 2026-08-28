@@ -1,12 +1,25 @@
+@* The same accordion under dir="rtl". The chevron moves to the other end on its own: it is
+   placed with ms-auto, a logical property, not with ml-auto. *@
 <div dir="rtl">
-    <Accordion Class="w-[420px]">
-        <AccordionItem Name="rtl-faq" Open>
-            <AccordionTrigger>هل يعمل بدون جافاسكريبت؟</AccordionTrigger>
-            <AccordionContent>نعم. العنصر نفسه هو الحالة كاملة.</AccordionContent>
-        </AccordionItem>
-        <AccordionItem Name="rtl-faq">
-            <AccordionTrigger>هل الترميز مطابق لـ shadcn؟</AccordionTrigger>
-            <AccordionContent>صنفًا بصنف، ومولَّد من مصدره.</AccordionContent>
-        </AccordionItem>
+    <Accordion Class="max-w-md">
+        @foreach (var (value, trigger, content) in Items)
+        {
+            <AccordionItem Name="rtl-faq" Open="@(value == "item-1")">
+                <AccordionTrigger>@trigger</AccordionTrigger>
+                <AccordionContent>@content</AccordionContent>
+            </AccordionItem>
+        }
     </Accordion>
 </div>
+
+@code {
+    static readonly (string Value, string Trigger, string Content)[] Items =
+    [
+        ("item-1", "كيف يمكنني إعادة تعيين كلمة المرور؟",
+         "انقر على 'نسيت كلمة المرور' في صفحة تسجيل الدخول، أدخل عنوان بريدك الإلكتروني، وسنرسل لك رابطًا لإعادة تعيين كلمة المرور. سينتهي صلاحية الرابط خلال 24 ساعة."),
+        ("item-2", "هل يمكنني تغيير خطة الاشتراك الخاصة بي؟",
+         "نعم، يمكنك ترقية أو تخفيض خطتك في أي وقت من إعدادات حسابك. ستظهر التغييرات في دورة الفوترة التالية."),
+        ("item-3", "ما هي طرق الدفع التي تقبلونها؟",
+         "نقبل جميع بطاقات الائتمان الرئيسية و PayPal والتحويلات المصرفية. تتم معالجة جميع المدفوعات بأمان من خلال شركاء الدفع لدينا."),
+    ];
+}

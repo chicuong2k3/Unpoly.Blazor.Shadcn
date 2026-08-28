@@ -1,22 +1,33 @@
-@* Each item in its own card. Nothing new: a Card around an Accordion of one. *@
-<div class="flex w-[460px] flex-col gap-3">
-    @foreach (var (q, a) in Questions)
-    {
-        <Card Class="py-0">
-            <Accordion>
-                <AccordionItem Class="border-b-0">
-                    <AccordionTrigger Class="px-6">@q</AccordionTrigger>
-                    <AccordionContent Class="px-6">@a</AccordionContent>
+@* One card around one accordion, not one card per item: the header carries the question the
+   whole group answers, and the rules between items come from the item itself. *@
+<Card Class="w-full max-w-sm">
+    <CardHeader>
+        <CardTitle>Subscription &amp; Billing</CardTitle>
+        <CardDescription>
+            Common questions about your account, plans, payments and cancellations.
+        </CardDescription>
+    </CardHeader>
+    <CardContent>
+        <Accordion>
+            @foreach (var (value, trigger, content) in Items)
+            {
+                <AccordionItem Name="card" Open="@(value == "plans")">
+                    <AccordionTrigger>@trigger</AccordionTrigger>
+                    <AccordionContent>@content</AccordionContent>
                 </AccordionItem>
-            </Accordion>
-        </Card>
-    }
-</div>
+            }
+        </Accordion>
+    </CardContent>
+</Card>
 
 @code {
-    static readonly (string Q, string A)[] Questions =
+    static readonly (string Value, string Trigger, string Content)[] Items =
     [
-        ("Can I use it in a commercial project?", "Yes. MIT, both this and shadcn."),
-        ("Does it need a build step?", "Tailwind, and nothing else."),
+        ("plans", "What subscription plans do you offer?",
+         "We offer three subscription tiers: Starter ($9/month), Professional ($29/month), and Enterprise ($99/month). Each plan includes increasing storage limits, API access, priority support, and team collaboration features."),
+        ("billing", "How does billing work?",
+         "Billing occurs automatically at the start of each billing cycle. We accept all major credit cards, PayPal, and ACH transfers for enterprise customers. You&#39;ll receive an invoice via email after each payment."),
+        ("cancel", "How do I cancel my subscription?",
+         "You can cancel your subscription anytime from your account settings. There are no cancellation fees or penalties. Your access will continue until the end of your current billing period."),
     ];
 }
