@@ -3,6 +3,7 @@ arrow-left
 arrow-right
 arrow-up
 badge-check
+bluetooth
 bookmark
 calendar
 check
@@ -16,6 +17,7 @@ chevrons-up-down
 circle
 circle-alert
 circle-check
+circle-fading-plus
 circle-x
 clock
 copy
@@ -27,6 +29,7 @@ eye
 eye-off
 file
 file-text
+file-warning
 folder
 git-branch
 git-fork
@@ -42,6 +45,7 @@ panel-left
 paperclip
 pencil
 plus
+refresh-cw
 repeat
 search
 send

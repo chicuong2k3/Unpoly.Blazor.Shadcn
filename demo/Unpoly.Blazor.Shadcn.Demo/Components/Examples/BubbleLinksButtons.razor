@@ -1,22 +1,31 @@
-@* Links inside a bubble stay links, and actions under one stay real buttons in a form. Neither
-   is styled by the bubble: it sets a colour, and anything inside inherits it. *@
-<div class="flex w-[460px] flex-col gap-3">
+@* Quick replies: the bubble IS the button. Not a row of buttons under the thread — the reader
+   presses the thing they read, which is why every Bubble variant styles
+   `bubble-content:is(button,a):hover` in the first place.
+
+   A form, so it posts. Unpoly swaps the thread and nothing here is a click handler. *@
+<form method="post" action="/chat/1/reply" up-target=".preview" up-disable
+      class="flex w-full max-w-sm flex-col gap-8">
+    <AntiforgeryToken />
+
     <Bubble Variant="muted">
-        <BubbleContent>
-            The class strings come from
-            <a href="/components/button" class="underline underline-offset-2">shadcn's own source</a>,
-            and the tests read the same file.
-        </BubbleContent>
+        <BubbleContent>How can I help you today?</BubbleContent>
     </Bubble>
 
-    <Bubble Align="end">
-        <BubbleContent>Shall I open a pull request?</BubbleContent>
-    </Bubble>
+    <BubbleGroup>
+        @foreach (var (value, label) in Replies)
+        {
+            <Bubble Variant="tinted" Align="end">
+                <BubbleContent Type="submit" name="reply" value="@value">@label</BubbleContent>
+            </Bubble>
+        }
+    </BubbleGroup>
+</form>
 
-    <div class="flex justify-end gap-2">
-        <form method="post" action="/chat/1/yes"><AntiforgeryToken />
-            <Button Size="sm" Type="submit">Yes, open it</Button></form>
-        <form method="post" action="/chat/1/no"><AntiforgeryToken />
-            <Button Size="sm" Variant="outline" Type="submit">Not yet</Button></form>
-    </div>
-</div>
+@code {
+    static readonly (string Value, string Label)[] Replies =
+    [
+        ("password", "I forgot my password"),
+        ("subscription", "I need help with my subscription"),
+        ("human", "Something else. Talk to a human."),
+    ];
+}

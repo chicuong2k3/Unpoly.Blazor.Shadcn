@@ -1155,6 +1155,33 @@
   .transform {
     transform: var(--tw-rotate-x,) var(--tw-rotate-y,) var(--tw-rotate-z,) var(--tw-skew-x,) var(--tw-skew-y,);
   }
+  .shimmer {
+    --_spread: var(--shimmer-spread, calc(3ch + 40px));
+    --_base: currentColor;
+    --_highlight: var(--shimmer-color, oklch(from currentColor l c h / calc(alpha * 0.2)));
+    background-image: var(--shimmer-image, linear-gradient( calc(90deg + var(--shimmer-angle)), var(--_base) calc(50% - var(--_spread)), var(--_highlight) calc(50% - var(--_spread) * 0.5), var(--_highlight) 50%, var(--_highlight) calc(50% + var(--_spread) * 0.5), var(--_base) calc(50% + var(--_spread)) ));
+    @supports (color: color-mix(in lab, red, red)) {
+      background-image: var(--shimmer-image, linear-gradient( calc(90deg + var(--shimmer-angle)), var(--_base) calc(50% - var(--_spread)), color-mix(in oklch, var(--_highlight), var(--_base) 50%) calc(50% - var(--_spread) * 0.5), var(--_highlight) 50%, color-mix(in oklch, var(--_highlight), var(--_base) 50%) calc(50% + var(--_spread) * 0.5), var(--_base) calc(50% + var(--_spread)) ));
+    }
+    background-repeat: no-repeat;
+    background-size: calc(200% + var(--_spread) * 2) 100%;
+    background-position: 0 0;
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: var(--shimmer-text-fill, transparent);
+    animation: tw-shimmer var(--shimmer-duration, 2s) linear infinite;
+    &:where(.dark, .dark *) {
+      --_highlight: var(--shimmer-color,
+            oklch(from currentColor max(0.8, calc(l + 0.4)) c h / calc(alpha + 0.4)));
+    }
+    &:where([dir="rtl"], [dir="rtl"] *) {
+      animation-direction: reverse;
+    }
+    @media (prefers-reduced-motion: reduce) {
+      animation: none;
+      -webkit-text-fill-color: currentColor;
+    }
+  }
   .animate-pulse {
     animation: var(--animate-pulse);
   }
@@ -1307,6 +1334,9 @@
   }
   .gap-8 {
     gap: calc(var(--spacing) * 8);
+  }
+  .gap-12 {
+    gap: calc(var(--spacing) * 12);
   }
   .gap-\[--spacing\(var\(--gap\)\)\] {
     gap: calc(var(--spacing) * var(--gap));
@@ -1603,6 +1633,12 @@
   }
   .bg-destructive {
     background-color: var(--destructive);
+  }
+  .bg-destructive\/10 {
+    background-color: var(--destructive);
+    @supports (color: color-mix(in lab, red, red)) {
+      background-color: color-mix(in oklab, var(--destructive) 10%, transparent);
+    }
   }
   .bg-emerald-500 {
     background-color: var(--color-emerald-500);
@@ -2046,9 +2082,6 @@
   .underline {
     text-decoration-line: underline;
   }
-  .underline-offset-2 {
-    text-underline-offset: 2px;
-  }
   .underline-offset-4 {
     text-underline-offset: 4px;
   }
@@ -2261,6 +2294,15 @@
   }
   .not-checked\:bg-input:not(:checked) {
     background-color: var(--input);
+  }
+  .group-open\/more\:hidden:is(:where(.group\/more):is([open], :popover-open, :open) *) {
+    display: none;
+  }
+  .group-open\/more\:inline:is(:where(.group\/more):is([open], :popover-open, :open) *) {
+    display: inline;
+  }
+  .group-open\/more\:rotate-180:is(:where(.group\/more):is([open], :popover-open, :open) *) {
+    rotate: 180deg;
   }
   .group-focus-within\/menu-item\:opacity-100:is(:where(.group\/menu-item):focus-within *) {
     opacity: 100%;
@@ -2479,6 +2521,60 @@
   }
   .group-data-\[state\=open\]\:rotate-180:is(:where(.group)[data-state="open"] *) {
     rotate: 180deg;
+  }
+  .group-data-\[state\=processing\]\/attachment\:shimmer:is(:where(.group\/attachment)[data-state="processing"] *) {
+    --_spread: var(--shimmer-spread, calc(3ch + 40px));
+    --_base: currentColor;
+    --_highlight: var(--shimmer-color, oklch(from currentColor l c h / calc(alpha * 0.2)));
+    background-image: var(--shimmer-image, linear-gradient( calc(90deg + var(--shimmer-angle)), var(--_base) calc(50% - var(--_spread)), var(--_highlight) calc(50% - var(--_spread) * 0.5), var(--_highlight) 50%, var(--_highlight) calc(50% + var(--_spread) * 0.5), var(--_base) calc(50% + var(--_spread)) ));
+    @supports (color: color-mix(in lab, red, red)) {
+      background-image: var(--shimmer-image, linear-gradient( calc(90deg + var(--shimmer-angle)), var(--_base) calc(50% - var(--_spread)), color-mix(in oklch, var(--_highlight), var(--_base) 50%) calc(50% - var(--_spread) * 0.5), var(--_highlight) 50%, color-mix(in oklch, var(--_highlight), var(--_base) 50%) calc(50% + var(--_spread) * 0.5), var(--_base) calc(50% + var(--_spread)) ));
+    }
+    background-repeat: no-repeat;
+    background-size: calc(200% + var(--_spread) * 2) 100%;
+    background-position: 0 0;
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: var(--shimmer-text-fill, transparent);
+    animation: tw-shimmer var(--shimmer-duration, 2s) linear infinite;
+    &:where(.dark, .dark *) {
+      --_highlight: var(--shimmer-color,
+            oklch(from currentColor max(0.8, calc(l + 0.4)) c h / calc(alpha + 0.4)));
+    }
+    &:where([dir="rtl"], [dir="rtl"] *) {
+      animation-direction: reverse;
+    }
+    @media (prefers-reduced-motion: reduce) {
+      animation: none;
+      -webkit-text-fill-color: currentColor;
+    }
+  }
+  .group-data-\[state\=uploading\]\/attachment\:shimmer:is(:where(.group\/attachment)[data-state="uploading"] *) {
+    --_spread: var(--shimmer-spread, calc(3ch + 40px));
+    --_base: currentColor;
+    --_highlight: var(--shimmer-color, oklch(from currentColor l c h / calc(alpha * 0.2)));
+    background-image: var(--shimmer-image, linear-gradient( calc(90deg + var(--shimmer-angle)), var(--_base) calc(50% - var(--_spread)), var(--_highlight) calc(50% - var(--_spread) * 0.5), var(--_highlight) 50%, var(--_highlight) calc(50% + var(--_spread) * 0.5), var(--_base) calc(50% + var(--_spread)) ));
+    @supports (color: color-mix(in lab, red, red)) {
+      background-image: var(--shimmer-image, linear-gradient( calc(90deg + var(--shimmer-angle)), var(--_base) calc(50% - var(--_spread)), color-mix(in oklch, var(--_highlight), var(--_base) 50%) calc(50% - var(--_spread) * 0.5), var(--_highlight) 50%, color-mix(in oklch, var(--_highlight), var(--_base) 50%) calc(50% + var(--_spread) * 0.5), var(--_base) calc(50% + var(--_spread)) ));
+    }
+    background-repeat: no-repeat;
+    background-size: calc(200% + var(--_spread) * 2) 100%;
+    background-position: 0 0;
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: var(--shimmer-text-fill, transparent);
+    animation: tw-shimmer var(--shimmer-duration, 2s) linear infinite;
+    &:where(.dark, .dark *) {
+      --_highlight: var(--shimmer-color,
+            oklch(from currentColor max(0.8, calc(l + 0.4)) c h / calc(alpha + 0.4)));
+    }
+    &:where([dir="rtl"], [dir="rtl"] *) {
+      animation-direction: reverse;
+    }
+    @media (prefers-reduced-motion: reduce) {
+      animation: none;
+      -webkit-text-fill-color: currentColor;
+    }
   }
   .group-data-\[variant\=floating\]\:rounded-lg:is(:where(.group)[data-variant="floating"] *) {
     border-radius: var(--radius);
@@ -2812,9 +2908,6 @@
     }
     .hover\:bg-sidebar-accent:hover {
       background-color: var(--sidebar-accent);
-    }
-    .hover\:bg-transparent:hover {
-      background-color: transparent;
     }
     .hover\:text-accent-foreground:hover {
       color: var(--accent-foreground);
@@ -3183,6 +3276,9 @@
   }
   .aria-disabled\:opacity-50[aria-disabled="true"] {
     opacity: 50%;
+  }
+  .aria-expanded\:text-destructive[aria-expanded="true"] {
+    color: var(--destructive);
   }
   .aria-invalid\:border-destructive[aria-invalid="true"] {
     border-color: var(--destructive);
@@ -3920,6 +4016,12 @@
       background-color: color-mix(in oklab, var(--color-amber-950) 40%, transparent);
     }
   }
+  .dark\:bg-destructive\/20:where(.dark, .dark *) {
+    background-color: var(--destructive);
+    @supports (color: color-mix(in lab, red, red)) {
+      background-color: color-mix(in oklab, var(--destructive) 20%, transparent);
+    }
+  }
   .dark\:bg-destructive\/60:where(.dark, .dark *) {
     background-color: var(--destructive);
     @supports (color: color-mix(in lab, red, red)) {
@@ -4233,8 +4335,8 @@
       color: var(--foreground);
     }
   }
-  .\[button\]\:text-left:is(button) {
-    text-align: left;
+  .\[button\]\:text-start:is(button) {
+    text-align: start;
   }
   .\[button\,a\]\:transition-colors:is(button, a) {
     transition-property: color, background-color, border-color, outline-color, text-decoration-color, fill, stroke, --tw-gradient-from, --tw-gradient-via, --tw-gradient-to;
@@ -5191,6 +5293,11 @@
   --sidebar-border: oklch(1 0 0 / 10%);
   --sidebar-ring: oklch(0.556 0 0);
 }
+@property --shimmer-angle {
+  syntax: "<angle>";
+  inherits: true;
+  initial-value: 20deg;
+}
 @layer base {
   *, ::after, ::before, ::backdrop, ::file-selector-button {
     border-color: var(--border);
@@ -6036,8 +6143,19 @@
     opacity: 0.5;
   }
 }
+@keyframes tw-shimmer {
+  from {
+    background-position: 100% 0;
+  }
+  to {
+    background-position: 0 0;
+  }
+}
 @layer properties {
   @supports ((-webkit-hyphens: none) and (not (margin-trim: inline))) or ((-moz-orient: inline) and (not (color:rgb(from red r g b)))) {
+    :root, :host {
+      --shimmer-angle: 20deg;
+    }
     *, ::before, ::after, ::backdrop {
       --tw-border-spacing-x: 0;
       --tw-border-spacing-y: 0;

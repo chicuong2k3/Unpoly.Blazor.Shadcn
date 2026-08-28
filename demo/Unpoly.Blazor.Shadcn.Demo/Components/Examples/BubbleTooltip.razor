@@ -1,8 +1,18 @@
-@* A timestamp that does not take a line of its own. The tooltip opens on focus too, so the exact
-   time is reachable by keyboard rather than only by hovering. *@
-<div class="flex w-[440px] flex-col gap-2">
-    <TooltipTrigger Target="bubble-time" Variant="ghost" Class="h-auto w-fit p-0 hover:bg-transparent">
-        <Bubble Variant="muted"><BubbleContent>Did the invoice go out?</BubbleContent></Bubble>
-    </TooltipTrigger>
-    <TooltipContent Id="bubble-time">11 March 2026, 09:12</TooltipContent>
+@* A read receipt in the reaction slot: a tick you can hover or focus for the exact time. The
+   time does not deserve a line of its own, and a title attribute is not reachable by keyboard. *@
+<div class="flex w-full max-w-sm flex-col gap-4">
+    <Bubble Variant="secondary">
+        <BubbleContent>Did you remove the stale route?</BubbleContent>
+    </Bubble>
+
+    <Bubble Align="end">
+        <BubbleContent>Yes, removed it from the registry.</BubbleContent>
+        <BubbleReactions>
+            <TooltipTrigger Target="bubble-read" Variant="ghost" Size="icon-xs"
+                            aria-label="When this was read">
+                <Icon Name="check" />
+            </TooltipTrigger>
+            <TooltipContent Id="bubble-read">Read on 5 January 2026 at 4:32 PM</TooltipContent>
+        </BubbleReactions>
+    </Bubble>
 </div>

@@ -64,6 +64,12 @@
     ],
     "has-[:checked]:text-accent-foreground": [
       "data-[state=on]:text-accent-foreground"
+    ],
+    "text-start": [
+      "text-left"
+    ],
+    "[button]:text-start": [
+      "[button]:text-left"
     ]
   },
   "added": {

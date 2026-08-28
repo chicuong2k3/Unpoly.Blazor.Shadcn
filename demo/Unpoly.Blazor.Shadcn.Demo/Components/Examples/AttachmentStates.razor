@@ -1,5 +1,10 @@
 @* Upload state is the caller's to know, so it is a parameter rather than something the component
-   guesses. Every row carries the control that state implies — remove, or cancel. *@
+   guesses. Every row carries the control that state implies — and the failed one carries two,
+   because "try again" and "give up" are different answers.
+
+   The title shimmers while a file is uploading or processing. That is a real utility now: the
+   class was on AttachmentTitle from the start and the utility was never defined, so an uploading
+   file looked exactly like a finished one. *@
 <div class="flex w-full max-w-sm flex-col gap-2">
     <Attachment State="idle" Class="w-full">
         <AttachmentMedia><Icon Name="clock" /></AttachmentMedia>
@@ -35,13 +40,25 @@
     </Attachment>
 
     <Attachment State="error" Class="w-full">
-        <AttachmentMedia><Icon Name="triangle-alert" /></AttachmentMedia>
+        <AttachmentMedia><Icon Name="file-warning" /></AttachmentMedia>
         <AttachmentContent>
-            <AttachmentTitle>scan.pdf</AttachmentTitle>
-            <AttachmentDescription>Too large — 24 MB of 10 MB</AttachmentDescription>
+            <AttachmentTitle>financial-model.xlsx</AttachmentTitle>
+            <AttachmentDescription>Upload failed. Try again.</AttachmentDescription>
         </AttachmentContent>
         <AttachmentActions>
-            <AttachmentAction AriaLabel="Remove scan.pdf"><Icon Name="x" /></AttachmentAction>
+            <AttachmentAction AriaLabel="Retry upload"><Icon Name="refresh-cw" /></AttachmentAction>
+            <AttachmentAction AriaLabel="Remove financial-model.xlsx"><Icon Name="x" /></AttachmentAction>
+        </AttachmentActions>
+    </Attachment>
+
+    <Attachment State="done" Class="w-full">
+        <AttachmentMedia><Icon Name="check" /></AttachmentMedia>
+        <AttachmentContent>
+            <AttachmentTitle>uploaded-report.pdf</AttachmentTitle>
+            <AttachmentDescription>Uploaded · 1.8 MB</AttachmentDescription>
+        </AttachmentContent>
+        <AttachmentActions>
+            <AttachmentAction AriaLabel="Remove uploaded-report.pdf"><Icon Name="x" /></AttachmentAction>
         </AttachmentActions>
     </Attachment>
 </div>

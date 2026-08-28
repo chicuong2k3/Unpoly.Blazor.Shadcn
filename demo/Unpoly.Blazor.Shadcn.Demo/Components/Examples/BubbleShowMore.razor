@@ -1,17 +1,47 @@
 @* A long message folded. <details> again: it opens with no script, survives a fragment swap, and
-   Find in Page reaches inside it in most browsers — none of which a state variable manages. *@
-<Bubble Variant="muted" Class="w-[440px]">
-    <BubbleContent>
-        <Collapsible>
-            <p>The extractor reads shadcn's own source rather than a class string somebody typed.</p>
-            <CollapsibleContent Class="mt-2 flex flex-col gap-2">
-                <p>That is what makes the parity claim checkable: the tests compare against the
-                   same vendored file the generator wrote from.</p>
-                <p>When upstream changes, the diff is real source rather than a screenshot.</p>
-            </CollapsibleContent>
-            <CollapsibleTrigger Class="mt-2 text-sm underline underline-offset-2">
-                Show more
-            </CollapsibleTrigger>
-        </Collapsible>
-    </BubbleContent>
-</Bubble>
+   Find in Page reaches inside it in most browsers — none of which a state variable manages.
+
+   Two things the element dictates, and both were got wrong here before:
+
+   Everything that is not the <summary> is hidden while it is closed. So the part that stays on
+   screen — the preview — goes INSIDE the trigger, not above it. Putting it above left a bubble
+   containing nothing but the words "Show more".
+
+   And the label has to swap, or the control says "Show more" while the text is already shown.
+   React swaps it from state; here the element's own [open] does it, so there is nothing to keep
+   in step: two spans, and the group-open variant picks which one is on screen. *@
+<div class="flex w-full max-w-sm flex-col gap-8">
+    <Bubble Variant="muted">
+        <BubbleContent>How can I help you today?</BubbleContent>
+    </Bubble>
+
+    <Bubble Variant="muted" Align="end">
+        <BubbleContent>
+            <Collapsible Class="group/more">
+                <CollapsibleTrigger Class="flex cursor-pointer flex-col gap-2 text-start">
+                    <span>
+                        The accessibility review found two focus states that were visually too
+                        subtle in dark mode. I checked the dialog, menu, and drawer paths because
+                        each one renders focusable controls inside a layered surface.
+                    </span>
+                    <span class="@ButtonVariants.Of("link", "default", "h-auto gap-1 self-start p-0 text-muted-foreground")">
+                        <span class="group-open/more:hidden">Show more</span>
+                        <span class="hidden group-open/more:inline">Show less</span>
+                        <Icon Name="chevron-down"
+                              Class="size-4 transition-transform group-open/more:rotate-180" />
+                    </span>
+                </CollapsibleTrigger>
+                <CollapsibleContent Class="mt-2 flex flex-col gap-2">
+                    <p>
+                        The dialog and drawer are fine. The menu needs the hover and focus tokens
+                        split so keyboard focus stays visible when the pointer is not involved.
+                    </p>
+                    <p>
+                        I also recommend keeping the change in the style file instead of the
+                        primitive, so the other themes can choose their own focus treatment later.
+                    </p>
+                </CollapsibleContent>
+            </Collapsible>
+        </BubbleContent>
+    </Bubble>
+</div>

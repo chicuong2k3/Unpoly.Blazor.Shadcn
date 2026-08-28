@@ -1,17 +1,38 @@
-@* Reactions hang off a corner of the bubble. Side and align decide which — bottom-end is the
-   trailing corner, which is where a reader looks after reading the message. *@
-<div class="flex w-[440px] flex-col gap-6">
-    <Bubble Align="end">
-        <BubbleContent>Sent it this morning.</BubbleContent>
-        <BubbleReactions>
-            <Badge Variant="secondary">2 reactions</Badge>
+@* Emoji hanging off a corner of the bubble, which is what reactions are. Side and align choose
+   the corner: bottom-end is the trailing one, where a reader looks after reading the message,
+   and the last bubble shows that a reaction slot takes a control as readily as a glyph. *@
+<div class="flex w-full max-w-sm flex-col gap-12">
+    <Bubble Variant="muted" Align="end">
+        <BubbleContent>I don&#39;t need tests, I know my code works.</BubbleContent>
+        <BubbleReactions Align="start" role="img" aria-label="Reactions: thumbs up, surprised">
+            <span>👍</span><span>😮</span>
         </BubbleReactions>
     </Bubble>
 
     <Bubble Variant="muted">
-        <BubbleContent>Perfect, thank you.</BubbleContent>
-        <BubbleReactions Side="top" Align="start">
-            <Badge Variant="outline">1</Badge>
+        <BubbleContent>
+            Bold. Fine, I&#39;ll add some tests. I&#39;ll let you know when they&#39;re done.
+        </BubbleContent>
+        <BubbleReactions role="img" aria-label="Reactions: eyes, rocket, and 2 more">
+            <span>👀</span><span>🚀</span><span>+2</span>
+        </BubbleReactions>
+    </Bubble>
+
+    <Bubble Align="end">
+        <BubbleContent>Tests passed on the first try. All 142 of them. Looking good!</BubbleContent>
+        <BubbleReactions Side="top" Align="start"
+                         role="img" aria-label="Reactions: party popper, clapping hands">
+            <span>🎉</span><span>👏</span>
+        </BubbleReactions>
+    </Bubble>
+
+    <Bubble Variant="destructive">
+        <BubbleContent>Are you sure I can run this command?</BubbleContent>
+        <BubbleReactions>
+            <form method="post" action="/chat/1/run" up-target=".preview" up-disable>
+                <AntiforgeryToken />
+                <Button Variant="ghost" Size="xs" Type="submit">Yes, run it</Button>
+            </form>
         </BubbleReactions>
     </Bubble>
 </div>

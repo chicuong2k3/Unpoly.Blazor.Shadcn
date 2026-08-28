@@ -215,6 +215,68 @@
     block-size: var(--control-h);
 }
 
+/* shimmer — a gradient swept through the TEXT itself, not a box behind it.
+   ------------------------------------------------------------------------------------------
+   AttachmentTitle has carried `group-data-[state=uploading]/attachment:shimmer` since it was
+   ported, and MarkerContent takes `shimmer` as a class. Neither did anything: the utility is
+   not part of shadcn's globals — it lives in the CLI's own tailwind.css — so this file never
+   had it, and an undefined utility compiles to nothing without a warning. An uploading file
+   looked identical to a finished one.
+
+   background-clip: text plus a transparent fill is what puts the highlight in the glyphs. The
+   animation reverses under dir="rtl", because a sweep that runs against the reading direction
+   reads as a glitch rather than as progress. Copied from shadcn's tailwind.css. */
+@property --shimmer-angle {
+    syntax: "<angle>";
+    inherits: true;
+    initial-value: 20deg;
+}
+
+@theme inline {
+    @keyframes tw-shimmer {
+        from { background-position: 100% 0; }
+        to { background-position: 0 0; }
+    }
+}
+
+@utility shimmer {
+    --_spread: var(--shimmer-spread, calc(3ch + 40px));
+    --_base: currentColor;
+    --_highlight: var(--shimmer-color, oklch(from currentColor l c h / calc(alpha * 0.2)));
+
+    background-image: var(--shimmer-image, linear-gradient(
+        calc(90deg + var(--shimmer-angle)),
+        var(--_base) calc(50% - var(--_spread)),
+        color-mix(in oklch, var(--_highlight), var(--_base) 50%) calc(50% - var(--_spread) * 0.5),
+        var(--_highlight) 50%,
+        color-mix(in oklch, var(--_highlight), var(--_base) 50%) calc(50% + var(--_spread) * 0.5),
+        var(--_base) calc(50% + var(--_spread))
+    ));
+    background-repeat: no-repeat;
+    background-size: calc(200% + var(--_spread) * 2) 100%;
+    background-position: 0 0;
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: var(--shimmer-text-fill, transparent);
+    animation: tw-shimmer var(--shimmer-duration, 2s) linear infinite;
+
+    @variant dark {
+        --_highlight: var(--shimmer-color,
+            oklch(from currentColor max(0.8, calc(l + 0.4)) c h / calc(alpha + 0.4)));
+    }
+
+    &:where([dir="rtl"], [dir="rtl"] *) {
+        animation-direction: reverse;
+    }
+
+    /* Motion is a preference, and a permanent sweep is exactly what it is about. Nested rather
+       than a second @utility inside @media, which Tailwind does not accept. */
+    @media (prefers-reduced-motion: reduce) {
+        animation: none;
+        -webkit-text-fill-color: currentColor;
+    }
+}
+
 /* shadcn's own base layer, and it is not optional.
    ------------------------------------------------------------------------------------------
    Tailwind's preflight leaves `border-color: currentColor`, so `border-b` with no colour class

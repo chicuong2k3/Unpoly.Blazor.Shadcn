@@ -266,9 +266,12 @@ renders `<article>` · `data-slot="bubble"`
 | `Variant` | `string` | `"default"` |  |
 
 ## `<BubbleContent>`
-renders `<div>` · `data-slot="bubble-content"`
+renders `<a>` · `data-slot="bubble-content"`
 
-_No parameters of its own._
+| Parameter | Type | Default | |
+|---|---|---|---|
+| `Href` | `string?` | — |  |
+| `Type` | `string?` | — |  |
 
 ## `<BubbleGroup>`
 renders `<div>` · `data-slot="bubble-group"`
