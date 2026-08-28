@@ -1,0 +1,21 @@
+@* Inside an InputGroup the trigger is the control, so the addon and the border belong to the group
+   rather than to the combobox — the trigger keeps its own shape out of the way. *@
+<div class="w-80">
+    <InputGroup>
+        <InputGroupAddon><Icon Name="search" Class="size-4" /></InputGroupAddon>
+        <Combobox Target="cb-ig-list" Class="flex-1">
+            <input type="hidden" name="repo" value="unpoly" data-combobox-value />
+            <ComboboxTrigger id="cb-ig" Target="cb-ig-list"
+                             Class="h-9 w-full border-0 bg-transparent shadow-none focus-visible:ring-0">
+                <ComboboxValue data-placeholder="Find a repository…">unpoly-blazor-shadcn</ComboboxValue>
+            </ComboboxTrigger>
+            <ComboboxContent Id="cb-ig-list" Class="w-80">
+                <ComboboxList>
+                    <ComboboxEmpty>No repository by that name.</ComboboxEmpty>
+                    <ComboboxItem Value="unpoly" Selected>unpoly-blazor-shadcn</ComboboxItem>
+                    <ComboboxItem Value="nexora">nexora</ComboboxItem>
+                </ComboboxList>
+            </ComboboxContent>
+        </Combobox>
+    </InputGroup>
+</div>

@@ -4,24 +4,66 @@
 
 <h1 class="doc-h1">Field</h1>
 <p class="doc-lede">
-    shadcn's newer, more structured form set. <code>Orientation</code> is an attribute rather than a class because the recipe keys off it — vertical, horizontal for a checkbox row, or responsive, which stacks below <code>@@md</code> and turns at it.
+    shadcn's newer, more structured form set. <code>Orientation</code> is an attribute rather than
+    a class because the recipe keys off it — vertical, horizontal for a checkbox row, or
+    responsive, which stacks in a narrow container and turns in a wide one.
+</p>
+<p class="doc-note">
+    That attribute was missing here for months, and the effect was invisible in the way the worst
+    bugs are: the vertical classes live in a variant the extractor never read, so every field in
+    the library laid itself out as a row and it looked like a design decision.
 </p>
 
-<h2 class="doc-h2">Field</h2>
+<h2 class="doc-h2">Basic</h2>
+<Example Source="FormFieldBasic.razor"><FormFieldBasic /></Example>
 
-<Example Source="FormFieldBasic.razor">
-    <FormFieldBasic />
-</Example>
+<h2 class="doc-h2">Input</h2>
+<Example Source="FieldInput.razor"><FieldInput /></Example>
 
-<h2 class="doc-h2">Field with an error</h2>
+<h2 class="doc-h2">Textarea</h2>
+<Example Source="FieldTextarea.razor"><FieldTextarea /></Example>
 
-<Example Source="FormFieldError.razor">
-    <FormFieldError />
-</Example>
+<h2 class="doc-h2">Select</h2>
+<Example Source="FieldSelect.razor"><FieldSelect /></Example>
 
-<h2 class="doc-h2">Fieldset and fields</h2>
+<h2 class="doc-h2">Slider</h2>
+<Example Source="FieldSlider.razor"><FieldSlider /></Example>
 
-<p class="doc-note">shadcn's newer, more structured form set. <code>&lt;FormField&gt;</code> is the compact composition over the same primitives — use whichever fits.</p>
-<Example Source="FieldExample.razor">
-    <FieldExample />
-</Example>
+<h2 class="doc-h2">Checkbox</h2>
+<Example Source="FieldCheckbox.razor"><FieldCheckbox /></Example>
+
+<h2 class="doc-h2">Radio</h2>
+<Example Source="FieldRadio.razor"><FieldRadio /></Example>
+
+<h2 class="doc-h2">Switch</h2>
+<Example Source="FieldSwitch.razor"><FieldSwitch /></Example>
+
+<h2 class="doc-h2">Choice Card</h2>
+<Example Source="FieldChoiceCard.razor"><FieldChoiceCard /></Example>
+
+<h2 class="doc-h2">Fieldset</h2>
+<Example Source="FieldExample.razor"><FieldExample /></Example>
+
+<h2 class="doc-h2">Field Group</h2>
+<Example Source="FieldGroupExample.razor"><FieldGroupExample /></Example>
+
+<h2 class="doc-h2">Responsive Layout</h2>
+<p class="doc-note">
+    A container query, not a viewport one — so a field in a narrow sidebar stacks while the same
+    field in the page beside it does not.
+</p>
+<Example Source="FieldResponsive.razor"><FieldResponsive /></Example>
+
+<h2 class="doc-h2">Form</h2>
+<p class="doc-note">
+    <code>up-validate</code> checks a field as it is left, without a page load. Guard the handler
+    with <code>IsUpValidating()</code> before any write — Unpoly fires it on blur, and without the
+    guard every blur would create a record.
+</p>
+<Example Source="FieldForm.razor"><FieldForm /></Example>
+
+<h2 class="doc-h2">Validation and Errors</h2>
+<Example Source="FormFieldError.razor"><FormFieldError /></Example>
+
+<h2 class="doc-h2">RTL</h2>
+<Example Source="FieldRtl.razor"><FieldRtl /></Example>

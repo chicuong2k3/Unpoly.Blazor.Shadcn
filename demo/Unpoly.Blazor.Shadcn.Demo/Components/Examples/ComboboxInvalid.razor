@@ -1,0 +1,22 @@
+@* aria-invalid on the trigger, not a class: the ring is styled from the attribute, so the same
+   markup a server-side validator sets is the markup that turns it red. *@
+<div class="w-72">
+    <Field>
+        <FieldLabel For="cb-invalid">Framework</FieldLabel>
+        <Combobox Target="cb-invalid-list">
+            <input type="hidden" name="framework" value="" data-combobox-value />
+            <ComboboxTrigger id="cb-invalid" Target="cb-invalid-list" aria-invalid="true">
+                <ComboboxValue data-placeholder="Choose one…"></ComboboxValue>
+            </ComboboxTrigger>
+
+            <ComboboxContent Id="cb-invalid-list" Class="w-72">
+                <ComboboxList>
+                    <ComboboxEmpty>Nothing matches that.</ComboboxEmpty>
+                    <ComboboxItem Value="blazor">Blazor</ComboboxItem>
+                    <ComboboxItem Value="rails">Rails</ComboboxItem>
+                </ComboboxList>
+            </ComboboxContent>
+        </Combobox>
+        <FieldError>Pick a framework.</FieldError>
+    </Field>
+</div>

@@ -56,7 +56,7 @@ jobs:
       # Not a --check with a target: the demo is being brought up to what shadcn documents,
       # section by section, and this reports the number and holds a floor under it.
       - name: The demo shows what shadcn shows
-        run: python tools/check_sections.py --check --floor=35
+        run: python tools/check_sections.py --check --floor=304
 
       # The demo's pages are named and ordered as shadcn documents them, so a URL is guessable.
       - name: The demo matches shadcn's docs index

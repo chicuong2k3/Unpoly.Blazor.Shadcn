@@ -1,0 +1,26 @@
+@* Heading="" and <ComboboxLabel> are the same thing said two ways; both end up as the group's
+   accessible name, so a screen reader hears "Europe, Berlin" rather than just "Berlin". *@
+<div class="w-72">
+    <Combobox Target="cb-groups-list">
+        <input type="hidden" name="city" value="berlin" data-combobox-value />
+        <ComboboxTrigger id="cb-groups" Target="cb-groups-list">
+            <ComboboxValue data-placeholder="Choose a city…">Berlin</ComboboxValue>
+        </ComboboxTrigger>
+
+        <ComboboxContent Id="cb-groups-list" Class="w-72">
+            <ComboboxList>
+                <ComboboxEmpty>No city by that name.</ComboboxEmpty>
+                <ComboboxGroup>
+                    <ComboboxLabel>Europe</ComboboxLabel>
+                    <ComboboxItem Value="berlin" Selected>Berlin</ComboboxItem>
+                    <ComboboxItem Value="lisbon">Lisbon</ComboboxItem>
+                </ComboboxGroup>
+                <ComboboxSeparator />
+                <ComboboxGroup Heading="Asia">
+                    <ComboboxItem Value="hanoi">Hà Nội</ComboboxItem>
+                    <ComboboxItem Value="osaka">Osaka</ComboboxItem>
+                </ComboboxGroup>
+            </ComboboxList>
+        </ComboboxContent>
+    </Combobox>
+</div>

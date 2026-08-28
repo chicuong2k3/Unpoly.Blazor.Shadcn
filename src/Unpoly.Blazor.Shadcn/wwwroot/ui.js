@@ -579,6 +579,19 @@
 
     const shown = () => items().filter((i) => !i.hidden)
 
+    // data-label when the row carries one, because textContent on a row with an avatar and a
+    // description returns all three run together — and that string is what the trigger shows.
+    const label = (item) => item.dataset.label || item.textContent.replace(/\s+/g, ' ').trim()
+
+    // Read the state rather than remember it. The button was unhidden only by choose(), so a
+    // value the SERVER rendered — the ordinary case after a fragment swap, or after a form comes
+    // back with errors — left a chosen combobox with no way to clear it, and the multiple branch
+    // never unhid it at all.
+    const syncClear = () => {
+      if (!clear) return
+      clear.hidden = !(hidden?.value || root.querySelector('[data-slot="combobox-chip"]'))
+    }
+
     const filter = () => {
       const q = fold((input?.value || '').trim())
       let count = 0
@@ -602,8 +615,8 @@
           other.setAttribute('aria-selected', String(on))
         }
         if (hidden) hidden.value = item.dataset.value
-        if (value) value.textContent = item.textContent.trim()
-        if (clear) clear.hidden = false
+        if (value) value.textContent = label(item)
+        syncClear()
         panel.hidePopover()
         trigger?.focus()
         return
@@ -614,13 +627,13 @@
       const chips = root.querySelector('[data-slot="combobox-chips"]')
       if (!chips) return
       const existing = chips.querySelector(`[data-slot="combobox-chip"][data-value="${item.dataset.value}"]`)
-      if (existing) { existing.remove(); delete item.dataset.selected; return }
+      if (existing) { existing.remove(); delete item.dataset.selected; syncClear(); return }
       item.dataset.selected = 'true'
       const chip = document.createElement('span')
       chip.dataset.slot = 'combobox-chip'
       chip.dataset.value = item.dataset.value
       chip.className = chips.dataset.chipClass || ''
-      chip.textContent = item.textContent.trim()
+      chip.textContent = label(item)
       const post = document.createElement('input')
       post.type = 'hidden'
       post.name = chips.dataset.name || ''
@@ -628,6 +641,7 @@
       chip.appendChild(post)
       chips.insertBefore(chip, input)
       if (input) input.value = ''
+      syncClear()
       filter()
     }
 
@@ -638,6 +652,7 @@
         const item = items().find((i) => i.dataset.value === chip?.dataset.value)
         if (item) delete item.dataset.selected
         chip?.remove()
+        syncClear()
         return
       }
       const item = event.target.closest('[data-slot="combobox-item"]')
@@ -668,7 +683,7 @@
       if (hidden) hidden.value = ''
       if (input) input.value = ''
       if (value) value.textContent = value.dataset.placeholder || ''
-      clear.hidden = true
+      syncClear()
       filter()
     }
 
@@ -687,6 +702,7 @@
     clear?.addEventListener('click', onClear)
     panel.addEventListener('toggle', onToggle)
     filter()
+    syncClear()
 
     return () => {
       panel.removeEventListener('click', onClick)

@@ -497,7 +497,8 @@ renders `<button>` · `data-slot="combobox-item"`
 | Parameter | Type | Default | |
 |---|---|---|---|
 | `Value` | `string` | `default!` |  |
-| `Keywords` | `string?` | — | **required** |
+| `Label` | `string?` | — | **required** |
+| `Keywords` | `string?` | — |  |
 | `Selected` | `bool` | — |  |
 | `Disabled` | `bool` | — |  |
 

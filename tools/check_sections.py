@@ -90,6 +90,14 @@ NOT_HERE = {
 # one mechanical section sixty times over.
 RTL = 'RTL'
 
+# The three pages where that demo would show nothing, with the reason. Same rule as NOT_HERE:
+# a page that quietly omits it is indistinguishable from one that forgot.
+RTL_NOT_HERE = {
+    'aspect-ratio': 'a ratio has no start or end edge; the markup under dir="rtl" is identical',
+    'data-table': 'this page is prose — the demo lives in the data table block',
+    'sidebar': 'the same; the page documents the cookie, and the block is the live sidebar',
+}
+
 # Our heading for shadcn's, where the two say the same thing in different words.
 ALIASES = {
     'Sizes': 'Size', 'Variants': 'Variant', 'Basic': None,
@@ -142,6 +150,8 @@ def main() -> int:
             if heading in PROSE:
                 continue
             if heading == RTL:
+                if slug in RTL_NOT_HERE:
+                    continue
                 rtl_want += 1
                 if 'rtl' in ours:
                     rtl_have += 1
@@ -166,17 +176,19 @@ def main() -> int:
     print(f'demo sections: {have_total}/{want_total} of what shadcn documents '
           f'({len(PROSE)} kinds of heading are prose, {len(NOT_HERE)} demos cannot exist here '
           f'and each says why)')
-    print(f'RTL: {rtl_have}/{rtl_want} pages show the component under dir="rtl"')
+    print(f'RTL: {rtl_have}/{rtl_want} pages show the component under dir="rtl" '
+          f'({len(RTL_NOT_HERE)} more would show nothing, and each says why)')
 
     if report:
         print(f'\n{sum(len(m) for _, _, _, m in report)} still to write, across '
               f'{len(report)} pages. Run with --missing for the list.')
 
-    # A floor rather than a target: this is being closed page by page, and the number may only
-    # go up. Raise it as pages land.
+    # The gap is closed, so the floor is the whole number: every demo shadcn documents either
+    # exists here or is in NOT_HERE with a reason. A new upstream section then arrives as a CI
+    # failure, which is the only way anyone would notice one.
     floor = int(next((a.split('=')[1] for a in sys.argv if a.startswith('--floor=')), 30))
-    if '--check' in sys.argv and have_total < floor:
-        print(f'\nbelow the floor of {floor}.', file=sys.stderr)
+    if '--check' in sys.argv and (have_total < floor or rtl_have < rtl_want):
+        print(f'\nbelow the floor of {floor}, or an RTL demo went missing.', file=sys.stderr)
         return 1
     return 0
 

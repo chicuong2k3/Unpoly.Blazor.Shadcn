@@ -1,0 +1,26 @@
+@* A whole form. up-validate checks a field as it is left, without a page load — and the handler
+   must guard with IsUpValidating() before any write, because Unpoly fires it on blur and without
+   the guard every blur would create a record. *@
+<form method="post" action="/account" up-target=".preview" up-disable class="w-[420px]">
+    <AntiforgeryToken />
+    <FieldSet>
+        <FieldLegend>Your details</FieldLegend>
+        <FieldDescription>Only the email is shown to anyone else.</FieldDescription>
+
+        <FieldGroup>
+            <Field>
+                <FieldLabel For="ff-name">Name</FieldLabel>
+                <Input id="ff-name" name="name" required up-validate />
+            </Field>
+            <Field>
+                <FieldLabel For="ff-email">Email</FieldLabel>
+                <Input id="ff-email" name="email" type="email" required up-validate />
+            </Field>
+            <Field Orientation="horizontal">
+                <Checkbox id="ff-news" name="newsletter" value="yes" />
+                <FieldLabel For="ff-news">Send me the newsletter</FieldLabel>
+            </Field>
+            <Button Type="submit" Class="w-fit">Save</Button>
+        </FieldGroup>
+    </FieldSet>
+</form>

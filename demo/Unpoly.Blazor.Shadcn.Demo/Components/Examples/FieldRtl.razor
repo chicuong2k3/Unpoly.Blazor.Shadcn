@@ -1,0 +1,14 @@
+@* A horizontal field puts the label on the reading edge, because the row is flex and flex follows
+   the direction. Nothing in the component is told which side that is. *@
+<div dir="rtl">
+    <FieldGroup Class="w-[420px]">
+        <Field>
+            <FieldLabel For="fr-name">الاسم</FieldLabel>
+            <Input id="fr-name" name="name" />
+        </Field>
+        <Field Orientation="horizontal">
+            <FieldLabel For="fr-news">أرسل لي النشرة</FieldLabel>
+            <Switch id="fr-news" Class="ms-auto" />
+        </Field>
+    </FieldGroup>
+</div>
