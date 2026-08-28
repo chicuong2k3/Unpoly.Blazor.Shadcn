@@ -1,13 +1,24 @@
-@* A context menu has no side: it opens where the pointer was, and the compiler only keeps it on
-   screen. That is the one structural difference from a dropdown, and the reason this component
-   has no Align or Side parameter to set. *@
-<ContextMenu Target="cm-sides">
-    <ContextMenuTrigger Class="flex h-40 w-full max-w-lg items-center justify-center rounded-md border border-dashed text-sm text-muted-foreground">
-        Right-click near an edge — the menu stays on screen
-    </ContextMenuTrigger>
-    <ContextMenuContent Id="cm-sides" Class="w-48">
-        <ContextMenuItem>Open</ContextMenuItem>
-        <ContextMenuItem>Rename</ContextMenuItem>
-        <ContextMenuItem>Delete</ContextMenuItem>
-    </ContextMenuContent>
-</ContextMenu>
+@* Four boxes, four sides — upstream's own grid. Side places the menu against the trigger's
+   edge instead of at the pointer, which is the exception a context menu allows for when the
+   menu belongs to the box rather than to the click. *@
+<div class="grid w-full max-w-sm grid-cols-2 gap-4">
+    @foreach (var side in Sides)
+    {
+        <ContextMenu Target="@($"cm-side-{side}")">
+            <ContextMenuTrigger Class="flex aspect-video w-full items-center justify-center rounded-xl border border-dashed text-sm">
+                Right click (@side)
+            </ContextMenuTrigger>
+            <ContextMenuContent Id="@($"cm-side-{side}")" Side="@side" Class="w-40">
+                <ContextMenuGroup>
+                    <ContextMenuItem>Back</ContextMenuItem>
+                    <ContextMenuItem>Forward</ContextMenuItem>
+                    <ContextMenuItem>Reload</ContextMenuItem>
+                </ContextMenuGroup>
+            </ContextMenuContent>
+        </ContextMenu>
+    }
+</div>
+
+@code {
+    static readonly string[] Sides = ["top", "right", "bottom", "left"];
+}

@@ -450,8 +450,39 @@
       else if (event.key === 'Home') { event.preventDefault(); items[0].focus() }
       else if (event.key === 'End') { event.preventDefault(); items[items.length - 1].focus() }
     }
+    // Hovering a sub-trigger opens its submenu, as Radix does — a menu is a pointer surface,
+    // and needing a CLICK to open a submenu reads as broken. Hovering a plain item closes any
+    // submenu hanging off this panel, so moving down the list retracts what you passed.
+    let hoverTimer
+    const onOver = (event) => {
+      const sub = event.target.closest('[data-slot$="-sub-trigger"]')
+      clearTimeout(hoverTimer)
+      if (sub && panel.contains(sub)) {
+        hoverTimer = setTimeout(() => {
+          const child = document.getElementById(sub.dataset.target)
+          if (child && !child.matches(':popover-open')) sub.click()
+        }, 100)
+        return
+      }
+      const item = event.target.closest('[data-slot$="-item"]')
+      if (item && item.parentElement?.closest('[data-slot]') !== null) {
+        hoverTimer = setTimeout(() => {
+          for (const open of panel.querySelectorAll(':scope ~ * [data-slot$="sub-content"]:popover-open')) open.hidePopover()
+          for (const id of [...panel.querySelectorAll('[data-slot$="-sub-trigger"]')].map((s) => s.dataset.target)) {
+            const child = document.getElementById(id)
+            if (child?.matches(':popover-open')) child.hidePopover()
+          }
+        }, 150)
+      }
+    }
+
     panel.addEventListener('keydown', onKey)
-    return () => panel.removeEventListener('keydown', onKey)
+    panel.addEventListener('pointerover', onOver)
+    return () => {
+      panel.removeEventListener('keydown', onKey)
+      panel.removeEventListener('pointerover', onOver)
+      clearTimeout(hoverTimer)
+    }
   })
 
   // Choosing an item closes the menu it is in, and any menu that opened it. Nothing did this:
@@ -645,6 +676,26 @@
       // The keyboard route carries no pointer position, and 0,0 from a key press would put the
       // menu in the corner of the screen rather than on the thing it belongs to.
       const box = panel.getBoundingClientRect()
+      const side = panel.dataset.side
+
+      if (side) {
+        // side places against the TRIGGER's edge rather than the pointer — upstream's side
+        // prop. A context menu normally has no side; this exists for the few cases where the
+        // menu belongs to the box rather than to the click.
+        const a = trigger.getBoundingClientRect()
+        const centreX = a.left + a.width / 2 - box.width / 2
+        const centreY = a.top + a.height / 2 - box.height / 2
+        const spot = side === 'top' ? [centreX, a.top - box.height - 4]
+          : side === 'bottom' ? [centreX, a.bottom + 4]
+          : side === 'left' ? [a.left - box.width - 4, centreY]
+          : [a.right + 4, centreY]
+        put(panel, { left: Math.max(8, Math.min(spot[0], window.innerWidth - box.width - 8)) },
+            Math.max(8, Math.min(spot[1], window.innerHeight - box.height - 8)))
+        trigger.setAttribute('aria-expanded', 'true')
+        panel.querySelector('[data-slot$="-item"]:not([data-disabled])')?.focus()
+        return
+      }
+
       const fromKeyboard = event.clientX === 0 && event.clientY === 0
       const at = fromKeyboard ? trigger.getBoundingClientRect() : null
       const x = at ? at.left : event.clientX
@@ -658,6 +709,9 @@
     }
 
     const onToggle = (event) => {
+      // The page must not scroll under an open context menu — the panel is fixed, so scrolling
+      // detaches it from the thing it belongs to. Radix locks the page; so does this.
+      document.documentElement.style.overflow = event.newState === 'open' ? 'hidden' : ''
       if (event.newState !== 'open') trigger.setAttribute('aria-expanded', 'false')
     }
 

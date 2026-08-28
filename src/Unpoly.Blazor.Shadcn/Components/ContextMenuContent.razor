@@ -1,13 +1,19 @@
 @inherits UiComponentBase
 
 @* Positioned at the pointer rather than against the trigger — that is the only structural
-   difference from a dropdown, and it is why this has no Align or Side. *@
+   difference from a dropdown. Side overrides that for the few cases where the menu belongs to
+   the box rather than to the click, as upstream's side prop does: the panel then opens against
+   the trigger's named edge, centred along it. *@
 
-<div id="@Id" popover data-slot="context-menu-content" role="menu" class="@Classes"
+<div id="@Id" popover data-slot="context-menu-content" role="menu" data-side="@Side"
+     class="@Classes"
      @attributes="AdditionalAttributes">@ChildContent</div>
 
 @code {
     [Parameter, EditorRequired] public string Id { get; set; } = default!;
+
+    /// <summary>top | right | bottom | left. Unset — the default — opens at the pointer.</summary>
+    [Parameter] public string? Side { get; set; }
 
     const string Base =
         "z-50 max-h-(--radix-context-menu-content-available-height) min-w-[8rem] " +

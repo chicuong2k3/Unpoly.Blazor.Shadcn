@@ -7,12 +7,12 @@
        aria-checked="@(Checked ? "true" : "false")"
        data-disabled="@(Disabled ? "" : null)" class="@Classes"
        @attributes="AdditionalAttributes">
-    @* bg-current painted the dot whether or not the item was chosen, so every row in the group
-       looked selected. The dot is the input's own ::after, which appears on :checked and nowhere
-       else — so the background here has to be nothing at all. *@
+    @* Upstream's indicator: a filled dot that exists only while chosen — not a radio control.
+       The real input stays for the form, unseen. *@
     <span class="pointer-events-none absolute start-2 flex size-3.5 items-center justify-center">
-        <RadioGroupItem name="@Name" value="@Value" checked="@Checked" disabled="@Disabled"
-                        Class="size-2 border-0 bg-transparent shadow-none" />
+        <input type="radio" name="@Name" value="@Value" checked="@Checked"
+               disabled="@Disabled" class="peer sr-only" />
+        <span class="size-2 rounded-full bg-current opacity-0 peer-checked:opacity-100"></span>
     </span>
     @ChildContent
 </label>

@@ -9,8 +9,9 @@
        data-disabled="@(Disabled ? "" : null)" class="@Classes"
        @attributes="AdditionalAttributes">
     <span class="pointer-events-none absolute start-2 flex size-3.5 items-center justify-center">
-        <Checkbox name="@Name" value="@Value" checked="@Checked" disabled="@Disabled"
-                  Class="size-3.5 rounded-[3px]" />
+        <input type="checkbox" name="@Name" value="@Value" checked="@Checked"
+               disabled="@Disabled" class="peer sr-only" />
+        <Icon Name="check" Class="size-4 opacity-0 peer-checked:opacity-100" />
     </span>
     @ChildContent
 </label>

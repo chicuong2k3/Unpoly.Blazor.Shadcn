@@ -655,6 +655,7 @@ renders `<div>` · `data-slot="context-menu-content"`
 | Parameter | Type | Default | |
 |---|---|---|---|
 | `Id` | `string` | `default!` |  |
+| `Side` | `string?` | — | **required** |
 
 ## `<ContextMenuGroup>`
 renders `<div>` · `data-slot="context-menu-group"`

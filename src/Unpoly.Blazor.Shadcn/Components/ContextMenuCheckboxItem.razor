@@ -1,16 +1,20 @@
 @inherits UiComponentBase
 
 @* Radix draws the tick itself and keeps the checked state in React. Here the state is a real
-   <input type="checkbox"> inside the row, so the menu item posts with the form it belongs to and
-   the tick is the platform's. *@
+   <input type="checkbox"> inside the row, so the menu item posts with the form it belongs to —
+   but what shows is shadcn's indicator: a tick while checked, nothing while not. A visible
+   checkbox control in a menu row reads as a form, and a menu is not a form. *@
 
 <label data-slot="context-menu-checkbox-item" role="menuitemcheckbox"
        aria-checked="@(Checked ? "true" : "false")"
        data-disabled="@(Disabled ? "" : null)" class="@Classes"
        @attributes="AdditionalAttributes">
+    @* The indicator is a tick that exists only while checked — upstream's ItemIndicator with a
+       CheckIcon, not a visible checkbox control. The real input stays for the form, unseen. *@
     <span class="pointer-events-none absolute start-2 flex size-3.5 items-center justify-center">
-        <Checkbox name="@Name" value="@Value" checked="@Checked" disabled="@Disabled"
-                  Class="size-3.5 rounded-[3px]" />
+        <input type="checkbox" name="@Name" value="@Value" checked="@Checked"
+               disabled="@Disabled" class="peer sr-only" />
+        <Icon Name="check" Class="size-4 opacity-0 peer-checked:opacity-100" />
     </span>
     @ChildContent
 </label>
