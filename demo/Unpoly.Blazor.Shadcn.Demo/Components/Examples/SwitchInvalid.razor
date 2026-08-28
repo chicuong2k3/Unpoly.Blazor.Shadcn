@@ -1,0 +1,10 @@
+@* A switch can be invalid: a setting that cannot be turned on until something else is true is a
+   validation failure, not a disabled control — and saying so is better than silently refusing. *@
+<Field Invalid Class="w-[440px]">
+    <div class="flex items-center justify-between gap-4">
+        <FieldLabel For="sw-live">Take the shop live</FieldLabel>
+        <Switch id="sw-live" name="live" value="yes" aria-invalid="true"
+                aria-describedby="sw-live-error" />
+    </div>
+    <FieldError id="sw-live-error">Add a payment method first.</FieldError>
+</Field>

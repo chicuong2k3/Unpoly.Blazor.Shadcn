@@ -1,0 +1,8 @@
+@* aria-invalid is what turns the field destructive — the border, the ring and the label all read
+   it, so there is one source of truth and a screen reader shares it. *@
+<Field Invalid Class="w-[420px]">
+    <FieldLabel For="ta-reason">Reason for the refund</FieldLabel>
+    <Textarea id="ta-reason" name="reason" rows="3" aria-invalid="true"
+              aria-describedby="ta-reason-error" />
+    <FieldError id="ta-reason-error">Tell us what happened — a word or two is enough.</FieldError>
+</Field>

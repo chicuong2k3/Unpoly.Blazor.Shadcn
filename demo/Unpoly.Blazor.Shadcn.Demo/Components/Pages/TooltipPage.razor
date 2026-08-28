@@ -4,9 +4,31 @@
 
 <h1 class="doc-h1">Tooltip</h1>
 <p class="doc-lede">
-    Hover <em>and</em> focus, because a tooltip only a mouse can reach is one half the readers never see. Escape closes it, which the APG asks for and most implementations forget.
+    Hover <em>and</em> focus, because a tooltip only a mouse can reach is one half the readers
+    never see. Escape closes it, which the APG asks for and most implementations forget.
+</p>
+<p class="doc-note">
+    There is no <code>TooltipProvider</code>: shadcn's shares one delay timer across a page, and
+    each tooltip here keeps its own. The visible difference is that moving between two adjacent
+    triggers waits twice rather than once.
 </p>
 
-<Example Source="TooltipExample.razor">
-    <TooltipExample />
-</Example>
+<h2 class="doc-h2">Basic</h2>
+<Example Source="TooltipExample.razor"><TooltipExample /></Example>
+
+<h2 class="doc-h2">Side</h2>
+<Example Source="TooltipSide.razor"><TooltipSide /></Example>
+
+<h2 class="doc-h2">With Keyboard Shortcut</h2>
+<Example Source="TooltipShortcut.razor"><TooltipShortcut /></Example>
+
+<h2 class="doc-h2">Disabled Button</h2>
+<p class="doc-note">
+    A disabled button fires no pointer events, so a tooltip on it never opens — at the one moment
+    a reader most needs to be told why. Wrap it: the span takes the hover and the button stays
+    disabled.
+</p>
+<Example Source="TooltipDisabledButton.razor"><TooltipDisabledButton /></Example>
+
+<h2 class="doc-h2">RTL</h2>
+<Example Source="TooltipRtl.razor"><TooltipRtl /></Example>

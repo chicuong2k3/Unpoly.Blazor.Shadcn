@@ -4,9 +4,36 @@
 
 <h1 class="doc-h1">Switch</h1>
 <p class="doc-lede">
-    The same input as Checkbox, presented as a state that is on or off rather than ticked. <code>role="switch"</code> is what tells a screen reader the difference.
+    The same input as Checkbox, presented as a state that is on or off rather than ticked.
+    <code>role="switch"</code> is what tells a screen reader the difference — without it this is a
+    checkbox that merely looks unusual.
 </p>
 
-<Example Source="SwitchRow.razor">
-    <SwitchRow />
-</Example>
+<h2 class="doc-h2">Basic</h2>
+<Example Source="SwitchRow.razor"><SwitchRow /></Example>
+
+<h2 class="doc-h2">Description</h2>
+<Example Source="SwitchDescription.razor"><SwitchDescription /></Example>
+
+<h2 class="doc-h2">Size</h2>
+<Example Source="SwitchSize.razor"><SwitchSize /></Example>
+
+<h2 class="doc-h2">Disabled</h2>
+<Example Source="SwitchDisabled.razor"><SwitchDisabled /></Example>
+
+<h2 class="doc-h2">Invalid</h2>
+<p class="doc-note">
+    A setting that cannot be turned on until something else is true is a validation failure, not a
+    disabled control — and saying so is better than silently refusing.
+</p>
+<Example Source="SwitchInvalid.razor"><SwitchInvalid /></Example>
+
+<h2 class="doc-h2">Choice Card</h2>
+<p class="doc-note">
+    The whole card is the label, so the entire panel is the hit target, and the state is legible
+    from the border because <code>has-[:checked]</code> reads the input rather than a copy of it.
+</p>
+<Example Source="SwitchChoiceCard.razor"><SwitchChoiceCard /></Example>
+
+<h2 class="doc-h2">RTL</h2>
+<Example Source="SwitchRtl.razor"><SwitchRtl /></Example>

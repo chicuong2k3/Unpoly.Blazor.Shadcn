@@ -1,0 +1,7 @@
+@* Reach for this only when the work is not a request. A button that starts an Unpoly request
+   already grows its own from .up-active, with no parameter and nothing to clear afterwards. *@
+<div class="flex flex-wrap items-center gap-3">
+    <Button disabled><Spinner />Saving…</Button>
+    <Button Variant="outline" disabled><Spinner />Checking</Button>
+    <Button Size="icon" disabled aria-label="Working"><Spinner /></Button>
+</div>

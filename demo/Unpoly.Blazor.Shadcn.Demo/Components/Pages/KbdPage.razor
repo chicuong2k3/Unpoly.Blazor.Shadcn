@@ -4,9 +4,32 @@
 
 <h1 class="doc-h1">Kbd</h1>
 <p class="doc-lede">
-    A key, as <code>&lt;kbd&gt;</code>. The element is the meaning.
+    A key, as <code>&lt;kbd&gt;</code>. The element is the meaning — a styled
+    <code>&lt;span&gt;</code> looks the same and says nothing.
 </p>
 
-<Example Source="KbdExample.razor">
-    <KbdExample />
-</Example>
+<h2 class="doc-h2">Basic</h2>
+<Example Source="KbdExample.razor"><KbdExample /></Example>
+
+<h2 class="doc-h2">Group</h2>
+<p class="doc-note">
+    A chord is a group rather than three keys with spaces between them: the group is what says
+    they are pressed together.
+</p>
+<Example Source="KbdGroupExample.razor"><KbdGroupExample /></Example>
+
+<h2 class="doc-h2">Button</h2>
+<Example Source="KbdButton.razor"><KbdButton /></Example>
+
+<h2 class="doc-h2">Tooltip</h2>
+<p class="doc-note">
+    Where the shortcut does not fit on the control. The tooltip opens on focus as well as on
+    hover, so the hint is reachable by the keyboard it is describing.
+</p>
+<Example Source="KbdTooltip.razor"><KbdTooltip /></Example>
+
+<h2 class="doc-h2">Input Group</h2>
+<Example Source="KbdInputGroup.razor"><KbdInputGroup /></Example>
+
+<h2 class="doc-h2">RTL</h2>
+<Example Source="KbdRtl.razor"><KbdRtl /></Example>

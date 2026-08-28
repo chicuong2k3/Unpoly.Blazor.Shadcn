@@ -1,0 +1,23 @@
+@* The header is real and only the rows are placeholders — the column names are known before the
+   data is, so drawing them as grey bars throws away something the reader could already use. *@
+<div class="w-[520px] overflow-hidden rounded-lg border">
+    <Table>
+        <TableHeader>
+            <TableRow>
+                <TableHead>Order</TableHead>
+                <TableHead>Customer</TableHead>
+                <TableHead Class="text-right">Total</TableHead>
+            </TableRow>
+        </TableHeader>
+        <TableBody>
+            @foreach (var i in Enumerable.Range(0, 4))
+            {
+                <TableRow>
+                    <TableCell><Skeleton Class="h-4 w-14" /></TableCell>
+                    <TableCell><Skeleton Class="h-4 w-28" /></TableCell>
+                    <TableCell Class="flex justify-end"><Skeleton Class="h-4 w-16" /></TableCell>
+                </TableRow>
+            }
+        </TableBody>
+    </Table>
+</div>

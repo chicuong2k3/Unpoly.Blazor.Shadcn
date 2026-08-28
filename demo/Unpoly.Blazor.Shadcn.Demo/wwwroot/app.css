@@ -422,6 +422,12 @@
   .my-4 {
     margin-block: calc(var(--spacing) * 4);
   }
+  .ms-1 {
+    margin-inline-start: var(--spacing);
+  }
+  .ms-2 {
+    margin-inline-start: calc(var(--spacing) * 2);
+  }
   .ms-4 {
     margin-inline-start: calc(var(--spacing) * 4);
   }
@@ -611,6 +617,12 @@
   .h-2 {
     height: calc(var(--spacing) * 2);
   }
+  .h-3 {
+    height: calc(var(--spacing) * 3);
+  }
+  .h-3\.5 {
+    height: calc(var(--spacing) * 3.5);
+  }
   .h-4 {
     height: calc(var(--spacing) * 4);
   }
@@ -637,6 +649,9 @@
   }
   .h-16 {
     height: calc(var(--spacing) * 16);
+  }
+  .h-24 {
+    height: calc(var(--spacing) * 24);
   }
   .h-40 {
     height: calc(var(--spacing) * 40);
@@ -697,6 +712,9 @@
   }
   .max-h-32 {
     max-height: calc(var(--spacing) * 32);
+  }
+  .max-h-40 {
+    max-height: calc(var(--spacing) * 40);
   }
   .max-h-60 {
     max-height: calc(var(--spacing) * 60);
@@ -764,8 +782,23 @@
   .w-12 {
     width: calc(var(--spacing) * 12);
   }
+  .w-14 {
+    width: calc(var(--spacing) * 14);
+  }
+  .w-16 {
+    width: calc(var(--spacing) * 16);
+  }
+  .w-20 {
+    width: calc(var(--spacing) * 20);
+  }
   .w-24 {
     width: calc(var(--spacing) * 24);
+  }
+  .w-28 {
+    width: calc(var(--spacing) * 28);
+  }
+  .w-32 {
+    width: calc(var(--spacing) * 32);
   }
   .w-40 {
     width: calc(var(--spacing) * 40);
@@ -787,6 +820,15 @@
   }
   .w-80 {
     width: calc(var(--spacing) * 80);
+  }
+  .w-\[60\%\] {
+    width: 60%;
+  }
+  .w-\[92\%\] {
+    width: 92%;
+  }
+  .w-\[97\%\] {
+    width: 97%;
   }
   .w-\[100px\] {
     width: 100px;
@@ -818,6 +860,9 @@
   .w-\[320px\] {
     width: 320px;
   }
+  .w-\[340px\] {
+    width: 340px;
+  }
   .w-\[360px\] {
     width: 360px;
   }
@@ -826,6 +871,9 @@
   }
   .w-\[420px\] {
     width: 420px;
+  }
+  .w-\[440px\] {
+    width: 440px;
   }
   .w-\[460px\] {
     width: 460px;
@@ -2847,6 +2895,12 @@
   }
   .has-\[\:checked\]\:bg-primary:has(:is(:checked)) {
     background-color: var(--primary);
+  }
+  .has-\[\:checked\]\:bg-primary\/5:has(:is(:checked)) {
+    background-color: var(--primary);
+    @supports (color: color-mix(in lab, red, red)) {
+      background-color: color-mix(in oklab, var(--primary) 5%, transparent);
+    }
   }
   .has-\[\:checked\]\:text-accent-foreground:has(:is(:checked)) {
     color: var(--accent-foreground);

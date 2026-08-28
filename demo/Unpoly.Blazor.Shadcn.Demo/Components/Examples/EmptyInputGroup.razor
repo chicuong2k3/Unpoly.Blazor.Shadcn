@@ -1,0 +1,20 @@
+@* The action in an empty state can be a field rather than a button — "nothing matched, try
+   another search" is better answered by a search box than by a link back. *@
+<Empty Class="w-full max-w-lg">
+    <EmptyHeader>
+        <EmptyIcon><Icon Name="search" Class="size-5" /></EmptyIcon>
+        <EmptyTitle>No results for “corset”</EmptyTitle>
+        <EmptyDescription>Try a shorter word, or browse the catalogue.</EmptyDescription>
+    </EmptyHeader>
+    <EmptyContent>
+        <form method="get" class="w-full max-w-sm">
+            <InputGroup>
+                <InputGroupAddon><Icon Name="search" /></InputGroupAddon>
+                <InputGroupControl name="q" type="search" placeholder="Search again…" />
+                <InputGroupAddon Align="inline-end">
+                    <InputGroupButton Type="submit" Variant="ghost">Go</InputGroupButton>
+                </InputGroupAddon>
+            </InputGroup>
+        </form>
+    </EmptyContent>
+</Empty>

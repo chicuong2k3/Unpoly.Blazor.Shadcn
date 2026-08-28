@@ -4,9 +4,38 @@
 
 <h1 class="doc-h1">Skeleton</h1>
 <p class="doc-lede">
-    Worth knowing where this belongs: on static SSR the server finishes rendering before a byte reaches the browser, so a skeleton the server draws is one nobody sees. It is for <code>[up-placeholder]</code>, which means it lives in a <code>&lt;template&gt;</code>.
+    Worth knowing where this belongs before using it: on static SSR the server finishes rendering
+    before a byte reaches the browser, so a skeleton the server draws is one nobody ever sees. It
+    is for <code>[up-placeholder]</code> — the fragment Unpoly shows while a swap is in flight —
+    which means it lives in a <code>&lt;template&gt;</code> in the layout, not in the page it
+    stands in for.
 </p>
 
-<Example Source="SkeletonExample.razor">
-    <SkeletonExample />
-</Example>
+<h2 class="doc-h2">Basic</h2>
+<Example Source="SkeletonExample.razor"><SkeletonExample /></Example>
+
+<h2 class="doc-h2">Avatar</h2>
+<Example Source="SkeletonAvatar.razor"><SkeletonAvatar /></Example>
+
+<h2 class="doc-h2">Text</h2>
+<p class="doc-note">
+    Lines of unequal length. Equal ones read as a barcode, and the last line of a paragraph is
+    never full width.
+</p>
+<Example Source="SkeletonText.razor"><SkeletonText /></Example>
+
+<h2 class="doc-h2">Card</h2>
+<Example Source="SkeletonCard.razor"><SkeletonCard /></Example>
+
+<h2 class="doc-h2">Form</h2>
+<Example Source="SkeletonForm.razor"><SkeletonForm /></Example>
+
+<h2 class="doc-h2">Table</h2>
+<p class="doc-note">
+    The header is real and only the rows are placeholders: the column names are known before the
+    data is, and drawing them as grey bars throws away something the reader could already use.
+</p>
+<Example Source="SkeletonTable.razor"><SkeletonTable /></Example>
+
+<h2 class="doc-h2">RTL</h2>
+<Example Source="SkeletonRtl.razor"><SkeletonRtl /></Example>
