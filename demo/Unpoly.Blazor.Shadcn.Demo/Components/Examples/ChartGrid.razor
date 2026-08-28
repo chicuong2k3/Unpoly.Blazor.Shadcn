@@ -1,0 +1,32 @@
+@* Grid lines, which is the next thing a bar chart needs after bars. They are a repeating-linear
+   gradient on the plot area rather than elements, so there is nothing to keep in step with the
+   number of bars and nothing extra for a screen reader to read out. *@
+<Chart Id="revenue-grid" Series="@Palette" Class="h-56 w-full max-w-lg">
+    <table class="h-full w-full">
+        <caption class="sr-only">Revenue by week, in US dollars, with grid lines every 25%</caption>
+        <thead class="sr-only">
+            <tr><th scope="col">Week</th><th scope="col">Revenue</th></tr>
+        </thead>
+        <tbody class="flex h-full items-stretch gap-2 bg-[repeating-linear-gradient(to_top,var(--border)_0_1px,transparent_1px_25%)]">
+            @foreach (var (label, value) in Weeks)
+            {
+                <tr class="flex flex-1 flex-col items-center justify-end gap-1.5">
+                    <td class="w-full rounded-sm" style="@($"height: {value * 100 / 62}%; background: var(--color-revenue)")">
+                        <span class="sr-only">@(value)00 dollars</span>
+                    </td>
+                    <th scope="row" class="text-[10px] font-normal text-muted-foreground">@label</th>
+                </tr>
+            }
+        </tbody>
+    </table>
+</Chart>
+
+@code {
+    static readonly Dictionary<string, string> Palette = new() { ["revenue"] = "var(--chart-1)" };
+
+    static readonly (string Label, int Value)[] Weeks =
+    [
+        ("W1", 29), ("W2", 34), ("W3", 31), ("W4", 42), ("W5", 39),
+        ("W6", 48), ("W7", 44), ("W8", 56), ("W9", 51), ("W10", 62),
+    ];
+}

@@ -215,6 +215,111 @@
     block-size: var(--control-h);
 }
 
+/* scroll-fade — the content fades out where it runs off the end of its scroller.
+   ------------------------------------------------------------------------------------------
+   AttachmentGroup asks for `scroll-fade-x` and MessageScrollerViewport for `scroll-fade-b`, and
+   neither existed: like `shimmer`, this utility lives in shadcn's CLI stylesheet rather than in
+   its globals, so this file never had it and both compiled to nothing. A row of attachments
+   simply stopped dead at the edge instead of fading, which reads as a layout that has not been
+   finished rather than as a missing utility.
+
+   Two of the family, because two are what this library uses. The rest — scroll-fade-t, -s, -e,
+   -l, -r, the sizing modifiers — are in shadcn's tailwind.css if a caller ever needs them.
+
+   The mask is animated by a SCROLL timeline, so the fade appears only on the side there is more
+   content on. Browsers without scroll-driven animations get the fade permanently, which is the
+   right way round: a hint that is always on beats a hint that is never on. */
+@property --scroll-fade-b {
+    syntax: "<length-percentage>";
+    inherits: false;
+    initial-value: 0px;
+}
+
+@property --scroll-fade-s {
+    syntax: "<length-percentage>";
+    inherits: false;
+    initial-value: 0px;
+}
+
+@property --scroll-fade-e {
+    syntax: "<length-percentage>";
+    inherits: false;
+    initial-value: 0px;
+}
+
+@theme inline {
+    @keyframes scroll-fade-reveal-b {
+        from { --scroll-fade-b: var(--_scroll-fade-size-b); }
+        to { --scroll-fade-b: 0px; }
+    }
+    @keyframes scroll-fade-reveal-s {
+        from { --scroll-fade-s: 0px; }
+        to { --scroll-fade-s: var(--_scroll-fade-size-s); }
+    }
+    @keyframes scroll-fade-reveal-e {
+        from { --scroll-fade-e: var(--_scroll-fade-size-e); }
+        to { --scroll-fade-e: 0px; }
+    }
+}
+
+@utility scroll-fade-b {
+    --_scroll-fade-size-b: var(--scroll-fade-size, min(12%, calc(var(--spacing) * 10)));
+    --scroll-fade-mask: linear-gradient(to bottom, #000 0,
+        #000 calc(100% - var(--scroll-fade-b, 0px)), transparent 100%);
+    -webkit-mask-image: var(--scroll-fade-mask);
+    mask-image: var(--scroll-fade-mask);
+    -webkit-mask-composite: source-in;
+    mask-composite: intersect;
+    -webkit-mask-repeat: no-repeat;
+    mask-repeat: no-repeat;
+
+    @supports (animation-timeline: scroll()) {
+        animation: scroll-fade-reveal-b 1ms ease-in-out;
+        animation-timeline: scroll(self y);
+        animation-range: calc(100% - var(--scroll-fade-reveal, calc(var(--spacing) * 24))) 100%;
+        animation-fill-mode: both;
+    }
+
+    @supports not (animation-timeline: scroll()) {
+        --scroll-fade-b: var(--_scroll-fade-size-b);
+    }
+}
+
+/* Inline, so it fades the reading-start and reading-end edges — and swaps them under RTL. */
+@utility scroll-fade-x {
+    --_scroll-fade-size-s: var(--scroll-fade-size, min(12%, calc(var(--spacing) * 10)));
+    --_scroll-fade-size-e: var(--scroll-fade-size, min(12%, calc(var(--spacing) * 10)));
+    --scroll-fade-inline: linear-gradient(to right, transparent 0,
+        #000 var(--scroll-fade-s, 0px),
+        #000 calc(100% - var(--scroll-fade-e, 0px)), transparent 100%);
+
+    &:where([dir="rtl"], [dir="rtl"] *) {
+        --scroll-fade-inline: linear-gradient(to left, transparent 0,
+            #000 var(--scroll-fade-s, 0px),
+            #000 calc(100% - var(--scroll-fade-e, 0px)), transparent 100%);
+    }
+
+    -webkit-mask-image: var(--scroll-fade-mask, var(--scroll-fade-inline));
+    mask-image: var(--scroll-fade-mask, var(--scroll-fade-inline));
+    -webkit-mask-composite: source-in;
+    mask-composite: intersect;
+    -webkit-mask-repeat: no-repeat;
+    mask-repeat: no-repeat;
+
+    @supports (animation-timeline: scroll()) {
+        animation: scroll-fade-reveal-s 1ms ease-in-out, scroll-fade-reveal-e 1ms ease-in-out;
+        animation-timeline: scroll(self inline), scroll(self inline);
+        animation-range: 0 var(--scroll-fade-reveal, calc(var(--spacing) * 24)),
+                         calc(100% - var(--scroll-fade-reveal, calc(var(--spacing) * 24))) 100%;
+        animation-fill-mode: both;
+    }
+
+    @supports not (animation-timeline: scroll()) {
+        --scroll-fade-s: var(--_scroll-fade-size-s);
+        --scroll-fade-e: var(--_scroll-fade-size-e);
+    }
+}
+
 /* shimmer — a gradient swept through the TEXT itself, not a box behind it.
    ------------------------------------------------------------------------------------------
    AttachmentTitle has carried `group-data-[state=uploading]/attachment:shimmer` since it was

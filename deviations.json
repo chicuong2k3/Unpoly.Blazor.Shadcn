@@ -365,6 +365,19 @@
         "rtl:translate-x-px"
       ],
       "why": "Same as sidebar-menu-sub, other way."
+    },
+    "bubble-reactions": {
+      "classes": [
+        "[&>button]:rounded-full"
+      ],
+      "why": "The pill is rounded-full and has-[button]:p-0 lets a control fill it — but the control keeps the button recipe's rounded-md, so hovering painted a rounded SQUARE inside a circle. Nothing is wrong at rest, which is why it survived: it only shows under the pointer, and only on the two examples that put a control in a reaction slot."
+    },
+    "attachment": {
+      "classes": [
+        "has-[>a]:hover:bg-muted/50",
+        "has-[>button]:hover:bg-muted/50"
+      ],
+      "why": "Tailwind drops the whole candidate: a comma separates candidates in its parser, so `has-[>a,>button]:hover:bg-muted/50` compiles to NOTHING and emits no warning. The effect is that an attachment card carrying a trigger never tinted under the pointer — the one affordance that says the whole card is clickable — and it looked like the trigger was not there. Written as two candidates, which is the same selector twice."
     }
   },
   "dropped": {
@@ -486,6 +499,12 @@
         "overflow-hidden"
       ],
       "why": "It clips the badge. AvatarBadge sits inside the root with ring-2 ring-background, and a rounded overflow-hidden parent cuts the ring off at the circle — the badge reads as a bitten crescent. shadcn's own docs do not show that, because the style they render (base) has no overflow-hidden on the root either: the circle comes from rounded-full on the image and the fallback, which is what this does now."
+    },
+    "attachment": {
+      "classes": [
+        "has-[>a,>button]:hover:bg-muted/50"
+      ],
+      "why": "Tailwind drops the whole candidate: a comma separates candidates in its parser, so `has-[>a,>button]:hover:bg-muted/50` compiles to NOTHING and emits no warning. The effect is that an attachment card carrying a trigger never tinted under the pointer — the one affordance that says the whole card is clickable — and it looked like the trigger was not there. Written as two candidates, which is the same selector twice."
     }
   },
   "subject": {

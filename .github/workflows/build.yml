@@ -63,6 +63,11 @@ jobs:
       - name: The demo matches shadcn's docs index
         run: python tools/check_pages.py --check
 
+      # A class that compiles to nothing. Upstream's own has-[>a,>button]:hover:bg-muted/50 did:
+      # a comma ends the candidate, and Tailwind drops the whole thing without a warning.
+      - name: Every class this library writes compiles to a rule
+        run: python tools/check_compiled.py --check
+
       # A side named by the screen rather than by the reading direction. AccordionTrigger said
       # text-left, which left-aligns Arabic, and it was one of forty.
       - name: Every side is named in reading order

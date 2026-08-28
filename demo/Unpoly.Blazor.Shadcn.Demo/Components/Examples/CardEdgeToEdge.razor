@@ -1,0 +1,30 @@
+@* A region that runs to the card's own edges, inside a card that is otherwise padded. The trick
+   is one number used twice: --card-spacing is the padding the card applies, so pulling the child
+   out by exactly that much lands it flush. Nothing is measured and nothing has to agree with a
+   literal typed somewhere else. *@
+<Card Class="mx-auto w-full max-w-sm">
+    <CardHeader>
+        <CardTitle>Terms of Service</CardTitle>
+        <CardDescription>Review the terms before accepting the agreement.</CardDescription>
+    </CardHeader>
+    <CardContent Class="-mb-(--card-spacing)">
+        <div class="-mx-(--card-spacing) max-h-48 space-y-4 overflow-y-scroll border-y px-(--card-spacing) py-4 text-sm text-muted-foreground">
+            <p>
+                These terms govern your use of the workspace, including access to shared
+                documents, project files, and collaboration tools.
+            </p>
+            <p>
+                You are responsible for the content you upload and for ensuring that your team
+                has the appropriate permissions to view or edit it.
+            </p>
+            <p>
+                We may update features or limits as the service evolves. When those changes
+                materially affect your workflow, we will notify your workspace administrators.
+            </p>
+        </div>
+    </CardContent>
+    <CardFooter Class="gap-2">
+        <Button Variant="outline" Class="flex-1">Decline</Button>
+        <Button Class="flex-1">Accept</Button>
+    </CardFooter>
+</Card>

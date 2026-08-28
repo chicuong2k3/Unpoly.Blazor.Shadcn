@@ -18,6 +18,21 @@
 <h2 class="doc-h2">Basic</h2>
 <Example Source="ChartExample.razor"><ChartExample /></Example>
 
+<h2 class="doc-h2">Grid</h2>
+<p class="doc-note">
+    A repeating gradient on the plot area, not elements — so there is nothing to keep in step
+    with the number of bars and nothing extra for a screen reader to read out.
+</p>
+<Example Source="ChartGrid.razor"><ChartGrid /></Example>
+
+<h2 class="doc-h2">Axis</h2>
+<p class="doc-note">
+    Recharts draws its axis onto a canvas. Here the ticks are real elements beside the plot, so
+    Find in Page reaches them, a print stylesheet keeps them, and the scale is announced before
+    the bars rather than inferred from their heights.
+</p>
+<Example Source="ChartAxis.razor"><ChartAxis /></Example>
+
 <h2 class="doc-h2">Tooltip</h2>
 <p class="doc-note">
     Recharts draws a floating tooltip onto a canvas nothing else can read. A table already has

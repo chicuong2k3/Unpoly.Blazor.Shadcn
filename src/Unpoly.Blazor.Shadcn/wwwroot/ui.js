@@ -441,6 +441,27 @@
     return () => panel.removeEventListener('keydown', onKey)
   })
 
+  // Choosing an item closes the menu it is in, and any menu that opened it. Nothing did this:
+  // the panel stayed open after a click, so picking "CSV" left the menu sitting there and read
+  // as "the dropdown will not let me choose". Radix closes on select and so does every other
+  // menu; a sub-trigger is the exception, because its whole job is to open the next panel.
+  up.compiler('[data-slot="dropdown-menu-content"], [data-slot="context-menu-content"], ' +
+              '[data-slot="menubar-content"], [data-slot="dropdown-menu-sub-content"], ' +
+              '[data-slot="context-menu-sub-content"], [data-slot="menubar-sub-content"]',
+              (panel) => {
+    const onClick = (event) => {
+      const item = event.target.closest('[data-slot$="-item"]')
+      if (!item || item.closest('[data-slot$="-sub-trigger"]') || item.hasAttribute('data-disabled')) return
+      // The chain, not just this panel: an item in a submenu closes the menu it hangs off too.
+      for (const open of document.querySelectorAll(
+             '[data-slot$="menu-content"]:popover-open, [data-slot$="sub-content"]:popover-open')) {
+        open.hidePopover()
+      }
+    }
+    panel.addEventListener('click', onClick)
+    return () => panel.removeEventListener('click', onClick)
+  })
+
   // =============================================================================================
   // ContextMenu — the right button, and the two other ways to ask for the same thing
   // =============================================================================================

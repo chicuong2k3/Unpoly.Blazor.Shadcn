@@ -1,14 +1,16 @@
+@* The menu panel lives outside the group, and so does <DropdownMenu> — it is a positioning
+   anchor, and inside a group it becomes an element child the joins land on instead of the
+   button. The trigger is the child; the group rounds it. *@
 <ButtonGroup>
     <Button Variant="outline">Export</Button>
-    <DropdownMenu>
-        <DropdownMenuTrigger Target="bg-export" Variant="outline" Size="icon"
-                             aria-label="Choose a format">
-            <Icon Name="chevron-down" />
-        </DropdownMenuTrigger>
-        <DropdownMenuContent Id="bg-export" Align="end" Class="w-40">
-            <DropdownMenuItem>CSV</DropdownMenuItem>
-            <DropdownMenuItem>Excel</DropdownMenuItem>
-            <DropdownMenuItem>PDF</DropdownMenuItem>
-        </DropdownMenuContent>
-    </DropdownMenu>
+    <DropdownMenuTrigger Target="bg-export" Variant="outline" Size="icon"
+                         aria-label="Choose a format">
+        <Icon Name="chevron-down" />
+    </DropdownMenuTrigger>
 </ButtonGroup>
+
+<DropdownMenuContent Id="bg-export" Align="end" Class="w-40">
+    <DropdownMenuItem>CSV</DropdownMenuItem>
+    <DropdownMenuItem>Excel</DropdownMenuItem>
+    <DropdownMenuItem>PDF</DropdownMenuItem>
+</DropdownMenuContent>

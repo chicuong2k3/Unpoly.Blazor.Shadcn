@@ -552,3 +552,41 @@
 /* The header title is the year control: months -> years -> decades. Make it read as a button. */
 .air-datepicker-nav--title { font-weight: 500; }
 .air-datepicker.-active- { z-index: 2100; }
+
+/* A group joins the CONTROL, even when a wrapper stands in the way.
+   ------------------------------------------------------------------------------------------
+   ButtonGroup makes its joins with `[&>*]` utilities, which works upstream because React's
+   <DropdownMenu> and <Select> render no element at all. Two of this port's do: DropdownMenu is
+   a real positioning div, and ui.js wraps a <select> in [data-slot=select-root] so it can draw
+   the shadcn panel beside it. The group's radius then lands on a wrapper and the control inside
+   keeps all four corners — a rounded button sitting in a squared-off slot.
+
+   UNLAYERED, deliberately. The first attempt used :where(), which contributes no specificity
+   and lost to the plain `rounded-md` in the recipe. The second raised specificity with :is()
+   and still lost, because these rules live in @layer components and a utility is in @layer
+   utilities — and a layer beats specificity outright. Unlayered CSS beats every layer, which is
+   what an override of a utility has to be.
+
+   Logical properties, so the joins stay on the reading edges under dir="rtl". */
+[data-slot="button-group"] > :not(:first-child):is([data-slot="dropdown-menu"], [data-slot="select-root"], [data-slot="popover"]) > :is(button, select, input, [data-slot$="-trigger"]) {
+    border-start-start-radius: 0;
+    border-end-start-radius: 0;
+    border-inline-start-width: 0;
+}
+
+[data-slot="button-group"] > :not(:last-child):is([data-slot="dropdown-menu"], [data-slot="select-root"], [data-slot="popover"]) > :is(button, select, input, [data-slot$="-trigger"]) {
+    border-start-end-radius: 0;
+    border-end-end-radius: 0;
+}
+
+[data-slot="button-group"][data-orientation="vertical"] > :not(:first-child):is([data-slot="dropdown-menu"], [data-slot="select-root"], [data-slot="popover"]) > :is(button, select, input, [data-slot$="-trigger"]) {
+    border-start-start-radius: 0;
+    border-start-end-radius: 0;
+    border-inline-start-width: 1px;
+    border-block-start-width: 0;
+}
+
+[data-slot="button-group"][data-orientation="vertical"] > :not(:last-child):is([data-slot="dropdown-menu"], [data-slot="select-root"], [data-slot="popover"]) > :is(button, select, input, [data-slot$="-trigger"]) {
+    border-end-start-radius: 0;
+    border-end-end-radius: 0;
+}
