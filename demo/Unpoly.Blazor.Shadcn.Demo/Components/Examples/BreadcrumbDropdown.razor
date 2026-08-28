@@ -1,0 +1,22 @@
+@* A crumb that is itself a menu, for a level with siblings worth jumping to. *@
+<Breadcrumb>
+    <BreadcrumbList>
+        <BreadcrumbItem><BreadcrumbLink Href="/">Home</BreadcrumbLink></BreadcrumbItem>
+        <BreadcrumbSeparator />
+        <BreadcrumbItem>
+            <DropdownMenu>
+                <DropdownMenuTrigger Target="crumb-menu" Variant="ghost" Size="sm"
+                                     Class="h-auto gap-1 px-1 font-normal">
+                    Blocks<Icon Name="chevron-down" Class="size-3.5" />
+                </DropdownMenuTrigger>
+                <DropdownMenuContent Id="crumb-menu" Class="w-44">
+                    <DropdownMenuItem Href="/blocks">All blocks</DropdownMenuItem>
+                    <DropdownMenuItem Href="/components/table">Data table</DropdownMenuItem>
+                    <DropdownMenuItem Href="/components/sidebar">Sidebar</DropdownMenuItem>
+                </DropdownMenuContent>
+            </DropdownMenu>
+        </BreadcrumbItem>
+        <BreadcrumbSeparator />
+        <BreadcrumbItem><BreadcrumbPage>Checkout</BreadcrumbPage></BreadcrumbItem>
+    </BreadcrumbList>
+</Breadcrumb>

@@ -4,9 +4,29 @@
 
 <h1 class="doc-h1">Separator</h1>
 <p class="doc-lede">
-    Decorative by default, as in Radix: a rule that only draws a line is noise to a screen reader, so it is hidden from the tree unless the caller says it separates something.
+    Decorative by default, as in Radix: a rule that only draws a line is noise to a screen reader,
+    so it is hidden from the tree unless the caller says it separates something.
 </p>
 
-<Example Source="SeparatorExample.razor">
-    <SeparatorExample />
-</Example>
+<h2 class="doc-h2">Basic</h2>
+<Example Source="SeparatorExample.razor"><SeparatorExample /></Example>
+
+<h2 class="doc-h2">Vertical</h2>
+<p class="doc-note">
+    It is a one-pixel box, so it needs a height from something. A row with <code>h-*</code> or
+    <code>items-stretch</code> supplies it; without one the rule is there and invisible.
+</p>
+<Example Source="SeparatorVertical.razor"><SeparatorVertical /></Example>
+
+<h2 class="doc-h2">Menu</h2>
+<p class="doc-note">
+    <code>Decorative="false"</code> gives it <code>role="separator"</code>. Inside a menu it does
+    separate groups of commands, which is the case where announcing it helps rather than chatters.
+</p>
+<Example Source="SeparatorMenu.razor"><SeparatorMenu /></Example>
+
+<h2 class="doc-h2">List</h2>
+<Example Source="SeparatorList.razor"><SeparatorList /></Example>
+
+<h2 class="doc-h2">RTL</h2>
+<Example Source="SeparatorRtl.razor"><SeparatorRtl /></Example>

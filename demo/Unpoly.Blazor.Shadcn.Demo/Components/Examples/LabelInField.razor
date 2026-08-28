@@ -1,0 +1,14 @@
+@* <FieldLabel> is <Label> with the field's error state wired in — it dims with a disabled
+   control and turns destructive with an invalid one, because it reads them rather than being
+   told. Use <Label> on its own only outside a Field. *@
+<div class="flex w-[420px] flex-col gap-5">
+    <Field>
+        <FieldLabel For="l-plain">Inside a Field</FieldLabel>
+        <Input id="l-plain" name="plain" placeholder="Follows the field" />
+    </Field>
+
+    <div class="flex flex-col gap-2">
+        <Label for="l-bare">On its own</Label>
+        <Input id="l-bare" name="bare" placeholder="No field to follow" />
+    </div>
+</div>

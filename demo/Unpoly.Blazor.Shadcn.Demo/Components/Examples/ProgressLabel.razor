@@ -1,0 +1,9 @@
+@* The value is in the ARIA attributes, so it is announced rather than merely drawn — and the
+   visible number is the same number, written once beside it. *@
+<div class="flex w-[420px] flex-col gap-2">
+    <div class="flex items-baseline justify-between text-sm">
+        <Label for="upload">Uploading</Label>
+        <span class="num text-muted-foreground">62%</span>
+    </div>
+    <Progress id="upload" Value="62" aria-label="Uploading" />
+</div>

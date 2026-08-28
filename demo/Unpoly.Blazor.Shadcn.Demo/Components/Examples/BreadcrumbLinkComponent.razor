@@ -1,0 +1,15 @@
+@* shadcn writes asChild here so the crumb can be a router Link. There is no router: a crumb is
+   an <a href> and Unpoly follows it. Add up-target and only the content swaps. *@
+<Breadcrumb>
+    <BreadcrumbList>
+        <BreadcrumbItem>
+            <BreadcrumbLink Href="/" up-target=".doc-main" up-preload>Home</BreadcrumbLink>
+        </BreadcrumbItem>
+        <BreadcrumbSeparator />
+        <BreadcrumbItem>
+            <BreadcrumbLink Href="/blocks" up-target=".doc-main">Blocks</BreadcrumbLink>
+        </BreadcrumbItem>
+        <BreadcrumbSeparator />
+        <BreadcrumbItem><BreadcrumbPage>Checkout</BreadcrumbPage></BreadcrumbItem>
+    </BreadcrumbList>
+</Breadcrumb>

@@ -4,9 +4,19 @@
 
 <h1 class="doc-h1">Progress</h1>
 <p class="doc-lede">
-    A real <code>role="progressbar"</code> with its value in the attributes, so the number is announced rather than merely drawn.
+    A real <code>role="progressbar"</code> with its value in the attributes, so the number is
+    announced rather than merely drawn.
 </p>
 
-<Example Source="ProgressExample.razor">
-    <ProgressExample />
-</Example>
+<h2 class="doc-h2">Basic</h2>
+<Example Source="ProgressExample.razor"><ProgressExample /></Example>
+
+<h2 class="doc-h2">Label</h2>
+<Example Source="ProgressLabel.razor"><ProgressLabel /></Example>
+
+<h2 class="doc-h2">RTL</h2>
+<p class="doc-note">
+    The bar fills from the other edge without being told: the indicator is positioned with
+    <code>inset-inline-start</code>, not <code>left</code>.
+</p>
+<Example Source="ProgressRtl.razor"><ProgressRtl /></Example>

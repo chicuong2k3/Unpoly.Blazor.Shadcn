@@ -135,6 +135,10 @@ Two consequences worth knowing before you reach for a component:
   value, which CSS cannot match. Write `data-active="@(IsActive ? "true" : null)"`.
 - **`[SupplyParameterFromForm]` cannot be passed as a bUnit parameter.** Assign
   `page.Instance.Form` after rendering, then submit.
+- **A local called `code` is a Razor directive.** `@code` at the start of an expression opens a
+  code block wherever it appears, so `<TableCell>@code</TableCell>` is a compile error with a
+  message about the `code` directive rather than about your variable. Same for `@functions`,
+  `@using`, `@inherits`. It has cost two afternoons here; call it `number`.
 - **A `<button>` inside a `<form>` submits.** Every non-submitting button needs `type="button"` —
   `TabsTrigger`, `DialogClose` and `DropdownMenuItem` already set it.
 

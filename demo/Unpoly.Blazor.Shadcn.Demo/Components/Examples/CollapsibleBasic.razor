@@ -1,0 +1,11 @@
+@* <details> and <summary>. No compiler, no state, and it survives a fragment swap because there
+   is nothing to survive. *@
+<Collapsible Class="w-[420px]">
+    <CollapsibleTrigger Class="flex w-full items-center justify-between rounded-md px-3 py-2 text-sm font-medium hover:bg-accent">
+        What is in the box?
+        <Icon Name="chevron-down" Class="size-4" />
+    </CollapsibleTrigger>
+    <CollapsibleContent Class="px-3 py-2 text-sm text-muted-foreground">
+        A bag, a dust cover and a card with the care instructions.
+    </CollapsibleContent>
+</Collapsible>

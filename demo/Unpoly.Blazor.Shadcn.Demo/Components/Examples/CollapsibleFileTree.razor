@@ -1,0 +1,27 @@
+@* Nested <details> is a file tree, and it needs no library: every folder remembers its own open
+   state, the keyboard works, and Find in Page reaches inside a closed one in most browsers. *@
+<div class="w-[380px] rounded-lg border p-2 text-sm">
+    <Collapsible>
+        <CollapsibleTrigger Class="flex items-center gap-2 rounded-md px-2 py-1 hover:bg-accent">
+            <Icon Name="folder" Class="size-4 text-muted-foreground" />src
+        </CollapsibleTrigger>
+        <CollapsibleContent Class="ms-4 border-s ps-2">
+            <Collapsible>
+                <CollapsibleTrigger Class="flex items-center gap-2 rounded-md px-2 py-1 hover:bg-accent">
+                    <Icon Name="folder" Class="size-4 text-muted-foreground" />Components
+                </CollapsibleTrigger>
+                <CollapsibleContent Class="ms-4 border-s ps-2">
+                    @foreach (var file in new[] { "Button.razor", "Card.razor", "Dialog.razor" })
+                    {
+                        <div class="flex items-center gap-2 rounded-md px-2 py-1">
+                            <Icon Name="file" Class="size-4 text-muted-foreground" />@file
+                        </div>
+                    }
+                </CollapsibleContent>
+            </Collapsible>
+            <div class="flex items-center gap-2 rounded-md px-2 py-1">
+                <Icon Name="file" Class="size-4 text-muted-foreground" />ClassMerge.cs
+            </div>
+        </CollapsibleContent>
+    </Collapsible>
+</div>

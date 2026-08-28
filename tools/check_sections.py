@@ -42,6 +42,7 @@ PROSE = {
 # that quietly drops what it cannot do is a port whose claims cannot be checked.
 NOT_HERE = {
     ('*', 'Controlled'): 'nothing re-renders on the client; state lives in the DOM or on the server',
+    ('*', 'Controlled State'): 'the same: <details> holds its own open state and nothing reads it back',
     ('*', 'Streaming'): 'blazor.web.js is deliberately absent, so there is no streaming render',
     ('carousel', 'API'): 'embla\'s imperative API; this is scroll-snap and has none',
     ('carousel', 'Events'): 'the same',

@@ -4,9 +4,29 @@
 
 <h1 class="doc-h1">Card</h1>
 <p class="doc-lede">
-    Seven parts. <code>CardAction</code> is placed by a grid rather than floated, which is what keeps a long title from running underneath it.
+    Seven parts. <code>CardAction</code> is placed by a grid rather than floated, which is what
+    keeps a long title from running underneath it.
 </p>
 
-<Example Source="CardBasic.razor">
-    <CardBasic />
-</Example>
+<h2 class="doc-h2">Basic</h2>
+<Example Source="CardBasic.razor"><CardBasic /></Example>
+
+<h2 class="doc-h2">Size</h2>
+<p class="doc-note">
+    There is no size variant. A card is as wide as you make it and as tall as its content; what
+    changes with size is the padding and the type, and both are classes.
+</p>
+<Example Source="CardSize.razor"><CardSize /></Example>
+
+<h2 class="doc-h2">Spacing</h2>
+<Example Source="CardSpacing.razor"><CardSpacing /></Example>
+
+<h2 class="doc-h2">Image</h2>
+<Example Source="CardImage.razor"><CardImage /></Example>
+
+<h2 class="doc-h2">RTL</h2>
+<p class="doc-note">
+    <code>CardAction</code> moves to the other end without being told: it is placed in the last
+    grid column, and grid columns follow the writing direction.
+</p>
+<Example Source="CardRtl.razor"><CardRtl /></Example>

@@ -4,9 +4,26 @@
 
 <h1 class="doc-h1">Collapsible</h1>
 <p class="doc-lede">
-    <code>&lt;details&gt;</code> again, without the grouping. The whole state machine is the element.
+    <code>&lt;details&gt;</code> and <code>&lt;summary&gt;</code>. The whole state machine is the
+    element: no compiler, no state, and nothing to restore after a fragment swap.
 </p>
 
-<Example Source="CollapsibleExample.razor">
-    <CollapsibleExample />
-</Example>
+<h2 class="doc-h2">Basic</h2>
+<Example Source="CollapsibleBasic.razor"><CollapsibleBasic /></Example>
+
+<h2 class="doc-h2">Settings Panel</h2>
+<p class="doc-note">
+    Worth knowing before you rely on it either way: the fields inside a closed
+    <code>&lt;details&gt;</code> are still in the form and still post.
+</p>
+<Example Source="CollapsibleSettings.razor"><CollapsibleSettings /></Example>
+
+<h2 class="doc-h2">File Tree</h2>
+<p class="doc-note">
+    Nested <code>&lt;details&gt;</code>, and it needs no library: every folder remembers its own
+    open state, the keyboard works, and Find in Page reaches inside a closed one in most browsers.
+</p>
+<Example Source="CollapsibleFileTree.razor"><CollapsibleFileTree /></Example>
+
+<h2 class="doc-h2">RTL</h2>
+<Example Source="CollapsibleRtl.razor"><CollapsibleRtl /></Example>

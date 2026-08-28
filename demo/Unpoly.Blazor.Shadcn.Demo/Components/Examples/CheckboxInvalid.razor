@@ -1,0 +1,10 @@
+@* aria-invalid on the input is what turns the whole field destructive — the ring, the border and
+   the label all key off it, so there is one source of truth and it is the one a screen reader
+   reads too. *@
+<Field Invalid Class="w-[420px]">
+    <div class="flex items-center gap-3">
+        <Checkbox id="agree" name="agree" aria-invalid="true" />
+        <FieldLabel For="agree">I have read the licence</FieldLabel>
+    </div>
+    <FieldError>You have to accept it to continue.</FieldError>
+</Field>

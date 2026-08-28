@@ -1,0 +1,23 @@
+@* A long trail with the middle folded away. The ellipsis is a real button that opens the levels
+   it hides — an ellipsis that does nothing is a trail with a hole in it. *@
+<Breadcrumb>
+    <BreadcrumbList>
+        <BreadcrumbItem><BreadcrumbLink Href="/">Home</BreadcrumbLink></BreadcrumbItem>
+        <BreadcrumbSeparator />
+        <BreadcrumbItem>
+            <DropdownMenu>
+                <DropdownMenuTrigger Target="crumb-more" Variant="ghost" Size="icon-sm"
+                                     aria-label="Show the levels in between">
+                    <Icon Name="ellipsis" Class="size-4" />
+                </DropdownMenuTrigger>
+                <DropdownMenuContent Id="crumb-more" Class="w-44">
+                    <DropdownMenuItem Href="/blocks">Blocks</DropdownMenuItem>
+                    <DropdownMenuItem Href="/components/table">Commerce</DropdownMenuItem>
+                    <DropdownMenuItem Href="/components/card">Orders</DropdownMenuItem>
+                </DropdownMenuContent>
+            </DropdownMenu>
+        </BreadcrumbItem>
+        <BreadcrumbSeparator />
+        <BreadcrumbItem><BreadcrumbPage>Checkout</BreadcrumbPage></BreadcrumbItem>
+    </BreadcrumbList>
+</Breadcrumb>

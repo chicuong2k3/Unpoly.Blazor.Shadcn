@@ -1,0 +1,19 @@
+@* A card has no size variant: it is as wide as you make it and as tall as its content. What
+   changes with size is the padding and the type, both of which are classes. *@
+<div class="flex flex-wrap items-start gap-4">
+    <Card Class="w-56 gap-3 py-4">
+        <CardHeader Class="px-4">
+            <CardTitle Class="text-sm">Compact</CardTitle>
+            <CardDescription class="text-xs">Tighter padding.</CardDescription>
+        </CardHeader>
+        <CardContent Class="px-4 text-sm">$4,180</CardContent>
+    </Card>
+
+    <Card Class="w-72">
+        <CardHeader>
+            <CardTitle>Default</CardTitle>
+            <CardDescription>What the component ships with.</CardDescription>
+        </CardHeader>
+        <CardContent><span class="num text-2xl font-semibold">$42,180</span></CardContent>
+    </Card>
+</div>
