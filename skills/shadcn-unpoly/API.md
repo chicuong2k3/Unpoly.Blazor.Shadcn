@@ -312,6 +312,8 @@ renders `<div>` · `data-slot="calendar"`
 | `Selected` | `DateOnly?` | — |  |
 | `Today` | `DateOnly?` | `DateOnly.FromDateTime(DateTime.Today)` |  |
 | `FirstDay` | `DayOfWeek` | `DayOfWeek.Monday` |  |
+| `PreviousLabel` | `string` | `"Previous month"` |  |
+| `NextLabel` | `string` | `"Next month"` |  |
 
 ## `<Card>`
 renders `<div>` · `data-slot="card"`

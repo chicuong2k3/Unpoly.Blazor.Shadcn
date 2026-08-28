@@ -39,6 +39,11 @@ jobs:
       - name: ui.css reproduces shadcn's globals
         run: python tools/check_globals.py --check
 
+      # A component that is mostly an icon, rendering no icon, passes class parity: the class
+      # list of an element that draws nothing is still the right class list.
+      - name: Every icon shadcn draws is drawn here
+        run: python tools/check_icons.py --check
+
       # A <div> where shadcn writes a <span> looks fine in a screenshot and is wrong in a
       # paragraph: different box, different default role, different rules about what may go in it.
       - name: Every element matches shadcn

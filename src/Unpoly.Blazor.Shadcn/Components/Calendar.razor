@@ -14,6 +14,24 @@
 
 <div data-slot="calendar" data-month="@Month.ToString("yyyy-MM")" class="@Classes"
      @attributes="AdditionalAttributes">
+    @if (MonthUrl is not null)
+    {
+        @* Two links to two real URLs, not two buttons and a state variable — so a month is
+           bookmarkable, the back button moves through months, and it all works before any
+           JavaScript has run. Give it an up-target and only the calendar is swapped. *@
+        <div data-slot="calendar-nav" class="mb-2 flex items-center justify-between gap-2">
+            <a href="@MonthUrl(Month.AddMonths(-1))"
+               class="@Cn(ButtonVariants.Of("ghost", "icon-sm"))"
+               aria-label="@PreviousLabel"><Icon Name="chevron-left" /></a>
+
+            <span class="text-sm font-medium" aria-live="polite">@Month.ToString("MMMM yyyy")</span>
+
+            <a href="@MonthUrl(Month.AddMonths(1))"
+               class="@Cn(ButtonVariants.Of("ghost", "icon-sm"))"
+               aria-label="@NextLabel"><Icon Name="chevron-right" /></a>
+        </div>
+    }
+
     <table class="w-full border-separate border-spacing-1">
         <caption class="sr-only">@Month.ToString("MMMM yyyy")</caption>
         <thead>
@@ -70,6 +88,16 @@
 
     /// <summary>Monday first. Set it for a locale that starts on Sunday.</summary>
     [Parameter] public DayOfWeek FirstDay { get; set; } = DayOfWeek.Monday;
+
+    /// <summary>
+    /// Where the previous and next months live, as a function of the month. Without it no
+    /// navigation is drawn at all — a component cannot invent an application's URLs, and two
+    /// arrows that go nowhere are worse than none.
+    /// </summary>
+    [Parameter] public Func<DateOnly, string>? MonthUrl { get; set; }
+
+    [Parameter] public string PreviousLabel { get; set; } = "Previous month";
+    [Parameter] public string NextLabel { get; set; } = "Next month";
 
     string[] Weekdays =>
         Enumerable.Range(0, 7)
