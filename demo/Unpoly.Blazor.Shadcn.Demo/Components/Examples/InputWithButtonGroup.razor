@@ -1,0 +1,8 @@
+@* A field and its action joined into one control. The button is a real submit, so Enter in the
+   field does the same thing as clicking it — which people expect and click handlers forget. *@
+<form method="get" class="w-[420px]">
+    <ButtonGroup>
+        <Input name="q" placeholder="Order number" aria-label="Order number" Class="rounded-e-none" />
+        <Button Type="submit" Variant="outline" Class="rounded-s-none border-s-0">Look up</Button>
+    </ButtonGroup>
+</form>

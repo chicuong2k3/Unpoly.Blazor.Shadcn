@@ -1,0 +1,24 @@
+@* Two columns where the data is two columns. The grid is on a wrapper, not on the fields:
+   layout belongs to whatever is arranging them. *@
+<div class="grid w-[460px] grid-cols-2 gap-4">
+    <Field>
+        <FieldLabel For="ig-first">First name</FieldLabel>
+        <Input id="ig-first" name="first" />
+    </Field>
+    <Field>
+        <FieldLabel For="ig-last">Last name</FieldLabel>
+        <Input id="ig-last" name="last" />
+    </Field>
+    <Field Class="col-span-2">
+        <FieldLabel For="ig-address">Address</FieldLabel>
+        <Input id="ig-address" name="address" />
+    </Field>
+    <Field>
+        <FieldLabel For="ig-city">City</FieldLabel>
+        <Input id="ig-city" name="city" />
+    </Field>
+    <Field>
+        <FieldLabel For="ig-post">Postcode</FieldLabel>
+        <Input id="ig-post" name="postcode" />
+    </Field>
+</div>

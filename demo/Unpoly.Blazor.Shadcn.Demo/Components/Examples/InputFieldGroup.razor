@@ -1,0 +1,17 @@
+@* Several fields with one rhythm. The group owns the spacing, so the fields do not each carry a
+   margin that has to agree with its neighbours. *@
+<FieldGroup Class="w-[360px]">
+    <Field>
+        <FieldLabel For="fg-name">Name</FieldLabel>
+        <Input id="fg-name" name="name" />
+    </Field>
+    <Field>
+        <FieldLabel For="fg-email">Email</FieldLabel>
+        <Input id="fg-email" name="email" type="email" />
+    </Field>
+    <Field>
+        <FieldLabel For="fg-company">Company</FieldLabel>
+        <Input id="fg-company" name="company" />
+        <FieldDescription>Optional.</FieldDescription>
+    </Field>
+</FieldGroup>

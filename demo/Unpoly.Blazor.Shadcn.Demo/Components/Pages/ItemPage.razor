@@ -4,9 +4,48 @@
 
 <h1 class="doc-h1">Item</h1>
 <p class="doc-lede">
-    A row: media on the left, content in the middle, actions on the right. Give it an <code>Href</code> and the whole row becomes a link, which is also what makes it followable by Unpoly.
+    A row: media on the left, content in the middle, actions on the right. Give it an
+    <code>Href</code> and the whole row becomes a link, which is also what makes it followable by
+    Unpoly.
 </p>
 
-<Example Source="ItemExample.razor">
-    <ItemExample />
-</Example>
+<h2 class="doc-h2">Basic</h2>
+<Example Source="ItemExample.razor"><ItemExample /></Example>
+
+<h2 class="doc-h2">Variant</h2>
+<Example Source="ItemVariant.razor"><ItemVariant /></Example>
+
+<h2 class="doc-h2">Size</h2>
+<Example Source="ItemSize.razor"><ItemSize /></Example>
+
+<h2 class="doc-h2">Icon</h2>
+<Example Source="ItemIcon.razor"><ItemIcon /></Example>
+
+<h2 class="doc-h2">Avatar</h2>
+<Example Source="ItemAvatar.razor"><ItemAvatar /></Example>
+
+<h2 class="doc-h2">Image</h2>
+<Example Source="ItemImage.razor"><ItemImage /></Example>
+
+<h2 class="doc-h2">Group</h2>
+<Example Source="ItemGroupExample.razor"><ItemGroupExample /></Example>
+
+<h2 class="doc-h2">Header</h2>
+<Example Source="ItemHeaderExample.razor"><ItemHeaderExample /></Example>
+
+<h2 class="doc-h2">Link</h2>
+<p class="doc-note">
+    One target and one focus stop. A row with a link <i>inside</i> it gives you a small target and
+    two tab stops, which is the version people build by accident.
+</p>
+<Example Source="ItemLink.razor"><ItemLink /></Example>
+
+<h2 class="doc-h2">Dropdown</h2>
+<p class="doc-note">
+    The row is not a link here: a link with a menu inside it is a link you cannot open without
+    hitting the menu by accident.
+</p>
+<Example Source="ItemDropdown.razor"><ItemDropdown /></Example>
+
+<h2 class="doc-h2">RTL</h2>
+<Example Source="ItemRtl.razor"><ItemRtl /></Example>

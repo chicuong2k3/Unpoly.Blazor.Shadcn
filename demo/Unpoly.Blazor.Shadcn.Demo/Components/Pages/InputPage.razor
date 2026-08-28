@@ -4,9 +4,63 @@
 
 <h1 class="doc-h1">Input</h1>
 <p class="doc-lede">
-    One element, and the reason <code>--control-h</code> exists: shadcn writes <code>h-9</code> literally, which pins every consumer to one control size.
+    One element, and the reason <code>--control-h</code> exists: shadcn writes <code>h-9</code>
+    literally, which pins every consumer to one control size. Everything else in the class list is
+    shadcn's, unchanged.
 </p>
 
-<Example Source="FormPrimitivesExample.razor">
-    <FormPrimitivesExample />
-</Example>
+<h2 class="doc-h2">Basic</h2>
+<Example Source="InputBasic.razor"><InputBasic /></Example>
+
+<h2 class="doc-h2">Field</h2>
+<Example Source="InputField.razor"><InputField /></Example>
+
+<h2 class="doc-h2">Field Group</h2>
+<Example Source="InputFieldGroup.razor"><InputFieldGroup /></Example>
+
+<h2 class="doc-h2">Disabled</h2>
+<Example Source="InputDisabled.razor"><InputDisabled /></Example>
+
+<h2 class="doc-h2">Invalid</h2>
+<Example Source="InputInvalid.razor"><InputInvalid /></Example>
+
+<h2 class="doc-h2">Required</h2>
+<p class="doc-note">
+    <code>required</code> is the validation: the browser refuses to submit and says why, in the
+    reader's own language, before a request is made. The server checks it again, because a
+    client-side rule is a convenience and never a guarantee.
+</p>
+<Example Source="InputRequired.razor"><InputRequired /></Example>
+
+<h2 class="doc-h2">File</h2>
+<p class="doc-note">
+    The form needs <code>enctype="multipart/form-data"</code> or the file is not sent — silently,
+    which is the first thing to check when an upload arrives empty.
+</p>
+<Example Source="InputFileExample.razor"><InputFileExample /></Example>
+
+<h2 class="doc-h2">Inline</h2>
+<Example Source="InputInline.razor"><InputInline /></Example>
+
+<h2 class="doc-h2">Grid</h2>
+<Example Source="InputGrid.razor"><InputGrid /></Example>
+
+<h2 class="doc-h2">Badge</h2>
+<Example Source="InputBadge.razor"><InputBadge /></Example>
+
+<h2 class="doc-h2">Input Group</h2>
+<Example Source="InputWithGroup.razor"><InputWithGroup /></Example>
+
+<h2 class="doc-h2">Button Group</h2>
+<Example Source="InputWithButtonGroup.razor"><InputWithButtonGroup /></Example>
+
+<h2 class="doc-h2">Form</h2>
+<p class="doc-note">
+    <code>up-validate</code> fires the same handler with <code>X-Up-Validate</code> set. Guard the
+    handler with <code>IsUpValidating()</code> before any write — Unpoly fires it on blur, and
+    without the guard every blur would create a record.
+</p>
+<Example Source="InputForm.razor"><InputForm /></Example>
+
+<h2 class="doc-h2">RTL</h2>
+<Example Source="InputRtl.razor"><InputRtl /></Example>

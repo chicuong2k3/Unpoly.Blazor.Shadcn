@@ -135,6 +135,10 @@ Two consequences worth knowing before you reach for a component:
   value, which CSS cannot match. Write `data-active="@(IsActive ? "true" : null)"`.
 - **`[SupplyParameterFromForm]` cannot be passed as a bUnit parameter.** Assign
   `page.Instance.Form` after rendering, then submit.
+- **`InputFile`, `InputText`, `InputNumber` and friends are taken.** They are
+  `Microsoft.AspNetCore.Components.Forms` components, imported by every Blazor app, and a
+  component of yours with the same name is "Multiple components use the tag" rather than an
+  override. Nothing in this library uses those names; a wrapper of yours should not either.
 - **A local called `code` is a Razor directive.** `@code` at the start of an expression opens a
   code block wherever it appears, so `<TableCell>@code</TableCell>` is a compile error with a
   message about the `code` directive rather than about your variable. Same for `@functions`,

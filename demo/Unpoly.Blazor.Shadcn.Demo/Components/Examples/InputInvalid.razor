@@ -1,0 +1,8 @@
+@* aria-invalid is the switch. The border, the ring and the label all read it, and so does a
+   screen reader — one source of truth rather than a red class and a separate announcement. *@
+<Field Invalid Class="w-[360px]">
+    <FieldLabel For="in-phone">Phone</FieldLabel>
+    <Input id="in-phone" name="phone" value="+44 abc" aria-invalid="true"
+           aria-describedby="in-phone-error" />
+    <FieldError id="in-phone-error">That does not look like a phone number.</FieldError>
+</Field>
