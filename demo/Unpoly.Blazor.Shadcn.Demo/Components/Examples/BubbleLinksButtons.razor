@@ -1,8 +1,10 @@
-@* Quick replies: the bubble IS the button. Not a row of buttons under the thread — the reader
-   presses the thing they read, which is why every Bubble variant styles
-   `bubble-content:is(button,a):hover` in the first place.
+@* Both, because the section is called Links and Buttons and the component does both: the bubble
+   IS the control. Not a row of buttons under the thread — the reader presses the thing they
+   read, which is why every Bubble variant styles `bubble-content:is(button,a):hover`.
 
-   A form, so it posts. Unpoly swaps the thread and nothing here is a click handler. *@
+   The quick replies are submit buttons in a form, so they post with no JavaScript taking part.
+   The last one is an anchor, so it goes somewhere, opens in a tab on middle-click and shows its
+   destination in the status bar — none of which a click handler gives you. *@
 <form method="post" action="/chat/1/reply" up-target=".preview" up-disable
       class="flex w-full max-w-sm flex-col gap-8">
     <AntiforgeryToken />
@@ -18,6 +20,9 @@
                 <BubbleContent Type="submit" name="reply" value="@value">@label</BubbleContent>
             </Bubble>
         }
+        <Bubble Variant="tinted" Align="end">
+            <BubbleContent Href="/components/bubble">Read the docs instead</BubbleContent>
+        </Bubble>
     </BubbleGroup>
 </form>
 

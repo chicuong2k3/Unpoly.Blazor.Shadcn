@@ -150,7 +150,13 @@
     [popover] {
         margin: 0;
         padding: 0;
-        border: 0;
+        /* border-WIDTH, not the `border` shorthand. The shorthand also resets the COLOUR to
+           currentColor, and this rule is in a layer above the base one that says
+           `border-color: var(--border)` — so every popover surface in the library drew its
+           1px border in the TEXT colour. A near-black hairline around a menu, a tooltip, a
+           popover and a hover card, on a page where every other border is a soft grey. It read
+           as "the popover has an extra border", which is exactly what it looked like. */
+        border-width: 0;
         background: transparent;
         overflow: visible;
         position: fixed;

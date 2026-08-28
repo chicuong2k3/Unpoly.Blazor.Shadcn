@@ -48,7 +48,7 @@
   const SELECT_TRIGGER =
     'border-input flex h-control w-full items-center gap-2 rounded-md border bg-transparent px-3 ' +
     'py-2 text-control whitespace-nowrap shadow-xs transition-[color,box-shadow] outline-none ' +
-    'hover:border-ring/60 focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] ' +
+    'focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] ' +
     'disabled:cursor-not-allowed disabled:opacity-50'
 
   const SELECT_CONTENT =

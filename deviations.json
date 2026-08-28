@@ -205,27 +205,21 @@
     ],
     "[&:has([role=checkbox])]:pe-0": [
       "[&:has([role=checkbox])]:pr-0"
+    ],
+    "[&>*:not(:first-child)]:rounded-s-none": [
+      "[&>*:not(:first-child)]:rounded-l-none"
+    ],
+    "[&>*:not(:first-child)]:border-s-0": [
+      "[&>*:not(:first-child)]:border-l-0"
+    ],
+    "[&>*:not(:last-child)]:rounded-e-none": [
+      "[&>*:not(:last-child)]:rounded-r-none"
+    ],
+    "has-[select[aria-hidden=true]:last-child]:[&>[data-slot=select-trigger]:last-of-type]:rounded-e-md": [
+      "has-[select[aria-hidden=true]:last-child]:[&>[data-slot=select-trigger]:last-of-type]:rounded-r-md"
     ]
   },
   "added": {
-    "input": {
-      "classes": [
-        "hover:border-ring/60"
-      ],
-      "why": "shadcn's Input answers focus and ignores the pointer. A control that does not change under the mouse reads as decoration — and the select beside it does change."
-    },
-    "textarea": {
-      "classes": [
-        "hover:border-ring/60"
-      ],
-      "why": "Same as input."
-    },
-    "select": {
-      "classes": [
-        "hover:border-ring/60"
-      ],
-      "why": "Same as input."
-    },
     "avatar-image": {
       "classes": [
         "object-cover",
@@ -673,7 +667,6 @@
         "disabled:pointer-events-none",
         "disabled:cursor-not-allowed",
         "disabled:opacity-50",
-        "hover:border-ring/60",
         "focus-visible:border-ring",
         "focus-visible:ring-ring/50",
         "aria-invalid:border-destructive",
@@ -738,7 +731,6 @@
         "focus-visible:ring-ring/50",
         "aria-invalid:border-destructive",
         "aria-invalid:ring-destructive/20",
-        "hover:border-ring/60",
         "dark:aria-invalid:ring-destructive/40"
       ],
       "component": "Input",

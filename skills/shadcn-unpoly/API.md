@@ -174,6 +174,7 @@ renders `<a>` · `data-slot="attachment-trigger"`
 | Parameter | Type | Default | |
 |---|---|---|---|
 | `Href` | `string?` | — |  |
+| `Type` | `string` | `"submit"` |  |
 
 ## `<Avatar>`
 renders `<span>` · `data-slot="avatar"`
@@ -301,7 +302,9 @@ renders `<a>` · `data-slot="button"`
 ## `<ButtonGroup>`
 renders `<div>` · `data-slot="button-group"`
 
-_No parameters of its own._
+| Parameter | Type | Default | |
+|---|---|---|---|
+| `Orientation` | `string` | `"horizontal"` |  |
 
 ## `<ButtonGroupSeparator>`
 `data-slot="button-group-separator"`

@@ -9,10 +9,6 @@
 @code {
     [Parameter] public string Type { get; set; } = "text";
 
-    // hover:border-ring/60 is not shadcn's — its Input answers focus and ignores the pointer. A
-    // control that does not change under the mouse reads as decoration, and the select beside it
-    // does change. Declared in deviations.json; the same rule is on Select, Textarea, DatePicker
-    // and Stepper.
     const string Base =
         "h-control w-full min-w-0 rounded-md border border-input bg-transparent px-3 py-1 " +
         "text-control shadow-xs transition-[color,box-shadow] outline-none " +
@@ -22,7 +18,7 @@
         "disabled:cursor-not-allowed disabled:opacity-50 dark:bg-input/30 " +
         "focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 " +
         "aria-invalid:border-destructive aria-invalid:ring-destructive/20 " +
-        "dark:aria-invalid:ring-destructive/40 hover:border-ring/60";
+        "dark:aria-invalid:ring-destructive/40";
 
     string Classes => Cn(Base, Class);
 }

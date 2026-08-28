@@ -21,12 +21,20 @@
 }
 else
 {
-    <button type="button" data-slot="attachment-trigger" class="@Classes"
+    <button type="@Type" data-slot="attachment-trigger" class="@Classes"
             @attributes="AdditionalAttributes">@ChildContent</button>
 }
 
 @code {
     [Parameter] public string? Href { get; set; }
+
+    /// <summary>
+    /// submit | button, for the no-Href branch. Submit is the default because a button that is
+    /// not in a form and has no handler does nothing at all — which is what this rendered
+    /// before, and it is indistinguishable from a broken component. Put it in a form and the
+    /// card posts; the server decides what opening that attachment means.
+    /// </summary>
+    [Parameter] public string Type { get; set; } = "submit";
 
     const string Base =
         "absolute inset-0 z-10 outline-none";

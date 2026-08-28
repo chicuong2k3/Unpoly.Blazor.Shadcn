@@ -17,7 +17,7 @@
     /// <summary>ISO yyyy-MM-dd. Anything else is ignored rather than guessed at.</summary>
     [Parameter] public string? Value { get; set; }
 
-    // hover:border-ring/60 is not shadcn's — its Input answers focus and ignores the pointer. A
+    // is not shadcn's — its Input answers focus and ignores the pointer. A
     // control that does not change under the mouse reads as decoration, and the select beside it
     // does change. Declared in deviations.json; the same rule is on Select, Textarea, DatePicker
     // and Stepper.
@@ -25,7 +25,7 @@
         "border-input placeholder:text-muted-foreground flex h-control w-full min-w-0 rounded-md " +
         "border bg-transparent px-3 py-1 text-control shadow-xs transition-[color,box-shadow] " +
         "outline-none cursor-pointer disabled:cursor-not-allowed disabled:opacity-50 " +
-        "hover:border-ring/60 focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] " +
+        "focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] " +
         "aria-invalid:ring-destructive/20 aria-invalid:border-destructive";
 
     string Classes => Cn(Base, Class);
