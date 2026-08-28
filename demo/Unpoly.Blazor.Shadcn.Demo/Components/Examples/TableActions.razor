@@ -1,0 +1,47 @@
+@* A menu per row. The trigger needs a name that says which row — "Actions" fifteen times is
+   fifteen buttons a screen reader cannot tell apart. *@
+<div class="w-[560px] overflow-hidden rounded-lg border">
+    <Table>
+        <TableHeader>
+            <TableRow>
+                <TableHead>Order</TableHead>
+                <TableHead>Customer</TableHead>
+                <TableHead Class="text-right">Total</TableHead>
+                <TableHead Class="w-10"></TableHead>
+            </TableRow>
+        </TableHeader>
+        <TableBody>
+            @foreach (var (number, who, total) in Rows)
+            {
+                <TableRow>
+                    <TableCell Class="num font-medium">@number</TableCell>
+                    <TableCell>@who</TableCell>
+                    <TableCell Class="num text-right">@total</TableCell>
+                    <TableCell>
+                        <DropdownMenu>
+                            <DropdownMenuTrigger Target="@($"row-{number.Trim('#')}")"
+                                                 Variant="ghost" Size="icon-sm"
+                                                 aria-label="@($"Actions for order {number}")">
+                                <Icon Name="ellipsis" />
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent Id="@($"row-{number.Trim('#')}")" Align="end" Class="w-44">
+                                <DropdownMenuItem>View</DropdownMenuItem>
+                                <DropdownMenuItem>Refund</DropdownMenuItem>
+                                <DropdownMenuSeparator />
+                                <DropdownMenuItem Variant="destructive"
+                                                  data-ask="@($"Cancel order {number}?")">Cancel</DropdownMenuItem>
+                            </DropdownMenuContent>
+                        </DropdownMenu>
+                    </TableCell>
+                </TableRow>
+            }
+        </TableBody>
+    </Table>
+</div>
+
+@code {
+    static readonly (string Number, string Who, string Total)[] Rows =
+    [
+        ("#3201", "Marta Ruiz", "$248.00"), ("#3200", "Ana Lopes", "$92.50"),
+    ];
+}

@@ -4,9 +4,36 @@
 
 <h1 class="doc-h1">Toggle Group</h1>
 <p class="doc-lede">
-    A row of them. <code>Multiple</code> decides whether the items are checkboxes or radios, which is the DOM's own version of Radix's <code>type="single" | "multiple"</code>.
+    A row of toggles. <code>Multiple</code> decides whether the items are checkboxes or radios,
+    which is the DOM's own version of Radix's <code>type="single" | "multiple"</code> — and it
+    means the group posts either one value or a list, with no JavaScript involved.
 </p>
 
-<Example Source="ToggleGroupExample.razor">
-    <ToggleGroupExample />
-</Example>
+<h2 class="doc-h2">Basic</h2>
+<Example Source="ToggleGroupExample.razor"><ToggleGroupExample /></Example>
+
+<h2 class="doc-h2">Outline</h2>
+<Example Source="ToggleGroupOutline.razor"><ToggleGroupOutline /></Example>
+
+<h2 class="doc-h2">Size</h2>
+<Example Source="ToggleGroupSize.razor"><ToggleGroupSize /></Example>
+
+<h2 class="doc-h2">Spacing</h2>
+<p class="doc-note">
+    Zero — the default, and shadcn's — joins the items into one segmented control with shared
+    borders. It is both an attribute and the <code>--gap</code> custom property, because the
+    recipe reads one and the gap utility reads the other.
+</p>
+<Example Source="ToggleGroupSpacing.razor"><ToggleGroupSpacing /></Example>
+
+<h2 class="doc-h2">Vertical</h2>
+<Example Source="ToggleGroupVertical.razor"><ToggleGroupVertical /></Example>
+
+<h2 class="doc-h2">Disabled</h2>
+<Example Source="ToggleGroupDisabled.razor"><ToggleGroupDisabled /></Example>
+
+<h2 class="doc-h2">Custom</h2>
+<Example Source="ToggleGroupCustom.razor"><ToggleGroupCustom /></Example>
+
+<h2 class="doc-h2">RTL</h2>
+<Example Source="ToggleGroupRtl.razor"><ToggleGroupRtl /></Example>

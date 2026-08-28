@@ -1,0 +1,13 @@
+@* Multiple makes the items checkboxes rather than radios, which is the DOM's own version of
+   Radix's type="multiple" — and it means the group posts a list with no JavaScript at all. *@
+<ToggleGroup aria-label="Text style">
+    <ToggleGroupItem Name="style" Value="bold" Multiple Checked aria-label="Bold">
+        <span class="font-bold">B</span>
+    </ToggleGroupItem>
+    <ToggleGroupItem Name="style" Value="italic" Multiple aria-label="Italic">
+        <span class="italic">I</span>
+    </ToggleGroupItem>
+    <ToggleGroupItem Name="style" Value="underline" Multiple aria-label="Underline">
+        <span class="underline">U</span>
+    </ToggleGroupItem>
+</ToggleGroup>

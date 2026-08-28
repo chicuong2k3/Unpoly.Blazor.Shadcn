@@ -1,0 +1,16 @@
+@* Spacing 0 — the default, and shadcn's — joins the items into one segmented control with shared
+   borders. Anything else spaces them out into separate buttons. It is both an attribute and the
+   --gap custom property, because the recipe reads one and the gap utility reads the other. *@
+<div class="flex flex-col items-start gap-4">
+    <ToggleGroup Variant="outline" aria-label="Joined">
+        <ToggleGroupItem Name="tgsp0" Value="day" Variant="outline" Checked>Day</ToggleGroupItem>
+        <ToggleGroupItem Name="tgsp0" Value="week" Variant="outline">Week</ToggleGroupItem>
+        <ToggleGroupItem Name="tgsp0" Value="month" Variant="outline">Month</ToggleGroupItem>
+    </ToggleGroup>
+
+    <ToggleGroup Variant="outline" Spacing="2" aria-label="Spaced">
+        <ToggleGroupItem Name="tgsp2" Value="day" Variant="outline" Spacing="2" Checked>Day</ToggleGroupItem>
+        <ToggleGroupItem Name="tgsp2" Value="week" Variant="outline" Spacing="2">Week</ToggleGroupItem>
+        <ToggleGroupItem Name="tgsp2" Value="month" Variant="outline" Spacing="2">Month</ToggleGroupItem>
+    </ToggleGroup>
+</div>

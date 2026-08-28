@@ -1,0 +1,16 @@
+@* The error belongs to the group, so it is described once rather than three times — and the
+   fieldset is what the description attaches to. *@
+<FieldSet Class="w-[420px]">
+    <FieldLegend Variant="label">Delivery window</FieldLegend>
+    <RadioGroup aria-describedby="rw-error" aria-invalid="true">
+        <Field Orientation="horizontal">
+            <RadioGroupItem id="ri-am" name="window2" value="am" aria-invalid="true" />
+            <FieldLabel For="ri-am">Morning</FieldLabel>
+        </Field>
+        <Field Orientation="horizontal">
+            <RadioGroupItem id="ri-pm" name="window2" value="pm" aria-invalid="true" />
+            <FieldLabel For="ri-pm">Afternoon</FieldLabel>
+        </Field>
+    </RadioGroup>
+    <FieldError id="rw-error">Choose a window before continuing.</FieldError>
+</FieldSet>

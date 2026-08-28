@@ -1,0 +1,20 @@
+@* text-right becomes text-end, which is why the total column stays on the reading edge in both
+   directions rather than jumping to the wrong side. *@
+<div dir="rtl" class="w-[460px] overflow-hidden rounded-lg border">
+    <Table>
+        <TableHeader>
+            <TableRow>
+                <TableHead>الطلب</TableHead>
+                <TableHead>العميل</TableHead>
+                <TableHead Class="text-end">المجموع</TableHead>
+            </TableRow>
+        </TableHeader>
+        <TableBody>
+            <TableRow>
+                <TableCell Class="num font-medium">٣٢٠١#</TableCell>
+                <TableCell>مارتا رويز</TableCell>
+                <TableCell Class="num text-end">٢٤٨٫٠٠</TableCell>
+            </TableRow>
+        </TableBody>
+    </Table>
+</div>
