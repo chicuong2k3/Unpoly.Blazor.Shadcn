@@ -15,6 +15,20 @@
    `text-control`. shadcn writes `h-9 text-sm` literally there. Everywhere else the class
    strings are shadcn's, unchanged, so a model that knows shadcn knows these. */
 
+/* Dark mode follows a class, not the operating system — and this line is what makes that true.
+   ------------------------------------------------------------------------------------------
+   Tailwind v4's stock `dark:` variant compiles to `@media (prefers-color-scheme: dark)`. shadcn
+   redefines it against a class in its own globals, and this file — which is this port's
+   globals — did not. The `.dark { … }` blocks below still worked, because they are ordinary CSS
+   selectors, so the palette flipped and the page looked right; but every `dark:` utility in
+   every component kept answering to the OS instead.
+
+   The effect was invisible on a machine whose OS matches the page and quietly wrong on one that
+   does not: on a light OS in dark mode, none of `dark:bg-input/30`, `dark:hover:bg-accent/50` or
+   `dark:aria-invalid:ring-destructive/40` ever applied. `:where` rather than shadcn's `.dark *`
+   so the element carrying the class is covered too. */
+@custom-variant dark (&:where(.dark, .dark *));
+
 :root {
     --radius: 0.625rem;
 
@@ -42,6 +56,16 @@
     --border: oklch(0.922 0 0);
     --input: oklch(0.922 0 0);
     --ring: oklch(0.708 0 0);
+
+    /* The colour of the line around a surface — a card, an alert, a menu panel, a dialog.
+       Transparent by default, which is the borderless look above: a card is separated by ground
+       rather than by a line.
+
+       It is a token rather than a rule because a theme has to be able to disagree. Notebook is
+       heavy borders on paper and nothing else; a rule would have quietly erased the one thing it
+       is. Every theme that comes from somewhere else was authored against shadcn's bordered
+       default, so each of them sets this back to var(--border). */
+    --surface-border: transparent;
 
     --chart-1: oklch(0.646 0.222 41.116);
     --chart-2: oklch(0.6 0.118 184.704);
@@ -189,4 +213,26 @@
 @utility size-control {
     inline-size: var(--control-h);
     block-size: var(--control-h);
+}
+
+/* shadcn's own base layer, and it is not optional.
+   ------------------------------------------------------------------------------------------
+   Tailwind's preflight leaves `border-color: currentColor`, so `border-b` with no colour class
+   draws a line in the TEXT colour. shadcn ships `* { @apply border-border outline-ring/50 }` in
+   its globals for exactly that reason, and this file — which is this port's globals — did not.
+
+   The result was a near-black hairline everywhere a component relies on the default: every table
+   row, every accordion item, the sidebar's edge, the input group's divider, the drawer's header.
+   It reads as "heavier than shadcn" rather than as a bug, which is why it survived this long.
+
+   `@layer base`, so anything a component says for itself still wins. */
+@layer base {
+    *,
+    ::after,
+    ::before,
+    ::backdrop,
+    ::file-selector-button {
+        border-color: var(--border);
+        outline-color: color-mix(in oklab, var(--ring) 50%, transparent);
+    }
 }

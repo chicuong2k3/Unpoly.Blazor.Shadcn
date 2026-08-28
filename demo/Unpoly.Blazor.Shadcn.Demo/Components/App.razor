@@ -12,6 +12,15 @@
         <base href="/" />
 
         <link rel="stylesheet" href="_content/Unpoly.Blazor.Shadcn/airdatepicker/air-datepicker.css" />
+        @* A theme names its typefaces; loading them is the application's job, and this demo
+           ships four themes that between them ask for five faces. Unloaded, each family falls
+           back and the theme is the same palette in the wrong voice — which is exactly how these
+           themes looked before. preconnect first, because the stylesheet and the font files come
+           from two different hosts and the second round trip is the expensive one. *@
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Architects+Daughter&family=Geist:wght@400;500;600&family=Geist+Mono&family=Inter:wght@400;500;600&family=JetBrains+Mono&family=Outfit:wght@400;500;600&display=swap" />
+
         <link rel="stylesheet" href="app.css" />
         <link rel="stylesheet" href="_content/Unpoly.Blazor.Shadcn/toastify/toastify.css" />
         <link rel="stylesheet" href="_content/Unpoly.Blazor.Shadcn/tomselect/tom-select.min.css" />

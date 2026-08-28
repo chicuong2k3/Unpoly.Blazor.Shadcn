@@ -4,7 +4,11 @@
    Do not edit; change the preset or the generator.
 
    Scoped to [data-theme] rather than :root so several themes can be loaded at once and
-   switched by an attribute. An app that ships one theme puts the attribute on <html>. */
+   switched by an attribute. An app that ships one theme puts the attribute on <html>.
+
+   TYPEFACES: Geist, Geist Mono, Georgia
+   A theme names them; loading them is the application's job. Unloaded, the family
+   falls back and the theme is the same palette in the wrong voice. */
 
 
 [data-theme="vercel"] {
@@ -42,6 +46,17 @@
     --sidebar-border: oklch(0.9400 0 0);
     --sidebar-ring: oklch(0 0 0);
     --radius-control: calc(0.5rem - 2px);
+    --surface-border: var(--border);
+    --elevation-1: 0px 1px 2px 0px hsl(0 0% 0% / 0.09);
+    --elevation-2: 0px 1px 2px 0px hsl(0 0% 0% / 0.18), 0px 1px 2px -1px hsl(0 0% 0% / 0.18);
+    --elevation-3: 0px 1px 2px 0px hsl(0 0% 0% / 0.18), 0px 2px 4px -1px hsl(0 0% 0% / 0.18);
+    --elevation-4: 0px 1px 2px 0px hsl(0 0% 0% / 0.18), 0px 4px 6px -1px hsl(0 0% 0% / 0.18);
+    --font-sans: Geist, sans-serif;
+    --font-serif: Georgia, serif;
+    --font-mono: Geist Mono, monospace;
+    --tracking-normal: 0em;
+    font-family: var(--font-sans);
+    letter-spacing: var(--tracking-normal);
 }
 
 [data-theme="vercel"].dark,
@@ -79,4 +94,8 @@
     --sidebar-accent-foreground: oklch(1 0 0);
     --sidebar-border: oklch(0.3200 0 0);
     --sidebar-ring: oklch(0.7200 0 0);
+    --elevation-1: 0px 1px 2px 0px hsl(0 0% 0% / 0.09);
+    --elevation-2: 0px 1px 2px 0px hsl(0 0% 0% / 0.18), 0px 1px 2px -1px hsl(0 0% 0% / 0.18);
+    --elevation-3: 0px 1px 2px 0px hsl(0 0% 0% / 0.18), 0px 2px 4px -1px hsl(0 0% 0% / 0.18);
+    --elevation-4: 0px 1px 2px 0px hsl(0 0% 0% / 0.18), 0px 4px 6px -1px hsl(0 0% 0% / 0.18);
 }

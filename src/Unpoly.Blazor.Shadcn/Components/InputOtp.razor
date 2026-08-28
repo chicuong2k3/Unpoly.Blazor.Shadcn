@@ -26,7 +26,7 @@
     [Parameter] public int Length { get; set; } = 6;
 
     const string Base =
-        "disabled:cursor-not-allowed";
+        "disabled:cursor-not-allowed flex items-center gap-2 has-disabled:opacity-50";
 
     string Classes => Cn(Base, Class);
 }

@@ -35,6 +35,15 @@ jobs:
       - name: Every upstream slot is ported or refused with a reason
         run: python tools/scaffold_components.py --check
 
+      # Two rules in shadcn's globals that are not tokens, and are silent when missing.
+      - name: ui.css reproduces shadcn's globals
+        run: python tools/check_globals.py --check
+
+      # A <div> where shadcn writes a <span> looks fine in a screenshot and is wrong in a
+      # paragraph: different box, different default role, different rules about what may go in it.
+      - name: Every element matches shadcn
+        run: python tools/check_elements.py --check
+
       # A class rule keyed off an attribute nobody renders matches nothing, in silence.
       - name: Every data- rule has an attribute to match
         run: python tools/check_data_attributes.py --check

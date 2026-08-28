@@ -4,7 +4,11 @@
    Do not edit; change the preset or the generator.
 
    Scoped to [data-theme] rather than :root so several themes can be loaded at once and
-   switched by an attribute. An app that ships one theme puts the attribute on <html>. */
+   switched by an attribute. An app that ships one theme puts the attribute on <html>.
+
+   TYPEFACES: Outfit, ui-serif
+   A theme names them; loading them is the application's job. Unloaded, the family
+   falls back and the theme is the same palette in the wrong voice. */
 
 
 [data-theme="supabase"] {
@@ -42,6 +46,17 @@
     --sidebar-border: oklch(0.9037 0 0);
     --sidebar-ring: oklch(0.8348 0.1302 160.9080);
     --radius-control: calc(0.5rem - 2px);
+    --surface-border: var(--border);
+    --elevation-1: 0px 1px 3px 0px hsl(0 0% 0% / 0.09);
+    --elevation-2: 0px 1px 3px 0px hsl(0 0% 0% / 0.17), 0px 1px 2px -1px hsl(0 0% 0% / 0.17);
+    --elevation-3: 0px 1px 3px 0px hsl(0 0% 0% / 0.17), 0px 2px 4px -1px hsl(0 0% 0% / 0.17);
+    --elevation-4: 0px 1px 3px 0px hsl(0 0% 0% / 0.17), 0px 4px 6px -1px hsl(0 0% 0% / 0.17);
+    --font-sans: Outfit, sans-serif;
+    --font-serif: ui-serif, Georgia, Cambria, "Times New Roman", Times, serif;
+    --font-mono: monospace;
+    --tracking-normal: 0.025em;
+    font-family: var(--font-sans);
+    letter-spacing: var(--tracking-normal);
 }
 
 [data-theme="supabase"].dark,
@@ -79,4 +94,8 @@
     --sidebar-accent-foreground: oklch(0.9851 0 0);
     --sidebar-border: oklch(0.2809 0 0);
     --sidebar-ring: oklch(0.8003 0.1821 151.7110);
+    --elevation-1: 0px 1px 3px 0px hsl(0 0% 0% / 0.09);
+    --elevation-2: 0px 1px 3px 0px hsl(0 0% 0% / 0.17), 0px 1px 2px -1px hsl(0 0% 0% / 0.17);
+    --elevation-3: 0px 1px 3px 0px hsl(0 0% 0% / 0.17), 0px 2px 4px -1px hsl(0 0% 0% / 0.17);
+    --elevation-4: 0px 1px 3px 0px hsl(0 0% 0% / 0.17), 0px 4px 6px -1px hsl(0 0% 0% / 0.17);
 }

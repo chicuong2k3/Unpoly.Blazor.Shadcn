@@ -69,3 +69,26 @@ roughly this order of impact:
 Then check both themes of every component in the demo, not just the ones you changed:
 `--accent` is used by ghost buttons, dropdown rows, table row hover and the select panel, and it
 is the token most often set to something that looks right on one of those and wrong on the rest.
+
+## What a theme carries
+
+Colour is the least of it. Everything below is generated from the preset and every one of them
+was being thrown away until it was noticed that four themes looked like the same theme:
+
+| | |
+|---|---|
+| palette | the shadcn variables, light and dark |
+| `--radius` | and `--radius-control`, derived from it |
+| `--elevation-1..4` | the preset's own shadow scale, which is most of what distinguishes one from another |
+| `--font-sans`, `--font-mono`, `--font-serif` | applied on the theme element, so the page reads in them and not only the utilities |
+| `--tracking-normal` | ditto |
+| `--surface-border` | back to `var(--border)`: these were authored against shadcn's bordered default, not this library's borderless one |
+
+**A theme names its typefaces; loading them is the application's job.** The generated files say
+which at the top. Unloaded, the family falls back and the theme is the same palette in the wrong
+voice — which is exactly how these looked before. The demo loads them from Google Fonts; an app
+that ships one theme should self-host the one face it needs.
+
+`cupertino` and `fluent` name system faces on purpose. SF Pro and Segoe UI Variable ship with
+their platforms and cannot be downloaded, and a Cupertino theme on Windows should read as Windows
+laying out an Apple design rather than as a poor copy of one.

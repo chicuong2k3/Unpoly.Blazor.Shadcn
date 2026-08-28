@@ -237,7 +237,7 @@
     [data-slot="select-content"],
     [data-slot="dialog-content"],
     [data-slot="alert-dialog-content"],
-    [data-slot="code-block"] { border-color: transparent; }
+    [data-slot="code-block"] { border-color: var(--surface-border); }
 
     /* ---- Checkbox / RadioGroup / Switch ----------------------------------------------
        Radix draws these as <button role="checkbox"> with a hidden input alongside. On static

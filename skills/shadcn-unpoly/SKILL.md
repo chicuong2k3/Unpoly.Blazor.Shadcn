@@ -130,6 +130,22 @@ Two consequences worth knowing before you reach for a component:
 - **A `<button>` inside a `<form>` submits.** Every non-submitting button needs `type="button"` —
   `TabsTrigger`, `DialogClose` and `DropdownMenuItem` already set it.
 
+## Two rules that are not tokens, and are not optional
+
+`ui.css` is this port's `globals.css`, and most of it is variables. Two rules in it are not, and
+both are silent when missing — both were, for months:
+
+- **`@custom-variant dark (&:where(.dark, .dark *))`.** Tailwind v4's stock `dark:` compiles to
+  a `prefers-color-scheme` query. Without redefining it against the class, the palette follows
+  the class (those are plain `.dark { … }` blocks) and every `dark:` *utility* follows the
+  operating system. On a machine whose OS matches the page that is invisible.
+- **`@layer base { * { border-color: var(--border) } }`.** Preflight leaves `currentColor`, so
+  `border-b` with no colour class draws a line in the *text* colour. Every table row, accordion
+  item and panel edge was a near-black hairline — which reads as "heavier than shadcn" rather
+  than as a bug.
+
+`tools/check_globals.py` fails the build if either goes missing again.
+
 ## Theming
 
 A theme is a `[data-theme="name"]` block of custom properties, or `:root` if the app ships one.
@@ -143,7 +159,13 @@ A Material 3 theme was written and then deleted. It is the honest outcome of the
 M3 without its state layers and ripples is not M3, it is shadcn wearing M3's palette, and shipping
 it as a theme would have claimed something the tokens cannot deliver.
 
-**The default is deliberately borderless.** `--background` is one step off `--card`, so surfaces
+**The default is deliberately borderless, and a theme may disagree.** `--surface-border` is the
+colour of the line around a card, an alert, a menu panel or a dialog; it is `transparent` by
+default and every shipped theme sets it back to `var(--border)`, because each was authored against
+shadcn's bordered look. A rule rather than a token would have quietly erased the one thing
+Notebook is.
+
+ `--background` is one step off `--card`, so surfaces
 separate by tone rather than by a hairline, and `ui.behavior.css` makes the border transparent on
 the containers that carry one in upstream shadcn (card, alert, menu and dialog content). Set
 `border-color` on those slots in your theme to get the lines back — nothing else changes.

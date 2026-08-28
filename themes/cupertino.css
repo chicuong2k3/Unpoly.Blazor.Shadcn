@@ -60,6 +60,23 @@
 
     /* San Francisco, then the system stack that resolves to it on Apple platforms. */
     --font-numeric: ui-monospace, "SF Mono", Menlo, monospace;
+
+    /* ---- type ---------------------------------------------------------------------------
+       The system stack, not a webfont. On an Apple device this resolves to SF Pro, which is
+       the actual typeface and cannot be downloaded; anywhere else system-ui is the right
+       answer anyway, because a Cupertino theme on Windows should look like Windows reading
+       an Apple layout rather than like a bad copy of one. */
+    --font-sans: -apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, sans-serif;
+    --font-mono: ui-monospace, "SF Mono", SFMono-Regular, Menlo, monospace;
+    --tracking-normal: -0.01em;
+
+    font-family: var(--font-sans);
+    letter-spacing: var(--tracking-normal);
+
+
+    /* Hairlines, not ground: iOS separates a card from the page with a line. */
+    --surface-border: var(--border);
+
 }
 
 [data-theme="cupertino"].dark,

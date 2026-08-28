@@ -53,6 +53,20 @@
     /* A Fluent medium control is 32px with a 14px label — the densest of the three. */
     --control-h: 2rem;
     --control-text: 0.875rem;
+
+    /* ---- type ---------------------------------------------------------------------------
+       Segoe UI Variable is Windows 11's own face and ships with it; Segoe UI is the fallback
+       on older Windows. Neither is downloadable, and neither should be: a Fluent theme is a
+       Windows theme, and on a Mac it correctly reads as system-ui. */
+    --font-sans: "Segoe UI Variable Text", "Segoe UI", system-ui, sans-serif;
+    --font-mono: "Cascadia Mono", Consolas, ui-monospace, monospace;
+
+    font-family: var(--font-sans);
+
+
+    /* Fluent draws a stroke on every surface, and a lighter one on its bottom edge. */
+    --surface-border: var(--border);
+
 }
 
 [data-theme="fluent"].dark,

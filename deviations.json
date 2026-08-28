@@ -190,6 +190,15 @@
         "hover:opacity-100"
       ],
       "why": "Upstream ships no classes for it at all; an unstyled button here is browser chrome."
+    },
+    "input-otp": {
+      "classes": [
+        "flex",
+        "items-center",
+        "gap-2",
+        "has-disabled:opacity-50"
+      ],
+      "why": "Upstream splits this across two props: `className` dresses the real input and `containerClassName` dresses the box around it, and only the first carries the data-slot. Here the box IS the element, so it needs both — without them the six boxes were not in a row at all and wrapped onto two lines."
     }
   },
   "dropped": {
@@ -581,5 +590,17 @@
       "ContainerBase": "sidebar-container",
       "InnerBase": "sidebar-inner"
     }
+  },
+  "element": {
+    "$comment": [
+      "Slots rendered on a different HTML element than shadcn writes. Every one is a semantic",
+      "gain that costs nothing visually: shadcn reaches for a div because React makes the tag",
+      "the least interesting decision in the file, and static SSR has no such excuse."
+    ],
+    "attachment-group": "a list of files is a <ul>; \"list, 3 items\" is how someone hears how many there are before deciding to go through them",
+    "avatar-group-count": "\"+3\" sits inside a row of avatars, so it is a <span> — a div there would be a block box in an inline run",
+    "bubble": "one turn in a conversation is an <article>, which is what lets a screen reader move between turns instead of reading the thread as one wall of text",
+    "message": "the same, for the wider shape around a bubble",
+    "input-otp-slot": "the slot IS the input here. Radix draws six divs and keeps the value in React with one hidden field behind them; on static SSR the six real inputs are what post, and what a password manager fills"
   }
 }
