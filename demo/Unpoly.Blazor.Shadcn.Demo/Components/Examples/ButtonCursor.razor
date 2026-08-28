@@ -1,0 +1,8 @@
+@* shadcn's buttons are `cursor-default`, as a native <button> is — the pointer hand is for
+   links, and using it on a button is a habit from the days when everything clickable was an <a>.
+   Override it if your users expect otherwise; nothing in the library depends on it. *@
+<div class="flex flex-wrap items-center gap-3">
+    <Button>Default cursor</Button>
+    <Button Class="cursor-pointer">Pointer</Button>
+    <Button Variant="link" Href="/components/button">A link, which points</Button>
+</div>

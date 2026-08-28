@@ -4,9 +4,30 @@
 
 <h1 class="doc-h1">Alert</h1>
 <p class="doc-lede">
-    A message about the page, not about a control. <code>role="alert"</code> is deliberately absent: that announces immediately and interrupts, which is right for something that just happened and wrong for something that was already on the page when it loaded.
+    A message about the page, not about a control. <code>role="alert"</code> is deliberately
+    absent: that announces immediately and interrupts, which is right for something that just
+    happened and wrong for something that was already on the page when it loaded.
 </p>
 
-<Example Source="AlertExample.razor">
-    <AlertExample />
-</Example>
+<h2 class="doc-h2">Basic</h2>
+<Example Source="AlertBasic.razor"><AlertBasic /></Example>
+
+<h2 class="doc-h2">Destructive</h2>
+<Example Source="AlertDestructive.razor"><AlertDestructive /></Example>
+
+<h2 class="doc-h2">Action</h2>
+<p class="doc-note">
+    A link or a form, never a click handler — so it works before any JavaScript, and a middle
+    click opens it in a tab.
+</p>
+<Example Source="AlertAction.razor"><AlertAction /></Example>
+
+<h2 class="doc-h2">Custom Colors</h2>
+<p class="doc-note">
+    Two variants ship; a third is a class rather than a new variant. Tint with theme tokens and
+    the alert follows a theme change; tint with a literal colour and it does not.
+</p>
+<Example Source="AlertCustomColors.razor"><AlertCustomColors /></Example>
+
+<h2 class="doc-h2">RTL</h2>
+<Example Source="AlertRtl.razor"><AlertRtl /></Example>

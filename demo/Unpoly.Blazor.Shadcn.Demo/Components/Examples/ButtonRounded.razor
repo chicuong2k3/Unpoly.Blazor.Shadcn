@@ -1,0 +1,9 @@
+@* The radius is a token, not a variant: `--radius` for the container scale and
+   `--radius-control` for controls. Override the class on one button, or change the token and
+   every control in the app follows. *@
+<div class="flex flex-wrap items-center gap-3">
+    <Button>Default</Button>
+    <Button Class="rounded-full">Pill</Button>
+    <Button Class="rounded-none">Square</Button>
+    <Button Size="icon" Class="rounded-full" aria-label="Add"><Icon Name="plus" /></Button>
+</div>

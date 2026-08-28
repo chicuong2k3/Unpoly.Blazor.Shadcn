@@ -1,0 +1,22 @@
+@* Each item in its own card. Nothing new: a Card around an Accordion of one. *@
+<div class="flex w-[460px] flex-col gap-3">
+    @foreach (var (q, a) in Questions)
+    {
+        <Card Class="py-0">
+            <Accordion>
+                <AccordionItem Class="border-b-0">
+                    <AccordionTrigger Class="px-6">@q</AccordionTrigger>
+                    <AccordionContent Class="px-6">@a</AccordionContent>
+                </AccordionItem>
+            </Accordion>
+        </Card>
+    }
+</div>
+
+@code {
+    static readonly (string Q, string A)[] Questions =
+    [
+        ("Can I use it in a commercial project?", "Yes. MIT, both this and shadcn."),
+        ("Does it need a build step?", "Tailwind, and nothing else."),
+    ];
+}

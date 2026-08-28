@@ -13,6 +13,7 @@ import json
 import pathlib
 import re
 import sys
+import time
 import urllib.request
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent
@@ -53,6 +54,25 @@ def fetch(name: str) -> str | None:
 
 
 DOCS_INDEX = 'https://ui.shadcn.com/docs/components'
+
+
+def fetch_doc_sections(order: list[str]) -> dict[str, list[str]]:
+    """Every heading on every component page, so the demo can be compared with shadcn's own.
+
+    "Does the demo show what shadcn shows" is otherwise a question nobody can answer, and the
+    answer turns out to be no by a wide margin. Committed for the same reason as everything else
+    fetched here: CI needs no network, and a change upstream arrives as a diff somebody reads.
+    """
+    out = {}
+    for slug in order:
+        request = urllib.request.Request(f'https://ui.shadcn.com/docs/components/{slug}',
+                                         headers={'User-Agent': 'Mozilla/5.0'})
+        html = urllib.request.urlopen(request, timeout=40).read().decode('utf-8', 'replace')
+        headings = [re.sub(r'<[^>]+>', '', h).strip().rstrip('#')
+                    for h in re.findall(r'<h2[^>]*>(.*?)</h2>', html, re.S)]
+        out[slug] = [h for h in headings if h]
+        time.sleep(0.2)
+    return out
 
 
 def fetch_doc_order() -> list[str]:
@@ -99,8 +119,22 @@ def main() -> int:
         '# The demo has one page per line, at /components/<slug>, in this order. Anyone who',
         "# knows shadcn's docs can guess the URL, which is the point.",
     ]
-    index.write_text('\n'.join(header + fetch_doc_order()) + '\n', encoding='utf-8')
+    order = fetch_doc_order()
+    index.write_text('\n'.join(header + order) + '\n', encoding='utf-8')
     print('  doc-components.txt')
+
+    sections = [
+        '# Every heading on every shadcn component docs page, in page order. Fetched here and',
+        '# committed, so tools/check_sections.py needs no network.',
+        '#',
+        '# One line per page: <slug>: <heading> | <heading> | ...',
+        '# check_sections.py decides which are demos this port should have, which are prose, and',
+        '# which cannot exist here — and says so for each.',
+    ]
+    for slug, headings in fetch_doc_sections(order).items():
+        sections.append(f'{slug}: ' + ' | '.join(headings))
+    (OUT / 'doc-sections.txt').write_text('\n'.join(sections) + '\n', encoding='utf-8')
+    print('  doc-sections.txt')
 
     missing = []
     for name in COMPONENTS:

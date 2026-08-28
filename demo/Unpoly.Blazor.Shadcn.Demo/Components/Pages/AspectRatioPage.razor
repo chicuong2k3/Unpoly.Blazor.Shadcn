@@ -4,9 +4,16 @@
 
 <h1 class="doc-h1">Aspect Ratio</h1>
 <p class="doc-lede">
-    A box that keeps its shape while its width changes. One CSS property does it, so this is a wrapper and nothing more.
+    A box that keeps its shape while its width changes. One CSS property does it, so this is a
+    wrapper and nothing more — and giving the image inside it real <code>width</code> and
+    <code>height</code> attributes is what stops the page reflowing as it loads.
 </p>
 
-<Example Source="AspectRatioExample.razor">
-    <AspectRatioExample />
-</Example>
+<h2 class="doc-h2">Basic</h2>
+<Example Source="AspectRatioExample.razor"><AspectRatioExample /></Example>
+
+<h2 class="doc-h2">Square</h2>
+<Example Source="AspectSquare.razor"><AspectSquare /></Example>
+
+<h2 class="doc-h2">Portrait</h2>
+<Example Source="AspectPortrait.razor"><AspectPortrait /></Example>

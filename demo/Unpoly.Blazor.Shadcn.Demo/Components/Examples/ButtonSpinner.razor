@@ -1,0 +1,12 @@
+@* Two ways, and the first is the one to reach for. A button that starts an Unpoly request grows
+   its own spinner from `.up-active` — no parameter, no state, and it clears itself when the
+   request ends. <Spinner> is for the other case: a button whose work is not a request. *@
+<div class="flex flex-wrap items-center gap-3">
+    <form method="post" action="/orders/3201/refund" up-target=".preview" up-disable>
+        <AntiforgeryToken />
+        <Button Type="submit">Refund — spins by itself</Button>
+    </form>
+
+    <Button disabled><Spinner />Saving…</Button>
+    <Button Variant="outline" disabled><Spinner />Please wait</Button>
+</div>

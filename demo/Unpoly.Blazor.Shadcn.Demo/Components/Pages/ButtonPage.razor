@@ -4,37 +4,72 @@
 
 <h1 class="doc-h1">Button</h1>
 <p class="doc-lede">
-    Six variants, eight sizes, and an <code>Href</code> where shadcn writes <code>asChild</code>. A button that starts an Unpoly request grows its own spinner from <code>.up-active</code> — no parameter, no state.
+    Six variants, eight sizes, and an <code>Href</code> where shadcn writes <code>asChild</code>.
+    A button that starts an Unpoly request grows its own spinner from <code>.up-active</code> —
+    no parameter, no state.
 </p>
 
-<h2 class="doc-h2">Variants</h2>
+<h2 class="doc-h2">Default</h2>
+<Example Source="ButtonDefault.razor"><ButtonDefault /></Example>
 
-<Example Source="ButtonVariantsExample.razor">
-    <ButtonVariantsExample />
-</Example>
+<h2 class="doc-h2">Outline</h2>
+<Example Source="ButtonOutline.razor"><ButtonOutline /></Example>
 
-<h2 class="doc-h2">Sizes</h2>
+<h2 class="doc-h2">Secondary</h2>
+<Example Source="ButtonSecondary.razor"><ButtonSecondary /></Example>
 
-<p class="doc-note">Sizes read <code>--control-h</code> and <code>--control-text</code> rather than shadcn's literal <code>h-9 text-sm</code>, which is the only reason one library can dress a 46px storefront and a 36px back office.</p>
-<Example Source="ButtonSizes.razor">
-    <ButtonSizes />
-</Example>
+<h2 class="doc-h2">Ghost</h2>
+<Example Source="ButtonGhost.razor"><ButtonGhost /></Example>
 
-<h2 class="doc-h2">With an icon</h2>
+<h2 class="doc-h2">Destructive</h2>
+<Example Source="ButtonDestructive.razor"><ButtonDestructive /></Example>
 
-<p class="doc-note">No icon slot: an <code>&lt;Icon&gt;</code> in the children is sized by the button's own recipe.</p>
-<Example Source="ButtonWithIcon.razor">
-    <ButtonWithIcon />
-</Example>
+<h2 class="doc-h2">Link</h2>
+<p class="doc-note">
+    The variant, which is a button that <i>looks</i> like a link. For something that goes
+    somewhere, see <a href="#as-link">As Link</a> below — the two are not interchangeable, and
+    using the first where you meant the second gives you a control the browser will not open in
+    a new tab.
+</p>
+<Example Source="ButtonLink.razor"><ButtonLink /></Example>
 
-<h2 class="doc-h2">As a link</h2>
+<h2 class="doc-h2">Variant</h2>
+<Example Source="ButtonVariantsExample.razor"><ButtonVariantsExample /></Example>
 
-<Example Source="ButtonAsLink.razor">
-    <ButtonAsLink />
-</Example>
+<h2 class="doc-h2">Size</h2>
+<Example Source="ButtonSizes.razor"><ButtonSizes /></Example>
 
-<h2 class="doc-h2">While a request is out</h2>
+<h2 class="doc-h2">Icon</h2>
+<Example Source="ButtonIconOnly.razor"><ButtonIconOnly /></Example>
 
-<Example Source="ButtonLoading.razor">
-    <ButtonLoading />
-</Example>
+<h2 class="doc-h2">With Icon</h2>
+<Example Source="ButtonWithIcon.razor"><ButtonWithIcon /></Example>
+
+<h2 class="doc-h2">Rounded</h2>
+<Example Source="ButtonRounded.razor"><ButtonRounded /></Example>
+
+<h2 class="doc-h2">Cursor</h2>
+<Example Source="ButtonCursor.razor"><ButtonCursor /></Example>
+
+<h2 class="doc-h2">Spinner</h2>
+<Example Source="ButtonSpinner.razor"><ButtonSpinner /></Example>
+
+<h2 class="doc-h2">Button Group</h2>
+<Example Source="ButtonInGroup.razor"><ButtonInGroup /></Example>
+
+<h2 id="as-link" class="doc-h2">As Link</h2>
+<p class="doc-note">
+    shadcn writes <code>&lt;Button asChild&gt;&lt;Link href&gt;</code>, which needs
+    <code>cloneElement</code>. Give it an <code>Href</code> instead and it renders a real
+    <code>&lt;a&gt;</code> — so middle-click opens a tab, the status bar shows where it goes, and
+    Unpoly follows it.
+</p>
+<Example Source="ButtonAsLink.razor"><ButtonAsLink /></Example>
+
+<h2 class="doc-h2">RTL</h2>
+<p class="doc-note">
+    Nothing to configure. Every spacing and border class in the library is a logical property, so
+    <code>dir="rtl"</code> on an ancestor is the whole story — the icon moves to the other side of
+    the label because <code>gap</code> follows the writing direction.
+</p>
+<Example Source="ButtonRtl.razor"><ButtonRtl /></Example>

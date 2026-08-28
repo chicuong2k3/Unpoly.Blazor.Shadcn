@@ -1,0 +1,69 @@
+# Every heading on every shadcn component docs page, in page order. Fetched by
+# tools/fetch_upstream.py and committed, so tools/check_sections.py needs no network.
+#
+# One line per page: <slug>: <heading> | <heading> | ...
+# tools/check_sections.py decides which of them are demos this port should have, which are
+# prose, and which cannot exist here — and says so for each.
+accordion: Installation | Usage | Composition | Basic | Multiple | Disabled | Borders | Card | RTL | API Reference
+alert: Installation | Usage | Composition | Basic | Destructive | Action | Custom Colors | RTL | API Reference
+alert-dialog: Installation | Usage | Composition | Basic | Small | Media | Small with Media | Destructive | RTL | API Reference
+aspect-ratio: Installation | Usage | Square | Portrait | RTL | API Reference
+attachment: Installation | Usage | Composition | Features | Image | States | Sizes | Group | Trigger | Accessibility | API Reference
+avatar: Installation | Usage | Composition | Basic | Badge | Badge with Icon | Avatar Group | Avatar Group Count | Avatar Group with Icon | Sizes | Dropdown | RTL | API Reference
+badge: Installation | Usage | Variants | With Icon | With Spinner | Link | Custom Colors | RTL | API Reference
+breadcrumb: Installation | Usage | Composition | Basic | Custom separator | Dropdown | Collapsed | Link component | RTL | API Reference
+bubble: Installation | Usage | Composition | Features | Variants | Alignment | Bubble Group | Links and Buttons | Reactions | Show More / Collapsible | Tooltip | Popover | Accessibility | API Reference
+button: Installation | Usage | Cursor | Size | Default | Outline | Secondary | Ghost | Destructive | Link | Icon | With Icon | Rounded | Spinner | Button Group | As Link | RTL | API Reference
+button-group: Installation | Usage | Composition | Accessibility | ButtonGroup vs ToggleGroup | Orientation | Size | Nested | Separator | Split | Input | Input Group | Dropdown Menu | Select | Popover | RTL | API Reference
+calendar: Installation | Usage | About | Date Picker | Persian / Hijri / Jalali Calendar | Selected Date (With TimeZone) | Basic | Range Calendar | Month and Year Selector | Presets | Date and Time Picker | Booked dates | Custom Cell Size | Week Numbers | RTL | API Reference | Changelog
+card: Installation | Usage | Composition | Size | Spacing | Image | RTL | API Reference | Changelog
+carousel: About | Installation | Usage | Composition | Sizes | Spacing | Orientation | Options | API | Events | Plugins | RTL | API Reference
+chart: Component | Updating to Recharts v3 | Installation | Your First Chart | Chart Config | Theming | Tooltip | Legend | Accessibility | RTL
+checkbox: Installation | Usage | Checked State | Invalid State | Basic | Description | Disabled | Group | Table | RTL | API Reference
+collapsible: Installation | Usage | Composition | Controlled State | Basic | Settings Panel | File Tree | RTL | API Reference
+combobox: Installation | Usage | Composition | Custom Items | Multiple Selection | Basic | Multiple | Clear Button | Groups | Custom Items | Invalid | Disabled | Auto Highlight | Popup | Input Group | RTL | API Reference
+command: About | Installation | Usage | Composition | Basic | Command Palette | Shortcuts | Command Palette | Groups | Command Palette | Scrollable | Command Palette | RTL | API Reference
+context-menu: Installation | Usage | Composition | Basic | Submenu | Shortcuts | Groups | Icons | Checkboxes | Radio | Destructive | Sides | RTL | API Reference
+data-table: Introduction | Table of Contents | Installation | Prerequisites | Project Structure | Set up Table Features | Basic Table | Cell Formatting | Row Actions | Pagination | Sorting | Filtering | Visibility | Row Selection | Reusable Components | RTL
+date-picker: Installation | Usage | Composition | Basic | Range Picker | Date of Birth | Input | Time Picker | Natural Language Picker | RTL
+dialog: Installation | Usage | Composition | Custom Close Button | No Close Button | Sticky Footer | Scrollable Content | RTL | API Reference
+direction: Installation | Usage | useDirection
+drawer: Installation | Usage | Composition | Custom Sizes | Styling | Position | Swipe Handle | Nested | Non Modal | Snap Points | Responsive | Migrating from Vaul | API Reference
+dropdown-menu: Installation | Usage | Composition | Basic | Submenu | Shortcuts | Icons | Checkboxes | Checkboxes Icons | Radio Group | Radio Icons | Destructive | Avatar | Complex | RTL | API Reference
+empty: Installation | Usage | Composition | Outline | Background | Avatar | Avatar Group | InputGroup | RTL | API Reference
+field: Installation | Usage | Composition | Anatomy | Form | Input | Textarea | Select | Slider | Fieldset | Checkbox | Radio | Switch | Choice Card | Field Group | RTL | Responsive Layout | Validation and Errors | Accessibility | API Reference
+hover-card: Installation | Usage | Composition | Trigger Delays | Positioning | Basic | Sides | RTL | API Reference
+input: Installation | Usage | Basic | Field | Field Group | Disabled | Invalid | File | Inline | Grid | Required | Badge | Input Group | Button Group | Form | RTL
+input-group: Installation | Usage | Composition | Align | Icon | Text | Button | Kbd | Dropdown | Spinner | Textarea | Custom Input | RTL | API Reference
+input-otp: About | Installation | Usage | Composition | Pattern | Separator | Disabled | Controlled | Invalid | Four Digits | Alphanumeric | Form | RTL | API Reference
+item: Installation | Usage | Composition | Item vs Field | Variant | Size | Icon | Avatar | Image | Group | Header | Link | Dropdown | RTL | API Reference
+kbd: Installation | Usage | Composition | Group | Button | Tooltip | Input Group | RTL | API Reference
+label: Installation | Usage | Label in Field | RTL | API Reference
+marker: Installation | Usage | Composition | Features | Variants | Status | Shimmer | Separator | Border | With Icon | Links and Buttons | Accessibility | API Reference
+menubar: Installation | Usage | Composition | Checkbox | Radio | Submenu | With Icons | RTL | API Reference
+message: Installation | Usage | Composition | Features | Avatar | Group | Header and Footer | Actions | Attachment | Accessibility | API Reference
+message-scroller: What Makes a Great Streaming Chat Experience | MessageScroller | Installation | Usage | Composition | Core Concepts | Performance | Virtualization | Accessibility | Unstyled | API Reference
+native-select: Installation | Usage | Composition | Groups | Disabled | Invalid | Native Select vs Select | RTL | API Reference
+navigation-menu: Installation | Usage | Composition | Link Component | RTL | API Reference
+pagination: Installation | Usage | Composition | Simple | Icons Only | Next.js | RTL | Changelog
+popover: Installation | Usage | Composition | Basic | Align | With Form | RTL | API Reference
+progress: Installation | Usage | Composition | Label | Controlled | RTL | API Reference
+radio-group: Installation | Usage | Composition | Description | Choice Card | Fieldset | Disabled | Invalid | RTL | API Reference
+resizable: About | Installation | Usage | Composition | Vertical | Handle | RTL | API Reference | Changelog
+scroll-area: Installation | Usage | Composition | Horizontal | RTL | API Reference
+select: Installation | Usage | Composition | Align Item With Trigger | Groups | Scrollable | Disabled | Invalid | RTL | API Reference
+separator: Installation | Usage | Vertical | Menu | List | RTL | API Reference
+sheet: Installation | Usage | Composition | Side | No Close Button | RTL | API Reference
+sidebar: Installation | Usage | Composition | Structure | SidebarProvider | Sidebar | useSidebar | SidebarHeader | SidebarFooter | SidebarContent | SidebarGroup | SidebarMenu | SidebarMenuButton | SidebarMenuAction | SidebarMenuSub | SidebarMenuBadge | SidebarMenuSkeleton | SidebarTrigger | SidebarRail | Controlled Sidebar | Theming | Styling | RTL | Changelog
+skeleton: Installation | Usage | Avatar | Card | Text | Form | Table | RTL
+slider: Installation | Usage | Range | Multiple Thumbs | Vertical | Controlled | Disabled | RTL | API Reference
+spinner: Installation | Usage | Customization | Size | Button | Badge | Input Group | Empty | RTL
+switch: Installation | Usage | Description | Choice Card | Disabled | Invalid | Size | RTL | API Reference
+table: Installation | Usage | Composition | Footer | Actions | Data Table | RTL
+tabs: Installation | Usage | Composition | Line | Vertical | Disabled | Icons | RTL | API Reference
+textarea: Installation | Usage | Field | Disabled | Invalid | Button | RTL
+toast: Installation | Usage | Types | Action | Promise | API Reference
+toggle: Installation | Usage | Outline | With Text | Size | Disabled | RTL | API Reference
+toggle-group: Installation | Usage | Composition | Outline | Size | Spacing | Vertical | Disabled | Custom | RTL | API Reference | Changelog
+tooltip: Installation | Usage | Composition | Side | With Keyboard Shortcut | Disabled Button | RTL | API Reference
+typography: Principles | Features | Building Your Typeset | Custom Typesets | Custom Themes | Accessibility and Dark Mode | Responsive Table | Overrides | Opting Out | Streaming | Prior Art
