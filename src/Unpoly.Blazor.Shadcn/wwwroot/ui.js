@@ -464,6 +464,68 @@
   })
 
   // =============================================================================================
+  // Chart tooltip — the card Recharts draws on a canvas, drawn as an element instead
+  // =============================================================================================
+  // The chart is a table, so every number is already in the DOM. This adds the pointer view: one
+  // card per chart, filled from the data attributes of whatever the pointer is over. Nothing is
+  // measured and no series data lives in JavaScript — the markup carries it.
+
+  up.compiler('[data-slot="chart"]:has([data-slot="chart-tooltip"])', (chart) => {
+    const card = chart.querySelector('[data-slot="chart-tooltip"]')
+
+    const rows = (point) => {
+      const series = (point.dataset.chartSeries || '').split(',').map((s) => s.trim())
+      const values = (point.dataset.chartValue || '').split(',').map((s) => s.trim())
+      const labels = (point.dataset.chartName || '').split(',').map((s) => s.trim())
+      const indicator = card.dataset.indicator || 'dot'
+
+      return series.map((key, i) => {
+        // The swatch reads the same --color-KEY the bar is painted with, so a theme change moves
+        // both at once and neither can be told the wrong colour.
+        const shape = indicator === 'dot' ? 'h-2.5 w-2.5'
+          : indicator === 'line' ? 'w-1'
+          : 'w-0 border-[1.5px] border-dashed bg-transparent'
+        const swatch = `<div data-chart-tooltip-indicator class="shrink-0 rounded-[2px] `
+          + `${shape}" style="background:var(--color-${key});border-color:var(--color-${key})"></div>`
+        const value = Number(values[i])
+        const shown = Number.isFinite(value) ? value.toLocaleString() : (values[i] ?? '')
+        return `<div class="flex w-full flex-wrap items-center gap-2">${swatch}`
+          + `<div class="flex flex-1 items-center justify-between leading-none">`
+          + `<span class="text-muted-foreground">${labels[i] || key}</span>`
+          + `<span class="font-mono font-medium text-foreground tabular-nums">${shown}</span>`
+          + `</div></div>`
+      }).join('')
+    }
+
+    const show = (point) => {
+      card.innerHTML = `<div data-chart-tooltip-label class="font-medium">`
+        + `${point.dataset.chartLabel ?? ''}</div>`
+        + `<div class="grid gap-1.5">${rows(point)}</div>`
+      card.hidden = false
+      const box = point.getBoundingClientRect()
+      const own = card.getBoundingClientRect()
+      const left = Math.min(Math.max(8, box.left + box.width / 2 - own.width / 2),
+                            window.innerWidth - own.width - 8)
+      card.style.left = `${Math.round(left)}px`
+      card.style.top = `${Math.round(Math.max(8, box.top - own.height - 8))}px`
+    }
+
+    const onOver = (event) => {
+      const point = event.target.closest('[data-chart-point]')
+      if (point && chart.contains(point)) show(point)
+    }
+    const onLeave = () => { card.hidden = true }
+
+    chart.addEventListener('pointermove', onOver)
+    chart.addEventListener('pointerleave', onLeave)
+
+    return () => {
+      chart.removeEventListener('pointermove', onOver)
+      chart.removeEventListener('pointerleave', onLeave)
+    }
+  })
+
+  // =============================================================================================
   // ContextMenu — the right button, and the two other ways to ask for the same thing
   // =============================================================================================
   // One `contextmenu` listener covers the right button, the context-menu key and a long press on

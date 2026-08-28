@@ -407,6 +407,22 @@ renders `<div>` · `data-slot="chart"`
 |---|---|---|---|
 | `Id` | `string?` | — |  |
 
+## `<ChartLegend>`
+renders `<div>` · `data-slot="chart-legend"`
+
+| Parameter | Type | Default | |
+|---|---|---|---|
+| `VerticalAlign` | `string` | `"bottom"` |  |
+
+## `<ChartTooltip>`
+renders `<td>` · `data-slot="chart-tooltip"`
+
+| Parameter | Type | Default | |
+|---|---|---|---|
+| `Indicator` | `string` | `"dot"` |  |
+| `HideLabel` | `bool` | — |  |
+| `HideIndicator` | `bool` | — |  |
+
 ## `<Checkbox>`
 renders `<input>` · `data-slot="checkbox"`
 

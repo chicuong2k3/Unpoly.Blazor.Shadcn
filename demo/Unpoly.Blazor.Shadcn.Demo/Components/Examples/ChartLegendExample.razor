@@ -1,0 +1,63 @@
+@* <ChartLegend> reads the same --color-* the bars are drawn with, which is the whole point of
+   declaring them on the container: one place decides the colour, and the drawing and the
+   labelling cannot disagree. Give it the series and it renders shadcn's own row. *@
+@* <Chart> is a flex row, as upstream's ChartContainer is. A legend is not a second column
+   beside the plot — it goes under it, so the plot and the legend share one column. Without the
+   wrapper the legend became a flex sibling and squeezed the chart to half the width. *@
+<Chart Id="legend" Series="@Palette" Class="w-full max-w-lg">
+  <div class="flex w-full flex-col">
+    <div class="h-[220px]">
+        <table class="h-full w-full">
+            <caption class="sr-only">Desktop and mobile visitors by month</caption>
+            <thead class="sr-only">
+                <tr><th scope="col">Month</th><th scope="col">Desktop</th><th scope="col">Mobile</th></tr>
+            </thead>
+            <tbody class="flex h-full items-stretch gap-3 pb-5">
+                @foreach (var (month, desktop, mobile) in Months)
+                {
+                    <tr class="flex flex-1 flex-col justify-end">
+                        <td class="flex flex-1 items-end gap-1" data-chart-point
+                            data-chart-label="@month"
+                            data-chart-series="desktop,mobile"
+                            data-chart-name="Desktop,Mobile"
+                            data-chart-value="@desktop,@mobile">
+                            <span class="flex-1 rounded-t-[4px]"
+                                  style="@($"height: {desktop * 100 / 320}%; background: var(--color-desktop)")"></span>
+                            <span class="flex-1 rounded-t-[4px]"
+                                  style="@($"height: {mobile * 100 / 320}%; background: var(--color-mobile)")"></span>
+                            <span class="sr-only">Desktop @desktop, mobile @mobile</span>
+                        </td>
+                        <th scope="row" class="pt-2.5 text-center text-xs font-normal text-muted-foreground">
+                            @month[..3]
+                        </th>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+    <ChartLegend Series="@Names" />
+  </div>
+
+  <ChartTooltip />
+</Chart>
+
+@code {
+    static readonly Dictionary<string, string> Palette = new()
+    {
+        ["desktop"] = "var(--chart-1)",
+        ["mobile"] = "var(--chart-2)",
+    };
+
+    static readonly Dictionary<string, string> Names = new()
+    {
+        ["desktop"] = "Desktop",
+        ["mobile"] = "Mobile",
+    };
+
+    static readonly (string Month, int Desktop, int Mobile)[] Months =
+    [
+        ("January", 186, 80), ("February", 305, 200), ("March", 237, 120),
+        ("April", 73, 190), ("May", 209, 130), ("June", 214, 140),
+    ];
+}

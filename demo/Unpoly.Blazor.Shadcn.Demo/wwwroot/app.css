@@ -652,6 +652,9 @@
   .h-2 {
     height: calc(var(--spacing) * 2);
   }
+  .h-2\.5 {
+    height: calc(var(--spacing) * 2.5);
+  }
   .h-3 {
     height: calc(var(--spacing) * 3);
   }
@@ -714,6 +717,12 @@
   }
   .h-\[100dvh\] {
     height: 100dvh;
+  }
+  .h-\[220px\] {
+    height: 220px;
+  }
+  .h-\[240px\] {
+    height: 240px;
   }
   .h-\[270px\] {
     height: 270px;
@@ -822,6 +831,18 @@
   }
   .w-\(--sidebar-width\) {
     width: var(--sidebar-width);
+  }
+  .w-0 {
+    width: 0px;
+  }
+  .w-1 {
+    width: var(--spacing);
+  }
+  .w-2 {
+    width: calc(var(--spacing) * 2);
+  }
+  .w-2\.5 {
+    width: calc(var(--spacing) * 2.5);
   }
   .w-3 {
     width: calc(var(--spacing) * 3);
@@ -1552,6 +1573,10 @@
     border-start-end-radius: 0;
     border-end-end-radius: 0;
   }
+  .rounded-t-\[4px\] {
+    border-top-left-radius: 4px;
+    border-top-right-radius: 4px;
+  }
   .rounded-t-sm {
     border-top-left-radius: calc(var(--radius) - 4px);
     border-top-right-radius: calc(var(--radius) - 4px);
@@ -1577,6 +1602,10 @@
   .border-8 {
     border-style: var(--tw-border-style);
     border-width: 8px;
+  }
+  .border-\[1\.5px\] {
+    border-style: var(--tw-border-style);
+    border-width: 1.5px;
   }
   .border-y {
     border-block-style: var(--tw-border-style);
@@ -1630,6 +1659,12 @@
   }
   .border-border {
     border-color: var(--border);
+  }
+  .border-border\/50 {
+    border-color: var(--border);
+    @supports (color: color-mix(in lab, red, red)) {
+      border-color: color-mix(in oklab, var(--border) 50%, transparent);
+    }
   }
   .border-destructive\/40 {
     border-color: var(--destructive);
@@ -1919,6 +1954,9 @@
   .pt-1 {
     padding-top: var(--spacing);
   }
+  .pt-2\.5 {
+    padding-top: calc(var(--spacing) * 2.5);
+  }
   .pt-3 {
     padding-top: calc(var(--spacing) * 3);
   }
@@ -2205,6 +2243,10 @@
   }
   .shadow-sm {
     --tw-shadow: var(--elevation-2);
+    box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
+  }
+  .shadow-xl {
+    --tw-shadow: 0 20px 25px -5px var(--tw-shadow-color, rgb(0 0 0 / 0.1)), 0 8px 10px -6px var(--tw-shadow-color, rgb(0 0 0 / 0.1));
     box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
   }
   .shadow-xs {
@@ -2995,9 +3037,6 @@
     }
     .hover\:underline:hover {
       text-decoration-line: underline;
-    }
-    .hover\:opacity-80:hover {
-      opacity: 80%;
     }
     .hover\:opacity-100:hover {
       opacity: 100%;
@@ -4343,6 +4382,12 @@
   .\[\&_\[cmdk-group-heading\]\]\:text-muted-foreground [cmdk-group-heading] {
     color: var(--muted-foreground);
   }
+  .\[\&_\[data-chart-tooltip-indicator\]\]\:hidden [data-chart-tooltip-indicator] {
+    display: none;
+  }
+  .\[\&_\[data-chart-tooltip-label\]\]\:hidden [data-chart-tooltip-label] {
+    display: none;
+  }
   .\[\&_p\]\:leading-relaxed p {
     --tw-leading: var(--leading-relaxed);
     line-height: var(--leading-relaxed);
@@ -4749,6 +4794,12 @@
     width: calc(var(--spacing) * 4);
     height: calc(var(--spacing) * 4);
   }
+  .\[\&\>svg\]\:h-3 > svg {
+    height: calc(var(--spacing) * 3);
+  }
+  .\[\&\>svg\]\:w-3 > svg {
+    width: calc(var(--spacing) * 3);
+  }
   .\[\&\>svg\]\:shrink-0 > svg {
     flex-shrink: 0;
   }
@@ -4758,6 +4809,9 @@
   }
   .\[\&\>svg\]\:text-current > svg {
     color: currentcolor;
+  }
+  .\[\&\>svg\]\:text-muted-foreground > svg {
+    color: var(--muted-foreground);
   }
   .\[\&\>svg\]\:text-sidebar-accent-foreground > svg {
     color: var(--sidebar-accent-foreground);
