@@ -1,0 +1,23 @@
+@* The bars run from the reading edge because the row is a flex container, and the labels follow
+   with them. Nothing about the chart is told which way it is going. *@
+<div dir="rtl">
+    <Chart Id="rtl" Series="@Palette" Class="h-40 w-full max-w-md">
+        <div class="flex h-full items-stretch gap-2">
+            @foreach (var (label, value) in Weeks)
+            {
+                <div class="flex flex-1 flex-col justify-end gap-1">
+                    <div class="rounded-sm" style="@($"height: {value}%; background: var(--color-revenue)")"></div>
+                    <div class="text-center text-[10px] text-muted-foreground">@label</div>
+                </div>
+            }
+        </div>
+    </Chart>
+</div>
+
+@code {
+    static readonly Dictionary<string, string> Palette = new() { ["revenue"] = "var(--chart-1)" };
+    static readonly (string Label, int Value)[] Weeks =
+    [
+        ("١", 40), ("٢", 62), ("٣", 55), ("٤", 78), ("٥", 70),
+    ];
+}

@@ -1,0 +1,16 @@
+@* A state beside a line of text. The colour is a class rather than a variant, and written with
+   theme tokens so it follows a theme change. *@
+<div class="flex flex-wrap items-center gap-3">
+    <Marker Class="text-emerald-600 dark:text-emerald-400">
+        <MarkerIcon><Icon Name="circle-check" Class="size-3" /></MarkerIcon>
+        <MarkerContent>Delivered</MarkerContent>
+    </Marker>
+    <Marker Class="text-amber-600 dark:text-amber-400">
+        <MarkerIcon><Icon Name="circle" Class="size-3" /></MarkerIcon>
+        <MarkerContent>In transit</MarkerContent>
+    </Marker>
+    <Marker Class="text-destructive">
+        <MarkerIcon><Icon Name="circle-alert" Class="size-3" /></MarkerIcon>
+        <MarkerContent>Failed</MarkerContent>
+    </Marker>
+</div>

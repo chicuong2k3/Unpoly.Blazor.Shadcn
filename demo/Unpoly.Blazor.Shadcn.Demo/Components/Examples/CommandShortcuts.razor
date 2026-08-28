@@ -1,0 +1,14 @@
+@* The hint on the right is decorative. The shortcut that opens the palette is on the dialog
+   itself — Key="mod+k" — and mod is the Command key on a Mac and Control everywhere else. *@
+<Command Class="w-[420px] border">
+    <CommandInput Placeholder="Type a command…" />
+    <CommandList>
+        <CommandEmpty Class="py-6 text-center text-sm text-muted-foreground">No results.</CommandEmpty>
+        <CommandItem Keywords="new create"><Icon Name="plus" /><span>New order</span>
+            <CommandShortcut>⌘N</CommandShortcut></CommandItem>
+        <CommandItem Keywords="find search"><Icon Name="search" /><span>Search</span>
+            <CommandShortcut>⌘F</CommandShortcut></CommandItem>
+        <CommandItem Keywords="preferences"><Icon Name="settings" /><span>Settings</span>
+            <CommandShortcut>⌘,</CommandShortcut></CommandItem>
+    </CommandList>
+</Command>

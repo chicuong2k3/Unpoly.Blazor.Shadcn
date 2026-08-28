@@ -1,0 +1,29 @@
+@* Nothing to provide. Every component here is laid out with logical properties and native
+   elements, so one attribute on an ancestor mirrors the lot — and the two compilers that measure,
+   the dropdown's placement and the resizable handle, read getBoundingClientRect, which is already
+   direction-aware. *@
+<div dir="rtl" class="flex w-full max-w-lg flex-col gap-4 rounded-lg border p-4">
+    <Field>
+        <FieldLabel For="dir-name">الاسم</FieldLabel>
+        <InputGroup>
+            <InputGroupAddon><Icon Name="search" /></InputGroupAddon>
+            <InputGroupControl id="dir-name" name="name" placeholder="ابحث…" />
+        </InputGroup>
+    </Field>
+
+    <div class="flex items-center justify-between gap-4">
+        <Field Orientation="horizontal">
+            <FieldLabel For="dir-sw">منشور</FieldLabel>
+            <Switch id="dir-sw" checked />
+        </Field>
+        <DropdownMenu>
+            <DropdownMenuTrigger Target="dir-menu" Variant="outline">الإجراءات</DropdownMenuTrigger>
+            <DropdownMenuContent Id="dir-menu" Class="w-40">
+                <DropdownMenuItem><Icon Name="pencil" />تحرير</DropdownMenuItem>
+                <DropdownMenuItem Variant="destructive"><Icon Name="trash-2" />حذف</DropdownMenuItem>
+            </DropdownMenuContent>
+        </DropdownMenu>
+    </div>
+
+    <Progress Value="62" aria-label="التقدم" />
+</div>

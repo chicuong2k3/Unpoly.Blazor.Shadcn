@@ -4,12 +4,32 @@
 
 <h1 class="doc-h1">Carousel</h1>
 <p class="doc-lede">
-    CSS scroll-snap. Embla exists because Safari's implementation was unusable in 2019; it is fine now, so with scripting off this still swipes and still scrolls and only the arrows go quiet.
+    CSS scroll-snap. Embla exists because Safari's implementation was unusable in 2019; it is fine
+    now, so with scripting off this still swipes and still scrolls, and only the arrows go
+    quiet — they hide rather than sit there dead.
+</p>
+<p class="doc-note">
+    There is no API, no events and no plugins, because there is no library: what would have been
+    <code>api.scrollNext()</code> is <code>scroller.scrollBy()</code>, and what would have been an
+    <code>on("select")</code> handler is the <code>scroll</code> event.
 </p>
 
-<p class="doc-note">
-    Embla exists because Safari's scroll-snap was unusable in 2019. It is fine now, so this is CSS
-    scroll-snap and the arrows are all that is left in JavaScript. With scripting off it still
-    swipes and still scrolls; the arrows hide rather than sit there dead.
-</p>
+<h2 class="doc-h2">Basic</h2>
 <Example Source="CarouselExample.razor"><CarouselExample /></Example>
+
+<h2 class="doc-h2">Sizes</h2>
+<Example Source="CarouselSizes.razor"><CarouselSizes /></Example>
+
+<h2 class="doc-h2">Spacing</h2>
+<p class="doc-note">
+    A negative margin on the track and padding on each item, which is upstream's own trick: it
+    keeps the first and last slides flush with the edges while the middle ones are spaced. Change
+    both numbers together or the ends drift.
+</p>
+<Example Source="CarouselSpacing.razor"><CarouselSpacing /></Example>
+
+<h2 class="doc-h2">Orientation</h2>
+<Example Source="CarouselOrientation.razor"><CarouselOrientation /></Example>
+
+<h2 class="doc-h2">RTL</h2>
+<Example Source="CarouselRtl.razor"><CarouselRtl /></Example>

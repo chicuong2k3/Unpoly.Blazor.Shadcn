@@ -4,14 +4,30 @@
 
 <h1 class="doc-h1">Chart</h1>
 <p class="doc-lede">
-    The useful half of <code>ChartContainer</code>: one custom property per series, so whatever draws and whatever labels read the same colour from one place. What draws is yours.
+    The useful half of <code>ChartContainer</code>: one custom property per series, so whatever
+    draws and whatever labels read the same colour from one place. What draws is yours.
+</p>
+<p class="doc-note">
+    The rest of upstream's component is a wall of <code>[&amp;_.recharts-*]</code> selectors for a
+    library this port does not ship. Reach for a real charting library when you need axes, zoom or
+    a line through irregular time — it renders inside this and reads the same properties. Until
+    then a <code>&lt;table&gt;</code> with a percentage height per bar reads to a screen reader,
+    prints, and needs nothing loaded.
 </p>
 
-<p class="doc-note">
-    <code>ChartContainer</code> upstream does two things: declares one custom property per series,
-    so whatever draws and whatever labels read the same colour from one place, and carries a wall
-    of <code>[&amp;_.recharts-*]</code> selectors for a library this port does not ship. The first
-    is the useful half and it is what <code>&lt;Chart&gt;</code> keeps. What draws is yours — and
-    a real charting library, when you need one, renders inside this and reads the same properties.
-</p>
+<h2 class="doc-h2">Basic</h2>
 <Example Source="ChartExample.razor"><ChartExample /></Example>
+
+<h2 class="doc-h2">Tooltip</h2>
+<p class="doc-note">
+    Recharts draws a floating tooltip onto a canvas nothing else can read. A table already has
+    one — the browser's own <code>title</code>, plus the number in the DOM where a screen reader,
+    a print stylesheet and Find in Page can all reach it.
+</p>
+<Example Source="ChartTooltip.razor"><ChartTooltip /></Example>
+
+<h2 class="doc-h2">Legend</h2>
+<Example Source="ChartLegend.razor"><ChartLegend /></Example>
+
+<h2 class="doc-h2">RTL</h2>
+<Example Source="ChartRtl.razor"><ChartRtl /></Example>

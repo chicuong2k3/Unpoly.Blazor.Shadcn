@@ -4,29 +4,46 @@
 
 <h1 class="doc-h1">Command</h1>
 <p class="doc-lede">
-    A command palette without cmdk. Every item is already in the DOM as a real link and the compiler hides the ones that do not match — so it is a filtered list with JavaScript and a plain list of links without it.
+    A command palette without cmdk. Every item is already in the DOM as a real link and the
+    compiler hides the ones that do not match — so it is a filtered list with JavaScript and a
+    plain list of links without it.
 </p>
 
-<h2 class="doc-h2">Inline</h2>
+<h2 class="doc-h2">Basic</h2>
+<Example Source="CommandExample.razor"><CommandExample /></Example>
 
-<Example Source="CommandExample.razor">
-    <CommandExample />
-</Example>
-
-<h2 class="doc-h2">As a palette</h2>
-
+<h2 class="doc-h2">Command Palette</h2>
 <p class="doc-note">
-    The search box in this site's header is this component, with the same shortcut.
+    <code>Key="mod+k"</code> binds the shortcut — <code>mod</code> is ⌘ on a Mac and Ctrl
+    everywhere else, which is the part implementations get wrong in one direction or the other.
+    The search box in this site's own header is this component.
 </p>
-<Example Source="CommandDialogExample.razor">
-    <CommandDialogExample />
-</Example>
+<Example Source="CommandDialogExample.razor"><CommandDialogExample /></Example>
+
+<h2 class="doc-h2">Shortcuts</h2>
+<Example Source="CommandShortcuts.razor"><CommandShortcuts /></Example>
+
+<h2 class="doc-h2">Groups</h2>
+<p class="doc-note">
+    A group whose every item is filtered out hides itself, heading and all: a heading over nothing
+    is worse than no heading.
+</p>
+<Example Source="CommandGroups.razor"><CommandGroups /></Example>
+
+<h2 class="doc-h2">Scrollable</h2>
+<p class="doc-note">
+    The highlighted row is kept in view with <code>block: "nearest"</code> — nearest rather than
+    centre, or arrowing down one row jumps the whole list.
+</p>
+<Example Source="CommandScrollable.razor"><CommandScrollable /></Example>
 
 <h2 class="doc-h2">When the list is too long to render</h2>
-
 <p class="doc-note">
     Filtering in the browser is right for a list the server already sent. For a catalogue of ten
     thousand, put <code>up-autosubmit</code> and <code>up-target</code> on the input and let the
-    server answer — <code>&lt;CommandList&gt;</code> is the fragment it swaps. Same markup, and
-    the palette never holds a list it did not need.
+    server answer — <code>&lt;CommandList&gt;</code> is the fragment it swaps, and the markup is
+    otherwise identical.
 </p>
+
+<h2 class="doc-h2">RTL</h2>
+<Example Source="CommandRtl.razor"><CommandRtl /></Example>

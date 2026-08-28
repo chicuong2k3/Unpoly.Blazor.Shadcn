@@ -1,0 +1,14 @@
+@* The search icon and the shortcut swap ends. The filtering does not change: it folds accents
+   and matches on the text and the keywords, in whatever script they are written. *@
+<div dir="rtl">
+    <Command Class="w-[420px] border">
+        <CommandInput Placeholder="ابحث…" AriaLabel="بحث" />
+        <CommandList>
+            <CommandEmpty Class="py-6 text-center text-sm text-muted-foreground">لا نتائج.</CommandEmpty>
+            <CommandGroup Heading="الصفحات">
+                <CommandItem Href="/blocks" Keywords="templates قوالب"><span>القوالب</span></CommandItem>
+                <CommandItem Href="/theming" Keywords="theme سمات"><span>السمات</span></CommandItem>
+            </CommandGroup>
+        </CommandList>
+    </Command>
+</div>

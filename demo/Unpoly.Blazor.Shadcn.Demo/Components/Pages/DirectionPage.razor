@@ -7,4 +7,15 @@
     shadcn ships a <code>DirectionProvider</code> so Radix can mirror its own positioning in a right-to-left page. There is nothing to provide here: every component in this library is laid out with logical properties and native elements, so <code>&lt;html dir="rtl"&gt;</code> is the whole configuration. The two compilers that measure — the dropdown's placement and the resizable handle — read <code>getBoundingClientRect</code>, which is already direction-aware.
 </p>
 
+<h2 class="doc-h2">useDirection</h2>
+<p class="doc-note">
+    Radix exposes a hook so a component can read the direction it is in and mirror its own
+    positioning. Nothing here needs to: the layout is logical properties, and the two compilers
+    that measure — the dropdown's placement and the resizable handle — read
+    <code>getBoundingClientRect</code>, which already reports what the direction produced. If your
+    own script needs it, <code>getComputedStyle(el).direction</code> is the answer and it needs no
+    provider.
+</p>
 
+<h2 class="doc-h2">RTL</h2>
+<Example Source="DirectionExample.razor"><DirectionExample /></Example>

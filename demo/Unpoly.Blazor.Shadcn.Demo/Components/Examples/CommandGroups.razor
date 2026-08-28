@@ -1,0 +1,17 @@
+@* A group whose every item is filtered out hides itself, heading and all — a heading over
+   nothing is worse than no heading. *@
+<Command Class="w-[420px] border">
+    <CommandInput Placeholder="Search…" />
+    <CommandList>
+        <CommandEmpty Class="py-6 text-center text-sm text-muted-foreground">Nothing matches.</CommandEmpty>
+        <CommandGroup Heading="Pages">
+            <CommandItem Href="/blocks" Keywords="templates"><Icon Name="copy" /><span>Blocks</span></CommandItem>
+            <CommandItem Href="/theming" Keywords="colours tokens"><Icon Name="settings" /><span>Theming</span></CommandItem>
+        </CommandGroup>
+        <CommandSeparator />
+        <CommandGroup Heading="Components">
+            <CommandItem Href="/components/dialog" Keywords="modal"><Icon Name="circle-alert" /><span>Dialog</span></CommandItem>
+            <CommandItem Href="/components/table" Keywords="grid rows"><Icon Name="menu" /><span>Table</span></CommandItem>
+        </CommandGroup>
+    </CommandList>
+</Command>

@@ -14,3 +14,15 @@
     lose. Put <code>[up-nav]</code> on it and Unpoly marks the current link.
 </p>
 <Example Source="NavigationMenuExample.razor"><NavigationMenuExample /></Example>
+
+<h2 class="doc-h2">Link Component</h2>
+<p class="doc-note">
+    shadcn writes <code>asChild</code> here so the link can be a router <code>Link</code>. There is
+    no router: it is an <code>&lt;a href&gt;</code>, and <code>[up-nav]</code> on the list marks the
+    current one — Unpoly compares each href with the address bar, which keeps working after a
+    fragment swap because the swap is what changed the address bar.
+</p>
+<Example Source="NavigationMenuLinkComponent.razor"><NavigationMenuLinkComponent /></Example>
+
+<h2 class="doc-h2">RTL</h2>
+<Example Source="NavigationMenuRtl.razor"><NavigationMenuRtl /></Example>
