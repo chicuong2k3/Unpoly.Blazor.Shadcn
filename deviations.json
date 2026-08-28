@@ -217,6 +217,15 @@
     ],
     "has-[select[aria-hidden=true]:last-child]:[&>[data-slot=select-trigger]:last-of-type]:rounded-e-md": [
       "has-[select[aria-hidden=true]:last-child]:[&>[data-slot=select-trigger]:last-of-type]:rounded-r-md"
+    ],
+    "has-[:checked]:border-primary": [
+      "has-data-[state=checked]:border-primary"
+    ],
+    "has-[:checked]:bg-primary/5": [
+      "has-data-[state=checked]:bg-primary/5"
+    ],
+    "dark:has-[:checked]:bg-primary/10": [
+      "dark:has-data-[state=checked]:bg-primary/10"
     ]
   },
   "added": {
@@ -509,6 +518,12 @@
         "has-[>a,>button]:hover:bg-muted/50"
       ],
       "why": "Tailwind drops the whole candidate: a comma separates candidates in its parser, so `has-[>a,>button]:hover:bg-muted/50` compiles to NOTHING and emits no warning. The effect is that an attachment card carrying a trigger never tinted under the pointer — the one affordance that says the whole card is clickable — and it looked like the trigger was not there. Written as two candidates, which is the same selector twice."
+    },
+    "combobox-content": {
+      "classes": [
+        "relative"
+      ],
+      "why": "Upstream's panel is positioned by a Base UI positioner element that wraps it, so `relative` on the content is harmless there. Here the content IS the popover, and `relative` beat the [popover] rule that makes it fixed — so the panel was laid out in flow and `top` offset it from where it already sat. Near the top of a page that looks right; further down it drifts by exactly the scroll offset, and the panel opens hundreds of pixels above the viewport. Measured: style.top 522px, rendered at -902."
     }
   },
   "subject": {

@@ -993,6 +993,85 @@
     "element": null,
     "file": null
   },
+  "$fn:DialogContent": {
+    "base": [
+      "absolute",
+      "top-4",
+      "right-4",
+      "rounded-xs",
+      "opacity-70",
+      "ring-offset-background",
+      "transition-opacity",
+      "hover:opacity-100",
+      "focus:ring-2",
+      "focus:ring-ring",
+      "focus:ring-offset-2",
+      "focus:outline-hidden",
+      "disabled:pointer-events-none",
+      "data-[state=open]:bg-accent",
+      "data-[state=open]:text-muted-foreground",
+      "[&_svg]:pointer-events-none",
+      "[&_svg]:shrink-0",
+      "[&_svg:not([class*='size-'])]:size-4"
+    ],
+    "variants": {},
+    "defaults": {},
+    "element": "DialogPrimitive.Close",
+    "file": "dialog"
+  },
+  "$fn:DrawerContent": {
+    "base": [],
+    "variants": {},
+    "defaults": {},
+    "element": "DrawerPortal",
+    "file": "drawer"
+  },
+  "$fn:FieldTitle": {
+    "base": [
+      "flex",
+      "w-fit",
+      "items-center",
+      "gap-2",
+      "text-sm",
+      "leading-snug",
+      "font-medium",
+      "group-data-[disabled=true]/field:opacity-50"
+    ],
+    "variants": {},
+    "defaults": {},
+    "element": "div",
+    "file": "field"
+  },
+  "$fn:InputGroupTextarea": {
+    "base": [
+      "flex-1",
+      "resize-none",
+      "rounded-none",
+      "border-0",
+      "bg-transparent",
+      "py-3",
+      "shadow-none",
+      "focus-visible:ring-0",
+      "dark:bg-transparent"
+    ],
+    "variants": {},
+    "defaults": {},
+    "element": "Textarea",
+    "file": "input-group"
+  },
+  "$fn:Sidebar": {
+    "base": [
+      "group",
+      "peer",
+      "hidden",
+      "text-sidebar-foreground",
+      "md:block"
+    ],
+    "variants": {},
+    "defaults": {},
+    "element": "div",
+    "file": "sidebar"
+  },
   "accordion": {
     "base": [],
     "variants": {},
@@ -3011,26 +3090,7 @@
     "file": "dialog"
   },
   "dialog-close": {
-    "base": [
-      "absolute",
-      "top-4",
-      "right-4",
-      "rounded-xs",
-      "opacity-70",
-      "ring-offset-background",
-      "transition-opacity",
-      "hover:opacity-100",
-      "focus:ring-2",
-      "focus:ring-ring",
-      "focus:ring-offset-2",
-      "focus:outline-hidden",
-      "disabled:pointer-events-none",
-      "data-[state=open]:bg-accent",
-      "data-[state=open]:text-muted-foreground",
-      "[&_svg]:pointer-events-none",
-      "[&_svg]:shrink-0",
-      "[&_svg:not([class*='size-'])]:size-4"
-    ],
+    "base": [],
     "variants": {},
     "defaults": {},
     "element": "DialogPrimitive.Close",
@@ -3124,7 +3184,7 @@
     "base": [],
     "variants": {},
     "defaults": {},
-    "element": "DialogPortal",
+    "element": "DialogPrimitive.Portal",
     "file": "dialog"
   },
   "dialog-title": {
@@ -3255,7 +3315,7 @@
     "base": [],
     "variants": {},
     "defaults": {},
-    "element": "DrawerPortal",
+    "element": "DrawerPrimitive.Portal",
     "file": "drawer"
   },
   "drawer-title": {
@@ -3739,18 +3799,25 @@
   },
   "field-label": {
     "base": [
+      "group/field-label",
+      "peer/field-label",
       "flex",
       "w-fit",
-      "items-center",
       "gap-2",
-      "text-sm",
       "leading-snug",
-      "font-medium",
-      "group-data-[disabled=true]/field:opacity-50"
+      "group-data-[disabled=true]/field:opacity-50",
+      "has-[>[data-slot=field]]:w-full",
+      "has-[>[data-slot=field]]:flex-col",
+      "has-[>[data-slot=field]]:rounded-md",
+      "has-[>[data-slot=field]]:border",
+      "[&>*]:data-[slot=field]:p-4",
+      "has-data-[state=checked]:border-primary",
+      "has-data-[state=checked]:bg-primary/5",
+      "dark:has-data-[state=checked]:bg-primary/10"
     ],
     "variants": {},
     "defaults": {},
-    "element": "div",
+    "element": "Label",
     "file": "field"
   },
   "field-legend": {
@@ -4050,18 +4117,16 @@
   "input-group-control": {
     "base": [
       "flex-1",
-      "resize-none",
       "rounded-none",
       "border-0",
       "bg-transparent",
-      "py-3",
       "shadow-none",
       "focus-visible:ring-0",
       "dark:bg-transparent"
     ],
     "variants": {},
     "defaults": {},
-    "element": "Textarea",
+    "element": "Input",
     "file": "input-group"
   },
   "input-otp": {
@@ -5954,11 +6019,12 @@
   },
   "sidebar": {
     "base": [
-      "group",
-      "peer",
-      "hidden",
-      "text-sidebar-foreground",
-      "md:block"
+      "flex",
+      "h-full",
+      "w-(--sidebar-width)",
+      "flex-col",
+      "bg-sidebar",
+      "text-sidebar-foreground"
     ],
     "variants": {},
     "defaults": {},

@@ -989,9 +989,11 @@ renders `<div>` · `data-slot="field-group"`
 _No parameters of its own._
 
 ## `<FieldLabel>`
-renders `<div>` · `data-slot="field-label"`
+renders `<label>` · `data-slot="field-label"`
 
-_No parameters of its own._
+| Parameter | Type | Default | |
+|---|---|---|---|
+| `For` | `string?` | — |  |
 
 ## `<FieldLegend>`
 renders `<legend>` · `data-slot="field-legend"`
@@ -1012,6 +1014,11 @@ _No parameters of its own._
 
 ## `<FieldSet>`
 renders `<fieldset>` · `data-slot="field-set"`
+
+_No parameters of its own._
+
+## `<FieldTitle>`
+renders `<div>` · `data-slot="field-label"`
 
 _No parameters of its own._
 

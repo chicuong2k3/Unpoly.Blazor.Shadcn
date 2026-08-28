@@ -1927,6 +1927,9 @@
   .ps-4 {
     padding-inline-start: calc(var(--spacing) * 4);
   }
+  .ps-7 {
+    padding-inline-start: calc(var(--spacing) * 7);
+  }
   .ps-8 {
     padding-inline-start: calc(var(--spacing) * 8);
   }
@@ -2422,6 +2425,9 @@
   }
   .not-checked\:bg-input:not(:checked) {
     background-color: var(--input);
+  }
+  .group-open\/folder\:rotate-90:is(:where(.group\/folder):is([open], :popover-open, :open) *) {
+    rotate: 90deg;
   }
   .group-open\/more\:hidden:is(:where(.group\/more):is([open], :popover-open, :open) *) {
     display: none;
@@ -3334,6 +3340,19 @@
   .has-\[\>\[data-slot\=field-content\]\]\:items-start:has( > [data-slot=field-content]) {
     align-items: flex-start;
   }
+  .has-\[\>\[data-slot\=field\]\]\:w-full:has( > [data-slot=field]) {
+    width: 100%;
+  }
+  .has-\[\>\[data-slot\=field\]\]\:flex-col:has( > [data-slot=field]) {
+    flex-direction: column;
+  }
+  .has-\[\>\[data-slot\=field\]\]\:rounded-md:has( > [data-slot=field]) {
+    border-radius: var(--radius-control);
+  }
+  .has-\[\>\[data-slot\=field\]\]\:border:has( > [data-slot=field]) {
+    border-style: var(--tw-border-style);
+    border-width: 1px;
+  }
   .has-\[\>\[data-slot\=radio-group\]\]\:gap-3:has( > [data-slot=radio-group]) {
     gap: calc(var(--spacing) * 3);
   }
@@ -4052,9 +4071,6 @@
     .md\:absolute {
       position: absolute;
     }
-    .md\:block {
-      display: block;
-    }
     .md\:flex {
       display: flex;
     }
@@ -4155,6 +4171,9 @@
   .rtl\:rotate-180:where(:dir(rtl), [dir="rtl"], [dir="rtl"] *) {
     rotate: 180deg;
   }
+  .rtl\:group-open\/folder\:-rotate-90:where(:dir(rtl), [dir="rtl"], [dir="rtl"] *):is(:where(.group\/folder):is([open], :popover-open, :open) *) {
+    rotate: calc(90deg * -1);
+  }
   .dark\:border-input:where(.dark, .dark *) {
     border-color: var(--input);
   }
@@ -4246,6 +4265,12 @@
     --tw-ring-color: var(--destructive);
     @supports (color: color-mix(in lab, red, red)) {
       --tw-ring-color: color-mix(in oklab, var(--destructive) 40%, transparent);
+    }
+  }
+  .dark\:has-\[\:checked\]\:bg-primary\/10:where(.dark, .dark *):has(:is(:checked)) {
+    background-color: var(--primary);
+    @supports (color: color-mix(in lab, red, red)) {
+      background-color: color-mix(in oklab, var(--primary) 10%, transparent);
     }
   }
   .dark\:has-\[\[data-slot\]\[aria-invalid\=true\]\]\:ring-destructive\/40:where(.dark, .dark *):has(:is([data-slot][aria-invalid=true])) {
@@ -4541,6 +4566,9 @@
   }
   .\[\&\>\*\]\:focus-visible\:z-10 > *:focus-visible {
     z-index: 10;
+  }
+  .\[\&\>\*\]\:data-\[slot\=field\]\:p-4 > *[data-slot="field"] {
+    padding: calc(var(--spacing) * 4);
   }
   @container field-group (width >= 28rem) {
     .\@md\/field-group\:\[\&\>\*\]\:w-auto > * {

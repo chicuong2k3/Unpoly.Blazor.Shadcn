@@ -32,7 +32,7 @@
     [Parameter] public string Side { get; set; } = "left";
 
     const string Base =
-        "group peer hidden text-sidebar-foreground md:block";
+        "flex h-full w-(--sidebar-width) flex-col bg-sidebar text-sidebar-foreground";
 
     string GapVariant => Variant switch
     {

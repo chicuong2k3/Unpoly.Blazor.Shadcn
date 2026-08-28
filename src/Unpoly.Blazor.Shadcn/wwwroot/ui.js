@@ -254,10 +254,11 @@
   // drops LEFT, and every menu in the library sat against the far edge of the window instead of
   // against its trigger. Releasing the other three insets is what makes the number mean
   // something. This was invisible in English, which is why it survived.
-  function put(panel, left, top) {
+  function put(panel, edge, top) {
     panel.style.insetInline = 'auto'
     panel.style.insetBlock = 'auto'
-    panel.style.left = `${Math.round(left)}px`
+    if (edge.left !== undefined) panel.style.left = `${Math.round(edge.left)}px`
+    if (edge.right !== undefined) panel.style.right = `${Math.round(edge.right)}px`
     panel.style.top = `${Math.round(top)}px`
   }
 
@@ -337,19 +338,30 @@
     const a = anchor.getBoundingClientRect()
     const p = panel.getBoundingClientRect()
     const flip = rtl(anchor)
+    const room = document.documentElement.clientWidth
 
     let top = side === 'top' ? a.top - p.height - offset : a.bottom + offset
-    const toStart = flip ? a.right - p.width : a.left
-    const toEnd = flip ? a.left : a.right - p.width
-    let left = align === 'end' ? toEnd
-      : align === 'center' ? a.left + (a.width - p.width) / 2
-      : toStart
-
-    // Stay on screen. A menu half off the right edge is a menu with unreachable items.
-    left = Math.max(8, Math.min(left, window.innerWidth - p.width - 8))
     if (top + p.height > window.innerHeight - 8) top = Math.max(8, a.top - p.height - offset)
 
-    put(panel, left, top)
+    // Pin the edge that has to line up, rather than deriving it by subtracting the panel's own
+    // width from the other edge. That subtraction was wrong by however much the measured width
+    // differed from the final one — twelve pixels in RTL, every time, because the panel's width
+    // comes from --anchor-width and is not settled when this runs. An edge needs no measurement.
+    if (align === 'center') {
+      const left = Math.max(8, Math.min(a.left + (a.width - p.width) / 2, room - p.width - 8))
+      put(panel, { left }, top)
+      return
+    }
+
+    const toStart = flip ? { right: room - a.right } : { left: a.left }
+    const toEnd = flip ? { left: a.left } : { right: room - a.right }
+    const edge = align === 'end' ? toEnd : toStart
+
+    // Stay on screen. A menu half off an edge is a menu with unreachable items.
+    if (edge.left !== undefined) edge.left = Math.max(8, Math.min(edge.left, room - p.width - 8))
+    else edge.right = Math.max(8, Math.min(edge.right, room - p.width - 8))
+
+    put(panel, edge, top)
   }
 
   // Every trigger that opens a panel anchored to itself: a dropdown, a popover, a submenu row,
@@ -404,7 +416,7 @@
     } else if (left + p.width > window.innerWidth - 8) {
       left = Math.max(8, a.left - p.width + 4)
     }
-    put(panel, left, Math.min(a.top - 4, window.innerHeight - p.height - 8))
+    put(panel, { left }, Math.min(a.top - 4, window.innerHeight - p.height - 8))
   }
 
   // Keyboard within an open menu, for all three families. Radix roves focus; so does this.
@@ -464,6 +476,43 @@
   })
 
   // =============================================================================================
+  // Select all — one box that owns a column of boxes
+  // =============================================================================================
+  // React keeps a Set in state and derives both directions from it. Here the boxes ARE the
+  // state: the header box writes them, and reads itself back from them, so nothing can drift.
+  // Indeterminate is a property rather than an attribute, which is why it is set here and not
+  // in the markup — the "some but not all" state has no HTML spelling.
+
+  up.compiler('[data-select-all]', (master) => {
+    const scope = master.closest('form, table, [data-select-scope]') || document
+    const boxes = () => [...scope.querySelectorAll(
+      `input[type=checkbox][name="${master.dataset.selectAll}"]`)].filter((b) => !b.disabled)
+
+    const sync = () => {
+      const all = boxes()
+      const on = all.filter((b) => b.checked).length
+      master.checked = on > 0 && on === all.length
+      master.indeterminate = on > 0 && on < all.length
+    }
+
+    const onMaster = () => {
+      for (const box of boxes()) box.checked = master.checked
+      master.indeterminate = false
+    }
+
+    const onOne = (event) => { if (event.target.name === master.dataset.selectAll) sync() }
+
+    master.addEventListener('change', onMaster)
+    scope.addEventListener('change', onOne)
+    sync()
+
+    return () => {
+      master.removeEventListener('change', onMaster)
+      scope.removeEventListener('change', onOne)
+    }
+  })
+
+  // =============================================================================================
   // Chart tooltip — the card Recharts draws on a canvas, drawn as an element instead
   // =============================================================================================
   // The chart is a table, so every number is already in the DOM. This adds the pointer view: one
@@ -497,22 +546,27 @@
       }).join('')
     }
 
-    const show = (point) => {
+    // Follows the POINTER, not the bar. Anchoring it to the middle of the column meant the card
+    // sat a long way from the cursor on a wide bar and did not move as you swept across — which
+    // reads as a tooltip belonging to something else. Recharts follows the cursor and so does
+    // this; it flips to the other side near an edge so it never leaves the window.
+    const show = (point, x, y) => {
       card.innerHTML = `<div data-chart-tooltip-label class="font-medium">`
         + `${point.dataset.chartLabel ?? ''}</div>`
         + `<div class="grid gap-1.5">${rows(point)}</div>`
       card.hidden = false
-      const box = point.getBoundingClientRect()
       const own = card.getBoundingClientRect()
-      const left = Math.min(Math.max(8, box.left + box.width / 2 - own.width / 2),
-                            window.innerWidth - own.width - 8)
-      card.style.left = `${Math.round(left)}px`
-      card.style.top = `${Math.round(Math.max(8, box.top - own.height - 8))}px`
+      const gap = 12
+      const left = x + gap + own.width > window.innerWidth - 8 ? x - gap - own.width : x + gap
+      const top = y - own.height - gap < 8 ? y + gap : y - own.height - gap
+      card.style.left = `${Math.round(Math.max(8, left))}px`
+      card.style.top = `${Math.round(Math.max(8, top))}px`
     }
 
     const onOver = (event) => {
       const point = event.target.closest('[data-chart-point]')
-      if (point && chart.contains(point)) show(point)
+      if (point && chart.contains(point)) show(point, event.clientX, event.clientY)
+      else card.hidden = true
     }
     const onLeave = () => { card.hidden = true }
 
@@ -551,7 +605,7 @@
       const y = at ? at.bottom : event.clientY
 
       const left = rtl(trigger) ? x - box.width : x
-      put(panel, Math.max(8, Math.min(left, window.innerWidth - box.width - 8)),
+      put(panel, { left: Math.max(8, Math.min(left, window.innerWidth - box.width - 8)) },
           Math.min(y, window.innerHeight - box.height - 8))
       trigger.setAttribute('aria-expanded', 'true')
       panel.querySelector('[data-slot$="-item"]:not([data-disabled])')?.focus()
@@ -804,6 +858,12 @@
       filter()
     }
 
+    // Focusing the box opens the list. Only typing did, so a chips combobox showed nothing at
+    // all until you had already typed a character — and the two examples built on it looked
+    // completely inert. Every combobox opens on focus; this one had a trigger for the button
+    // form and nothing for the input form.
+    const onFocus = () => { if (!panel.matches(':popover-open')) panel.showPopover() }
+
     const onClear = () => {
       for (const item of items()) { delete item.dataset.selected; item.setAttribute('aria-selected', 'false') }
       for (const chip of root.querySelectorAll('[data-slot="combobox-chip"]')) chip.remove()
@@ -826,6 +886,11 @@
     root.addEventListener('keydown', onKey)
     panel.addEventListener('keydown', onKey)
     input?.addEventListener('input', onInput)
+    input?.addEventListener('focus', onFocus)
+    // click, not pointerdown: opening on pointerdown puts the panel in the top layer before the
+    // click completes, and the browser's own light-dismiss then sees a click outside it and
+    // closes it again in the same gesture. The list flashed and vanished.
+    input?.addEventListener('click', onFocus)
     clear?.addEventListener('click', onClear)
     panel.addEventListener('toggle', onToggle)
     filter()
@@ -837,6 +902,8 @@
       root.removeEventListener('keydown', onKey)
       panel.removeEventListener('keydown', onKey)
       input?.removeEventListener('input', onInput)
+      input?.removeEventListener('focus', onFocus)
+      input?.removeEventListener('click', onFocus)
       clear?.removeEventListener('click', onClear)
       panel.removeEventListener('toggle', onToggle)
     }

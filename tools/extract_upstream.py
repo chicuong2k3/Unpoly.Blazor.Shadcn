@@ -243,8 +243,25 @@ def parse_slots(text: str, cvas: dict) -> dict[str, dict]:
             if plain:
                 entry['base'] = [c for c in plain.group(1).split() if c]
 
-        out[slot] = entry
+        # FIRST wins, not last. Two upstream functions can render the same data-slot —
+        # FieldLabel and FieldTitle both render field-label, one a <label> and one a <div> — and
+        # keeping the last silently replaced the real component with its sibling. field-label was
+        # extracted as a <div> with FieldTitle's classes, so this port rendered a div, `For` did
+        # nothing anywhere, and the whole card-wrapping treatment upstream puts on FieldLabel was
+        # simply absent. Parity compared our div against their div and passed.
+        #
+        # Declaration order is the primary: shadcn writes the component before the variant of it.
+        # The later ones are still reachable under $fn:<Name> for anything that knows to ask.
+        key = slot if slot not in out else f'$fn:{function_name(text, start)}'
+        out[key] = entry
     return out
+
+
+def function_name(text: str, at: int) -> str:
+    """The function whose body contains this offset — the component the slot belongs to."""
+    before = text[:at]
+    names = re.findall(r'function\s+(\w+)\s*\(', before)
+    return names[-1] if names else 'unknown'
 
 
 # `side === "right" && "…"` and `orientation === "horizontal" ? "…" : "…"`. Not every variant in

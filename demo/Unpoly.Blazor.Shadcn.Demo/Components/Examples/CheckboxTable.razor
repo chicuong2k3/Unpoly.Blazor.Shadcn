@@ -1,18 +1,24 @@
 @* Selection in a table, with no selection state anywhere but the DOM: the boxes share a name, so
    the bulk form posts a list, and the bar appears through :has(:checked) — CSS reading the boxes
-   rather than a second copy of the truth that can drift from them. *@
+   rather than a second copy of the truth that can drift from them.
+
+   The header box is [data-select-all], naming the boxes it owns. It writes them and reads itself
+   back from them, so "some but not all" shows as indeterminate without anything counting twice.
+   That one is script: indeterminate is a property, and it has no HTML spelling. *@
 <form method="post" action="/orders/bulk" class="w-[520px] overflow-hidden rounded-lg border">
     <AntiforgeryToken />
     <div class="hidden items-center gap-2 border-b bg-muted/50 px-3 py-2 [form:has(:checked)>&]:flex">
         <span class="text-sm text-muted-foreground">Selected</span>
-        <Button Variant="outline" Type="submit" Class="ml-auto">Export</Button>
+        <Button Variant="outline" Type="submit" Class="ms-auto">Export</Button>
     </div>
     <Table>
         <TableHeader>
             <TableRow>
-                <TableHead Class="w-10"><span class="sr-only">Select</span></TableHead>
+                <TableHead Class="w-10">
+                    <Checkbox data-select-all="ids" aria-label="Select every order" />
+                </TableHead>
                 <TableHead>Order</TableHead>
-                <TableHead Class="text-right">Total</TableHead>
+                <TableHead Class="text-end">Total</TableHead>
             </TableRow>
         </TableHeader>
         <TableBody>
@@ -21,7 +27,7 @@
                 <TableRow>
                     <TableCell><Checkbox name="ids" value="@number" aria-label="@($"Select {number}")" /></TableCell>
                     <TableCell Class="num">@number</TableCell>
-                    <TableCell Class="num text-right">@total</TableCell>
+                    <TableCell Class="num text-end">@total</TableCell>
                 </TableRow>
             }
         </TableBody>

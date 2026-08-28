@@ -1,27 +1,48 @@
 @* Nested <details> is a file tree, and it needs no library: every folder remembers its own open
-   state, the keyboard works, and Find in Page reaches inside a closed one in most browsers. *@
+   state, the keyboard works, and Find in Page reaches inside a closed one in most browsers.
+
+   The chevron turns with the folder. It reads the element's own [open] through the group, so
+   nothing has to be told the state twice — and rtl:rotate-180 points it the other way in Arabic,
+   because a chevron that says "opens to the right" is wrong when the tree indents leftwards. *@
 <div class="w-[380px] rounded-lg border p-2 text-sm">
-    <Collapsible>
-        <CollapsibleTrigger Class="flex items-center gap-2 rounded-md px-2 py-1 hover:bg-accent">
-            <Icon Name="folder" Class="size-4 text-muted-foreground" />src
-        </CollapsibleTrigger>
-        <CollapsibleContent Class="ms-4 border-s ps-2">
-            <Collapsible>
-                <CollapsibleTrigger Class="flex items-center gap-2 rounded-md px-2 py-1 hover:bg-accent">
-                    <Icon Name="folder" Class="size-4 text-muted-foreground" />Components
-                </CollapsibleTrigger>
-                <CollapsibleContent Class="ms-4 border-s ps-2">
-                    @foreach (var file in new[] { "Button.razor", "Card.razor", "Dialog.razor" })
-                    {
-                        <div class="flex items-center gap-2 rounded-md px-2 py-1">
-                            <Icon Name="file" Class="size-4 text-muted-foreground" />@file
-                        </div>
-                    }
-                </CollapsibleContent>
-            </Collapsible>
-            <div class="flex items-center gap-2 rounded-md px-2 py-1">
-                <Icon Name="file" Class="size-4 text-muted-foreground" />ClassMerge.cs
-            </div>
-        </CollapsibleContent>
-    </Collapsible>
+    @foreach (var node in Tree)
+    {
+        @Row(node)
+    }
 </div>
+
+@code {
+    record Node(string Name, Node[]? Items = null);
+
+    static readonly Node[] Tree =
+    [
+        new("components", [
+            new("ui", [new("button.tsx"), new("card.tsx"), new("dialog.tsx"),
+                       new("input.tsx"), new("select.tsx"), new("table.tsx")]),
+            new("login-form.tsx"),
+            new("register-form.tsx"),
+        ]),
+        new("lib", [new("utils.ts"), new("cn.ts"), new("api.ts")]),
+        new("package.json"),
+    ];
+
+    RenderFragment Row(Node node) => Draw(node.Name, node.Items);
+
+    RenderFragment Draw(string name, Node[]? items) => items is null
+        ? @<div class="flex items-center gap-2 rounded-md px-2 py-1 ps-7">
+              <Icon Name="file" Class="size-4 text-muted-foreground" />@name
+          </div>
+        : @<Collapsible Class="group/folder">
+              <CollapsibleTrigger Class="flex cursor-pointer items-center gap-2 rounded-md px-2 py-1 hover:bg-accent">
+                  <Icon Name="chevron-right"
+                        Class="size-4 text-muted-foreground transition-transform group-open/folder:rotate-90 rtl:rotate-180 rtl:group-open/folder:-rotate-90" />
+                  <Icon Name="folder" Class="size-4 text-muted-foreground" />@name
+              </CollapsibleTrigger>
+              <CollapsibleContent Class="ms-4 border-s ps-2">
+                  @foreach (var child in items)
+                  {
+                      @Draw(child.Name, child.Items)
+                  }
+              </CollapsibleContent>
+          </Collapsible>;
+}
