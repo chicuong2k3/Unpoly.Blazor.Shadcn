@@ -320,8 +320,12 @@ renders `<div>` · `data-slot="calendar"`
 | Parameter | Type | Default | |
 |---|---|---|---|
 | `Month` | `DateOnly` | `DateOnly.FromDateTime(DateTime.Today)` |  |
+| `Months` | `int` | `1` |  |
+| `Mode` | `string` | `"single"` |  |
 | `Name` | `string?` | — |  |
 | `Selected` | `DateOnly?` | — |  |
+| `From` | `DateOnly?` | — |  |
+| `To` | `DateOnly?` | — |  |
 | `Today` | `DateOnly?` | `DateOnly.FromDateTime(DateTime.Today)` |  |
 | `FirstDay` | `DayOfWeek` | `DayOfWeek.Monday` |  |
 | `PreviousLabel` | `string` | `"Previous month"` |  |

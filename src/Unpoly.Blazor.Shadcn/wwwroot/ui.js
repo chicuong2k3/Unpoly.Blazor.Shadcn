@@ -476,6 +476,52 @@
   })
 
   // =============================================================================================
+  // Calendar range — two ticks, and everything between them
+  // =============================================================================================
+  // With scripting off a range calendar is a grid of checkboxes: tick the first day and the last,
+  // and the server takes the min and the max. That already works, and this only makes it behave
+  // the way a range picker should — a third click starts a new range, and the band between the
+  // two ends fills in as you go. The boxes stay the state; nothing here remembers anything.
+
+  up.compiler('[data-slot="calendar"][data-mode="range"]', (calendar) => {
+    const boxes = () => [...calendar.querySelectorAll('input[type=checkbox]')]
+    const ticked = () => boxes().filter((b) => b.checked)
+    const day = (box) => box.value
+
+    const paint = () => {
+      const on = ticked().map(day).sort()
+      const [from, to] = [on[0], on[on.length - 1]]
+      for (const box of boxes()) {
+        const cell = box.closest('td')
+        const inside = from && to && from !== to && day(box) > from && day(box) < to
+        const end = from && to && from !== to && (day(box) === from || day(box) === to)
+        cell.classList.toggle('bg-accent', Boolean(inside || end))
+        cell.classList.toggle('rounded-s-md', day(box) === from && from !== to)
+        cell.classList.toggle('rounded-e-md', day(box) === to && from !== to)
+        // The days between are shown, not selected: only the two ends post.
+        cell.toggleAttribute('data-in-range', Boolean(inside))
+      }
+    }
+
+    const onChange = (event) => {
+      const box = event.target
+      if (!box.matches('input[type=checkbox]')) return
+      const on = ticked()
+      // A third tick starts again from the day just clicked, which is what every range picker
+      // does and what a bare checkbox grid would not.
+      if (box.checked && on.length > 2) {
+        for (const other of on) if (other !== box) other.checked = false
+      }
+      paint()
+    }
+
+    calendar.addEventListener('change', onChange)
+    paint()
+
+    return () => calendar.removeEventListener('change', onChange)
+  })
+
+  // =============================================================================================
   // Select all — one box that owns a column of boxes
   // =============================================================================================
   // React keeps a Set in state and derives both directions from it. Here the boxes ARE the

@@ -1,15 +1,23 @@
-@* An image that reaches the card's edges: the card is overflow-hidden and the image sits
-   outside the padded parts. AspectRatio keeps the shape so nothing reflows as it loads. *@
-<Card Class="w-72 gap-0 overflow-hidden p-0">
-    <AspectRatio Ratio="16 / 9" Class="bg-muted">
-        <img src="https://placehold.co/640x360" alt="" width="640" height="360" loading="lazy"
-             class="size-full object-cover" />
+@* shadcn's own: the image reaches the card's edges and the header sits over it. `pt-0` on the
+   card and `relative z-20` on the image are what put the picture above the padded parts;
+   AspectRatio keeps the shape so nothing reflows as it loads. *@
+<Card Class="relative mx-auto w-full max-w-sm overflow-hidden pt-0">
+    <div class="absolute inset-0 z-30 aspect-video bg-black/35"></div>
+    <AspectRatio Ratio="16 / 9" Class="relative z-20 bg-muted">
+        <img src="https://placehold.co/640x360/71717a/ffffff?text=Event" alt=""
+             width="640" height="360" loading="lazy"
+             class="size-full object-cover brightness-60 grayscale" />
     </AspectRatio>
-    <CardHeader Class="pt-4">
-        <CardTitle>Weekender</CardTitle>
-        <CardDescription>Waxed canvas, leather trim.</CardDescription>
+    <CardHeader>
+        <CardAction>
+            <Badge Variant="secondary">Featured</Badge>
+        </CardAction>
+        <CardTitle>Design systems meetup</CardTitle>
+        <CardDescription>
+            A practical talk on component APIs, accessibility, and shipping faster.
+        </CardDescription>
     </CardHeader>
-    <CardFooter Class="pb-4">
-        <span class="num text-sm font-medium">$189</span>
+    <CardFooter>
+        <Button Class="w-full">View Event</Button>
     </CardFooter>
 </Card>
