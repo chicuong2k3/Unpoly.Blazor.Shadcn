@@ -1,28 +1,54 @@
-@* Structurally a Sheet — a native <dialog>, so the focus trap, Escape and the backdrop are the
-   platform's. What a drawer adds is that you can drag it shut, which on a phone is the gesture
-   people try before they look for a close button. *@
-<DrawerTrigger Target="drawer-demo">Open the drawer</DrawerTrigger>
+@* shadcn's own demo: a delivery-time picker. On a desktop it opens from the END edge — the
+   bottom sheet is the phone's gesture surface, and a pointer reaches a side panel more
+   naturally — which is exactly what upstream's isMobile switch chooses.
 
-<Drawer Id="drawer-demo">
+   Each slot is a card the whole of which is the label, with the radio on the trailing edge:
+   FieldLabel wrapping a Field is the press-anywhere pattern, and it needs no handler. *@
+<DrawerTrigger Target="drawer-demo" Variant="secondary">Open Drawer</DrawerTrigger>
+
+<Drawer Id="drawer-demo" Direction="right">
     <DrawerHeader>
-        <DrawerTitle>Move to project</DrawerTitle>
-        <DrawerDescription>Drag it down to dismiss, or press Escape.</DrawerDescription>
+        <DrawerTitle>Pick a delivery time</DrawerTitle>
+        <DrawerDescription>We&#39;ll prepare your order as soon as possible.</DrawerDescription>
     </DrawerHeader>
 
-    <div class="px-4 pb-2">
-        <RadioGroup>
-            @foreach (var p in new[] { "Inbox", "Website redesign", "Q3 launch" })
+    <div class="flex-1 overflow-y-auto scroll-fade-b p-4">
+        <RadioGroup Class="gap-2">
+            @foreach (var (value, label, description, badge) in Slots)
             {
-                <Field Orientation="horizontal">
-                    <RadioGroupItem id="@($"proj-{p}")" name="project" value="@p" />
-                    <FieldLabel For="@($"proj-{p}")">@p</FieldLabel>
-                </Field>
+                <FieldLabel For="@($"delivery-{value}")">
+                    <Field Orientation="horizontal">
+                        <FieldContent>
+                            <FieldTitle Class="flex items-center gap-2">
+                                @label
+                                @if (badge is not null)
+                                {
+                                    <Badge Variant="secondary">@badge</Badge>
+                                }
+                            </FieldTitle>
+                            <FieldDescription>@description</FieldDescription>
+                        </FieldContent>
+                        <RadioGroupItem id="@($"delivery-{value}")" name="delivery" value="@value"
+                                        checked="@(value == "asap")" />
+                    </Field>
+                </FieldLabel>
             }
         </RadioGroup>
     </div>
 
     <DrawerFooter>
-        <Button>Move</Button>
+        <Button>Confirm Delivery Time</Button>
         <DrawerClose>Cancel</DrawerClose>
     </DrawerFooter>
 </Drawer>
+
+@code {
+    static readonly (string Value, string Label, string Description, string? Badge)[] Slots =
+    [
+        ("asap", "Standard delivery", "25–35 min · Driver assigned now", "Fastest"),
+        ("5-00", "5:00 PM – 5:15 PM", "Prep starts at 4:45 PM", null),
+        ("5-30", "5:30 PM – 5:45 PM", "Good if you're heading home", null),
+        ("6-00", "6:00 PM – 6:15 PM", "Most popular · High demand", null),
+        ("6-30", "6:30 PM – 6:45 PM", "Last slot before kitchen closes", null),
+    ];
+}

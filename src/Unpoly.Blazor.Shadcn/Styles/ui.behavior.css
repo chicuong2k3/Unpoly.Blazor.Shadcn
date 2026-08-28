@@ -20,6 +20,22 @@
        own Ctrl-K search, which is the first dialog most visitors meet. shadcn additionally
        lifts a palette above centre: dead-centre reads fine for a confirmation, but a palette
        is something you type into, and the eye expects it where launchers put it. */
+    /* width 100% + grid centring, because the CONTENT's `w-full max-w-lg` needs a definite
+       width to resolve against. With the frame at fit-content that reference was circular, the
+       browser fell back to shrink-to-fit, and a dialog was as wide as its longest line — 278px
+       where shadcn shows 512. The alert dialog only looked right because its sample text
+       happened to reach the cap. */
+    /* [open], and that is load-bearing: the UA hides a closed <dialog> with display:none, and
+       an unconditional author `display:grid` overrides the UA sheet — every CLOSED dialog then
+       became an invisible full-page surface that swallowed clicks. The page looked idle and
+       nothing on it worked. */
+    [data-slot="dialog"][open],
+    [data-slot="alert-dialog"][open] {
+        inline-size: 100%;
+        display: grid;
+        justify-items: center;
+    }
+
     [data-slot="dialog"],
     [data-slot="alert-dialog"],
     [data-slot="command-dialog"] {
@@ -345,6 +361,11 @@
         transition: translate 160ms cubic-bezier(0.32, 0.72, 0, 1);
     }
     [data-slot="switch"]:checked::after { translate: calc(2rem - 1rem - 4px) 0; }
+    /* The travel is a physical translate, so it must flip: in RTL the thumb rests on the
+       right and slides LEFT when checked. Without this it slid further right, off the track. */
+    [data-slot="switch"]:checked:where([dir="rtl"] *)::after {
+        translate: calc(-1 * (2rem - 1rem - 4px)) 0;
+    }
 
     /* ---- CodeBlock -------------------------------------------------------------------
        The confirmation lives on the button: a toast for something this small is a toast people

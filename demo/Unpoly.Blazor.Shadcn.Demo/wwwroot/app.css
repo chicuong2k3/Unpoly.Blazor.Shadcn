@@ -4997,6 +4997,11 @@
   }
 }
 @layer components {
+  [data-slot="dialog"][open], [data-slot="alert-dialog"][open] {
+    inline-size: 100%;
+    display: grid;
+    justify-items: center;
+  }
   [data-slot="dialog"], [data-slot="alert-dialog"], [data-slot="command-dialog"] {
     margin: auto;
     padding: 0;
@@ -5275,6 +5280,9 @@
   }
   [data-slot="switch"]:checked::after {
     translate: calc(2rem - 1rem - 4px) 0;
+  }
+  [data-slot="switch"]:checked:where([dir="rtl"] *)::after {
+    translate: calc(-1 * (2rem - 1rem - 4px)) 0;
   }
   [data-slot="code-block-copy"][data-copied] svg {
     display: none;
