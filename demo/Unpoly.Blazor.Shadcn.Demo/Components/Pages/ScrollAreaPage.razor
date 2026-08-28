@@ -4,9 +4,25 @@
 
 <h1 class="doc-h1">Scroll Area</h1>
 <p class="doc-lede">
-    The platform's own thin scrollbar in the theme's colours. Radix draws its own with a resize observer and a computed thumb; this is most of the look for none of the script, and it still works with the wheel, a trackpad, the keyboard and a touch screen.
+    The platform's own thin scrollbar in the theme's colours. Radix draws its own with a resize
+    observer and a computed thumb; this is most of the look for none of the script, and it still
+    works with the wheel, a trackpad, the keyboard and a touch screen.
+</p>
+<p class="doc-note">
+    The viewport is focusable, because a scrollable region that cannot take focus cannot be
+    scrolled without a pointer — which is the accessibility failure a custom scrollbar usually
+    introduces rather than fixes.
 </p>
 
-<Example Source="ScrollAreaExample.razor">
-    <ScrollAreaExample />
-</Example>
+<h2 class="doc-h2">Basic</h2>
+<Example Source="ScrollAreaExample.razor"><ScrollAreaExample /></Example>
+
+<h2 class="doc-h2">Horizontal</h2>
+<Example Source="ScrollAreaHorizontal.razor"><ScrollAreaHorizontal /></Example>
+
+<h2 class="doc-h2">RTL</h2>
+<p class="doc-note">
+    The scrollbar moves to the other edge and the content starts scrolled to it, both from the
+    document direction alone.
+</p>
+<Example Source="ScrollAreaRtl.razor"><ScrollAreaRtl /></Example>

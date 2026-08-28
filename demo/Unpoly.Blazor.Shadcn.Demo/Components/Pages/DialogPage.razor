@@ -4,9 +4,38 @@
 
 <h1 class="doc-h1">Dialog</h1>
 <p class="doc-lede">
-    A native <code>&lt;dialog&gt;</code> opened with <code>showModal()</code>, so the focus trap, the inert background, Escape and the top layer are the browser's. Radix's Portal and Overlay have no counterpart here, and that is a feature.
+    A native <code>&lt;dialog&gt;</code> opened with <code>showModal()</code>, so the focus trap,
+    the inert background, Escape and the top layer are the browser's. Radix's Portal and Overlay
+    have no counterpart here, and that is a feature rather than a gap.
+</p>
+<p class="doc-note">
+    When the content comes from the server, an Unpoly overlay is usually the better tool:
+    <code>up-layer="new"</code> renders a real, bookmarkable route into a modal.
+    <code>&lt;Dialog&gt;</code> is for content the page already has.
 </p>
 
-<Example Source="DialogExample.razor">
-    <DialogExample />
-</Example>
+<h2 class="doc-h2">Basic</h2>
+<Example Source="DialogExample.razor"><DialogExample /></Example>
+
+<h2 class="doc-h2">Custom Close Button</h2>
+<p class="doc-note">
+    <code>formmethod="dialog"</code> closes the <code>&lt;dialog&gt;</code> it is inside — no id to
+    point at, no JavaScript, and it keeps working if <code>ui.js</code> never loads.
+</p>
+<Example Source="DialogCustomClose.razor"><DialogCustomClose /></Example>
+
+<h2 class="doc-h2">No Close Button</h2>
+<Example Source="DialogNoClose.razor"><DialogNoClose /></Example>
+
+<h2 class="doc-h2">Sticky Footer</h2>
+<p class="doc-note">
+    The middle scrolls and the footer does not, which is what stops someone scrolling to find the
+    button that submits what they were reading.
+</p>
+<Example Source="DialogStickyFooter.razor"><DialogStickyFooter /></Example>
+
+<h2 class="doc-h2">Scrollable Content</h2>
+<Example Source="DialogScrollable.razor"><DialogScrollable /></Example>
+
+<h2 class="doc-h2">RTL</h2>
+<Example Source="DialogRtl.razor"><DialogRtl /></Example>

@@ -4,17 +4,37 @@
 
 <h1 class="doc-h1">Alert Dialog</h1>
 <p class="doc-lede">
-    A dialog you cannot dismiss by clicking away, for a question that has to be answered. The same native <code>&lt;dialog&gt;</code> as <a href="/components/dialog">Dialog</a>, minus the light dismiss.
+    A dialog you cannot dismiss by clicking away, for a question that has to be answered. The same
+    native <code>&lt;dialog&gt;</code> as <a href="/components/dialog">Dialog</a>, minus the light
+    dismiss.
 </p>
 
-<h2 class="doc-h2">Alert dialog</h2>
+<h2 class="doc-h2">Basic</h2>
+<Example Source="AlertDialogBasic.razor"><AlertDialogBasic /></Example>
 
-<Example Source="AlertDialogExample.razor">
-    <AlertDialogExample />
-</Example>
+<h2 class="doc-h2">Small</h2>
+<Example Source="AlertDialogSmall.razor"><AlertDialogSmall /></Example>
+
+<h2 class="doc-h2">Media</h2>
+<Example Source="AlertDialogMediaExample.razor"><AlertDialogMediaExample /></Example>
+
+<h2 class="doc-h2">Small with Media</h2>
+<Example Source="AlertDialogSmallMedia.razor"><AlertDialogSmallMedia /></Example>
+
+<h2 class="doc-h2">Destructive</h2>
+<p class="doc-note">
+    The colour belongs to the thing that does the damage, not to the thing that opens the
+    question — which is why the recipe is on the action and not on the trigger.
+</p>
+<Example Source="AlertDialogDestructive.razor"><AlertDialogDestructive /></Example>
 
 <h2 class="doc-h2">Confirming an existing control</h2>
+<p class="doc-note">
+    <code>data-ask</code> on any button or link builds this on the fly, with no markup in the page
+    at all — which is what makes it usable on a row in a table where writing a dialog per row
+    would be absurd.
+</p>
+<Example Source="AskExample.razor"><AskExample /></Example>
 
-<Example Source="AskExample.razor">
-    <AskExample />
-</Example>
+<h2 class="doc-h2">RTL</h2>
+<Example Source="AlertDialogRtl.razor"><AlertDialogRtl /></Example>

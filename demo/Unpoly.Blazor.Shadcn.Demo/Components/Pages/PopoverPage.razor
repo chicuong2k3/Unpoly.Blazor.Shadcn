@@ -4,21 +4,30 @@
 
 <h1 class="doc-h1">Popover</h1>
 <p class="doc-lede">
-    The <code>[popover]</code> API. It can be measured against something other than its trigger, which is what <code>PopoverAnchor</code> is for.
+    The <code>[popover]</code> API — the top layer, light dismiss and Escape, none of it written
+    here. It can be measured against something other than its trigger, which is what
+    <code>PopoverAnchor</code> is for.
 </p>
 
-<h2 class="doc-h2">Popover</h2>
+<h2 class="doc-h2">Basic</h2>
+<Example Source="PopoverBasic.razor"><PopoverBasic /></Example>
 
-<Example Source="PopoverExample.razor">
-    <PopoverExample />
-</Example>
+<h2 class="doc-h2">Align</h2>
+<Example Source="PopoverAlign.razor"><PopoverAlign /></Example>
 
-<h2 class="doc-h2">Pieces that only make sense inside another</h2>
-
+<h2 class="doc-h2">With Form</h2>
 <p class="doc-note">
-    A separator that carries a word, a group with a header and a footer, and a popover measured
-    against something other than its trigger.
+    The top layer is a paint concern, not a DOM one: the panel is still inside the
+    <code>&lt;form&gt;</code> it is written in, and still submits with it.
 </p>
-<Example Source="CompositionExample.razor">
-    <CompositionExample />
-</Example>
+<Example Source="PopoverWithForm.razor"><PopoverWithForm /></Example>
+
+<h2 class="doc-h2">Anchor</h2>
+<p class="doc-note">
+    Measured against the whole row rather than against the little button, so the panel lines up
+    with the field a reader is actually looking at.
+</p>
+<Example Source="CompositionExample.razor"><CompositionExample /></Example>
+
+<h2 class="doc-h2">RTL</h2>
+<Example Source="PopoverRtl.razor"><PopoverRtl /></Example>

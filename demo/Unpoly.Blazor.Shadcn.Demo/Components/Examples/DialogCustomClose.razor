@@ -1,0 +1,18 @@
+@* A close button of your own. formmethod="dialog" is what closes the <dialog> it is inside —
+   no id to point at, no JavaScript, and it keeps working if ui.js never loads. *@
+<DialogTrigger Target="dlg-custom">Open</DialogTrigger>
+
+<Dialog Id="dlg-custom" ShowCloseButton="false">
+    <DialogHeader>
+        <DialogTitle>Rename the project</DialogTitle>
+        <DialogDescription>This is what your team will see.</DialogDescription>
+    </DialogHeader>
+    <div class="px-6">
+        <Input name="name" value="Website redesign" aria-label="Project name" />
+    </div>
+    <DialogFooter>
+        <Button>Save</Button>
+        <button type="submit" formmethod="dialog"
+                class="@ButtonVariants.Of("ghost", "default")">Not now</button>
+    </DialogFooter>
+</Dialog>

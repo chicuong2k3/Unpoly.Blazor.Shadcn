@@ -1,0 +1,12 @@
+@* Sideways, with the platform's own scrollbar. Nothing to configure: overflow-x on the viewport
+   and a row wider than it. *@
+<ScrollArea Class="w-[460px] rounded-lg border">
+    <div class="flex w-max gap-3 p-3">
+        @foreach (var n in Enumerable.Range(1, 10))
+        {
+            <div class="flex size-24 shrink-0 items-center justify-center rounded-md bg-muted text-sm">
+                @n
+            </div>
+        }
+    </div>
+</ScrollArea>

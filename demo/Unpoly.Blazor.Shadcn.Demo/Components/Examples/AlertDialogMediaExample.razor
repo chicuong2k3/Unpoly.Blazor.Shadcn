@@ -1,0 +1,19 @@
+@* An icon above the question, which is what shadcn's media slot is for. It is decorative: the
+   title already says what kind of question this is, and announcing "warning" first says it twice. *@
+<AlertDialogTrigger Target="ad-media" Variant="destructive">Revoke the key</AlertDialogTrigger>
+
+<AlertDialog Id="ad-media">
+    <AlertDialogHeader>
+        <AlertDialogMedia aria-hidden="true">
+            <Icon Name="triangle-alert" Class="size-5" />
+        </AlertDialogMedia>
+        <AlertDialogTitle>Revoke this API key?</AlertDialogTitle>
+        <AlertDialogDescription>
+            Anything using it stops working immediately.
+        </AlertDialogDescription>
+    </AlertDialogHeader>
+    <AlertDialogFooter>
+        <AlertDialogCancel>Cancel</AlertDialogCancel>
+        <AlertDialogAction>Revoke</AlertDialogAction>
+    </AlertDialogFooter>
+</AlertDialog>

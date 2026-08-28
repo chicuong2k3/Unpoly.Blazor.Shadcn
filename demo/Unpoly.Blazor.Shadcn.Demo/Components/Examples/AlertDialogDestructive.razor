@@ -1,0 +1,16 @@
+@* The action carries the destructive recipe rather than the trigger. shadcn does the same: the
+   colour belongs to the thing that does the damage, not to the thing that opens the question. *@
+<AlertDialogTrigger Target="ad-destructive" Variant="outline">Cancel the order</AlertDialogTrigger>
+
+<AlertDialog Id="ad-destructive">
+    <AlertDialogHeader>
+        <AlertDialogTitle>Cancel order #3201?</AlertDialogTitle>
+        <AlertDialogDescription>
+            The refund takes three to five working days to reach the card.
+        </AlertDialogDescription>
+    </AlertDialogHeader>
+    <AlertDialogFooter>
+        <AlertDialogCancel>Keep the order</AlertDialogCancel>
+        <AlertDialogAction Class="@ButtonVariants.Of("destructive", "default")">Cancel it</AlertDialogAction>
+    </AlertDialogFooter>
+</AlertDialog>

@@ -4,12 +4,28 @@
 
 <h1 class="doc-h1">Resizable</h1>
 <p class="doc-lede">
-    The handle rewrites <code>flex-grow</code> on the panel either side of it. Arrow keys move it too: <code>role="separator"</code> promises that, and a divider only a pointer can move is one half the people using it cannot.
+    The handle rewrites <code>flex-grow</code> on the panel either side of it, so a drag costs one
+    style recalculation rather than a render. Arrow keys move it too:
+    <code>role="separator"</code> promises that, and a divider only a pointer can move is one half
+    the people using it cannot.
 </p>
 
-<p class="doc-note">
-    The handle rewrites <code>flex-grow</code> on the panel either side of it, so a drag costs one
-    style recalculation rather than a render. Arrow keys move it too — <code>role="separator"</code>
-    promises that, and a divider only a pointer can move is one half the people using it cannot.
-</p>
+<h2 class="doc-h2">Basic</h2>
 <Example Source="ResizableExample.razor"><ResizableExample /></Example>
+
+<h2 class="doc-h2">Vertical</h2>
+<Example Source="ResizableVertical.razor"><ResizableVertical /></Example>
+
+<h2 class="doc-h2">Handle</h2>
+<p class="doc-note">
+    Without the grip the handle is a one-pixel line: findable by pointer, and nothing says it can
+    be dragged. The grip is the affordance, not decoration.
+</p>
+<Example Source="ResizableHandleExample.razor"><ResizableHandleExample /></Example>
+
+<h2 class="doc-h2">RTL</h2>
+<p class="doc-note">
+    Nothing to change: the drag is measured with <code>getBoundingClientRect</code>, which is
+    already direction-aware, and the panels are laid out by flex.
+</p>
+<Example Source="ResizableRtl.razor"><ResizableRtl /></Example>

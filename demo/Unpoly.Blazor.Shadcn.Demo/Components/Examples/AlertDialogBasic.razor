@@ -1,0 +1,16 @@
+@* Not dismissable: no light dismiss, and the backdrop does nothing. The question has to be
+   answered, which is the entire difference from a Dialog. *@
+<AlertDialogTrigger Target="ad-basic" Variant="destructive">Delete account</AlertDialogTrigger>
+
+<AlertDialog Id="ad-basic">
+    <AlertDialogHeader>
+        <AlertDialogTitle>Delete this account?</AlertDialogTitle>
+        <AlertDialogDescription>
+            Everything in it goes with it, and there is no undo.
+        </AlertDialogDescription>
+    </AlertDialogHeader>
+    <AlertDialogFooter>
+        <AlertDialogCancel>Keep it</AlertDialogCancel>
+        <AlertDialogAction>Delete</AlertDialogAction>
+    </AlertDialogFooter>
+</AlertDialog>

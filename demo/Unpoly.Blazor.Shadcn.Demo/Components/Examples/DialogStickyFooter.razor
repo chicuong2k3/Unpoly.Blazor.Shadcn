@@ -1,0 +1,24 @@
+@* A long dialog with the actions pinned. The middle scrolls and the footer does not, which is
+   what stops someone scrolling to find the button that submits what they were reading. *@
+<DialogTrigger Target="dlg-sticky">Open</DialogTrigger>
+
+<Dialog Id="dlg-sticky" Class="max-h-[70vh] gap-0 p-0">
+    <DialogHeader Class="border-b p-6">
+        <DialogTitle>Terms</DialogTitle>
+        <DialogDescription>The short version is at the bottom.</DialogDescription>
+    </DialogHeader>
+
+    <ScrollArea Class="flex-1 px-6 py-4">
+        <div class="flex flex-col gap-3 text-sm text-muted-foreground">
+            @foreach (var n in Enumerable.Range(1, 12))
+            {
+                <p>@n. Nothing here is legal advice, and this paragraph exists to make the box scroll.</p>
+            }
+        </div>
+    </ScrollArea>
+
+    <DialogFooter Class="border-t p-6">
+        <DialogClose>Decline</DialogClose>
+        <Button>Accept</Button>
+    </DialogFooter>
+</Dialog>
