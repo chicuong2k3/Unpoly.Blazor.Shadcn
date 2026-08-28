@@ -1,0 +1,19 @@
+@* The underlined variant is a class on the list and the triggers, not a variant parameter: what
+   changes is the ground and the rule, and both are one class each. *@
+<Tabs Value="orders" Class="w-[460px]">
+    <TabsList Class="h-auto w-full justify-start rounded-none border-b bg-transparent p-0">
+        @foreach (var (v, label) in Panels)
+        {
+            <TabsTrigger Value="@v"
+                         Class="rounded-none border-b-2 border-transparent bg-transparent px-4 pb-3 data-[state=active]:border-primary data-[state=active]:bg-transparent data-[state=active]:shadow-none">
+                @label
+            </TabsTrigger>
+        }
+    </TabsList>
+    <TabsContent Value="orders" Class="pt-4 text-sm text-muted-foreground">Four orders this week.</TabsContent>
+    <TabsContent Value="refunds" Hidden Class="pt-4 text-sm text-muted-foreground">None outstanding.</TabsContent>
+</Tabs>
+
+@code {
+    static readonly (string Value, string Label)[] Panels = [("orders", "Orders"), ("refunds", "Refunds")];
+}

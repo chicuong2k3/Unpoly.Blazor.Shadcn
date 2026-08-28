@@ -1,0 +1,12 @@
+@* Right-click the area, or focus it and press the context-menu key. One listener covers both,
+   and a long press on touch, because the platform fires the same event for all three. *@
+<ContextMenu Target="cm-basic">
+    <ContextMenuTrigger Class="flex h-32 w-72 items-center justify-center rounded-md border border-dashed text-sm text-muted-foreground">
+        Right-click here
+    </ContextMenuTrigger>
+    <ContextMenuContent Id="cm-basic" Class="w-48">
+        <ContextMenuItem>Open</ContextMenuItem>
+        <ContextMenuItem>Duplicate</ContextMenuItem>
+        <ContextMenuItem>Rename</ContextMenuItem>
+    </ContextMenuContent>
+</ContextMenu>

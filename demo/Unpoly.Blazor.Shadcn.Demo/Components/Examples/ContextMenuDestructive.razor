@@ -1,0 +1,12 @@
+<ContextMenu Target="cm-destructive">
+    <ContextMenuTrigger Class="flex h-32 w-72 items-center justify-center rounded-md border border-dashed text-sm text-muted-foreground">
+        Right-click here
+    </ContextMenuTrigger>
+    <ContextMenuContent Id="cm-destructive" Class="w-52">
+        <ContextMenuItem>Open</ContextMenuItem>
+        <ContextMenuSeparator />
+        <ContextMenuItem Variant="destructive" data-ask="Delete this row?">
+            <Icon Name="trash-2" />Delete
+        </ContextMenuItem>
+    </ContextMenuContent>
+</ContextMenu>

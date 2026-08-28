@@ -4,12 +4,47 @@
 
 <h1 class="doc-h1">Context Menu</h1>
 <p class="doc-lede">
-    One <code>contextmenu</code> listener covers the right button, the context-menu key and a long press on touch, because the platform fires the same event for all three. A right-click handler on a div gets only the first.
+    One <code>contextmenu</code> listener covers the right button, the context-menu key and a long
+    press on touch, because the platform fires the same event for all three. A right-click handler
+    bolted onto a div gets only the first, which is how context menus end up unreachable by
+    keyboard.
+</p>
+<p class="doc-note">
+    The trigger is focusable for that reason: Shift+F10 and the context-menu key both fire the
+    event on the <i>focused</i> element, so making it reachable is the whole fix.
 </p>
 
-<p class="doc-note">
-    One <code>contextmenu</code> listener covers the right button, the context-menu key and a long
-    press on touch — the platform fires the same event for all three. A right-click handler on a
-    div gets only the first, which is how context menus end up unreachable by keyboard.
-</p>
+<h2 class="doc-h2">Basic</h2>
+<Example Source="ContextMenuBasic.razor"><ContextMenuBasic /></Example>
+
+<h2 class="doc-h2">Submenu</h2>
 <Example Source="ContextMenuExample.razor"><ContextMenuExample /></Example>
+
+<h2 class="doc-h2">Shortcuts</h2>
+<Example Source="ContextMenuShortcuts.razor"><ContextMenuShortcuts /></Example>
+
+<h2 class="doc-h2">Groups</h2>
+<Example Source="ContextMenuGroups.razor"><ContextMenuGroups /></Example>
+
+<h2 class="doc-h2">Icons</h2>
+<Example Source="ContextMenuIcons.razor"><ContextMenuIcons /></Example>
+
+<h2 class="doc-h2">Checkboxes</h2>
+<Example Source="ContextMenuCheckboxes.razor"><ContextMenuCheckboxes /></Example>
+
+<h2 class="doc-h2">Radio</h2>
+<Example Source="ContextMenuRadio.razor"><ContextMenuRadio /></Example>
+
+<h2 class="doc-h2">Destructive</h2>
+<Example Source="ContextMenuDestructive.razor"><ContextMenuDestructive /></Example>
+
+<h2 class="doc-h2">Sides</h2>
+<p class="doc-note">
+    A context menu has no side: it opens where the pointer was, and the compiler only keeps it on
+    screen. That is the one structural difference from a dropdown, and why this component has no
+    <code>Align</code> or <code>Side</code> to set.
+</p>
+<Example Source="ContextMenuSides.razor"><ContextMenuSides /></Example>
+
+<h2 class="doc-h2">RTL</h2>
+<Example Source="ContextMenuRtl.razor"><ContextMenuRtl /></Example>

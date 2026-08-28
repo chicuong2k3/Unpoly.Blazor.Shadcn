@@ -656,6 +656,9 @@
   .h-24 {
     height: calc(var(--spacing) * 24);
   }
+  .h-32 {
+    height: calc(var(--spacing) * 32);
+  }
   .h-40 {
     height: calc(var(--spacing) * 40);
   }
@@ -809,11 +812,17 @@
   .w-44 {
     width: calc(var(--spacing) * 44);
   }
+  .w-48 {
+    width: calc(var(--spacing) * 48);
+  }
   .w-52 {
     width: calc(var(--spacing) * 52);
   }
   .w-56 {
     width: calc(var(--spacing) * 56);
+  }
+  .w-60 {
+    width: calc(var(--spacing) * 60);
   }
   .w-64 {
     width: calc(var(--spacing) * 64);
@@ -859,6 +868,9 @@
   }
   .w-\[220px\] {
     width: 220px;
+  }
+  .w-\[280px\] {
+    width: 280px;
   }
   .w-\[320px\] {
     width: 320px;
@@ -1419,6 +1431,10 @@
   .border-b-0 {
     border-bottom-style: var(--tw-border-style);
     border-bottom-width: 0px;
+  }
+  .border-b-2 {
+    border-bottom-style: var(--tw-border-style);
+    border-bottom-width: 2px;
   }
   .border-l {
     border-left-style: var(--tw-border-style);
@@ -3424,11 +3440,21 @@
     border-top-right-radius: var(--radius-control);
     border-bottom-right-radius: var(--radius-control);
   }
+  .data-\[state\=active\]\:border-primary[data-state="active"] {
+    border-color: var(--primary);
+  }
   .data-\[state\=active\]\:bg-background[data-state="active"] {
     background-color: var(--background);
   }
+  .data-\[state\=active\]\:bg-transparent[data-state="active"] {
+    background-color: transparent;
+  }
   .data-\[state\=active\]\:text-foreground[data-state="active"] {
     color: var(--foreground);
+  }
+  .data-\[state\=active\]\:shadow-none[data-state="active"] {
+    --tw-shadow: 0 0 #0000;
+    box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
   }
   .group-data-\[variant\=default\]\/tabs-list\:data-\[state\=active\]\:shadow-sm:is(:where(.group\/tabs-list)[data-variant="default"] *)[data-state="active"] {
     --tw-shadow: var(--elevation-2);

@@ -1,0 +1,13 @@
+@* A checkbox row that also carries an icon. The tick is the input own, drawn on its ::after —
+   so the icon beside the label is free to be anything. *@
+<DropdownMenu>
+    <DropdownMenuTrigger Target="dd-cbi">View</DropdownMenuTrigger>
+    <DropdownMenuContent Id="dd-cbi" Class="w-56">
+        <DropdownMenuCheckboxItem Name="show-grid" Checked>
+            <Icon Name="layout-grid" />Grid
+        </DropdownMenuCheckboxItem>
+        <DropdownMenuCheckboxItem Name="show-list">
+            <Icon Name="menu" />List
+        </DropdownMenuCheckboxItem>
+    </DropdownMenuContent>
+</DropdownMenu>

@@ -1,0 +1,11 @@
+@* A disabled trigger is skipped by the arrow keys as well as by the pointer — the compiler reads
+   the attribute rather than keeping its own list. *@
+<Tabs Value="account" Class="w-[460px]">
+    <TabsList>
+        <TabsTrigger Value="account">Account</TabsTrigger>
+        <TabsTrigger Value="billing" disabled>Billing</TabsTrigger>
+        <TabsTrigger Value="team">Team</TabsTrigger>
+    </TabsList>
+    <TabsContent Value="account" Class="pt-3 text-sm text-muted-foreground">Your details.</TabsContent>
+    <TabsContent Value="team" Hidden Class="pt-3 text-sm text-muted-foreground">Three people.</TabsContent>
+</Tabs>

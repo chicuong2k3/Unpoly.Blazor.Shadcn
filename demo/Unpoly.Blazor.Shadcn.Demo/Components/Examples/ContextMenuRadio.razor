@@ -1,0 +1,13 @@
+<ContextMenu Target="cm-radio">
+    <ContextMenuTrigger Class="flex h-32 w-72 items-center justify-center rounded-md border border-dashed text-sm text-muted-foreground">
+        Right-click here
+    </ContextMenuTrigger>
+    <ContextMenuContent Id="cm-radio" Class="w-52">
+        <ContextMenuLabel Inset>Sort by</ContextMenuLabel>
+        <ContextMenuRadioGroup>
+            <ContextMenuRadioItem Name="cm-sort" Value="name" Checked>Name</ContextMenuRadioItem>
+            <ContextMenuRadioItem Name="cm-sort" Value="date">Date</ContextMenuRadioItem>
+            <ContextMenuRadioItem Name="cm-sort" Value="size">Size</ContextMenuRadioItem>
+        </ContextMenuRadioGroup>
+    </ContextMenuContent>
+</ContextMenu>

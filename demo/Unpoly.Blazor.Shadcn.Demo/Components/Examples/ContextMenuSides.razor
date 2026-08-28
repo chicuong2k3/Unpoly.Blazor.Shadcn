@@ -1,0 +1,13 @@
+@* A context menu has no side: it opens where the pointer was, and the compiler only keeps it on
+   screen. That is the one structural difference from a dropdown, and the reason this component
+   has no Align or Side parameter to set. *@
+<ContextMenu Target="cm-sides">
+    <ContextMenuTrigger Class="flex h-40 w-full max-w-lg items-center justify-center rounded-md border border-dashed text-sm text-muted-foreground">
+        Right-click near an edge — the menu stays on screen
+    </ContextMenuTrigger>
+    <ContextMenuContent Id="cm-sides" Class="w-48">
+        <ContextMenuItem>Open</ContextMenuItem>
+        <ContextMenuItem>Rename</ContextMenuItem>
+        <ContextMenuItem>Delete</ContextMenuItem>
+    </ContextMenuContent>
+</ContextMenu>

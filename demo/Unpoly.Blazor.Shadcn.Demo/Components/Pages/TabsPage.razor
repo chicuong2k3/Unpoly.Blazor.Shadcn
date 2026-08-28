@@ -4,9 +4,29 @@
 
 <h1 class="doc-h1">Tabs</h1>
 <p class="doc-lede">
-    A compiler, and one decision worth knowing: an inactive panel is <code>hidden</code> rather than removed, so the fields inside it still post.
+    A compiler, and one decision worth knowing: an inactive panel is <code>hidden</code> rather
+    than removed, so the fields inside it still post. A tab strip that empties the form when you
+    look at another tab is a bug people spend a long time not finding.
 </p>
 
-<Example Source="TabsExample.razor">
-    <TabsExample />
-</Example>
+<h2 class="doc-h2">Basic</h2>
+<Example Source="TabsExample.razor"><TabsExample /></Example>
+
+<h2 class="doc-h2">Line</h2>
+<Example Source="TabsLine.razor"><TabsLine /></Example>
+
+<h2 class="doc-h2">Vertical</h2>
+<Example Source="TabsVertical.razor"><TabsVertical /></Example>
+
+<h2 class="doc-h2">Disabled</h2>
+<p class="doc-note">
+    Skipped by the arrow keys as well as by the pointer: the compiler reads the attribute rather
+    than keeping its own list of what is enabled.
+</p>
+<Example Source="TabsDisabled.razor"><TabsDisabled /></Example>
+
+<h2 class="doc-h2">Icons</h2>
+<Example Source="TabsIcons.razor"><TabsIcons /></Example>
+
+<h2 class="doc-h2">RTL</h2>
+<Example Source="TabsRtl.razor"><TabsRtl /></Example>
