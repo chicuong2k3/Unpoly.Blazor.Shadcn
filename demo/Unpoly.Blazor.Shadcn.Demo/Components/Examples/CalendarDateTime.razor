@@ -1,0 +1,10 @@
+@* A day and a time are two values, so they are two controls. type="time" brings the right
+   keyboard on a phone, which a text box with a mask does not. *@
+<div class="flex w-fit flex-col gap-3 rounded-lg border p-3">
+    <Calendar Name="day" Month="@(new DateOnly(2026, 3, 1))"
+              Selected="@(new DateOnly(2026, 3, 11))" Today="@(new DateOnly(2026, 3, 11))" />
+    <Field Orientation="horizontal">
+        <FieldLabel For="cal-time">Time</FieldLabel>
+        <Input id="cal-time" name="time" type="time" value="09:30" step="900" Class="w-32" />
+    </Field>
+</div>

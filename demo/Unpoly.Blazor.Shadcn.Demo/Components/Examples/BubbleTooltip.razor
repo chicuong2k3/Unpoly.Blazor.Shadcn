@@ -1,0 +1,8 @@
+@* A timestamp that does not take a line of its own. The tooltip opens on focus too, so the exact
+   time is reachable by keyboard rather than only by hovering. *@
+<div class="flex w-[440px] flex-col gap-2">
+    <TooltipTrigger Target="bubble-time" Variant="ghost" Class="h-auto w-fit p-0 hover:bg-transparent">
+        <Bubble Variant="muted"><BubbleContent>Did the invoice go out?</BubbleContent></Bubble>
+    </TooltipTrigger>
+    <TooltipContent Id="bubble-time">11 March 2026, 09:12</TooltipContent>
+</div>

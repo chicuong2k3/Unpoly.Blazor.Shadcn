@@ -1,0 +1,22 @@
+@* Links inside a bubble stay links, and actions under one stay real buttons in a form. Neither
+   is styled by the bubble: it sets a colour, and anything inside inherits it. *@
+<div class="flex w-[460px] flex-col gap-3">
+    <Bubble Variant="muted">
+        <BubbleContent>
+            The class strings come from
+            <a href="/components/button" class="underline underline-offset-2">shadcn's own source</a>,
+            and the tests read the same file.
+        </BubbleContent>
+    </Bubble>
+
+    <Bubble Align="end">
+        <BubbleContent>Shall I open a pull request?</BubbleContent>
+    </Bubble>
+
+    <div class="flex justify-end gap-2">
+        <form method="post" action="/chat/1/yes"><AntiforgeryToken />
+            <Button Size="sm" Type="submit">Yes, open it</Button></form>
+        <form method="post" action="/chat/1/no"><AntiforgeryToken />
+            <Button Size="sm" Variant="outline" Type="submit">Not yet</Button></form>
+    </div>
+</div>

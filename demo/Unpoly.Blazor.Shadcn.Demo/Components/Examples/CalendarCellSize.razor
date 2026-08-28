@@ -1,0 +1,9 @@
+@* The cell is size-9 by default, which matches every other control. Bigger is worth it on a touch
+   screen: 44px is the smallest target most guidance accepts, and a calendar is a grid of
+   thirty-one of them. *@
+<div class="flex flex-wrap items-start gap-4">
+    <Calendar Name="a" Month="@(new DateOnly(2026, 3, 1))" Today="@(new DateOnly(2026, 3, 11))"
+              Class="w-fit rounded-lg border p-3" />
+    <Calendar Name="b" Month="@(new DateOnly(2026, 3, 1))" Today="@(new DateOnly(2026, 3, 11))"
+              Class="w-fit rounded-lg border p-3 [&amp;_label]:size-11 [&amp;_label]:text-base" />
+</div>

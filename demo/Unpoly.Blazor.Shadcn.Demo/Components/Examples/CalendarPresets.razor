@@ -1,0 +1,21 @@
+@* Presets are links, so each one is a URL: "last 30 days" can be sent to a colleague and reached
+   by the back button, which a click handler that mutates state cannot offer. *@
+<div class="flex flex-wrap items-start gap-4">
+    <div class="flex w-40 flex-col gap-1">
+        @foreach (var (label, href) in Presets)
+        {
+            <a href="@href" up-target="[data-slot=calendar]"
+               class="@(ButtonVariants.Of("ghost", "sm", "justify-start"))">@label</a>
+        }
+    </div>
+    <Calendar Name="day" Month="@(new DateOnly(2026, 3, 1))" Today="@(new DateOnly(2026, 3, 11))"
+              Class="w-fit rounded-lg border p-3" />
+</div>
+
+@code {
+    static readonly (string Label, string Href)[] Presets =
+    [
+        ("Today", "?range=today"), ("Last 7 days", "?range=7d"),
+        ("Last 30 days", "?range=30d"), ("This month", "?range=month"),
+    ];
+}

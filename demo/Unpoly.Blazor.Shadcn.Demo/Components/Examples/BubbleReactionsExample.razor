@@ -1,0 +1,17 @@
+@* Reactions hang off a corner of the bubble. Side and align decide which — bottom-end is the
+   trailing corner, which is where a reader looks after reading the message. *@
+<div class="flex w-[440px] flex-col gap-6">
+    <Bubble Align="end">
+        <BubbleContent>Sent it this morning.</BubbleContent>
+        <BubbleReactions>
+            <Badge Variant="secondary">2 reactions</Badge>
+        </BubbleReactions>
+    </Bubble>
+
+    <Bubble Variant="muted">
+        <BubbleContent>Perfect, thank you.</BubbleContent>
+        <BubbleReactions Side="top" Align="start">
+            <Badge Variant="outline">1</Badge>
+        </BubbleReactions>
+    </Bubble>
+</div>

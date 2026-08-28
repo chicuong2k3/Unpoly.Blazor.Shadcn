@@ -1,0 +1,12 @@
+@* A date and a time are two inputs, because they are two values — and `type="time"` brings the
+   right keyboard on a phone, which a text box with a mask does not. *@
+<div class="flex w-[420px] items-end gap-3">
+    <Field Class="flex-1">
+        <FieldLabel For="dpt-date">Date</FieldLabel>
+        <DatePicker id="dpt-date" name="date" value="2026-03-11" />
+    </Field>
+    <Field Class="w-32">
+        <FieldLabel For="dpt-time">Time</FieldLabel>
+        <Input id="dpt-time" name="time" type="time" value="09:30" step="900" />
+    </Field>
+</div>

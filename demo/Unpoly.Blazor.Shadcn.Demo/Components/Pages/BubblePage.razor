@@ -4,13 +4,45 @@
 
 <h1 class="doc-h1">Bubble</h1>
 <p class="doc-lede">
-    One turn in a conversation. An <code>&lt;article&gt;</code> rather than a div: a thread is a list of separately authored things, and that is what lets a screen reader move between them instead of reading the whole thing as one wall.
+    One turn in a conversation. An <code>&lt;article&gt;</code> rather than a div: a thread is a
+    list of separately authored things, and that is what lets a screen reader move between them
+    instead of reading the whole thing as one wall.
 </p>
 
+<h2 class="doc-h2">Variants</h2>
+<Example Source="BubbleVariants.razor"><BubbleVariants /></Example>
+
+<h2 class="doc-h2">Alignment</h2>
 <p class="doc-note">
-    Message, Bubble, Attachment, Marker and the scroller. The scroller follows the newest message
-    only while you are already at the bottom — scroll up to read something and it stops, which is
-    the behaviour every chat needs and most get wrong in one direction or the other.
-    <code>overflow-anchor</code> does that half in CSS; the browser has had it since 2018.
+    <code>end</code> is the reader's own side and <code>start</code> is the other person's, which
+    is the whole grammar of a chat — and it follows the writing direction rather than the screen.
 </p>
+<Example Source="BubbleAlignment.razor"><BubbleAlignment /></Example>
+
+<h2 class="doc-h2">Bubble Group</h2>
+<Example Source="BubbleGroupExample.razor"><BubbleGroupExample /></Example>
+
+<h2 class="doc-h2">Links and Buttons</h2>
+<Example Source="BubbleLinksButtons.razor"><BubbleLinksButtons /></Example>
+
+<h2 class="doc-h2">Reactions</h2>
+<Example Source="BubbleReactionsExample.razor"><BubbleReactionsExample /></Example>
+
+<h2 class="doc-h2">Show More / Collapsible</h2>
+<p class="doc-note">
+    <code>&lt;details&gt;</code> again: it opens with no script, survives a fragment swap, and Find
+    in Page reaches inside it in most browsers — none of which a state variable manages.
+</p>
+<Example Source="BubbleShowMore.razor"><BubbleShowMore /></Example>
+
+<h2 class="doc-h2">Tooltip</h2>
+<Example Source="BubbleTooltip.razor"><BubbleTooltip /></Example>
+
+<h2 class="doc-h2">Popover</h2>
+<Example Source="BubblePopover.razor"><BubblePopover /></Example>
+
+<h2 class="doc-h2">In a conversation</h2>
 <Example Source="ConversationExample.razor"><ConversationExample /></Example>
+
+<h2 class="doc-h2">RTL</h2>
+<Example Source="BubbleRtl.razor"><BubbleRtl /></Example>

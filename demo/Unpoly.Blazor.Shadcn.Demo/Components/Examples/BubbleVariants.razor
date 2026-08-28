@@ -1,0 +1,13 @@
+<div class="flex w-[440px] flex-col items-start gap-2">
+    @foreach (var v in Variants)
+    {
+        <Bubble Variant="@v"><BubbleContent>@v</BubbleContent></Bubble>
+    }
+</div>
+
+@code {
+    static readonly string[] Variants =
+    [
+        "default", "secondary", "muted", "tinted", "outline", "ghost", "destructive",
+    ];
+}

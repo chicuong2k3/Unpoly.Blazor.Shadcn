@@ -4,14 +4,60 @@
 
 <h1 class="doc-h1">Calendar</h1>
 <p class="doc-lede">
-    A month, as a table — because a calendar is one, and every screen reader already knows how to read one. Each day is a real radio input, so choosing one posts and the browser supplies the arrow keys.
+    A month, as a table — because a calendar is one, and every screen reader already knows how to
+    read one. Each day is a real radio input, so choosing one posts and the browser supplies the
+    arrow keys, Home and End within the group. No roving tabindex, no key handlers, no state.
+</p>
+<p class="doc-note">
+    react-day-picker builds it from divs and then reimplements that, mostly correctly. What it
+    also brings, and this does not, is the calendar systems — Hijri, Jalali — which are a data
+    problem rather than a markup one.
 </p>
 
+<h2 class="doc-h2">Basic</h2>
+<Example Source="CalendarBasic.razor"><CalendarBasic /></Example>
+
+<h2 class="doc-h2">Date Picker</h2>
 <p class="doc-note">
-    A <code>&lt;table&gt;</code>, because a calendar is one and every screen reader already knows
-    how to read it. Each day is a real radio input, so choosing one posts and the browser supplies
-    the arrow keys — no roving tabindex, no key handlers, no state. For picking a single date in a
-    form, <code>DatePicker</code> is smaller still; this is for when the shape of the month is the
-    information.
+    For a form field, <a href="/components/date-picker">DatePicker</a> around
+    <code>&lt;input type="date"&gt;</code> is smaller and brings the OS picker on a phone. Reach
+    for this when the month has to be visible while choosing.
 </p>
-<Example Source="CalendarExample.razor"><CalendarExample /></Example>
+<Example Source="CalendarDatePickerExample.razor"><CalendarDatePickerExample /></Example>
+
+<h2 class="doc-h2">Range Calendar</h2>
+<p class="doc-note">
+    Two calendars and two names, for the same reason the slider has no second thumb: a range is
+    two values, and posting them as two fields is what a server reads and what the back button
+    preserves.
+</p>
+<Example Source="CalendarRange.razor"><CalendarRange /></Example>
+
+<h2 class="doc-h2">Month and Year Selector</h2>
+<Example Source="CalendarMonthYear.razor"><CalendarMonthYear /></Example>
+
+<h2 class="doc-h2">Presets</h2>
+<p class="doc-note">
+    Links, so each preset is a URL: "last 30 days" can be sent to a colleague and reached by the
+    back button, which a click handler that mutates state cannot offer.
+</p>
+<Example Source="CalendarPresets.razor"><CalendarPresets /></Example>
+
+<h2 class="doc-h2">Date and Time Picker</h2>
+<Example Source="CalendarDateTime.razor"><CalendarDateTime /></Example>
+
+<h2 class="doc-h2">Booked dates</h2>
+<Example Source="CalendarBookedDates.razor"><CalendarBookedDates /></Example>
+
+<h2 class="doc-h2">Custom Cell Size</h2>
+<p class="doc-note">
+    44px is the smallest touch target most guidance accepts, and a calendar is a grid of
+    thirty-one of them.
+</p>
+<Example Source="CalendarCellSize.razor"><CalendarCellSize /></Example>
+
+<h2 class="doc-h2">Week Numbers</h2>
+<Example Source="CalendarWeekNumbers.razor"><CalendarWeekNumbers /></Example>
+
+<h2 class="doc-h2">RTL</h2>
+<Example Source="CalendarRtl.razor"><CalendarRtl /></Example>

@@ -1764,6 +1764,9 @@
   .ps-2 {
     padding-inline-start: calc(var(--spacing) * 2);
   }
+  .pe-1 {
+    padding-inline-end: var(--spacing);
+  }
   .pt-0 {
     padding-top: 0px;
   }
@@ -2031,6 +2034,9 @@
   }
   .underline {
     text-decoration-line: underline;
+  }
+  .underline-offset-2 {
+    text-underline-offset: 2px;
   }
   .underline-offset-4 {
     text-underline-offset: 4px;
@@ -2795,6 +2801,9 @@
     }
     .hover\:bg-sidebar-accent:hover {
       background-color: var(--sidebar-accent);
+    }
+    .hover\:bg-transparent:hover {
+      background-color: transparent;
     }
     .hover\:text-accent-foreground:hover {
       color: var(--accent-foreground);

@@ -4,9 +4,49 @@
 
 <h1 class="doc-h1">Date Picker</h1>
 <p class="doc-lede">
-    <code>&lt;input type="date"&gt;</code>, which already has a calendar, a keyboard, a locale and a mobile picker. Air Datepicker enhances it where a range or a disabled-day rule is needed; the input still posts either way.
+    <code>&lt;input type="date"&gt;</code>, which already has a calendar, a keyboard, a locale and
+    a mobile picker. Air Datepicker enhances it where a range or a disabled-day rule is needed; the
+    input posts either way, and with scripting off it is still a date field rather than a text box.
 </p>
 
-<Example Source="DatePickerExample.razor">
-    <DatePickerExample />
-</Example>
+<h2 class="doc-h2">Basic</h2>
+<Example Source="DatePickerBasic.razor"><DatePickerBasic /></Example>
+
+<h2 class="doc-h2">Range Picker</h2>
+<p class="doc-note">
+    Two inputs with two names, which is what a server wants to read — and what lets the second one
+    refuse a date before the first without any script.
+</p>
+<Example Source="DatePickerRange.razor"><DatePickerRange /></Example>
+
+<h2 class="doc-h2">Date of Birth</h2>
+<p class="doc-note">
+    The case where a calendar is the wrong control: nobody wants to page back three hundred months.
+    <code>autocomplete="bday"</code> lets the browser fill it.
+</p>
+<Example Source="DatePickerBirthday.razor"><DatePickerBirthday /></Example>
+
+<h2 class="doc-h2">Input</h2>
+<Example Source="DatePickerInput.razor"><DatePickerInput /></Example>
+
+<h2 class="doc-h2">Time Picker</h2>
+<Example Source="DatePickerTime.razor"><DatePickerTime /></Example>
+
+<h2 class="doc-h2">Natural Language Picker</h2>
+<p class="doc-note">
+    shadcn's parses "next tuesday" in the browser. Parsing a date is the server's job here — it
+    already has to, because a client-side parse is a convenience and the value still arrives as
+    text — and <code>up-validate</code> echoes back what it understood, so the reader sees the
+    interpretation before submitting rather than after.
+</p>
+<Example Source="DatePickerNatural.razor"><DatePickerNatural /></Example>
+
+<h2 class="doc-h2">Calendar</h2>
+<p class="doc-note">
+    When the shape of the month is the information rather than the value, that is
+    <a href="/components/calendar">Calendar</a> — a table of days, each one a real radio input.
+</p>
+<Example Source="CalendarExample.razor"><CalendarExample /></Example>
+
+<h2 class="doc-h2">RTL</h2>
+<Example Source="DatePickerRtl.razor"><DatePickerRtl /></Example>

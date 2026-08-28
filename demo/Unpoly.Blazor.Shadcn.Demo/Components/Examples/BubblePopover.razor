@@ -1,0 +1,16 @@
+@* Actions on a turn, in a popover rather than a row of buttons — for a thread where the actions
+   would otherwise outnumber the messages. *@
+<div class="flex w-[440px] items-start gap-2">
+    <Bubble Variant="muted"><BubbleContent>Perfect, thank you.</BubbleContent></Bubble>
+    <PopoverTrigger Target="bubble-actions" Variant="ghost" Size="icon-sm"
+                    aria-label="Actions for this message">
+        <Icon Name="ellipsis" />
+    </PopoverTrigger>
+    <PopoverContent Id="bubble-actions" Align="start" Class="w-44 p-1">
+        <div class="flex flex-col">
+            <Button Variant="ghost" Size="sm" Class="justify-start"><Icon Name="copy" />Copy</Button>
+            <Button Variant="ghost" Size="sm" Class="justify-start"><Icon Name="message-circle" />Reply</Button>
+            <Button Variant="ghost" Size="sm" Class="justify-start text-destructive"><Icon Name="trash-2" />Delete</Button>
+        </div>
+    </PopoverContent>
+</div>
