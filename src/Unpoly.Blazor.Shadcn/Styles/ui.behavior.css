@@ -15,8 +15,14 @@
        back, or the dialog opens hard against the top-left corner. The <dialog> itself is a
        bare frame; the shadcn-styled panel is its single child, so the animation has a box
        with a real size to scale. */
+    /* command-dialog belongs in this list too. It was missing, so the palette kept the
+       preflight's margin:0 and opened hard against the top-left corner — including the docs'
+       own Ctrl-K search, which is the first dialog most visitors meet. shadcn additionally
+       lifts a palette above centre: dead-centre reads fine for a confirmation, but a palette
+       is something you type into, and the eye expects it where launchers put it. */
     [data-slot="dialog"],
-    [data-slot="alert-dialog"] {
+    [data-slot="alert-dialog"],
+    [data-slot="command-dialog"] {
         margin: auto;
         padding: 0;
         border: 0;
@@ -26,14 +32,18 @@
         color: inherit;
         overflow: visible;
     }
+    [data-slot="command-dialog"] { margin-block-start: 12vh; }
+
     [data-slot="dialog"]::backdrop,
     [data-slot="alert-dialog"]::backdrop,
+    [data-slot="command-dialog"]::backdrop,
     [data-slot="sheet"]::backdrop {
         background: rgb(0 0 0 / 0.5);
         animation: sh-fade-in 150ms ease-out;
     }
     [data-slot="dialog"][open] > *,
-    [data-slot="alert-dialog"][open] > * {
+    [data-slot="alert-dialog"][open] > *,
+    [data-slot="command-dialog"][open] > * {
         animation: sh-dialog-in 200ms cubic-bezier(0.16, 1, 0.3, 1);
     }
 
