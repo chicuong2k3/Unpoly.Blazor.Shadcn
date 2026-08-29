@@ -22,8 +22,12 @@
 
 @if (Values is not { Length: > 1 } values)
 {
-    <input type="range" data-slot="slider" min="@Min" max="@Max" step="@Step" value="@Value"
-           disabled="@Disabled" data-disabled="@(Disabled ? "" : null)"
+    @* id is written here, not left to the splat: Blazor matches parameters case-insensitively,
+       so a plain id="…" at the call site binds to the Id parameter below and never reaches the
+       element. The slider rendered with no id at all, and every <label for> and <output for>
+       pointing at it addressed nothing. *@
+    <input type="range" data-slot="slider" id="@Id" min="@Min" max="@Max" step="@Step"
+           value="@Value" disabled="@Disabled" data-disabled="@(Disabled ? "" : null)"
            data-orientation="@Orientation" class="@Classes"
            @attributes="AdditionalAttributes" />
 }
@@ -60,8 +64,10 @@ else
     /// <summary>An accessible name per thumb: "Lowest price", "Highest price".</summary>
     [Parameter] public string[]? Labels { get; set; }
 
-    /// <summary>Base for per-thumb ids, so an <c>&lt;output for&gt;</c> can watch one thumb.
-    /// With Id "price", the thumbs are price-0, price-1, …</summary>
+    /// <summary>
+    /// The element's id with one thumb. With several it is the base for the per-thumb ids, so an
+    /// <c>&lt;output for&gt;</c> can watch one of them: Id "price" gives price-0, price-1, …
+    /// </summary>
     [Parameter] public string? Id { get; set; }
 
     [Parameter] public bool Disabled { get; set; }
@@ -69,10 +75,15 @@ else
     /// <summary>"horizontal" or "vertical". Vertical is CSS only — the input is unchanged.</summary>
     [Parameter] public string Orientation { get; set; } = "horizontal";
 
+    // w-auto is upstream's and is dropped here, in deviations.json with the reason: upstream's
+    // vertical root is a div WRAPPING a track, so auto width is the track's width plus the thumb.
+    // Here the root IS the input, and auto width is the six pixels of the track alone — the thumb
+    // then hangs off both sides of a control six pixels wide. The width comes from the stylesheet
+    // instead, beside the writing-mode that makes it vertical in the first place.
     const string Base =
         "relative w-full touch-none select-none data-[disabled]:opacity-50 " +
         "data-[orientation=vertical]:h-full data-[orientation=vertical]:min-h-44 " +
-        "data-[orientation=vertical]:w-auto";
+        "data-[orientation=vertical]:w-4";
 
     string Classes => Cn(Base, Class);
 

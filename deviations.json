@@ -495,6 +495,12 @@
         "[--cell-size:--spacing(9)]"
       ],
       "why": "The cell size is one custom property here, as it is upstream — upstream just declares it on the react-day-picker root, which this port does not have. One class changes every day box and the week-number column that lines up with them, which is what the Custom Cell Size sample is demonstrating."
+    },
+    "slider": {
+      "classes": [
+        "data-[orientation=vertical]:w-4"
+      ],
+      "why": "The width upstream gets from w-auto around a wrapper. See dropped.slider."
     }
   },
   "dropped": {
@@ -600,9 +606,10 @@
       "classes": [
         "flex",
         "items-center",
-        "data-[orientation=vertical]:flex-col"
+        "data-[orientation=vertical]:flex-col",
+        "data-[orientation=vertical]:w-auto"
       ],
-      "why": "Upstream's root is a <div> holding a track and a thumb, so it is a flex container. Here the root IS the <input type=range>, and display:flex on a range input destroys the box model the browser draws its own track and thumb inside — the track vanished and only the thumb was left, a lone circle floating in the row. The remaining layout classes (relative, w-full, touch-none, select-none) are harmless on an input and are kept."
+      "why": "Upstream's root is a <div> holding a track and a thumb, so it is a flex container. Here the root IS the <input type=range>, and display:flex on a range input destroys the box model the browser draws its own track and thumb inside — the track vanished and only the thumb was left, a lone circle floating in the row. w-auto goes for the same reason: around a wrapper it is the track plus the thumb that overhangs it, but on the input itself it is the six pixels of track alone, and the thumb then hangs off both sides of a control six pixels wide. It is replaced by w-4, the width of the thumb. The remaining layout classes (relative, w-full, touch-none, select-none) are harmless on an input and are kept."
     },
     "combobox-trigger": {
       "classes": [
@@ -1020,11 +1027,19 @@
   },
   "callSiteClasses": {
     "PaginationPrevious": {
-      "classes": ["gap-1", "px-2.5", "sm:ps-2.5"],
+      "classes": [
+        "gap-1",
+        "px-2.5",
+        "sm:ps-2.5"
+      ],
       "why": "cn(\"gap-1 px-2.5 sm:pl-2.5\") at upstream's call site. sm:ps- rather than sm:pl-, because the extra room belongs on the side the chevron is on and that side moves under RTL."
     },
     "PaginationNext": {
-      "classes": ["gap-1", "px-2.5", "sm:pe-2.5"],
+      "classes": [
+        "gap-1",
+        "px-2.5",
+        "sm:pe-2.5"
+      ],
       "why": "cn(\"gap-1 px-2.5 sm:pr-2.5\") at upstream's call site, mirrored for the same reason as PaginationPrevious."
     }
   },

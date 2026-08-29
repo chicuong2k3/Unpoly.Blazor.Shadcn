@@ -47,6 +47,19 @@
 
   let selectSeq = 0
 
+  // The page must not scroll behind anything that has taken over the pointer — a modal, a drawer,
+  // an open list. The platform makes a modal's background inert to clicks and to the keyboard,
+  // but the wheel still reaches it, so the panel sits pinned while the page slides past behind it.
+  //
+  // Counted rather than toggled, and ONE counter for all of them: drawers nest, a select opens
+  // inside a dialog, and the first thing to close must not unlock the page while another is still
+  // holding it.
+  let locks = 0
+  const lockScroll = (on) => {
+    locks = Math.max(0, locks + (on ? 1 : -1))
+    document.documentElement.style.overflow = locks > 0 ? 'hidden' : ''
+  }
+
   const SELECT_TRIGGER =
     'border-input flex h-control w-full items-center justify-between gap-2 rounded-md border ' +
     'bg-transparent px-3 py-2 text-control whitespace-nowrap shadow-xs ' +
@@ -263,16 +276,13 @@
   // page slid past behind it, which nothing built on Radix does because Radix locks the scroll.
   // Counted rather than toggled: drawers nest, and the first one to close must not unlock the
   // page while another is still open.
-  let locks = 0
   up.compiler('dialog[data-slot="dialog"], dialog[data-slot="alert-dialog"], ' +
               'dialog[data-slot="command-dialog"], dialog[data-slot="sheet"], ' +
               'dialog[data-slot="drawer"]', (dialog) => {
     const onToggle = () => {
       // A non-modal drawer does not lock anything: staying usable is the whole point of it.
       if (dialog.dataset.modal === 'false') return
-      locks += dialog.open ? 1 : -1
-      locks = Math.max(0, locks)
-      document.documentElement.style.overflow = locks > 0 ? 'hidden' : ''
+      lockScroll(dialog.open)
     }
 
     const watch = new MutationObserver(onToggle)
@@ -281,10 +291,7 @@
 
     return () => {
       watch.disconnect()
-      if (dialog.open && dialog.dataset.modal !== 'false') {
-        locks = Math.max(0, locks - 1)
-        if (locks === 0) document.documentElement.style.overflow = ''
-      }
+      if (dialog.open && dialog.dataset.modal !== 'false') lockScroll(false)
     }
   })
 
@@ -2089,6 +2096,21 @@
   // an item writes through to the <select> and dispatches a bubbling change event, so
   // [up-autosubmit] and filter forms behave exactly as they do without this enhancement.
 
+  // <output for="…"> shows what a control currently holds. The element is built for exactly this
+  // and the platform still makes you write the assignment, so this writes it once for every
+  // output on the page rather than once per demo. It is the whole of shadcn's "controlled"
+  // slider: there, the value lives in a state variable and is printed beside the label; here it
+  // lives in the input, which is the thing that posts, and the output reads it.
+  up.compiler('output[for]', (output) => {
+    const source = document.getElementById(output.getAttribute('for'))
+    if (!source) return
+
+    const show = () => { output.textContent = source.value }
+    source.addEventListener('input', show)
+    show()
+    return () => source.removeEventListener('input', show)
+  })
+
   up.compiler('input[type="checkbox"][data-toggles]', (box) => {
     const target = document.getElementById(box.dataset.toggles)
     const name = box.dataset.togglesAttribute
@@ -2243,6 +2265,7 @@
       place(panel, trigger, 'start', 'bottom', 4)
       active(items.findIndex((entry) => entry.option.value === select.value))
       alignItem()
+      lockScroll(true)
       document.addEventListener('keydown', onKey, true)
     }
 
@@ -2269,8 +2292,8 @@
     function close() {
       if (!isOpen()) return
       panel.hidePopover()
-      trigger.setAttribute('aria-expanded', 'false')
-      document.removeEventListener('keydown', onKey, true)
+      // hidePopover fires toggle synchronously, and that is where the lock is released — doing
+      // it here as well would release it twice for one opening.
     }
 
     const isOpen = () => panel.matches(':popover-open')
@@ -2295,9 +2318,14 @@
 
     // Light dismiss closes the popover without telling the trigger, and an aria-expanded that
     // says "true" over a closed list is a lie a screen reader has no way to check.
+    // Every close comes through here — the button, Escape, a choice, and light dismiss, which
+    // closes the popover without telling anyone. An aria-expanded reading "true" over a closed
+    // list is a lie a screen reader cannot check, and a scroll lock nobody released is a page
+    // that never scrolls again.
     const onToggle = (event) => {
       if (event.newState !== 'closed') return
       trigger.setAttribute('aria-expanded', 'false')
+      lockScroll(false)
       document.removeEventListener('keydown', onKey, true)
     }
 
@@ -2316,7 +2344,7 @@
     select.tabIndex = -1
 
     return () => {
-      close()
+      if (isOpen()) lockScroll(false)
       panel.remove()
       select.removeEventListener('change', sync)
       select.classList.remove('sr-only')

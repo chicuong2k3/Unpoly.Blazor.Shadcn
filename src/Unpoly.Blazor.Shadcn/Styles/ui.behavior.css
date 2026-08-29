@@ -618,6 +618,15 @@
         block-size: 1rem;
         inline-size: 100%;
     }
+    /* Logical properties turn with the writing mode, and that is the trap: once the box is
+       vertical, inline-size IS the height, so the 100% above stretched the slider to the height
+       of whatever contained it — 574px in a docs preview — and block-size became its width.
+       Vertical says what it wants in physical terms instead, and leaves the height to the class,
+       which is where upstream puts it. */
+    input[type="range"][data-slot="slider"][data-orientation="vertical"] {
+        block-size: auto;
+        inline-size: auto;
+    }
     input[type="range"][data-slot="slider"]:disabled { cursor: not-allowed; }
 
     /* One vendor pseudo-element per rule, never a list. An engine that does not know one
@@ -691,6 +700,34 @@
         background: linear-gradient(to left,
             var(--primary) 0 var(--slider-fill, 0%),
             var(--muted) var(--slider-fill, 0%) 100%);
+    }
+
+    /* A vertical slider is the same input turned, and the track has to turn with it. The
+       horizontal rules give it `height: 6px` and a gradient running `to right` — across the six
+       pixels of WIDTH once the box is vertical, which painted the entire length in the filled
+       colour and left the empty part nowhere. So: the six pixels become the width, the length
+       comes from the element, and the gradient runs from the bottom, which is where a vertical
+       range starts. These come after the RTL overrides on purpose — a vertical slider on an
+       Arabic page is still filled from the bottom. */
+    input[type="range"][data-slot="slider"][data-orientation="vertical"]::-webkit-slider-runnable-track {
+        width: 0.375rem;
+        height: 100%;
+        background: linear-gradient(to top,
+            var(--primary) 0 var(--slider-fill, 0%),
+            var(--muted) var(--slider-fill, 0%) 100%);
+    }
+    input[type="range"][data-slot="slider"][data-orientation="vertical"]::-moz-range-track {
+        width: 0.375rem;
+        height: 100%;
+        background: linear-gradient(to top,
+            var(--primary) 0 var(--slider-fill, 0%),
+            var(--muted) var(--slider-fill, 0%) 100%);
+    }
+    /* The thumb is centred on the CROSS axis, and the cross axis is horizontal now — the
+       margin-top that centres it in a horizontal slider pushed it off the track here. */
+    input[type="range"][data-slot="slider"][data-orientation="vertical"]::-webkit-slider-thumb {
+        margin-top: 0;
+        margin-left: -0.3125rem;
     }
 
     /* ---- Slider, several thumbs ------------------------------------------------------

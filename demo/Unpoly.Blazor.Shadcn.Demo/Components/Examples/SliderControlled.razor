@@ -1,0 +1,14 @@
+@* shadcn holds the value in a state variable and prints it beside the label. There is no state
+   here, so the printing is the browser's: an <output> element bound by `for`, which is what it
+   is for, and which the slider updates natively with no script at all.
+
+   min=0 max=1 step=0.1 is upstream's — a temperature, not a percentage, so the number under the
+   label reads 0.3 rather than 30. *@
+<div class="mx-auto grid w-full max-w-xs gap-3">
+    <div class="flex items-center justify-between gap-2">
+        <Label For="slider-temperature">Temperature</Label>
+        <output for="slider-temperature" name="temperature-shown"
+                class="num text-sm text-muted-foreground">0.3</output>
+    </div>
+    <Slider id="slider-temperature" name="temperature" Min="0" Max="1" Step="0.1" Value="0.3" />
+</div>

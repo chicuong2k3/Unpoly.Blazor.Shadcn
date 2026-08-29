@@ -1,7 +1,9 @@
-@* Vertical is CSS: writing-mode on the input, and the browser rotates its own track and thumb.
-   The keys follow — Up increases — with nothing bound. *@
-<div class="flex h-48 items-end gap-8">
-    <Slider name="bass" Orientation="vertical" Value="70" aria-label="Bass" />
-    <Slider name="mid" Orientation="vertical" Value="45" aria-label="Mid" />
-    <Slider name="treble" Orientation="vertical" Value="60" aria-label="Treble" />
+@* Vertical is CSS: writing-mode on the input, and the browser turns its own track and thumb with
+   it. The keys follow — Up increases — with nothing bound.
+
+   Two of them at h-40, as upstream shows it: one slider on its own reads as a scrollbar, and it
+   takes a second one beside it to read as a pair of controls. *@
+<div class="mx-auto flex h-40 w-full max-w-xs items-center justify-center gap-6">
+    <Slider name="left" Orientation="vertical" Value="50" Class="h-full" aria-label="Left" />
+    <Slider name="right" Orientation="vertical" Value="25" Class="h-full" aria-label="Right" />
 </div>
