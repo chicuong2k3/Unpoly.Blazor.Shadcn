@@ -58,7 +58,7 @@ RUNTIME_VARIANTS = {'button', 'badge', 'alert', 'pagination-link', 'sheet-conten
                     'input-group-button', 'marker', 'bubble',
                     'bubble-reactions', 'attachment', 'attachment-media',
                     'sidebar-container', 'sidebar-gap', 'sidebar-menu-button',
-                    'sidebar-menu-sub-button', 'button-group'}
+                    'sidebar-menu-sub-button', 'button-group', 'item', 'item-media'}
 
 
 def upstream_default(entry, slot):

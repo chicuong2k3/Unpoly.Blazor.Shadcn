@@ -1,4 +1,18 @@
-<div class="flex w-[420px] flex-col gap-3">
-    <Item Variant="outline" Size="sm"><ItemContent><ItemTitle>Small</ItemTitle></ItemContent></Item>
-    <Item Variant="outline"><ItemContent><ItemTitle>Default</ItemTitle></ItemContent></Item>
+@* Size is the padding and the gap, nothing else — so the same row reads as roomy or as compact
+   without any of its parts changing. *@
+<div class="flex w-full max-w-md flex-col gap-6">
+    <Item Variant="outline">
+        <ItemMedia Variant="icon"><Icon Name="message-circle" /></ItemMedia>
+        <ItemContent>
+            <ItemTitle>Default Size</ItemTitle>
+            <ItemDescription>The standard size for most use cases.</ItemDescription>
+        </ItemContent>
+    </Item>
+    <Item Variant="outline" Size="sm">
+        <ItemMedia Variant="icon"><Icon Name="message-circle" /></ItemMedia>
+        <ItemContent>
+            <ItemTitle>Small Size</ItemTitle>
+            <ItemDescription>Tighter padding, for a dense list.</ItemDescription>
+        </ItemContent>
+    </Item>
 </div>

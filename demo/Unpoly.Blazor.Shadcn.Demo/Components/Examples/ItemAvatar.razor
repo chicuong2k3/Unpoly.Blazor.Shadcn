@@ -1,8 +1,30 @@
-<div class="flex w-[420px] flex-col gap-2">
+@* Two rows, as upstream: one person with an action, then a whole group in the media slot. The
+   stack is negative spacing plus a ring in the page's own colour, so the overlap reads as depth
+   rather than as avatars that have collided. *@
+<div class="flex w-full max-w-md flex-col gap-4">
     <Item Variant="outline">
-        <ItemMedia><Avatar><AvatarFallback>MR</AvatarFallback></Avatar></ItemMedia>
-        <ItemContent><ItemTitle>Marta Ruiz</ItemTitle>
-            <ItemDescription>128 orders</ItemDescription></ItemContent>
+        <ItemMedia><Avatar Class="size-10"><AvatarFallback>MR</AvatarFallback></Avatar></ItemMedia>
+        <ItemContent>
+            <ItemTitle>Marta Ruiz</ItemTitle>
+            <ItemDescription>Last active 2 hours ago</ItemDescription>
+        </ItemContent>
+        <ItemActions>
+            <Button Variant="outline" Size="icon-sm" Class="rounded-full" aria-label="Invite">
+                <Icon Name="plus" />
+            </Button>
+        </ItemActions>
+    </Item>
+
+    <Item Variant="outline">
+        <ItemMedia Class="-space-x-2 *:data-[slot=avatar]:ring-2 *:data-[slot=avatar]:ring-background">
+            <Avatar Class="size-8"><AvatarFallback Class="text-xs">MR</AvatarFallback></Avatar>
+            <Avatar Class="size-8"><AvatarFallback Class="text-xs">AL</AvatarFallback></Avatar>
+            <Avatar Class="size-8"><AvatarFallback Class="text-xs">BT</AvatarFallback></Avatar>
+        </ItemMedia>
+        <ItemContent>
+            <ItemTitle>Fulfilment team</ItemTitle>
+            <ItemDescription>3 people can edit this order</ItemDescription>
+        </ItemContent>
         <ItemActions><Badge Variant="secondary">Owner</Badge></ItemActions>
     </Item>
 </div>

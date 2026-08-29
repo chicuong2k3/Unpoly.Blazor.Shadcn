@@ -1,10 +1,26 @@
 @* Three variants, and the difference is the ground each sits on: nothing, a border, or a muted
-   fill. A list of rows usually wants the first and one separator. *@
-<div class="flex w-[420px] flex-col gap-3">
-    <Item><ItemContent><ItemTitle>Default</ItemTitle>
-        <ItemDescription>No ground of its own.</ItemDescription></ItemContent></Item>
-    <Item Variant="outline"><ItemContent><ItemTitle>Outline</ItemTitle>
-        <ItemDescription>A border, for a row that stands alone.</ItemDescription></ItemContent></Item>
-    <Item Variant="muted"><ItemContent><ItemTitle>Muted</ItemTitle>
-        <ItemDescription>Filled, for a row that is one of several.</ItemDescription></ItemContent></Item>
+   fill. Each row carries the icon media variant, which is how upstream shows them — the tile
+   makes the ground of the row visible next to something with a ground of its own. *@
+<div class="flex w-full max-w-md flex-col gap-6">
+    <Item>
+        <ItemMedia Variant="icon"><Icon Name="message-circle" /></ItemMedia>
+        <ItemContent>
+            <ItemTitle>Default Variant</ItemTitle>
+            <ItemDescription>Transparent background with no border.</ItemDescription>
+        </ItemContent>
+    </Item>
+    <Item Variant="outline">
+        <ItemMedia Variant="icon"><Icon Name="message-circle" /></ItemMedia>
+        <ItemContent>
+            <ItemTitle>Outline Variant</ItemTitle>
+            <ItemDescription>Outlined style with a visible border.</ItemDescription>
+        </ItemContent>
+    </Item>
+    <Item Variant="muted">
+        <ItemMedia Variant="icon"><Icon Name="message-circle" /></ItemMedia>
+        <ItemContent>
+            <ItemTitle>Muted Variant</ItemTitle>
+            <ItemDescription>Muted background for secondary content.</ItemDescription>
+        </ItemContent>
+    </Item>
 </div>

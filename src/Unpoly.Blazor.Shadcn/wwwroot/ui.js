@@ -411,7 +411,7 @@
       if (trigger.getAttribute('data-slot').endsWith('sub-trigger')) placeBeside(panel, trigger)
       else place(panel, anchor, panel.dataset.align, panel.dataset.side,
                  Number(panel.dataset.sideOffset || 4))
-      panel.querySelector('[data-slot$="-item"]:not([data-disabled])')?.focus()
+      panel.focus({ preventScroll: true })
     }
 
     // A dropdown pinned to a trigger that has scrolled away is worse than one that closed.
@@ -742,14 +742,18 @@
         // the mouse: a context menu that opens away from the click reads as someone else's.
         const px = event.clientX || trigger.getBoundingClientRect().left
         const py = event.clientY || trigger.getBoundingClientRect().bottom
-        const spot = side === 'top' ? [px - box.width / 2, py - box.height - 2]
-          : side === 'bottom' ? [px - box.width / 2, py + 2]
-          : side === 'left' ? [px - box.width - 2, py - box.height / 2]
-          : [px + 2, py - box.height / 2]
+        // Two pixels put the pointer ON the first row, which opened the menu with that row
+        // already highlighted and one flick away from being chosen. The gap is the panel's own
+        // padding, so the pointer lands on the frame and the list starts unhighlighted.
+        const gap = 6
+        const spot = side === 'top' ? [px - box.width / 2, py - box.height - gap]
+          : side === 'bottom' ? [px - box.width / 2, py + gap]
+          : side === 'left' ? [px - box.width - gap, py - box.height / 2]
+          : [px + gap, py - box.height / 2]
         put(panel, { left: Math.max(8, Math.min(spot[0], window.innerWidth - box.width - 8)) },
             Math.max(8, Math.min(spot[1], window.innerHeight - box.height - 8)))
         trigger.setAttribute('aria-expanded', 'true')
-        panel.querySelector('[data-slot$="-item"]:not([data-disabled])')?.focus()
+        panel.focus({ preventScroll: true })
         return
       }
 
@@ -758,11 +762,11 @@
       const x = at ? at.left : event.clientX
       const y = at ? at.bottom : event.clientY
 
-      const left = rtl(trigger) ? x - box.width : x
+      const left = rtl(trigger) ? x - box.width - 2 : x + 2
       put(panel, { left: Math.max(8, Math.min(left, window.innerWidth - box.width - 8)) },
-          Math.min(y, window.innerHeight - box.height - 8))
+          Math.min(y + 2, window.innerHeight - box.height - 8))
       trigger.setAttribute('aria-expanded', 'true')
-      panel.querySelector('[data-slot$="-item"]:not([data-disabled])')?.focus()
+      panel.focus({ preventScroll: true })
     }
 
     const onToggle = (event) => {
@@ -1465,12 +1469,29 @@
 
     const sync = () => {
       const next = boxes.map((b) => b.value).join('')
+      // An empty set of boxes never overwrites a value the SERVER rendered: the compiler ran
+      // once on boot and erased it, so a code that came back with the form was gone before
+      // anyone saw it.
+      if (!next && hidden.value) return
       if (next === hidden.value) return
       hidden.value = next
       // Filter forms and [up-autosubmit] watch the hidden input, and a programmatic assignment
       // fires nothing on its own.
+      hidden.dispatchEvent(new Event('input', { bubbles: true }))
       hidden.dispatchEvent(new Event('change', { bubbles: true }))
     }
+
+    // What counts as a character for THIS field. The filter was a hardcoded non-digit class,
+    // so the alphanumeric example -- which advertises letters in its own pattern attribute --
+    // blanked every letter typed into it and never advanced. Upstream takes the pattern as a
+    // prop for the same reason; here the box already carries one.
+    const allowed = (() => {
+      const pattern = boxes[0].getAttribute('pattern')
+      if (!pattern) return /[^0-9]/g
+      try { return new RegExp('[^' + pattern.replace(/^\[|\]$/g, '') + ']', 'g') }
+      catch { return /[^0-9]/g }
+    })()
+    const keep = (text) => text.replace(allowed, '')
 
     // Pasting the whole code is how most people enter one — from a message, not by typing.
     const spread = (digits, from = 0) => {
@@ -1485,7 +1506,7 @@
       const i = boxes.indexOf(box)
       if (i < 0) return
       // A phone keyboard can deliver more than one character at a time.
-      const typed = box.value.replace(/\D/g, '')
+      const typed = keep(box.value)
       box.value = typed.slice(0, 1)
       if (typed.length > 1) spread(typed, i)
       else if (box.value && i < boxes.length - 1) boxes[i + 1].focus()
@@ -1513,7 +1534,7 @@
     }
 
     const onPaste = (event) => {
-      const digits = (event.clipboardData?.getData('text') || '').replace(/\D/g, '')
+      const digits = keep(event.clipboardData?.getData('text') || '')
       if (!digits) return
       event.preventDefault()
       spread(digits)
@@ -1522,8 +1543,11 @@
 
     // Clicking box four while two and three are empty is almost never what was meant.
     const onFocus = (event) => {
-      const firstEmpty = boxes.find((b) => !b.value) || boxes[boxes.length - 1]
-      if (boxes.indexOf(event.target) > boxes.indexOf(firstEmpty)) firstEmpty.focus()
+      const firstEmpty = boxes.find((b) => !b.value && !b.disabled) || boxes[boxes.length - 1]
+      if (boxes.indexOf(event.target) > boxes.indexOf(firstEmpty)) { firstEmpty.focus(); return }
+      // Select what is there, so typing replaces it. maxlength="1" on a full box otherwise
+      // swallows the keystroke silently and the caret never moves on.
+      event.target.select?.()
     }
 
     root.addEventListener('input', onInput)

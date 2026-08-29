@@ -342,9 +342,10 @@
         "flex",
         "items-center",
         "gap-2",
-        "has-disabled:opacity-50"
+        "has-disabled:opacity-50",
+        "*:disabled:cursor-not-allowed"
       ],
-      "why": "Upstream splits this across two props: `className` dresses the real input and `containerClassName` dresses the box around it, and only the first carries the data-slot. Here the box IS the element, so it needs both — without them the six boxes were not in a row at all and wrapped onto two lines."
+      "why": "Upstream splits this across two props: `className` dresses the real input and `containerClassName` dresses the box around it, and only the first carries the data-slot. Here the box IS the element, so it needs both — without them the six boxes were not in a row at all and wrapped onto two lines. The cursor rule moves to the children for the same reason in reverse: :disabled can only match a form control, and on the container it matched nothing."
     },
     "alert": {
       "classes": [
@@ -467,6 +468,19 @@
         "relative"
       ],
       "why": "relative: upstream renders the arrow as a child element (Radix's Arrow, positioned by the same engine that places the panel); here it is a pseudo-element, so the panel has to be its containing block. A child element would mean every call site remembering to write one."
+    },
+    "input-otp-slot": {
+      "classes": [
+        "focus-visible:z-10",
+        "focus-visible:border-ring",
+        "focus-visible:ring-[3px]",
+        "focus-visible:ring-ring/50",
+        "focus-visible:aria-invalid:border-destructive",
+        "focus-visible:aria-invalid:ring-destructive/20",
+        "dark:focus-visible:aria-invalid:ring-destructive/40",
+        "text-center"
+      ],
+      "why": "data-active is Radix's, written from React state as the user moves between boxes; nothing can set it here and nothing did, so the ring, the raised z-index and the invalid-while-active colours were dead classes and a focused box showed no focus at all. A real <input> already has that state, spelled :focus-visible. text-center because upstream's slot is a <div> centring one character with flex, and flex centring says nothing about the value inside an input: every digit sat against the start edge of its box."
     }
   },
   "dropped": {
@@ -675,6 +689,24 @@
         "right-2"
       ],
       "why": "Replaced by end-2 above: a side named by the screen stays put when the reading direction flips, and the tick must travel with the text."
+    },
+    "input-otp-slot": {
+      "classes": [
+        "data-[active=true]:z-10",
+        "data-[active=true]:border-ring",
+        "data-[active=true]:ring-[3px]",
+        "data-[active=true]:ring-ring/50",
+        "data-[active=true]:aria-invalid:border-destructive",
+        "data-[active=true]:aria-invalid:ring-destructive/20",
+        "dark:data-[active=true]:aria-invalid:ring-destructive/40"
+      ],
+      "why": "data-active is Radix's, written from React state as the user moves between boxes; nothing can set it here and nothing did, so the ring, the raised z-index and the invalid-while-active colours were dead classes and a focused box showed no focus at all. A real <input> already has that state, spelled :focus-visible."
+    },
+    "input-otp": {
+      "classes": [
+        "disabled:cursor-not-allowed"
+      ],
+      "why": "Replaced by *:disabled:cursor-not-allowed above — the element carrying the slot here is the container, which can never be :disabled."
     }
   },
   "subject": {

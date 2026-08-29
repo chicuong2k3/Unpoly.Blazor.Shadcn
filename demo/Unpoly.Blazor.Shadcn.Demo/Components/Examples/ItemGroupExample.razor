@@ -1,19 +1,22 @@
 @* A group with separators between the rows and none at the ends, which is what an ItemGroup
    handles so each row does not carry a border that has to agree with its neighbour. *@
 <ItemGroup Class="w-[420px] rounded-lg border">
-    @foreach (var (name, meta) in People)
+    @foreach (var (name, meta, last) in People.Select((p, i) => (p.Name, p.Meta, i == People.Length - 1)))
     {
         <Item Class="px-4">
             <ItemMedia><Avatar Class="size-8"><AvatarFallback Class="text-xs">@name[..2]</AvatarFallback></Avatar></ItemMedia>
             <ItemContent><ItemTitle>@name</ItemTitle><ItemDescription>@meta</ItemDescription></ItemContent>
         </Item>
-        <ItemSeparator />
+        @if (!last)
+        {
+            <ItemSeparator />
+        }
     }
 </ItemGroup>
 
 @code {
     static readonly (string Name, string Meta)[] People =
     [
-        ("Marta Ruiz", "128 orders"), ("Ana Lopes", "12 orders"),
+        ("Marta Ruiz", "128 orders"), ("Ana Lopes", "12 orders"), ("Bảo Trần", "3 orders"),
     ];
 }

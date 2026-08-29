@@ -1,8 +1,24 @@
-<InputOtp Name="code-off" Length="4">
+@* Disabled, and holding a code — which is the state worth showing: an empty disabled field
+   says nothing about what disabled looks like once there is something in it. Six boxes with a
+   separator, as upstream. *@
+<InputOtp Name="code-off" Length="6" Value="123456">
     <InputOtpGroup>
-        @foreach (var i in Enumerable.Range(1, 4))
+        @foreach (var i in Enumerable.Range(1, 3))
         {
-            <InputOtpSlot First="@(i == 1)" disabled AriaLabel="@($"Digit {i} of 4")" />
+            <InputOtpSlot First="@(i == 1)" disabled Value="@Code[i - 1].ToString()"
+                          AriaLabel="@($"Digit {i} of 6")" />
+        }
+    </InputOtpGroup>
+    <InputOtpSeparator />
+    <InputOtpGroup>
+        @foreach (var i in Enumerable.Range(4, 3))
+        {
+            <InputOtpSlot disabled Value="@Code[i - 1].ToString()"
+                          AriaLabel="@($"Digit {i} of 6")" />
         }
     </InputOtpGroup>
 </InputOtp>
+
+@code {
+    const string Code = "123456";
+}

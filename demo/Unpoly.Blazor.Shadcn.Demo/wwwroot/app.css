@@ -1106,6 +1106,9 @@
   .flex-auto {
     flex: auto;
   }
+  .flex-none {
+    flex: none;
+  }
   .shrink {
     flex-shrink: 1;
   }
@@ -3199,6 +3202,9 @@
   .disabled\:opacity-50:disabled {
     opacity: 50%;
   }
+  :is(.\*\:disabled\:cursor-not-allowed > *):disabled {
+    cursor: not-allowed;
+  }
   :where([data-side="left"]) .in-data-\[side\=left\]\:cursor-w-resize {
     cursor: w-resize;
   }
@@ -3470,6 +3476,15 @@
       --tw-ring-color: color-mix(in oklab, var(--destructive) 20%, transparent);
     }
   }
+  .focus-visible\:aria-invalid\:border-destructive:focus-visible[aria-invalid="true"] {
+    border-color: var(--destructive);
+  }
+  .focus-visible\:aria-invalid\:ring-destructive\/20:focus-visible[aria-invalid="true"] {
+    --tw-ring-color: var(--destructive);
+    @supports (color: color-mix(in lab, red, red)) {
+      --tw-ring-color: color-mix(in oklab, var(--destructive) 20%, transparent);
+    }
+  }
   .aria-\[orientation\=horizontal\]\:h-px[aria-orientation="horizontal"] {
     height: 1px;
   }
@@ -3542,9 +3557,6 @@
     --tw-ease: cubic-bezier(0.7,0,0.84,0);
     transition-timing-function: cubic-bezier(0.7,0,0.84,0);
   }
-  .data-\[active\=true\]\:z-10[data-active="true"] {
-    z-index: 10;
-  }
   .data-\[active\=true\]\:translate-y-0[data-active="true"] {
     --tw-translate-y: 0px;
     translate: var(--tw-translate-x) var(--tw-translate-y);
@@ -3554,9 +3566,6 @@
     --tw-scale-y: 100%;
     --tw-scale-z: 100%;
     scale: var(--tw-scale-x) var(--tw-scale-y);
-  }
-  .data-\[active\=true\]\:border-ring[data-active="true"] {
-    border-color: var(--ring);
   }
   .data-\[active\=true\]\:bg-accent\/50[data-active="true"] {
     background-color: var(--accent);
@@ -3580,16 +3589,6 @@
   .data-\[active\=true\]\:opacity-100[data-active="true"] {
     opacity: 100%;
   }
-  .data-\[active\=true\]\:ring-\[3px\][data-active="true"] {
-    --tw-ring-shadow: var(--tw-ring-inset,) 0 0 0 calc(3px + var(--tw-ring-offset-width)) var(--tw-ring-color, currentcolor);
-    box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
-  }
-  .data-\[active\=true\]\:ring-ring\/50[data-active="true"] {
-    --tw-ring-color: var(--ring);
-    @supports (color: color-mix(in lab, red, red)) {
-      --tw-ring-color: color-mix(in oklab, var(--ring) 50%, transparent);
-    }
-  }
   .data-\[active\=true\]\:ease-\[cubic-bezier\(0\.23\,1\,0\.32\,1\)\][data-active="true"] {
     --tw-ease: cubic-bezier(0.23,1,0.32,1);
     transition-timing-function: cubic-bezier(0.23,1,0.32,1);
@@ -3601,15 +3600,6 @@
   }
   .data-\[active\=true\]\:focus\:bg-accent[data-active="true"]:focus {
     background-color: var(--accent);
-  }
-  .data-\[active\=true\]\:aria-invalid\:border-destructive[data-active="true"][aria-invalid="true"] {
-    border-color: var(--destructive);
-  }
-  .data-\[active\=true\]\:aria-invalid\:ring-destructive\/20[data-active="true"][aria-invalid="true"] {
-    --tw-ring-color: var(--destructive);
-    @supports (color: color-mix(in lab, red, red)) {
-      --tw-ring-color: color-mix(in oklab, var(--destructive) 20%, transparent);
-    }
   }
   .data-\[align\=end\]\:flex-row-reverse[data-align="end"] {
     flex-direction: row-reverse;
@@ -4323,7 +4313,7 @@
       --tw-ring-color: color-mix(in oklab, var(--destructive) 40%, transparent);
     }
   }
-  .dark\:data-\[active\=true\]\:aria-invalid\:ring-destructive\/40:where(.dark, .dark *)[data-active="true"][aria-invalid="true"] {
+  .dark\:focus-visible\:aria-invalid\:ring-destructive\/40:where(.dark, .dark *):focus-visible[aria-invalid="true"] {
     --tw-ring-color: var(--destructive);
     @supports (color: color-mix(in lab, red, red)) {
       --tw-ring-color: color-mix(in oklab, var(--destructive) 40%, transparent);
@@ -4450,6 +4440,13 @@
   }
   .\[\&_\[data-chart-tooltip-label\]\]\:hidden [data-chart-tooltip-label] {
     display: none;
+  }
+  .\[\&_img\]\:size-full img {
+    width: 100%;
+    height: 100%;
+  }
+  .\[\&_img\]\:object-cover img {
+    object-fit: cover;
   }
   .\[\&_p\]\:leading-relaxed p {
     --tw-leading: var(--leading-relaxed);

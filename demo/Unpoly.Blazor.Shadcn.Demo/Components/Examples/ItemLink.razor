@@ -13,3 +13,14 @@
         <ItemActions><Icon Name="chevron-right" Class="text-muted-foreground" /></ItemActions>
     </Item>
 </ItemGroup>
+
+@* And a row that leaves the site. target and rel ride through as ordinary attributes, and the
+   icon says where it goes before it is clicked rather than after. *@
+<Item Href="https://ui.shadcn.com/docs/components/base/item" Variant="outline"
+      target="_blank" rel="noopener noreferrer" Class="mt-3 w-[420px]">
+    <ItemContent>
+        <ItemTitle>The upstream docs</ItemTitle>
+        <ItemDescription>Opens in a new tab</ItemDescription>
+    </ItemContent>
+    <ItemActions><Icon Name="external-link" Class="text-muted-foreground" /></ItemActions>
+</Item>

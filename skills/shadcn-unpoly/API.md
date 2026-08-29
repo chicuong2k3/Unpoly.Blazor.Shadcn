@@ -1219,7 +1219,9 @@ _No parameters of its own._
 ## `<ItemMedia>`
 renders `<div>` · `data-slot="item-media"`
 
-_No parameters of its own._
+| Parameter | Type | Default | |
+|---|---|---|---|
+| `Variant` | `string` | `"default"` |  |
 
 ## `<ItemSeparator>`
 `data-slot="item-separator"`

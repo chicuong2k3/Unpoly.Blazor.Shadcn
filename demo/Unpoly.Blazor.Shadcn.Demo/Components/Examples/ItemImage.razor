@@ -1,13 +1,30 @@
-@* A thumbnail rather than an icon. Real width and height on the image, so the row does not
-   change height as it loads. *@
-<Item Variant="outline" Class="w-[420px]">
-    <ItemMedia Class="overflow-hidden rounded-md">
-        <img src="https://placehold.co/96" alt="" width="96" height="96" loading="lazy"
-             class="size-12 object-cover" />
-    </ItemMedia>
-    <ItemContent>
-        <ItemTitle>Weekender</ItemTitle>
-        <ItemDescription>Waxed canvas, leather trim</ItemDescription>
-    </ItemContent>
-    <ItemActions><span class="num text-sm">$189</span></ItemActions>
-</Item>
+@* The image media variant crops what it holds to a square, so a thumbnail needs no classes of
+   its own. The second ItemContent is the trick the recipe's [&+[data-slot=item-content]] rule
+   exists for: a following content block goes flex-none, which is how a duration or a price sits
+   at the end without being pushed around by the title beside it. *@
+<ItemGroup Class="w-full max-w-md gap-2">
+    @foreach (var (title, artist, length) in Tracks)
+    {
+        <Item Variant="outline" Href="#" role="listitem">
+            <ItemMedia Variant="image">
+                <img src="https://placehold.co/64" alt="" width="64" height="64" loading="lazy" />
+            </ItemMedia>
+            <ItemContent>
+                <ItemTitle>@title</ItemTitle>
+                <ItemDescription>@artist</ItemDescription>
+            </ItemContent>
+            <ItemContent Class="flex-none text-center">
+                <ItemDescription>@length</ItemDescription>
+            </ItemContent>
+        </Item>
+    }
+</ItemGroup>
+
+@code {
+    static readonly (string Title, string Artist, string Length)[] Tracks =
+    [
+        ("Midnight City", "M83", "4:03"),
+        ("Nightcall", "Kavinsky", "4:18"),
+        ("Genesis", "Justice", "3:54"),
+    ];
+}

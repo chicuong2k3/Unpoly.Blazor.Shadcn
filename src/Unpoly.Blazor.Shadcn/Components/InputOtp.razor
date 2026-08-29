@@ -22,11 +22,11 @@
 
     [Parameter] public string? Value { get; set; }
 
-    /// <summary>How many boxes. The compiler reads it to know when the code is complete.</summary>
+    /// <summary>How many boxes. Published as data-length for anything that asks.</summary>
     [Parameter] public int Length { get; set; } = 6;
 
     const string Base =
-        "disabled:cursor-not-allowed flex items-center gap-2 has-disabled:opacity-50";
+        "flex items-center gap-2 has-disabled:opacity-50 *:disabled:cursor-not-allowed";
 
     string Classes => Cn(Base, Class);
 }
