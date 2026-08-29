@@ -34,8 +34,6 @@
     --text-base--line-height: calc(1.5 / 1);
     --text-lg: 1.125rem;
     --text-lg--line-height: calc(1.75 / 1.125);
-    --text-xl: 1.25rem;
-    --text-xl--line-height: calc(1.75 / 1.25);
     --text-2xl: 1.5rem;
     --text-2xl--line-height: calc(2 / 1.5);
     --text-3xl: 1.875rem;
@@ -2152,10 +2150,6 @@
     font-size: var(--text-sm);
     line-height: var(--leading-relaxed);
   }
-  .text-xl {
-    font-size: var(--text-xl);
-    line-height: var(--tw-leading, var(--text-xl--line-height));
-  }
   .text-xs {
     font-size: var(--text-xs);
     line-height: var(--tw-leading, var(--text-xs--line-height));
@@ -2612,6 +2606,18 @@
   }
   .group-has-\[\[data-slot\=item-description\]\]\/item\:self-start:is(:where(.group\/item):has(:is([data-slot=item-description])) *) {
     align-self: flex-start;
+  }
+  .group-has-\[input\[value\=bold\]\:checked\]\/field\:inline:is(:where(.group\/field):has(:is(input[value=bold]:checked)) *) {
+    display: inline;
+  }
+  .group-has-\[input\[value\=light\]\:checked\]\/field\:inline:is(:where(.group\/field):has(:is(input[value=light]:checked)) *) {
+    display: inline;
+  }
+  .group-has-\[input\[value\=medium\]\:checked\]\/field\:inline:is(:where(.group\/field):has(:is(input[value=medium]:checked)) *) {
+    display: inline;
+  }
+  .group-has-\[input\[value\=normal\]\:checked\]\/field\:inline:is(:where(.group\/field):has(:is(input[value=normal]:checked)) *) {
+    display: inline;
   }
   .group-has-\[\>input\]\/input-group\:pt-2\.5:is(:where(.group\/input-group):has( > input) *) {
     padding-top: calc(var(--spacing) * 2.5);

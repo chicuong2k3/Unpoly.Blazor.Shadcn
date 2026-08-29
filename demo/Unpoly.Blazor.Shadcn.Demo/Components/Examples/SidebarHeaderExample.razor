@@ -25,6 +25,11 @@
                     </DropdownMenuContent>
                 </SidebarMenuItem>
             </SidebarMenu>
+
+            @* A search box belongs to the header, and it has to go when the rail narrows: at 48px
+               there is nothing to type into. Upstream's blocks hide theirs the same way. *@
+            <SidebarInput placeholder="Search…" aria-label="Search the sidebar"
+                          Class="group-data-[collapsible=icon]:hidden" />
         </SidebarHeader>
         <SidebarContent />
     </Sidebar>

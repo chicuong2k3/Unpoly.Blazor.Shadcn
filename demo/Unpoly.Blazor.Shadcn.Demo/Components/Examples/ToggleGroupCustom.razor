@@ -1,24 +1,40 @@
-@* Upstream's custom group: four weights, each item showing what it does. The point is that an
-   item is markup — put whatever you like inside it, and the recipe supplies only the frame.
+@* Upstream's font-weight selector, and the part that makes it an example rather than a picture:
+   the description reads font-light, font-normal, font-medium or font-bold depending on which one
+   is chosen. shadcn keeps that in a state variable and interpolates it.
 
-   font-normal on the group is what stops the recipe's own font-medium reaching the labels, so
-   "Light" beside a light Aa is not itself half-bold. *@
-<div class="flex flex-col items-center gap-3">
-    <ToggleGroup Class="font-normal" aria-label="Font weight">
+   There is no state here, so all four words are in the markup and CSS picks. The radios are real
+   inputs, so :has() on the field can ask which one is checked, and the matching word turns from
+   hidden to inline. It follows the selection before any script has run, and there is nothing to
+   keep in step.
+
+   The four selectors are written out rather than interpolated, because Tailwind scans source
+   text: a class assembled at runtime is a class it never sees, and the rule is simply not in the
+   sheet. *@
+<Field Class="w-fit">
+    <FieldLabel>Font Weight</FieldLabel>
+
+    <ToggleGroup Variant="outline" Spacing="2" Size="lg" aria-label="Font weight">
         @foreach (var weight in Weights)
         {
-            <ToggleGroupItem Name="tg-weight" Value="@weight.Value"
-                             Checked="@(weight.Value == "normal")"
-                             Class="h-auto flex-col gap-1 px-4 py-2" aria-label="@weight.Label">
-                <span class="@($"text-xl leading-none {weight.Class}")">Aa</span>
+            <ToggleGroupItem Name="tg-weight" Value="@weight.Value" Variant="outline" Size="lg"
+                             Spacing="2" Checked="@(weight.Value == "normal")"
+                             aria-label="@weight.Label"
+                             Class="flex size-16 flex-col items-center justify-center rounded-xl">
+                <span class="@($"text-2xl leading-none {weight.Class}")">Aa</span>
                 <span class="text-xs text-muted-foreground">@weight.Label</span>
             </ToggleGroupItem>
         }
     </ToggleGroup>
-    <p class="text-sm text-muted-foreground">
-        Use <code class="font-mono text-xs">font-normal</code> to set the font weight.
-    </p>
-</div>
+
+    <FieldDescription>
+        Use <code class="rounded-md bg-muted px-1 py-0.5 font-mono">font-<span
+            class="hidden group-has-[input[value=light]:checked]/field:inline">light</span><span
+            class="hidden group-has-[input[value=normal]:checked]/field:inline">normal</span><span
+            class="hidden group-has-[input[value=medium]:checked]/field:inline">medium</span><span
+            class="hidden group-has-[input[value=bold]:checked]/field:inline">bold</span></code>
+        to set the font weight.
+    </FieldDescription>
+</Field>
 
 @code {
     static readonly (string Value, string Label, string Class)[] Weights =

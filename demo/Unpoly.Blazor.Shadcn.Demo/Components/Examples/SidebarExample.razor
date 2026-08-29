@@ -1,100 +1,118 @@
-@* The open state lives in a `sidebar_state` cookie, which the server reads and passes to
-   SidebarProvider — so the first paint is already right and there is no flash of a sidebar
-   opening itself. ui.js only keeps the two in step afterwards.
+@* SidebarFrame is documentation chrome, not part of the component: a sidebar is position:fixed
+   because in an application it IS the left edge of the window, and inside a page it has to be
+   given a containing block or it covers this one.
+
+   The header and footer rows follow upstream's app-sidebar: an icon, then a two-line block in a
+   `grid flex-1 min-w-0`. The min-w-0 is what lets that block collapse to nothing when the sidebar
+   narrows to icons — without it the text has a minimum width of its longest word and a letter or
+   two survives beside the icon, which is what this used to show.
 
    [up-nav] marks the current row: Unpoly compares each href with the address bar, which keeps
    working after a fragment swap because the swap is what changes the address bar. *@
-@* SidebarFrame is documentation chrome, not part of the component: a sidebar is position:fixed
-   because in an application it IS the left edge of the window, and inside a page it has to be
-   given a containing block or it covers this one. *@
 <SidebarFrame Height="480px">
-        <Sidebar Collapsible="icon">
-            <SidebarHeader>
-                <SidebarMenu>
-                    <SidebarMenuItem>
-                        <SidebarMenuButton Size="lg" Href="/">
-                            <Icon Name="circle" />
-                            <span class="font-medium">Acme Inc</span>
-                        </SidebarMenuButton>
-                    </SidebarMenuItem>
-                </SidebarMenu>
-                <SidebarInput placeholder="Search…" aria-label="Search the sidebar" />
-            </SidebarHeader>
+    <Sidebar Collapsible="icon">
+        <SidebarHeader>
+            <SidebarMenu>
+                <SidebarMenuItem>
+                    <SidebarMenuButton Size="lg" Target="sb-demo-workspaces">
+                        <div class="flex aspect-square size-8 shrink-0 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground">
+                            <Icon Name="circle" Class="size-4" />
+                        </div>
+                        <div class="grid min-w-0 flex-1 text-start leading-tight">
+                            <span class="truncate font-medium">Acme Inc</span>
+                            <span class="truncate text-xs">Enterprise</span>
+                        </div>
+                        <Icon Name="chevron-down" Class="ms-auto" />
+                    </SidebarMenuButton>
+                    <DropdownMenuContent Id="sb-demo-workspaces" Align="start" Class="w-56">
+                        <DropdownMenuLabel>Workspaces</DropdownMenuLabel>
+                        <DropdownMenuItem>Acme Inc</DropdownMenuItem>
+                        <DropdownMenuItem>Acme Corp.</DropdownMenuItem>
+                        <DropdownMenuSeparator />
+                        <DropdownMenuItem><Icon Name="plus" />Add workspace</DropdownMenuItem>
+                    </DropdownMenuContent>
+                </SidebarMenuItem>
+            </SidebarMenu>
+        </SidebarHeader>
 
-            <SidebarContent up-nav>
-                <SidebarGroup>
-                    <SidebarGroupLabel>Platform</SidebarGroupLabel>
-                    <SidebarGroupAction AriaLabel="Add a project"><Icon Name="plus" /></SidebarGroupAction>
-                    <SidebarGroupContent>
-                        <SidebarMenu>
-                            @foreach (var (label, icon, href, badge) in Rows)
-                            {
-                                <SidebarMenuItem>
-                                    <SidebarMenuButton Href="@href">
-                                        <Icon Name="@icon" /><span>@label</span>
-                                    </SidebarMenuButton>
-                                    @if (badge is not null)
-                                    {
-                                        <SidebarMenuBadge>@badge</SidebarMenuBadge>
-                                    }
-                                    <SidebarMenuAction AriaLabel="@($"More actions for {label}")" ShowOnHover>
-                                        <Icon Name="ellipsis" />
-                                    </SidebarMenuAction>
-                                </SidebarMenuItem>
-                            }
-
+        <SidebarContent up-nav>
+            <SidebarGroup>
+                <SidebarGroupLabel>Platform</SidebarGroupLabel>
+                <SidebarGroupAction AriaLabel="Add a project"><Icon Name="plus" /></SidebarGroupAction>
+                <SidebarGroupContent>
+                    <SidebarMenu>
+                        @foreach (var row in Rows)
+                        {
                             <SidebarMenuItem>
-                                <SidebarMenuButton Href="/components/table">
-                                    <Icon Name="menu" /><span>Reports</span>
+                                <SidebarMenuButton Href="@row.Href">
+                                    <Icon Name="@row.Icon" /><span>@row.Label</span>
                                 </SidebarMenuButton>
-                                <SidebarMenuSub>
-                                    <SidebarMenuSubItem>
-                                        <SidebarMenuSubButton Href="/components/table">Revenue</SidebarMenuSubButton>
-                                    </SidebarMenuSubItem>
-                                    <SidebarMenuSubItem>
-                                        <SidebarMenuSubButton Href="/components/badge" Size="sm">Churn</SidebarMenuSubButton>
-                                    </SidebarMenuSubItem>
-                                </SidebarMenuSub>
+                                @if (row.Badge is not null)
+                                {
+                                    <SidebarMenuBadge>@row.Badge</SidebarMenuBadge>
+                                }
+                                <SidebarMenuAction AriaLabel="@($"More actions for {row.Label}")" ShowOnHover>
+                                    <Icon Name="ellipsis" />
+                                </SidebarMenuAction>
                             </SidebarMenuItem>
-                        </SidebarMenu>
-                    </SidebarGroupContent>
-                </SidebarGroup>
+                        }
 
-                <SidebarSeparator />
+                        <SidebarMenuItem>
+                            <SidebarMenuButton Href="/components/table">
+                                <Icon Name="menu" /><span>Reports</span>
+                            </SidebarMenuButton>
+                            <SidebarMenuSub>
+                                <SidebarMenuSubItem>
+                                    <SidebarMenuSubButton Href="/components/table">Revenue</SidebarMenuSubButton>
+                                </SidebarMenuSubItem>
+                                <SidebarMenuSubItem>
+                                    <SidebarMenuSubButton Href="/components/badge" Size="sm">Churn</SidebarMenuSubButton>
+                                </SidebarMenuSubItem>
+                            </SidebarMenuSub>
+                        </SidebarMenuItem>
+                    </SidebarMenu>
+                </SidebarGroupContent>
+            </SidebarGroup>
+        </SidebarContent>
 
-                <SidebarGroup>
-                    <SidebarGroupLabel>Still loading</SidebarGroupLabel>
-                    <SidebarGroupContent>
-                        <SidebarMenuSkeleton ShowIcon Width="60%" />
-                        <SidebarMenuSkeleton ShowIcon Width="80%" />
-                    </SidebarGroupContent>
-                </SidebarGroup>
-            </SidebarContent>
+        <SidebarFooter>
+            <SidebarMenu>
+                <SidebarMenuItem>
+                    <SidebarMenuButton Size="lg" Target="sb-demo-account">
+                        <Avatar Class="size-8 shrink-0 rounded-lg">
+                            <AvatarFallback Class="rounded-lg">CN</AvatarFallback>
+                        </Avatar>
+                        <div class="grid min-w-0 flex-1 text-start leading-tight">
+                            <span class="truncate font-medium">shadcn</span>
+                            <span class="truncate text-xs">m@@example.com</span>
+                        </div>
+                        <Icon Name="ellipsis" Class="ms-auto" />
+                    </SidebarMenuButton>
+                    <DropdownMenuContent Id="sb-demo-account" Align="end" Side="top" Class="w-56">
+                        <DropdownMenuItem><Icon Name="settings" />Account</DropdownMenuItem>
+                        <DropdownMenuItem><Icon Name="credit-card" />Billing</DropdownMenuItem>
+                        <DropdownMenuSeparator />
+                        <DropdownMenuItem Variant="destructive"><Icon Name="log-out" />Sign out</DropdownMenuItem>
+                    </DropdownMenuContent>
+                </SidebarMenuItem>
+            </SidebarMenu>
+        </SidebarFooter>
 
-            <SidebarFooter>
-                <SidebarMenu>
-                    <SidebarMenuItem>
-                        <SidebarMenuButton Href="/theming">
-                            <Icon Name="settings" /><span>Settings</span>
-                        </SidebarMenuButton>
-                    </SidebarMenuItem>
-                </SidebarMenu>
-            </SidebarFooter>
+        <SidebarRail />
+    </Sidebar>
 
-            <SidebarRail />
-        </Sidebar>
-
-        <SidebarInset Class="p-4">
-            <div class="flex items-center gap-2">
-                <SidebarTrigger />
-                <Separator Orientation="vertical" Class="h-4" />
-                <span class="text-sm font-medium">Dashboard</span>
-            </div>
-            <p class="mt-4 max-w-prose text-sm text-muted-foreground">
-                Collapse the sidebar and reload the page: it stays collapsed, because the state is
-                a cookie the server reads rather than anything held in the browser.
-            </p>
-        </SidebarInset>
+    <SidebarInset Class="p-4">
+        <div class="flex items-center gap-2">
+            <SidebarTrigger />
+            <Separator Orientation="vertical" Class="h-4" />
+            <span class="text-sm font-medium">Dashboard</span>
+        </div>
+        <p class="mt-4 max-w-prose text-sm text-muted-foreground">
+            Collapse it with the trigger, the rail or <Kbd>ctrl</Kbd>+<Kbd>b</Kbd>, then reload the
+            page: it stays as you left it, because the state is a cookie the server reads rather
+            than anything held in the browser.
+        </p>
+    </SidebarInset>
 </SidebarFrame>
 
 @code {
