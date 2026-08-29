@@ -330,6 +330,7 @@ renders `<div>` · `data-slot="calendar"`
 | `Today` | `DateOnly?` | `DateOnly.FromDateTime(DateTime.Today)` |  |
 | `ShowWeekNumber` | `bool` | — |  |
 | `WeekLabel` | `string` | `"Week"` |  |
+| `DayContent` | `RenderFragment<DateOnly>?` | — |  |
 | `FirstDay` | `DayOfWeek` | `DayOfWeek.Monday` |  |
 | `PreviousLabel` | `string` | `"Previous month"` |  |
 | `NextLabel` | `string` | `"Next month"` |  |

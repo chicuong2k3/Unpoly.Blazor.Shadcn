@@ -1,8 +1,41 @@
-@* Align="start" means the reading edge, not the left one: the panel is measured against the
-   trigger, and the measurement already knows the direction. *@
-<div dir="rtl">
-    <PopoverTrigger Target="pop-rtl" Variant="outline">الأبعاد</PopoverTrigger>
-    <PopoverContent Id="pop-rtl" Align="start" Class="w-64 p-3 text-sm">
-        لوحة في الطبقة العليا.
-    </PopoverContent>
+@* Six sides in a right-to-left page, as upstream shows them. The pair at the end is the point:
+   left and right stay where they are named, while inline-start and inline-end follow the reading
+   direction — so one panel definition is correct in Arabic and in English both. *@
+<div dir="rtl" class="grid gap-4">
+    <div class="flex flex-wrap justify-center gap-2">
+        @foreach (var (side, label) in Physical)
+        {
+            <PopoverTrigger Target="@($"pop-rtl-{side}")" Variant="outline">@label</PopoverTrigger>
+            <PopoverContent Id="@($"pop-rtl-{side}")" Side="@side" Align="start" Class="w-64 p-4">
+                <div class="flex flex-col gap-1">
+                    <h4 class="font-medium">الأبعاد</h4>
+                    <p class="text-sm text-muted-foreground">تعيين الأبعاد للطبقة.</p>
+                </div>
+            </PopoverContent>
+        }
+    </div>
+    <div class="flex flex-wrap justify-center gap-2">
+        @foreach (var (side, label) in Logical)
+        {
+            <PopoverTrigger Target="@($"pop-rtl-{side}")" Variant="outline">@label</PopoverTrigger>
+            <PopoverContent Id="@($"pop-rtl-{side}")" Side="@side" Align="start" Class="w-64 p-4">
+                <div class="flex flex-col gap-1">
+                    <h4 class="font-medium">الأبعاد</h4>
+                    <p class="text-sm text-muted-foreground">تعيين الأبعاد للطبقة.</p>
+                </div>
+            </PopoverContent>
+        }
+    </div>
 </div>
+
+@code {
+    static readonly (string Side, string Label)[] Physical =
+    [
+        ("left", "يسار"), ("top", "أعلى"), ("bottom", "أسفل"), ("right", "يمين"),
+    ];
+
+    static readonly (string Side, string Label)[] Logical =
+    [
+        ("inline-start", "بداية السطر"), ("inline-end", "نهاية السطر"),
+    ];
+}

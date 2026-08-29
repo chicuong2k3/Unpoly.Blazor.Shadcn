@@ -450,7 +450,11 @@
   // and a menubar's own buttons. They differ in where the panel goes, not in how it opens.
   up.compiler('[data-slot="dropdown-menu-trigger"], [data-slot="popover-trigger"], ' +
               '[data-slot="dropdown-menu-sub-trigger"], [data-slot="menubar-trigger"], ' +
-              '[data-slot="menubar-sub-trigger"], [data-slot="context-menu-sub-trigger"]',
+              '[data-slot="menubar-sub-trigger"], [data-slot="context-menu-sub-trigger"], ' +
+              // The navigation menu was missing from this list, and nothing else placed it: its
+              // panel fell back to the popover's own idea of where to be, which was full width
+              // and two hundred pixels below the bar it belongs to.
+              '[data-slot="navigation-menu-trigger"]',
               (trigger) => {
     const panel = document.getElementById(trigger.dataset.target)
     if (!panel) return
@@ -465,9 +469,18 @@
       trigger.setAttribute('aria-expanded', 'true')
       // A submenu opens BESIDE its row, not below it — otherwise it lands on top of the parent
       // menu and the row you came from disappears underneath it.
-      if (trigger.getAttribute('data-slot').endsWith('sub-trigger')) placeBeside(panel, trigger)
-      else place(panel, anchor, panel.dataset.align, panel.dataset.side,
-                 Number(panel.dataset.sideOffset || 4))
+      const settle = () => {
+        if (trigger.getAttribute('data-slot').endsWith('sub-trigger')) placeBeside(panel, trigger)
+        else place(panel, anchor, panel.dataset.align, panel.dataset.side,
+                   Number(panel.dataset.sideOffset || 4))
+      }
+
+      settle()
+      // Again next frame. A panel whose width answers a media query — the navigation menu is
+      // w-full below md and w-auto above it — is still full width when the first measurement is
+      // taken, so the clamp that keeps it on screen slid it to the left edge of the window.
+      // Placing twice costs one layout read and needs no guess about which panels do that.
+      requestAnimationFrame(settle)
       panel.focus({ preventScroll: true })
     }
 
@@ -2223,6 +2236,29 @@
 
     calendar.addEventListener('change', onChange)
     return () => calendar.removeEventListener('change', onChange)
+  })
+
+  // A slider that drives a progress bar. shadcn holds both in one state variable; here the
+  // slider is the input that posts and the bar is what it reports, so the link between them is
+  // one attribute naming the other — and with scripting off you still get a working slider and a
+  // bar showing whatever the server rendered.
+  up.compiler('input[type="range"][data-controls]', (slider) => {
+    const bar = document.getElementById(slider.dataset.controls)
+    const indicator = bar?.querySelector('[data-slot="progress-indicator"]')
+    if (!indicator) return
+
+    const paint = () => {
+      const min = Number(slider.min || 0)
+      const span = Number(slider.max || 100) - min
+      const share = span > 0 ? ((Number(slider.value) - min) / span) * 100 : 0
+      indicator.style.transform = `translateX(-${100 - share}%)`
+      bar.setAttribute('aria-valuenow', String(Math.round(Number(slider.value))))
+    }
+
+    slider.addEventListener('input', paint)
+    paint()
+
+    return () => slider.removeEventListener('input', paint)
   })
 
   // =============================================================================================

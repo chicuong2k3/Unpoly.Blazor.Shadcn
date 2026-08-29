@@ -241,25 +241,31 @@
     [data-slot="drawer"][data-modal="false"] { pointer-events: none; }
     [data-slot="drawer"][data-modal="false"] > [data-slot="drawer-content"] { pointer-events: auto; }
 
+    /* A drawer floats: it stands off the edges of the window by a small margin and is rounded
+       on every corner, which is what shadcn's current one does. Flush against the edge with two
+       rounded corners is the older vaul look, and it reads as part of the browser chrome rather
+       than as a panel over the page — the shadow has nothing to fall on and the rounding stops
+       halfway. The margin is the same 0.5rem on every side, so the panel keeps its shape
+       whichever edge it comes from. */
+    [data-slot="drawer"] > [data-slot="drawer-content"] {
+        border-radius: var(--radius-lg, 0.75rem);
+        box-shadow: var(--elevation-4);
+    }
     [data-slot="drawer"][data-direction="bottom"] > [data-slot="drawer-content"] {
-        inset: auto 0 0 0;
+        inset: auto 0.5rem 0.5rem 0.5rem;
         max-block-size: 82vh;
-        border-start-start-radius: var(--radius-lg, 0.75rem);
-        border-start-end-radius: var(--radius-lg, 0.75rem);
     }
     [data-slot="drawer"][data-direction="top"] > [data-slot="drawer-content"] {
-        inset: 0 0 auto 0;
+        inset: 0.5rem 0.5rem auto 0.5rem;
         max-block-size: 82vh;
-        border-end-start-radius: var(--radius-lg, 0.75rem);
-        border-end-end-radius: var(--radius-lg, 0.75rem);
     }
     [data-slot="drawer"][data-direction="right"] > [data-slot="drawer-content"] {
-        inset: 0 0 0 auto;
-        inline-size: min(24rem, 90vw);
+        inset: 0.5rem 0.5rem 0.5rem auto;
+        inline-size: min(24rem, calc(100vw - 1rem));
     }
     [data-slot="drawer"][data-direction="left"] > [data-slot="drawer-content"] {
-        inset: 0 auto 0 0;
-        inline-size: min(24rem, 90vw);
+        inset: 0.5rem auto 0.5rem 0.5rem;
+        inline-size: min(24rem, calc(100vw - 1rem));
     }
 
     [data-slot="drawer"][data-direction="bottom"][open] > * { animation: sh-slide-from-bottom 320ms cubic-bezier(0.32, 0.72, 0, 1); }
