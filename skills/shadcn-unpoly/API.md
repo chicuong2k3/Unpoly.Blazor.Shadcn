@@ -1670,6 +1670,7 @@ renders `<select>` · `data-slot="select"`
 | Parameter | Type | Default | |
 |---|---|---|---|
 | `Size` | `string` | `"default"` |  |
+| `AlignItemWithTrigger` | `bool` | `true` |  |
 
 ## `<SelectItem>`
 renders `<option>` · `data-slot="select-item"`

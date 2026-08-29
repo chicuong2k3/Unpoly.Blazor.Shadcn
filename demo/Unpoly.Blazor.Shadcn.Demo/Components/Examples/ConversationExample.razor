@@ -76,10 +76,15 @@
                     <InputGroupControl Multiline id="chat-message" name="message" rows="2"
                                        placeholder="Ask anything" aria-label="Message" />
                     <InputGroupAddon Align="block-end" Class="pt-1">
-                        <InputGroupButton popovertarget="chat-tools" type="button" Size="icon-sm"
-                                          Variant="outline" aria-label="Add files">
+                        @* A DropdownMenuTrigger wearing the input-group button's clothes, which
+                           is upstream's render={<InputGroupButton/>}. A bare popovertarget looks
+                           the same and is not the same: the compiler that places a panel matches
+                           on the trigger's slot, so a button that only carried the attribute got
+                           no placement at all and the menu opened in the middle of the window. *@
+                        <DropdownMenuTrigger Target="chat-tools" Variant="outline"
+                                             Class="@InputGroupButtonClasses" aria-label="Add files">
                             <Icon Name="plus" />
-                        </InputGroupButton>
+                        </DropdownMenuTrigger>
                         <DropdownMenuContent Id="chat-tools" Align="start" Side="top" Class="w-44">
                             <DropdownMenuItem><Icon Name="paperclip" />Add Photos &amp; Files</DropdownMenuItem>
                             <DropdownMenuSeparator />
@@ -105,6 +110,10 @@
 </div>
 
 @code {
+    // The size table InputGroupButton carries for icon-sm: small enough to sit inside the frame.
+    const string InputGroupButtonClasses =
+        "flex size-8 items-center gap-2 p-0 text-control shadow-none has-[>svg]:p-0";
+
     record Turn(bool FromUser, string Text);
 
     static readonly Turn[] Thread =

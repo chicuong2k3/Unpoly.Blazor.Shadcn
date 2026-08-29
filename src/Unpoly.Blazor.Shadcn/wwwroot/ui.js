@@ -2014,7 +2014,7 @@
     // So ask the document directly: pointer over neither, focus in neither, start closing.
     let at = null
     const elsewhere = () => {
-      if (!panel.matches(':popover-open') || !at) return false
+      if (!panel.matches(':popover-open')) return false
       // Keyboard focus is exempt, mouse focus is not. A CLICK focuses the trigger too, and a
       // card that opens over its own trigger then produces no leave event either — so the two
       // exemptions met and the card stayed open with the pointer long gone. :focus-visible is
@@ -2022,6 +2022,14 @@
       // question that decides whether focus opens it at all.
       const held = trigger.contains(document.activeElement) || panel.contains(document.activeElement)
       if (held && (trigger.matches(':focus-visible') || panel.matches(':focus-within'))) return false
+
+      // :hover first, and no coordinates involved. The browser maintains the hover chain itself
+      // and keeps it right through a top-layer boundary, a swapped element and a pointer that
+      // has stopped reporting — all three of which broke the coordinate bookkeeping this used to
+      // depend on, and each of which leaves a card open with the pointer nowhere near it.
+      if (trigger.matches(':hover') || panel.matches(':hover')) return false
+      if (!at) return true
+
       const over = document.elementFromPoint(at.x, at.y)
       return !over || !(trigger.contains(over) || panel.contains(over))
     }
@@ -2034,7 +2042,7 @@
     // A heartbeat, because the check above needs an event to run and a pointer can stop
     // producing them: parked outside the window, resting over browser chrome, moved by a gesture
     // the page never sees. Once a second, from wherever the pointer was last known to be.
-    const beat = setInterval(() => { if (elsewhere()) close() }, 1000)
+    const beat = setInterval(() => { if (elsewhere()) close() }, 400)
 
     // And leaving the window is leaving the card.
     const onOut = (event) => { if (!event.relatedTarget) close() }
@@ -2081,9 +2089,26 @@
   // an item writes through to the <select> and dispatches a bubbling change event, so
   // [up-autosubmit] and filter forms behave exactly as they do without this enhancement.
 
+  up.compiler('input[type="checkbox"][data-toggles]', (box) => {
+    const target = document.getElementById(box.dataset.toggles)
+    const name = box.dataset.togglesAttribute
+    if (!target || !name) return
+
+    const write = () => target.setAttribute(name,
+      box.checked ? (box.dataset.togglesOn ?? 'true') : (box.dataset.togglesOff ?? 'false'))
+
+    box.addEventListener('change', write)
+    write()
+    return () => box.removeEventListener('change', write)
+  })
+
   up.compiler('select[data-slot="select"]', (select) => {
-    if (select.disabled || select.multiple || select.closest('[data-slot="select-root"]')) return
+    if (select.multiple || select.closest('[data-slot="select-root"]')) return
     if (select.options.length === 0) return
+    // A disabled select is still drawn. Bailing out left the native control on screen wearing no
+    // recipe at all, so the one example whose whole subject is the disabled state was the one
+    // place the component did not look like shadcn.
+    const locked = select.disabled
 
     // Sizing and layout belong to the visible control, so the caller's own classes move to the
     // wrapper. <Select> hands them over verbatim in data-wrapper-class rather than leaving this to
@@ -2097,6 +2122,7 @@
     trigger.setAttribute('aria-haspopup', 'listbox')
     trigger.setAttribute('aria-expanded', 'false')
     if (select.getAttribute('aria-invalid')) trigger.setAttribute('aria-invalid', 'true')
+    if (locked) trigger.disabled = true
 
     const label = el('span', 'line-clamp-1 flex items-center gap-2 text-left')
     label.dataset.slot = 'select-value'
@@ -2208,6 +2234,7 @@
     }
 
     function open() {
+      if (locked) return
       panel.showPopover()
       trigger.setAttribute('aria-expanded', 'true')
       // At least as wide as the control it belongs to, which is what makes it read as the same
@@ -2215,7 +2242,28 @@
       panel.style.minWidth = Math.round(trigger.getBoundingClientRect().width) + 'px'
       place(panel, trigger, 'start', 'bottom', 4)
       active(items.findIndex((entry) => entry.option.value === select.value))
+      alignItem()
       document.addEventListener('keydown', onKey, true)
+    }
+
+    // alignItemWithTrigger, which is on by default upstream: the list opens with the CHOSEN row
+    // sitting over the trigger, so the value you already have does not move under the pointer.
+    // Off, the list hangs below the control like a menu. place() has already put it below, so
+    // this only has to lift it — and only as far as the window allows, because a list taller than
+    // the viewport cannot honour the request and must not be dragged off the top to try.
+    function alignItem() {
+      if (select.dataset.alignItemWithTrigger === 'false') return
+      const chosen = items[Math.max(0, index)]
+      if (!chosen) return
+      const box = trigger.getBoundingClientRect()
+      const row = chosen.item.getBoundingClientRect()
+      const panelBox = panel.getBoundingClientRect()
+      const lift = row.top - box.top
+      const top = Math.min(
+        Math.max(8, panelBox.top - lift),
+        Math.max(8, window.innerHeight - panelBox.height - 8))
+      panel.style.top = Math.round(top) + 'px'
+      panel.style.bottom = 'auto'
     }
 
     function close() {

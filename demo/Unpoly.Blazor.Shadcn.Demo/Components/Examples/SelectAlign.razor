@@ -1,14 +1,22 @@
-@* Radix aligns its panel with the chosen item so the current value stays under the pointer. The
-   OS decides that here, and each platform decides differently — macOS overlays the value, Windows
-   drops below. It cannot be configured, and matching one of them would be wrong on the other. *@
-<Field Class="w-[280px]">
-    <FieldLabel For="sa-size">Size</FieldLabel>
-    <Select id="sa-size" name="size">
-        <SelectItem Value="xs">XS</SelectItem>
-        <SelectItem Value="s">S</SelectItem>
-        <SelectItem Value="m" Selected>M</SelectItem>
-        <SelectItem Value="l">L</SelectItem>
-        <SelectItem Value="xl">XL</SelectItem>
+@* alignItemWithTrigger, with the switch shadcn puts beside it. On — the default — the list opens
+   with the chosen row sitting over the trigger, so the value you already have does not move under
+   the pointer. Off, the list hangs below the control like a menu.
+
+   The switch writes the attribute the select reads, so the state lives in the DOM rather than in
+   a variable: with scripting off the page still shows whichever state the server rendered. *@
+<div class="flex w-full max-w-64 flex-col gap-4">
+    <Field Orientation="horizontal" Class="w-fit">
+        <Switch id="sa-toggle" checked data-toggles="sa-size"
+                data-toggles-attribute="data-align-item-with-trigger"
+                data-toggles-on="true" data-toggles-off="false" />
+        <FieldLabel For="sa-toggle">Align Item</FieldLabel>
+    </Field>
+
+    <Select id="sa-size" name="fruit" aria-label="Fruit">
+        <SelectItem Value="apple">Apple</SelectItem>
+        <SelectItem Value="banana" Selected>Banana</SelectItem>
+        <SelectItem Value="blueberry">Blueberry</SelectItem>
+        <SelectItem Value="grapes">Grapes</SelectItem>
+        <SelectItem Value="pineapple">Pineapple</SelectItem>
     </Select>
-    <FieldDescription>Open it: where the panel lands is the operating system's decision.</FieldDescription>
-</Field>
+</div>

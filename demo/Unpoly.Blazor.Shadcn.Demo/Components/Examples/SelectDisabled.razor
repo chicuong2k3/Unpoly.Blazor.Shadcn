@@ -1,20 +1,23 @@
-@* Both kinds: the whole control, and one option inside it. A disabled option is still announced
-   and still skipped, which is what tells a reader the choice exists and is not available. *@
-<div class="flex w-[280px] flex-col gap-4">
-    <Field>
-        <FieldLabel For="sd-all">Plan</FieldLabel>
-        <Select id="sd-all" name="plan" disabled>
-            <SelectItem Value="free" Selected>Free</SelectItem>
-        </Select>
-        <FieldDescription>Change it from the billing screen.</FieldDescription>
-    </Field>
+@* Upstream's: the whole control disabled, showing its placeholder — and the same list with one
+   option disabled inside it, because those are two different states and only one of them is
+   about the control. A disabled option is still announced and still skipped, which is what tells
+   a reader the choice exists and is not available to them. *@
+<div class="flex w-full max-w-48 flex-col gap-4">
+    <Select aria-label="Fruit" name="fruit" disabled>
+        <SelectItem Value="" Selected>Select a fruit</SelectItem>
+        <SelectItem Value="apple">Apple</SelectItem>
+        <SelectItem Value="banana">Banana</SelectItem>
+        <SelectItem Value="blueberry">Blueberry</SelectItem>
+        <SelectItem Value="grapes">Grapes</SelectItem>
+        <SelectItem Value="pineapple">Pineapple</SelectItem>
+    </Select>
 
-    <Field>
-        <FieldLabel For="sd-one">Shipping</FieldLabel>
-        <Select id="sd-one" name="shipping">
-            <SelectItem Value="standard" Selected>Standard</SelectItem>
-            <SelectItem Value="express">Express</SelectItem>
-            <SelectItem Value="same-day" disabled>Same day — not in your area</SelectItem>
-        </Select>
-    </Field>
+    <Select aria-label="Fruit, one option unavailable" name="fruit-2">
+        <SelectItem Value="" Selected>Select a fruit</SelectItem>
+        <SelectItem Value="apple">Apple</SelectItem>
+        <SelectItem Value="banana">Banana</SelectItem>
+        <SelectItem Value="blueberry">Blueberry</SelectItem>
+        <SelectItem Value="grapes" disabled>Grapes</SelectItem>
+        <SelectItem Value="pineapple">Pineapple</SelectItem>
+    </Select>
 </div>
