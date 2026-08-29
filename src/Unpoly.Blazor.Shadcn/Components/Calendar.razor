@@ -1,4 +1,5 @@
 @inherits UiComponentBase
+@inject NavigationManager Nav
 
 @* A month, as a table — because a calendar is a table: seven columns of days under seven column
    headers, and every screen reader already knows how to read one. react-day-picker builds it out
@@ -26,25 +27,73 @@
    better still. This is for when the month has to be visible — availability, a booking grid,
    anything where the shape of the month is the information. *@
 
-<div data-slot="calendar" data-mode="@Mode" data-month="@Month.ToString("yyyy-MM")"
+<div id="@ElementId" data-slot="calendar" data-mode="@Mode" data-month="@First.ToString("yyyy-MM")"
      data-months="@Months" class="@Classes" @attributes="AdditionalAttributes">
-    @if (MonthUrl is not null)
-    {
-        @* Two links to two real URLs, not two buttons and a state variable — so a month is
-           bookmarkable, the back button moves through months, and it all works before any
-           JavaScript has run. Give it an up-target and only the calendar is swapped. *@
-        <div data-slot="calendar-nav" class="mb-2 flex items-center justify-between gap-2">
-            <a href="@MonthUrl(AddMonths(First, -1))"
-               class="@Cn(ButtonVariants.Of("ghost", "icon-sm"))"
-               aria-label="@PreviousLabel"><Icon Name="chevron-left" Class="rtl:rotate-180" /></a>
+    @* Two links to two real URLs, not two buttons and a state variable — so a month is
+       bookmarkable, the back button moves through months, and it all works before any JavaScript
+       has run. Unpoly swaps this calendar and nothing else, which is why the id matters: a target
+       of [data-slot=calendar] matched every calendar on the page and moved the first of them.
 
+       Drawn whether or not the caller named a MonthUrl. It used to be drawn only for callers who
+       did, and every date picker in the library is a caller who did not — so each one showed one
+       month with no way to leave it, which is not a date picker. *@
+    <div data-slot="calendar-nav" class="mb-2 flex items-center justify-between gap-2">
+        <a href="@Where(AddMonths(First, -1))" up-target="#@ElementId"
+           class="@Cn(ButtonVariants.Of("ghost", "icon-sm"))"
+           aria-label="@PreviousLabel"><Icon Name="chevron-left" Class="rtl:rotate-180" /></a>
+
+        @if (CaptionLayout == "label")
+        {
             <span class="text-sm font-medium" aria-live="polite">@Caption</span>
+        }
+        else
+        {
+            @* shadcn's captionLayout="dropdown": pick the month and the year rather than paging
+               to them, which is the difference between choosing a birthday and clicking four
+               hundred times. A GET form, so it is the same navigation the arrows do. *@
+            <form method="get" up-autosubmit up-target="#@ElementId"
+                  data-slot="calendar-caption-dropdowns" class="flex items-center gap-1">
+                @foreach (var carried in Carried)
+                {
+                    <input type="hidden" name="@carried.Key" value="@carried.Value" />
+                }
+                @if (CaptionLayout != "dropdown-years")
+                {
+                    <Select name="@MonthKey" aria-label="@MonthLabel" Size="sm" Class="w-fit">
+                        @foreach (var m in Enumerable.Range(1, 12))
+                        {
+                            <SelectItem Value="@m.ToString()" Selected="@(m == First.Month)">
+                                @Words.DateTimeFormat.GetAbbreviatedMonthName(m)
+                            </SelectItem>
+                        }
+                    </Select>
+                }
+                else
+                {
+                    <span class="text-sm font-medium">@Words.DateTimeFormat.GetMonthName(First.Month)</span>
+                    <input type="hidden" name="@MonthKey" value="@First.Month" />
+                }
+                @if (CaptionLayout != "dropdown-months")
+                {
+                    <Select name="@YearKey" aria-label="@YearLabel" Size="sm" Class="w-fit">
+                        @foreach (var y in Years)
+                        {
+                            <SelectItem Value="@y.ToString()" Selected="@(y == First.Year)">@y</SelectItem>
+                        }
+                    </Select>
+                }
+                else
+                {
+                    <span class="text-sm font-medium">@First.Year</span>
+                    <input type="hidden" name="@YearKey" value="@First.Year" />
+                }
+            </form>
+        }
 
-            <a href="@MonthUrl(AddMonths(First, Span))"
-               class="@Cn(ButtonVariants.Of("ghost", "icon-sm"))"
-               aria-label="@NextLabel"><Icon Name="chevron-right" Class="rtl:rotate-180" /></a>
-        </div>
-    }
+        <a href="@Where(AddMonths(First, Span))" up-target="#@ElementId"
+           class="@Cn(ButtonVariants.Of("ghost", "icon-sm"))"
+           aria-label="@NextLabel"><Icon Name="chevron-right" Class="rtl:rotate-180" /></a>
+    </div>
 
     <div data-slot="calendar-months" class="flex flex-col gap-4 sm:flex-row">
         @for (var offset = 0; offset < Span; offset++)
@@ -168,11 +217,27 @@
     [Parameter] public System.Globalization.CultureInfo? Culture { get; set; }
 
     /// <summary>
-    /// Where the previous and next months live, as a function of the month. Without it no
-    /// navigation is drawn at all — a component cannot invent an application's URLs, and two
-    /// arrows that go nowhere are worse than none.
+    /// Where the previous and next months live, as a function of the month — for an application
+    /// that has its own month routes. Without it the arrows point back at this page, carrying the
+    /// month in two query keys of this calendar's own, so several calendars on a page move
+    /// independently and each month stays bookmarkable.
     /// </summary>
     [Parameter] public Func<DateOnly, string>? MonthUrl { get; set; }
+
+    /// <summary>
+    /// label | dropdown | dropdown-months | dropdown-years, as shadcn's captionLayout. The
+    /// dropdowns are a GET form, so they navigate exactly as the arrows do.
+    /// </summary>
+    [Parameter] public string CaptionLayout { get; set; } = "label";
+
+    /// <summary>The first year the year dropdown offers. A century back by default.</summary>
+    [Parameter] public int? FromYear { get; set; }
+
+    /// <summary>The last year the year dropdown offers.</summary>
+    [Parameter] public int? ToYear { get; set; }
+
+    [Parameter] public string MonthLabel { get; set; } = "Month";
+    [Parameter] public string YearLabel { get; set; } = "Year";
 
     [Parameter] public string PreviousLabel { get; set; } = "Previous month";
     [Parameter] public string NextLabel { get; set; } = "Next month";
@@ -187,6 +252,78 @@
 
     int Span => Math.Max(1, Months);
 
+    // Everything below is what makes a calendar navigable without the caller arranging it.
+    //
+    // The month lives in the query string under keys of this calendar's own, so a page may hold
+    // fourteen of them — this demo does — and moving one moves only that one. Name is what makes
+    // the keys distinct; calendars sharing a name are already sharing a radio group, so sharing a
+    // month is the same decision.
+    string Key => Name ?? "calendar";
+    string MonthKey => $"m-{Key}";
+    string YearKey => $"y-{Key}";
+
+    // A caller's own id wins: it is the one their up-target names.
+    string ElementId =>
+        AdditionalAttributes?.TryGetValue("id", out var given) == true && given is string id && id.Length > 0
+            ? id
+            : $"calendar-{Key}";
+
+    // The month actually drawn: the query first, the parameter as the starting point. A caller
+    // sets Month once and never hears about it again.
+    DateOnly Shown
+    {
+        get
+        {
+            var query = System.Web.HttpUtility.ParseQueryString(new Uri(Nav.Uri).Query);
+            var month = int.TryParse(query[MonthKey], out var m) && m is >= 1 and <= 12 ? m : Month.Month;
+            var year = int.TryParse(query[YearKey], out var y) && y is >= 1 and <= 9999 ? y : Month.Year;
+            return new DateOnly(year, month, 1);
+        }
+    }
+
+    // Where an arrow points. MonthUrl when the application has month routes of its own; otherwise
+    // this page again, with this calendar's two keys rewritten and every other one left alone —
+    // which is what keeps the other thirteen calendars where they were.
+    string Where(DateOnly month)
+    {
+        if (MonthUrl is not null) return MonthUrl(month);
+
+        var url = new Uri(Nav.Uri);
+        var query = System.Web.HttpUtility.ParseQueryString(url.Query);
+        query[MonthKey] = month.Month.ToString();
+        query[YearKey] = month.Year.ToString();
+        return $"{url.AbsolutePath}?{query}";
+    }
+
+    // The rest of the query, carried through the dropdown form as hidden fields. A GET form
+    // replaces the whole query string, so without these one calendar's dropdown would send every
+    // other calendar on the page back to its starting month.
+    IEnumerable<KeyValuePair<string, string>> Carried
+    {
+        get
+        {
+            var query = System.Web.HttpUtility.ParseQueryString(new Uri(Nav.Uri).Query);
+            foreach (var key in query.AllKeys)
+            {
+                if (key is null || key == MonthKey || key == YearKey) continue;
+                yield return new(key, query[key] ?? "");
+            }
+        }
+    }
+
+    IEnumerable<int> Years
+    {
+        get
+        {
+            var now = (Today ?? DateOnly.FromDateTime(DateTime.Today)).Year;
+            var first = FromYear ?? now - 100;
+            var last = ToYear ?? now + 10;
+            // A year already on screen must be offerable, or the select would show no selection
+            // at all and the first option would silently become the answer.
+            return Enumerable.Range(Math.Min(first, Shown.Year), Math.Max(last, Shown.Year) - Math.Min(first, Shown.Year) + 1);
+        }
+    }
+
     System.Globalization.Calendar Cal =>
         CalendarSystem ?? System.Globalization.CultureInfo.CurrentCulture.Calendar;
 
@@ -196,7 +333,7 @@
     {
         get
         {
-            var day = new DateTime(Month.Year, Month.Month, 1);
+            var day = new DateTime(Shown.Year, Shown.Month, 1);
             return DateOnly.FromDateTime(
                 Cal.ToDateTime(Cal.GetYear(day), Cal.GetMonth(day), 1, 0, 0, 0, 0));
         }

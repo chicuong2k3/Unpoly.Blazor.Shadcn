@@ -5,7 +5,6 @@
     <Calendar Name="day-rtl" Month="@Month" Selected="@(Month.AddDays(11))" Today="@Today"
               FirstDay="DayOfWeek.Saturday" Culture="@Arabic"
               CalendarSystem="@Gregorian"
-              MonthUrl="@(m => $"/components/calendar?month={m:yyyy-MM}")"
               Class="w-fit rounded-lg border p-3 [--cell-size:--spacing(9)]" />
 </div>
 

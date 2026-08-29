@@ -20,10 +20,10 @@
             Your post will be published on <span class="font-medium">@Understood</span>.
         </FieldDescription>
     </Field>
+</form>
     <PopoverContent Id="dpn-panel" Align="end" SideOffset="10" Class="w-fit overflow-hidden p-0">
         <Calendar Name="publish-day" Month="@Month" Today="@Today" Class="p-3" />
     </PopoverContent>
-</form>
 
 @code {
     static readonly DateOnly Today = DateOnly.FromDateTime(DateTime.Today);

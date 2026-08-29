@@ -3,7 +3,7 @@
    a form, <DatePicker> around <input type="date"> is smaller still — this is for when the shape
    of the month is the information. *@
 <Calendar Name="day" Month="@(new DateOnly(2026, 3, 1))"
-          MonthUrl="@(m => $"/components/data?month={m:yyyy-MM}")" up-target="[data-slot=calendar]" Selected="@(new DateOnly(2026, 3, 11))"
+          Selected="@(new DateOnly(2026, 3, 11))"
           Today="@(new DateOnly(2026, 3, 11))"
           Disabled="@(d => d.DayOfWeek is DayOfWeek.Saturday or DayOfWeek.Sunday)"
           Class="w-fit rounded-lg border p-3" />

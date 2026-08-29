@@ -332,6 +332,11 @@ renders `<div>` · `data-slot="calendar"`
 | `WeekLabel` | `string` | `"Week"` |  |
 | `DayContent` | `RenderFragment<DateOnly>?` | — |  |
 | `FirstDay` | `DayOfWeek` | `DayOfWeek.Monday` |  |
+| `CaptionLayout` | `string` | `"label"` |  |
+| `FromYear` | `int?` | — |  |
+| `ToYear` | `int?` | — |  |
+| `MonthLabel` | `string` | `"Month"` |  |
+| `YearLabel` | `string` | `"Year"` |  |
 | `PreviousLabel` | `string` | `"Previous month"` |  |
 | `NextLabel` | `string` | `"Next month"` |  |
 

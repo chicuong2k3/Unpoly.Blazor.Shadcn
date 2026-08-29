@@ -4,9 +4,9 @@
 <Field Class="mx-auto w-72">
     <FieldLabel For="dp-range">Date Picker Range</FieldLabel>
     <PopoverTrigger Target="dp-range-panel" id="dp-range" Variant="outline"
-                    Class="w-full justify-between px-2.5 font-normal">
-        <span data-date-label data-empty>Pick a range</span>
+                    Class="w-full justify-start px-2.5 text-start font-normal">
         <Icon Name="calendar" Class="opacity-50" />
+        <span data-date-label data-empty>Pick a range</span>
     </PopoverTrigger>
     <PopoverContent Id="dp-range-panel" Align="start" Class="w-fit p-0">
         <Calendar Name="stay" Mode="range" Months="2" Month="@Month" Today="@Today" Class="p-3" />
