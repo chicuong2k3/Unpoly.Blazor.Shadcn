@@ -2166,6 +2166,36 @@
     return () => root.removeEventListener('input', order)
   })
 
+  // A calendar inside a [popover] is a date picker, and a date picker closes when you pick.
+  // Without this the day was chosen — the radio really was checked, and it really would post —
+  // but the panel stayed open over the page and the button still said the old date, so the
+  // choice looked like it had not registered at all.
+  up.compiler('[popover] [data-slot="calendar"][data-mode="single"]', (calendar) => {
+    const panel = calendar.closest('[popover]')
+    if (!panel?.id) return
+    const trigger = document.querySelector(`[popovertarget="${panel.id}"]`)
+
+    const onChange = (event) => {
+      const day = event.target
+      if (!day.matches('input[type="radio"]') || !day.value) return
+
+      // The label is a span the caller marks, not the button's own text: the button also holds
+      // an icon, and writing over its textContent would take that with it.
+      const label = trigger?.querySelector('[data-date-label]')
+      if (label) {
+        const [year, month, date] = day.value.split('-').map(Number)
+        label.textContent = new Date(year, month - 1, date).toLocaleDateString(
+          document.documentElement.lang || undefined,
+          { day: 'numeric', month: 'long', year: 'numeric' })
+      }
+      panel.hidePopover()
+      trigger?.focus()
+    }
+
+    calendar.addEventListener('change', onChange)
+    return () => calendar.removeEventListener('change', onChange)
+  })
+
   // =============================================================================================
   // Carousel — the two arrows, and only the two arrows
   // =============================================================================================

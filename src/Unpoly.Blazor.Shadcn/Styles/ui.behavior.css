@@ -736,6 +736,22 @@
     input[type="range"][data-slot="slider-input"]::-webkit-slider-thumb { pointer-events: auto; }
     input[type="range"][data-slot="slider-input"]::-moz-range-thumb { pointer-events: auto; }
 
+    /* ---- Time and date fields ---------------------------------------------------------
+       The browser draws its own little clock or calendar button inside these, and a group that
+       already carries an icon then has two — one of them ours, one of them not, and neither
+       aligned with the other. Upstream hides it with a pair of ::-webkit- rules on every time
+       field it styles; here it belongs to the input-group, which is the place that knows it has
+       supplied an icon of its own. The field still opens its picker from the keyboard.
+
+       Written as two rules, not a list: an engine that does not know one of these selectors
+       drops the whole list, and then nothing is hidden anywhere. */
+    [data-slot="input-group"] :is(input[type="time"], input[type="date"], input[type="datetime-local"], input[type="month"], input[type="week"])::-webkit-calendar-picker-indicator {
+        display: none;
+    }
+    [data-slot="input-group"] :is(input[type="time"], input[type="date"], input[type="datetime-local"], input[type="month"], input[type="week"]) {
+        appearance: none;
+    }
+
     /* ---- Carousel --------------------------------------------------------------------
        Scroll-snap is the carousel. Embla exists because Safari's implementation was unusable in
        2019; it is fine now, and what remains in JavaScript is the two arrows. */

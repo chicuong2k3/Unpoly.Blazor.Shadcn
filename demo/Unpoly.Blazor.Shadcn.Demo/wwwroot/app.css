@@ -5544,6 +5544,12 @@
   input[type="range"][data-slot="slider-input"]::-moz-range-thumb {
     pointer-events: auto;
   }
+  [data-slot="input-group"] :is(input[type="time"], input[type="date"], input[type="datetime-local"], input[type="month"], input[type="week"])::-webkit-calendar-picker-indicator {
+    display: none;
+  }
+  [data-slot="input-group"] :is(input[type="time"], input[type="date"], input[type="datetime-local"], input[type="month"], input[type="week"]) {
+    appearance: none;
+  }
   [data-slot="carousel-content"] {
     overflow-x: auto;
     scroll-snap-type: x mandatory;
