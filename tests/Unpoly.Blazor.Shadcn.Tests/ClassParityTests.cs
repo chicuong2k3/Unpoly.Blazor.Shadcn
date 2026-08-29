@@ -58,6 +58,10 @@ public class ClassParityTests : BunitContext
                                .WithAll(Deviations.DefaultVariantFor(name));
         }
 
+        // Last, so the merge resolves them over the recipe — which is the order upstream composes
+        // them in, and the reason its own gap-2 and px-4 are not in the rendered output either.
+        expected = [.. expected, .. Deviations.CallSiteClassesFor(name)];
+
         AssertSameClasses(slot!, subject.GetAttribute("class"), expected);
     }
 

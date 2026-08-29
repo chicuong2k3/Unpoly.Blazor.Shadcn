@@ -507,6 +507,61 @@
     }
   })
 
+  // A site header opens on hover. Clicking one is the behaviour of a menu you are choosing FROM;
+  // a navigation bar is one you are reading ACROSS, and requiring a click there costs a second
+  // click to get out of it again. shadcn opens on hover and this did not, which made every panel
+  // on the bar two interactions away instead of none.
+  //
+  // The panel is rendered inside its <li>, so it is a DOM descendant of the bar even while it is
+  // painted in the top layer — which is what lets one pair of listeners on the bar cover both the
+  // trigger and the panel, and what makes moving from one into the other not a leave at all.
+  up.compiler('[data-slot="navigation-menu"]', (root) => {
+    const triggers = () => [...root.querySelectorAll('[data-slot="navigation-menu-trigger"]')]
+    const panelOf = (trigger) => document.getElementById(trigger.dataset.target)
+    const openPanels = () => triggers().map(panelOf).filter((p) => p?.matches(':popover-open'))
+    let opening, closing
+
+    const over = (event) => {
+      clearTimeout(closing)
+      const trigger = event.target.closest('[data-slot="navigation-menu-trigger"]')
+      if (!trigger) return
+      clearTimeout(opening)
+      const panel = panelOf(trigger)
+      if (!panel || panel.matches(':popover-open')) return
+      // Instant while a panel is already open, delayed while none is. Crossing the bar on the way
+      // to somewhere else should not flash five panels; moving ALONG it should not stutter.
+      opening = setTimeout(() => panel.showPopover(), openPanels().length ? 0 : 150)
+    }
+
+    // Leaving for something outside the bar closes it, after long enough to cross the gap between
+    // a trigger and the panel under it — a menu that shuts in that gap is a menu you cannot use.
+    //
+    // :hover rather than relatedTarget alone. Crossing from a trigger into its panel is a move
+    // into the top layer, and a browser may report that with no relatedTarget at all — which read
+    // as "left the bar" and closed the panel the pointer had just entered. The panel is a DOM
+    // child of the bar however it is painted, so asking the bar whether it is still hovered is
+    // the question that has the same answer in every browser.
+    const out = (event) => {
+      if (event.relatedTarget && root.contains(event.relatedTarget)) return
+      clearTimeout(opening)
+      clearTimeout(closing)
+      closing = setTimeout(() => {
+        if (root.matches(':hover')) return
+        openPanels().forEach((p) => p.hidePopover())
+      }, 200)
+    }
+
+    root.addEventListener('pointerover', over)
+    root.addEventListener('pointerout', out)
+
+    return () => {
+      clearTimeout(opening)
+      clearTimeout(closing)
+      root.removeEventListener('pointerover', over)
+      root.removeEventListener('pointerout', out)
+    }
+  })
+
   // A submenu opens away from the parent along the reading direction, and falls back to the
   // other side when there is no room. Both halves flip under RTL: opening to the right in
   // Arabic puts the submenu on top of the menu it came from.

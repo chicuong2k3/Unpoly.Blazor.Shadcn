@@ -1,41 +1,64 @@
-@* Six sides in a right-to-left page, as upstream shows them. The pair at the end is the point:
-   left and right stay where they are named, while inline-start and inline-end follow the reading
-   direction — so one panel definition is correct in Arabic and in English both. *@
-<div dir="rtl" class="grid gap-4">
-    <div class="flex flex-wrap justify-center gap-2">
-        @foreach (var (side, label) in Physical)
-        {
-            <PopoverTrigger Target="@($"pop-rtl-{side}")" Variant="outline">@label</PopoverTrigger>
-            <PopoverContent Id="@($"pop-rtl-{side}")" Side="@side" Align="start" Class="w-64 p-4">
-                <div class="flex flex-col gap-1">
-                    <h4 class="font-medium">الأبعاد</h4>
-                    <p class="text-sm text-muted-foreground">تعيين الأبعاد للطبقة.</p>
-                </div>
-            </PopoverContent>
-        }
-    </div>
-    <div class="flex flex-wrap justify-center gap-2">
-        @foreach (var (side, label) in Logical)
-        {
-            <PopoverTrigger Target="@($"pop-rtl-{side}")" Variant="outline">@label</PopoverTrigger>
-            <PopoverContent Id="@($"pop-rtl-{side}")" Side="@side" Align="start" Class="w-64 p-4">
-                <div class="flex flex-col gap-1">
-                    <h4 class="font-medium">الأبعاد</h4>
-                    <p class="text-sm text-muted-foreground">تعيين الأبعاد للطبقة.</p>
-                </div>
-            </PopoverContent>
-        }
+@* Every side against every alignment, in a right-to-left page — because in RTL the two are not
+   independent: "align start" on a panel above its trigger means the RIGHT edge, and a component
+   that only mirrors the side gets half of this grid wrong.
+
+   The last row is the point. left and right stay where they are named whatever the direction;
+   inline-start and inline-end follow the reading order, so one panel definition is correct in
+   Arabic and in English both. *@
+<div dir="rtl" class="grid gap-6">
+    @foreach (var align in Aligns)
+    {
+        <div class="grid gap-2">
+            <p class="text-center text-xs text-muted-foreground">@align.Label</p>
+            <div class="flex flex-wrap justify-center gap-2">
+                @foreach (var side in Physical)
+                {
+                    var id = $"pop-rtl-{side.Side}-{align.Value}";
+                    <PopoverTrigger Target="@id" Variant="outline" Size="sm">@side.Label</PopoverTrigger>
+                    <PopoverContent Id="@id" Side="@side.Side" Align="@align.Value" Class="w-64 p-4">
+                        <div class="flex flex-col gap-1">
+                            <h4 class="font-medium">الأبعاد</h4>
+                            <p class="text-sm text-muted-foreground">تعيين الأبعاد للطبقة.</p>
+                        </div>
+                    </PopoverContent>
+                }
+            </div>
+        </div>
+    }
+
+    <div class="grid gap-2">
+        <p class="text-center text-xs text-muted-foreground">جوانب منطقية</p>
+        <div class="flex flex-wrap justify-center gap-2">
+            @foreach (var side in Logical)
+            {
+                <PopoverTrigger Target="@($"pop-rtl-{side.Side}")" Variant="outline" Size="sm">
+                    @side.Label
+                </PopoverTrigger>
+                <PopoverContent Id="@($"pop-rtl-{side.Side}")" Side="@side.Side" Align="start"
+                                Class="w-64 p-4">
+                    <div class="flex flex-col gap-1">
+                        <h4 class="font-medium">الأبعاد</h4>
+                        <p class="text-sm text-muted-foreground">تعيين الأبعاد للطبقة.</p>
+                    </div>
+                </PopoverContent>
+            }
+        </div>
     </div>
 </div>
 
 @code {
     static readonly (string Side, string Label)[] Physical =
     [
-        ("left", "يسار"), ("top", "أعلى"), ("bottom", "أسفل"), ("right", "يمين"),
+        ("top", "أعلى"), ("bottom", "أسفل"), ("left", "يسار"), ("right", "يمين"),
     ];
 
     static readonly (string Side, string Label)[] Logical =
     [
         ("inline-start", "بداية السطر"), ("inline-end", "نهاية السطر"),
+    ];
+
+    static readonly (string Value, string Label)[] Aligns =
+    [
+        ("start", "محاذاة البداية"), ("center", "محاذاة الوسط"), ("end", "محاذاة النهاية"),
     ];
 }

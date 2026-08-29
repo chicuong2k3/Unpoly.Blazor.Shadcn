@@ -4080,6 +4080,12 @@
     .sm\:\!rounded-lg {
       border-radius: var(--radius) !important;
     }
+    .sm\:ps-2\.5 {
+      padding-inline-start: calc(var(--spacing) * 2.5);
+    }
+    .sm\:pe-2\.5 {
+      padding-inline-end: calc(var(--spacing) * 2.5);
+    }
     .sm\:text-left {
       text-align: left;
     }

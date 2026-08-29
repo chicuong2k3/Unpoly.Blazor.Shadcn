@@ -1,14 +1,13 @@
-@* Every page is a real URL: Unpoly swaps the list in place, and with
-   scripting off the browser loads the page. Disabled uses aria-disabled rather than removing the
-   href, so the control keeps its place and the row does not reflow at the ends. *@
+@* Upstream's row exactly: Previous, three pages with the middle one current, an ellipsis, Next.
+   Every page is a real URL — Unpoly swaps the list in place, and with scripting off the browser
+   loads the page. aria-current is what says "you are here"; data-active is only what draws it. *@
 <Pagination>
     <PaginationContent>
-        <PaginationItem><PaginationPrevious Href="/components/pagination?page=1" Disabled /></PaginationItem>
-        <PaginationItem><PaginationLink Href="/components/pagination?page=1" IsActive>1</PaginationLink></PaginationItem>
-        <PaginationItem><PaginationLink Href="/components/pagination?page=2">2</PaginationLink></PaginationItem>
+        <PaginationItem><PaginationPrevious Href="/components/pagination?page=1" /></PaginationItem>
+        <PaginationItem><PaginationLink Href="/components/pagination?page=1">1</PaginationLink></PaginationItem>
+        <PaginationItem><PaginationLink Href="/components/pagination?page=2" IsActive>2</PaginationLink></PaginationItem>
         <PaginationItem><PaginationLink Href="/components/pagination?page=3">3</PaginationLink></PaginationItem>
         <PaginationItem><PaginationEllipsis /></PaginationItem>
-        <PaginationItem><PaginationLink Href="/components/pagination?page=9">9</PaginationLink></PaginationItem>
-        <PaginationItem><PaginationNext Href="/components/pagination?page=2" /></PaginationItem>
+        <PaginationItem><PaginationNext Href="/components/pagination?page=3" /></PaginationItem>
     </PaginationContent>
 </Pagination>

@@ -35,6 +35,7 @@ public static class Deviations
         public Dictionary<string, JsonElement> DefaultVariant { get; set; } = [];
         public Dictionary<string, JsonElement> Composed { get; set; } = [];
         public Dictionary<string, JsonElement> ByCvaName { get; set; } = [];
+        public Dictionary<string, Entry> CallSiteClasses { get; set; } = [];
     }
 
     static readonly Lazy<File_> Loaded = new(() =>
@@ -103,6 +104,19 @@ public static class Deviations
         Loaded.Value.ByCvaName.TryGetValue(slot, out var v) && v.ValueKind == JsonValueKind.String
             ? v.GetString()
             : null;
+
+    /// <summary>
+    /// What upstream passes as the <c>className</c> where it renders another of its own
+    /// components — PaginationPrevious is a PaginationLink with "gap-1 px-2.5" on top. The
+    /// extractor reads cva recipes, and a call site is not one, so those classes belong to no
+    /// slot and the wrapper reads as if it had invented them.
+    /// </summary>
+    /// <remarks>
+    /// Keyed by component rather than slot, because three components render pagination-link and
+    /// only two of them are the arrows.
+    /// </remarks>
+    public static IReadOnlyList<string> CallSiteClassesFor(string component) =>
+        Loaded.Value.CallSiteClasses.TryGetValue(component, out var e) ? e.Classes : [];
 
     public static IReadOnlyDictionary<string, string> DefaultVariantFor(string component) =>
         Loaded.Value.DefaultVariant.TryGetValue(component, out var v) && v.ValueKind == JsonValueKind.Object

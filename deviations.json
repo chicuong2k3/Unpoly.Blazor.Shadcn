@@ -1018,6 +1018,16 @@
       "why": "What <Input> brings, minus anything sidebar-input's own list repeats: subtracting a class the slot itself declares would take it off the rendered side only, and it would then read as missing."
     }
   },
+  "callSiteClasses": {
+    "PaginationPrevious": {
+      "classes": ["gap-1", "px-2.5", "sm:ps-2.5"],
+      "why": "cn(\"gap-1 px-2.5 sm:pl-2.5\") at upstream's call site. sm:ps- rather than sm:pl-, because the extra room belongs on the side the chevron is on and that side moves under RTL."
+    },
+    "PaginationNext": {
+      "classes": ["gap-1", "px-2.5", "sm:pe-2.5"],
+      "why": "cn(\"gap-1 px-2.5 sm:pr-2.5\") at upstream's call site, mirrored for the same reason as PaginationPrevious."
+    }
+  },
   "byCvaName": {
     "$comment": [
       "Slots whose class list is a cva that carries no data-slot of its own. InputGroupButton",
