@@ -812,6 +812,8 @@ renders `<dialog>` · `data-slot="drawer"`
 | `Id` | `string` | `default!` |  |
 | `Direction` | `string` | `"bottom"` | **required** |
 | `Dismissable` | `bool` | `true` |  |
+| `Modal` | `bool` | `true` |  |
+| `SnapPoints` | `string?` | — |  |
 | `ShowHandle` | `bool` | `true` |  |
 
 ## `<DrawerClose>`

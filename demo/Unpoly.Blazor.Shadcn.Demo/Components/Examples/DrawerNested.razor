@@ -1,0 +1,28 @@
+@* A drawer opened from inside another drawer. This needed no machinery at all: the top layer is
+   a STACK, so a second modal <dialog> sits on the first and the first stays where it was — the
+   note that said the platform holds one modal at a time was simply wrong, and untested. *@
+<DrawerTrigger Target="drawer-nested-outer" Variant="secondary">Open Drawer</DrawerTrigger>
+
+<Drawer Id="drawer-nested-outer">
+    <DrawerHeader>
+        <DrawerTitle>Drawer</DrawerTitle>
+        <DrawerDescription>Open another drawer from the same direction.</DrawerDescription>
+    </DrawerHeader>
+    <div class="flex-1 p-4">
+        <div class="h-40 w-full rounded-2xl bg-muted"></div>
+    </div>
+    <DrawerFooter>
+        <DrawerTrigger Target="drawer-nested-inner" Variant="outline">Open second drawer</DrawerTrigger>
+        <DrawerClose>Close</DrawerClose>
+    </DrawerFooter>
+</Drawer>
+
+<Drawer Id="drawer-nested-inner">
+    <DrawerHeader>
+        <DrawerTitle>Second drawer</DrawerTitle>
+        <DrawerDescription>The one underneath is still open behind this.</DrawerDescription>
+    </DrawerHeader>
+    <DrawerFooter>
+        <DrawerClose Variant="default">Back</DrawerClose>
+    </DrawerFooter>
+</Drawer>

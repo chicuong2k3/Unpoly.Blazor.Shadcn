@@ -1,0 +1,17 @@
+@* Opened with show() rather than showModal(): no backdrop, no focus trap, and the page behind
+   stays usable — a panel to consult while working rather than one that takes the page over.
+   Escape still closes it, because that belongs to the element and not to the mode. *@
+<DrawerTrigger Target="drawer-non-modal" Variant="outline">Non Modal</DrawerTrigger>
+
+<Drawer Id="drawer-non-modal" Direction="right" Modal="false">
+    <DrawerHeader>
+        <DrawerTitle>Non Modal Drawer</DrawerTitle>
+        <DrawerDescription>Scroll or type on the page behind — it still works.</DrawerDescription>
+    </DrawerHeader>
+    <div class="flex-1 p-4">
+        <div class="size-full rounded-2xl bg-muted"></div>
+    </div>
+    <DrawerFooter>
+        <DrawerClose Variant="default">Close</DrawerClose>
+    </DrawerFooter>
+</Drawer>

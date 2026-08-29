@@ -861,7 +861,16 @@
   // and setPointerCapture means letting go outside the panel still ends the drag.
 
   up.compiler('[data-slot="drawer-trigger"]', (trigger) => {
-    const onClick = () => document.getElementById(trigger.dataset.open)?.showModal()
+    const onClick = () => {
+      const dialog = document.getElementById(trigger.dataset.open)
+      if (!dialog) return
+      // show(), not showModal(), when the drawer says it is not modal: no backdrop, no focus
+      // trap, and the page behind stays usable. That is the whole of upstream's modal={false},
+      // and it was written off as impossible because "showModal is modal by definition" — which
+      // is true, and is why this calls the other method.
+      if (dialog.dataset.modal === 'false') dialog.show()
+      else dialog.showModal()
+    }
     trigger.addEventListener('click', onClick)
     return () => trigger.removeEventListener('click', onClick)
   })
@@ -874,19 +883,69 @@
     const towards = dialog.dataset.direction === 'top' || dialog.dataset.direction === 'left' ? -1 : 1
     let from = null
 
+    // Snap points, in pixels, smallest first. A bare number is a fraction of the viewport along
+    // the axis the drawer travels — upstream's ["31rem", 1] is "a peek, then nearly all of it".
+    // Resolved by asking the browser what the length means rather than parsing units here.
+    const axis = () => (vertical ? window.innerHeight : window.innerWidth)
+    const points = (dialog.dataset.snapPoints || '').split(/\s+/).filter(Boolean)
+
+    // Measured on demand, against the BODY. Inside the dialog the probe measured zero, because a
+    // closed <dialog> is display:none and nothing in it has a layout — so the panel opened one
+    // pixel tall. And on demand rather than once, so a resized window still snaps to the right
+    // fractions.
+    const snaps = () => points.map((point) => {
+      const asNumber = Number(point)
+      if (!Number.isNaN(asNumber)) return asNumber * axis()
+      const probe = document.createElement('div')
+      probe.style.cssText =
+        `position:absolute;visibility:hidden;pointer-events:none;${vertical ? 'height' : 'width'}:${point}`
+      document.body.append(probe)
+      const px = vertical ? probe.offsetHeight : probe.offsetWidth
+      probe.remove()
+      return px
+    }).sort((a, b) => a - b)
+
+    // The panel opens at the first snap point, and every later rest is written to the same
+    // property — so the size is one number the drag moves, not a transform to unwind afterwards.
+    const restAt = (px) => {
+      panel.style[vertical ? 'height' : 'width'] = `${Math.round(px)}px`
+      panel.style[vertical ? 'maxHeight' : 'maxWidth'] = 'none'
+    }
+    const onOpen = () => { if (points.length) restAt(snaps()[0]) }
+    if (points.length) {
+      dialog.addEventListener('close', () => { panel.style.height = panel.style.width = '' })
+    }
+
+    // Escape belongs to a MODAL dialog; a non-modal one is left to the page, so a drawer opened
+    // with show() ignored it. The key is the same key either way to whoever is pressing it.
+    const onEscape = (event) => {
+      if (event.key === 'Escape' && dialog.open && dialog.dataset.modal === 'false') dialog.close()
+    }
+    if (dialog.dataset.modal === 'false') document.addEventListener('keydown', onEscape)
+
     const offset = (event) => (vertical ? event.clientY : event.clientX)
 
     const onDown = (event) => {
       // Not on a control: dragging must not steal a press meant for a button or a text field.
       if (event.target.closest('button, a, input, select, textarea, [contenteditable]')) return
       from = offset(event)
+      grabbed = vertical ? panel.offsetHeight : panel.offsetWidth
       panel.setPointerCapture(event.pointerId)
       panel.style.transition = 'none'
     }
 
+    let grabbed = 0
+
     const onMove = (event) => {
       if (from === null) return
       const moved = (offset(event) - from) * towards
+      // With snap points the drag RESIZES the panel — both ways, because pulling it further open
+      // is half the point of having them. Without them it can only be pushed shut.
+      if (points.length) {
+        const stops = snaps()
+        restAt(Math.max(24, Math.min(grabbed - moved, stops[stops.length - 1])))
+        return
+      }
       if (moved <= 0) return                       // dragging further in does nothing
       panel.style.transform = vertical ? `translateY(${moved * towards}px)`
                                        : `translateX(${moved * towards}px)`
@@ -898,9 +957,27 @@
       const span = vertical ? panel.offsetHeight : panel.offsetWidth
       from = null
       panel.style.transition = ''
+
+      if (points.length) {
+        const stops = snaps()
+        const now = vertical ? panel.offsetHeight : panel.offsetWidth
+        // Below half the smallest rest, the gesture was "put it away" rather than "make it
+        // smaller" — every drawer with snap points still has to be closeable by dragging.
+        if (now < stops[0] / 2) { dialog.close(); return }
+        restAt(stops.reduce((best, point) =>
+          Math.abs(point - now) < Math.abs(best - now) ? point : best, stops[0]))
+        return
+      }
+
       panel.style.transform = ''
       if (moved > span / 3) dialog.close()
     }
+
+    // The first snap point is where it opens, so the panel is never full height for a frame
+    // before shrinking to its rest.
+    const watch = new MutationObserver(() => { if (dialog.open) onOpen() })
+    watch.observe(dialog, { attributes: true, attributeFilter: ['open'] })
+    if (dialog.open) onOpen()
 
     panel.addEventListener('pointerdown', onDown)
     panel.addEventListener('pointermove', onMove)
@@ -908,6 +985,8 @@
     panel.addEventListener('pointercancel', onUp)
 
     return () => {
+      watch.disconnect()
+      document.removeEventListener('keydown', onEscape)
       panel.removeEventListener('pointerdown', onDown)
       panel.removeEventListener('pointermove', onMove)
       panel.removeEventListener('pointerup', onUp)

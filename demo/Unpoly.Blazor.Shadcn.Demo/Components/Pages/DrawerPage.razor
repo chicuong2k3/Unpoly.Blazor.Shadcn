@@ -9,9 +9,10 @@
     look for a close button. Past a third of the panel it closes; short of that it springs back.
 </p>
 <p class="doc-note">
-    No snap points, no non-modal mode and no nesting: a <code>&lt;dialog&gt;</code> opened with
-    <code>showModal()</code> is modal by definition, and the top layer holds one at a time. Each of
-    those is listed in <code>tools/check_sections.py</code> with the reason.
+    Snap points, non-modal mode and nesting were all written off here as things the platform
+    could not do. Two of the three reasons were wrong. The top layer is a <em>stack</em>, so
+    drawers nest; <code>show()</code> opens a dialog that is not modal. Only the drag itself
+    needed building, and it is below.
 </p>
 
 <h2 class="doc-h2">Basic</h2>
@@ -29,6 +30,30 @@
 
 <h2 class="doc-h2">Swipe Handle</h2>
 <Example Source="DrawerSwipeHandle.razor"><DrawerSwipeHandle /></Example>
+
+<h2 class="doc-h2">Snap Points</h2>
+<p class="doc-note">
+    The drag rests rather than only closing. The heights are ordinary CSS lengths, resolved by
+    asking the browser what they mean, so <code>31rem 1</code> is a real size and a fraction of
+    the viewport.
+</p>
+<Example Source="DrawerSnapPoints.razor"><DrawerSnapPoints /></Example>
+
+<h2 class="doc-h2">Non Modal</h2>
+<p class="doc-note">
+    <code>show()</code> instead of <code>showModal()</code>: no backdrop, no focus trap, the page
+    behind stays usable. This page said it was impossible because a modal dialog is modal by
+    definition — which is true, and is exactly why this calls the other method.
+</p>
+<Example Source="DrawerNonModal.razor"><DrawerNonModal /></Example>
+
+<h2 class="doc-h2">Nested</h2>
+<p class="doc-note">
+    The top layer is a stack, not a single slot, so a drawer opened from inside another sits on
+    top of it and the first stays put. This needed no code at all — only the check that the note
+    claiming otherwise was wrong.
+</p>
+<Example Source="DrawerNested.razor"><DrawerNested /></Example>
 
 <h2 class="doc-h2">Responsive</h2>
 <p class="doc-note">

@@ -1,0 +1,20 @@
+@* The drag rests instead of only closing: pull the panel and it settles at the nearest listed
+   height — a peek, or nearly the whole screen — and only a drag below the smallest one puts it
+   away. The heights are CSS lengths, so "31rem 1" reads as a real size and a fraction of the
+   viewport, which is upstream's own pair. *@
+<DrawerTrigger Target="drawer-snap" Variant="outline">Open Snap Drawer</DrawerTrigger>
+
+<Drawer Id="drawer-snap" SnapPoints="31rem 1">
+    <DrawerHeader>
+        <DrawerTitle>Snap points</DrawerTitle>
+        <DrawerDescription>
+            Drag the drawer to snap between a compact peek and a near full-height view.
+        </DrawerDescription>
+    </DrawerHeader>
+    <div class="flex-1 p-4">
+        <div class="h-80 w-full rounded-2xl bg-muted"></div>
+    </div>
+    <DrawerFooter>
+        <DrawerClose Variant="default">Close</DrawerClose>
+    </DrawerFooter>
+</Drawer>

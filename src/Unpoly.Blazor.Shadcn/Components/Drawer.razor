@@ -11,7 +11,8 @@
    The grab handle is drawn for a bottom or top drawer only. On a side drawer it would be a
    vertical bar nobody has been taught to pull. *@
 
-<dialog id="@Id" data-slot="drawer" data-direction="@Direction" data-dismissable="@Dismissable">
+<dialog id="@Id" data-slot="drawer" data-direction="@Direction" data-dismissable="@Dismissable"
+        data-modal="@(Modal ? null : "false")" data-snap-points="@SnapPoints">
     <div data-slot="drawer-content" data-vaul-drawer-direction="@Direction" class="@Classes"
          @attributes="AdditionalAttributes">
         @if (ShowHandle && Direction is "bottom" or "top")
@@ -33,6 +34,20 @@
     [Parameter] public string Direction { get; set; } = "bottom";
 
     [Parameter] public bool Dismissable { get; set; } = true;
+
+    /// <summary>
+    /// False opens it with <c>show()</c> rather than <c>showModal()</c>: no backdrop, no focus
+    /// trap, and the page behind stays usable — a drawer you can consult while working, which is
+    /// what upstream's modal={false} means. Escape still closes it, because the platform does.
+    /// </summary>
+    [Parameter] public bool Modal { get; set; } = true;
+
+    /// <summary>
+    /// Heights the drag rests at, biggest last, as CSS lengths or fractions of the viewport:
+    /// "31rem 1" is upstream's own pair. Empty means the old behaviour — a drag either closes it
+    /// or springs back. Only a drag below the smallest point closes a drawer that has these.
+    /// </summary>
+    [Parameter] public string? SnapPoints { get; set; }
 
     [Parameter] public bool ShowHandle { get; set; } = true;
 

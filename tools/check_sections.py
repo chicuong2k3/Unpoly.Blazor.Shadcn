@@ -48,9 +48,6 @@ NOT_HERE = {
     ('carousel', 'Events'): 'the same',
     ('carousel', 'Plugins'): 'the same',
     ('carousel', 'Options'): 'the same',
-    ('drawer', 'Snap Points'): 'vaul\'s; the drag here closes or springs back and does not rest',
-    ('drawer', 'Non Modal'): 'a <dialog> opened with showModal() is modal by definition',
-    ('drawer', 'Nested'): 'the top layer holds one modal <dialog> at a time',
     ('sidebar', 'useSidebar'): 'a React hook; the state is a cookie the server reads',
     ('sidebar', 'Controlled Sidebar'): 'the same',
     ('calendar', 'Persian / Hijri / Jalali Calendar'):
