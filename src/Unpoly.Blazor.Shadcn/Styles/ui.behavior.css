@@ -370,20 +370,25 @@
         border-radius: 2px;
         rotate: 45deg;
     }
+    /* PHYSICAL sides, not logical ones. data-placed-side is already physical — it is where the
+       tip ended up on the screen, decided by measurement — so `inset-inline-start` flipped the
+       arrow to the far edge under dir="rtl" and it drew outside the tip, pointing at nothing.
+       Only the top and bottom cases centre along the inline axis, and centring is the same in
+       both directions. */
     [data-slot="tooltip-content"][data-placed-side="top"]::after {
-        inset-block-end: 0; inset-inline-start: 50%;
+        bottom: 0; left: 50%;
         translate: -50% calc(50% - 2px);
     }
     [data-slot="tooltip-content"][data-placed-side="bottom"]::after {
-        inset-block-start: 0; inset-inline-start: 50%;
+        top: 0; left: 50%;
         translate: -50% calc(-50% + 2px);
     }
     [data-slot="tooltip-content"][data-placed-side="left"]::after {
-        inset-inline-end: 0; inset-block-start: 50%;
+        right: 0; top: 50%;
         translate: calc(50% - 2px) -50%;
     }
     [data-slot="tooltip-content"][data-placed-side="right"]::after {
-        inset-inline-start: 0; inset-block-start: 50%;
+        left: 0; top: 50%;
         translate: calc(-50% + 2px) -50%;
     }
 

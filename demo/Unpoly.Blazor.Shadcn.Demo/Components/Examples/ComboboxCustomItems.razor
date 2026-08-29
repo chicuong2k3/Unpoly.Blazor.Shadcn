@@ -7,7 +7,7 @@
             <ComboboxValue data-placeholder="Pick a runtime…">Node.js</ComboboxValue>
         </ComboboxTrigger>
 
-        <ComboboxContent Id="cb-ci-list" Class="w-80">
+        <ComboboxContent Id="cb-ci-list">
             <ComboboxList>
                 <ComboboxEmpty>No runtime by that name.</ComboboxEmpty>
                 @foreach (var (value, name, note, keywords) in Runtimes)

@@ -370,6 +370,18 @@
 
   function place(panel, anchor, align = 'start', side = 'bottom', offset = 4) {
     const a = anchor.getBoundingClientRect()
+
+    // What the panel's own class string is written against, and it has to be set BEFORE the
+    // panel is measured or the placement below works from a width that is about to change.
+    // shadcn sizes a combobox list with `w-(--anchor-width)` and caps menus with
+    // `max-h-(--available-height)`; Base UI's positioner supplies those, and nothing here did —
+    // so the class resolved to nothing, the list kept whatever width it happened to have, and it
+    // stood out past the side of the box it belongs to.
+    panel.style.setProperty('--anchor-width', `${Math.round(a.width)}px`)
+    panel.style.setProperty('--available-width', `${document.documentElement.clientWidth - 16}px`)
+    panel.style.setProperty('--available-height',
+      `${Math.max(120, Math.round(Math.max(a.top, window.innerHeight - a.bottom) - offset - 8))}px`)
+
     const p = panel.getBoundingClientRect()
     const flip = rtl(anchor)
     const room = document.documentElement.clientWidth
@@ -1279,7 +1291,14 @@
       const open = event.newState === 'open'
       trigger?.setAttribute('aria-expanded', String(open))
       input?.setAttribute('aria-expanded', String(open))
-      if (open) place(panel, trigger || root, 'start', 'bottom', 4)
+      // The FRAME is the anchor, not the box inside it: an input-group's chevron and icon are
+      // part of the control the reader sees, and a chips field is the whole bordered area. Left
+      // to the inner input the list started at the text and stood out past the frame's edge.
+      if (open) {
+        const frame = (trigger || input)?.closest(
+          '[data-slot="input-group"], [data-slot="combobox-chips"]') || trigger || root
+        place(panel, frame, 'start', 'bottom', 4)
+      }
       // The popup pattern: the panel opened from a button and the search box lives inside it.
       // Focus goes straight there, which is what makes it a search box rather than an ornament.
       if (open && input && panel.contains(input)) input.focus()
@@ -1800,6 +1819,20 @@
 
     const onKey = (event) => { if (event.key === 'Escape') { clearTimeout(openTimer); panel.hidePopover() } }
 
+    // The safety net. pointerleave is the ordinary way this closes, and it is enough right up
+    // until it is not: a card that opens over its own trigger, a pointer that leaves the window,
+    // an element swapped out from under the cursor. Then no leave event ever arrives and the
+    // card sits there with the pointer nowhere near it — which is exactly what gets reported.
+    // So ask the document directly: pointer over neither, focus in neither, start closing.
+    const onMove = (event) => {
+      if (!panel.matches(':popover-open')) return
+      const over = document.elementFromPoint(event.clientX, event.clientY)
+      if (over && (trigger.contains(over) || panel.contains(over))) return
+      if (trigger.contains(document.activeElement) || panel.contains(document.activeElement)) return
+      close()
+    }
+
+    document.addEventListener('pointermove', onMove, { passive: true })
     trigger.addEventListener('pointerenter', open)
     trigger.addEventListener('pointerleave', close)
     trigger.addEventListener('focus', open)
@@ -1815,6 +1848,7 @@
       trigger.removeEventListener('pointerleave', close)
       trigger.removeEventListener('focus', open)
       trigger.removeEventListener('blur', close)
+      document.removeEventListener('pointermove', onMove)
       document.removeEventListener('keydown', onKey)
     }
   })
