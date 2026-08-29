@@ -328,10 +328,33 @@
     panel.style.top = `${Math.round(top)}px`
   }
 
+  let tabsSeq = 0
+
   up.compiler('[data-slot="tabs"]', (root) => {
-    const triggers = [...root.querySelectorAll('[data-slot="tabs-trigger"]')]
-    const panels = [...root.querySelectorAll('[data-slot="tabs-content"]')]
+    // Tabs nest: this documentation page puts every example inside its own Preview/Code tabs, so
+    // an example that is itself a tab strip has one Tabs inside another. Both compilers see the
+    // same bubbled event, so each one has to check that the trigger is ITS OWN — mine, not merely
+    // somewhere beneath me. Without that check the outer strip handled the inner strip's arrow
+    // key, could not find the trigger in its own list, and moved focus to its own first tab.
+    const seq = ++tabsSeq
+    const mine = (el) => el?.closest('[data-slot="tabs"]') === root
+    const triggers = [...root.querySelectorAll('[data-slot="tabs-trigger"]')].filter(mine)
+    const panels = [...root.querySelectorAll('[data-slot="tabs-content"]')].filter(mine)
     if (triggers.length === 0) return
+
+    // A tab and its panel have to name each other, or a screen reader can reach the strip and
+    // never reach what it opens. The ids are generated because the pairing is already known here
+    // and a caller should not have to invent two of them per tab.
+    triggers.forEach((trigger, i) => {
+      const panel = panels.find((p) => p.dataset.value === trigger.dataset.value)
+      if (!panel) return
+      // Numbered per strip, not per page: without the counter a second Tabs with no id of
+      // its own minted tabs-tab-0 all over again, and aria-controls pointed into the first.
+      trigger.id ||= `${root.id || 'tabs-' + seq}-tab-${i}`
+      panel.id ||= `${root.id || 'tabs-' + seq}-panel-${i}`
+      trigger.setAttribute('aria-controls', panel.id)
+      panel.setAttribute('aria-labelledby', trigger.id)
+    })
 
     const show = (value) => {
       for (const t of triggers) t.dataset.state = t.dataset.value === value ? 'active' : 'inactive'
@@ -342,21 +365,25 @@
 
     const onClick = (event) => {
       const trigger = event.target.closest('[data-slot="tabs-trigger"]')
-      if (trigger && root.contains(trigger)) show(trigger.dataset.value)
+      if (mine(trigger)) show(trigger.dataset.value)
     }
 
     // Arrow keys move between tabs, which is the part of the APG pattern people actually notice.
     const onKey = (event) => {
+      const trigger = event.target.closest('[data-slot="tabs-trigger"]')
+      if (!mine(trigger)) return
       const forward = rtl(root) ? 'ArrowLeft' : 'ArrowRight'
       const back = rtl(root) ? 'ArrowRight' : 'ArrowLeft'
       const step = { [back]: -1, [forward]: 1, Home: -Infinity, End: Infinity }[event.key]
-      if (step === undefined || !event.target.matches('[data-slot="tabs-trigger"]')) return
+      if (step === undefined) return
       event.preventDefault()
-      const from = triggers.indexOf(event.target)
+      const from = triggers.indexOf(trigger)
       const to = Math.max(0, Math.min(triggers.length - 1, step === Infinity ? triggers.length - 1
         : step === -Infinity ? 0 : from + step))
-      triggers[to].focus()
+      // Activate first, then focus: show() rewrites every tabIndex, and setting -1 on the element
+      // that is being focused in the same tick is how the focus ended up on the document.
       show(triggers[to].dataset.value)
+      triggers[to].focus()
     }
 
     root.addEventListener('click', onClick)

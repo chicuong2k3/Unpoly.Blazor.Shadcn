@@ -1,4 +1,8 @@
-<div dir="rtl" class="flex items-center gap-3">
-    <Toggle Checked><Icon Name="layout-grid" />شبكة</Toggle>
-    <Toggle>قائمة</Toggle>
+@* The same bookmark toggle in Arabic. Nothing here names a side: the gap between the icon and
+   the word is a flex gap, so the icon leads in both directions. *@
+<div dir="rtl">
+    <Toggle Size="sm" Variant="outline" Name="bookmark-rtl" aria-label="إشارة مرجعية">
+        <Icon Name="bookmark" Class="group-has-[:checked]/toggle:fill-foreground" />
+        إشارة مرجعية
+    </Toggle>
 </div>

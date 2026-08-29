@@ -1,6 +1,8 @@
-@* A button that stays pressed, and a real checkbox underneath so it posts. role="button"
-   with aria-pressed is what a screen reader needs: a bare checkbox that looks like a button
-   would be described wrongly. *@
-<Toggle Name="bold" Checked><Icon Name="pencil" /></Toggle>
-<Toggle Name="italic">Italic</Toggle>
-<Toggle Name="disabled" Disabled>Disabled</Toggle>
+@* Upstream's own: one small outline toggle with an icon and a word. The bookmark fills when the
+   toggle is pressed — upstream writes that as group-aria-pressed/toggle, and here the pressed
+   state is a real checked checkbox inside the label, so it is group-has-[:checked]/toggle. Same
+   idea: the child styles itself from the state of the control it is inside. *@
+<Toggle Size="sm" Variant="outline" Name="bookmark" aria-label="Toggle bookmark">
+    <Icon Name="bookmark" Class="group-has-[:checked]/toggle:fill-foreground" />
+    Bookmark
+</Toggle>

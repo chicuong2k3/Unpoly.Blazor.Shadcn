@@ -2587,6 +2587,9 @@
   .group-has-data-\[variant\=ghost\]\/message\:px-0:is(:where(.group\/message):has([data-variant="ghost"]) *) {
     padding-inline: 0px;
   }
+  .group-has-\[\:checked\]\/toggle\:fill-foreground:is(:where(.group\/toggle):has(:is(:checked)) *) {
+    fill: var(--foreground);
+  }
   .group-has-\[\[data-orientation\=horizontal\]\]\/field\:text-balance:is(:where(.group\/field):has(:is([data-orientation=horizontal])) *) {
     text-wrap: balance;
   }

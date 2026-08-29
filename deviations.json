@@ -501,6 +501,12 @@
         "data-[orientation=vertical]:w-4"
       ],
       "why": "The width upstream gets from w-auto around a wrapper. See dropped.slider."
+    },
+    "toggle": {
+      "classes": [
+        "group/toggle"
+      ],
+      "why": "Upstream's own example writes group-aria-pressed/toggle on the icon inside a Toggle, so the root carries group/toggle there too — the extractor reads the cva, and this one is written on the component. Here it is group-has-[:checked]/toggle rather than group-aria-pressed, because the pressed state is a real checked checkbox inside the label rather than an attribute on the button."
     }
   },
   "dropped": {

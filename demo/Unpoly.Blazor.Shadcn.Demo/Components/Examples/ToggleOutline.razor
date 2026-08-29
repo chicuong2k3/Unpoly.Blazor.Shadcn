@@ -1,4 +1,10 @@
-<div class="flex items-center gap-3">
-    <Toggle Variant="outline" aria-label="Bold"><Icon Name="pencil" /></Toggle>
-    <Toggle Variant="outline" Checked aria-label="Italic"><Icon Name="eye" /></Toggle>
+@* The outline variant carries a border and a shadow, so it reads as a control when it is off
+   rather than only when it is on. *@
+<div class="flex flex-wrap items-center gap-2">
+    <Toggle Variant="outline" Name="italic" aria-label="Toggle italic">
+        <Icon Name="italic" />Italic
+    </Toggle>
+    <Toggle Variant="outline" Name="bold" aria-label="Toggle bold">
+        <Icon Name="bold" />Bold
+    </Toggle>
 </div>

@@ -1,6 +1,11 @@
 @inherits UiComponentBase
 
-<div id="@Id" popover="manual" data-slot="hover-card-content" data-align="@Align" data-side="@Side"
+@* popover="auto", not "manual". Manual has no light dismiss: nothing closes it but the code
+   that opened it, so two cards could sit open at once — the second covering the first's trigger,
+   which then never sees a pointerleave — and any failure in the compiler left one on screen with
+   no way for the platform to take it away. Auto closes on an outside pointerdown, on Escape, and
+   when another popover opens, which is the behaviour Radix gives a hover card anyway. *@
+<div id="@Id" popover="auto" data-slot="hover-card-content" data-align="@Align" data-side="@Side"
      class="@Classes" @attributes="AdditionalAttributes">@ChildContent</div>
 
 @code {
