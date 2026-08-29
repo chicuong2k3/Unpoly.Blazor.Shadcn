@@ -32,6 +32,23 @@
 </p>
 <Example Source="MessageScrollerOpening.razor"><MessageScrollerOpening /></Example>
 
+<h2 class="doc-h2">Streaming</h2>
+<p class="doc-note">
+    Auto-scroll follows the live edge of the conversation, and only while the reader is at it.
+    shadcn streams tokens from a fake transport; there is no client state here, so the server
+    sends one more turn per press — the scroller's own half of the behaviour is identical either
+    way.
+</p>
+<Example Source="MessageScrollerStreaming.razor"><MessageScrollerStreaming /></Example>
+
+<h2 class="doc-h2">Keeping Context Visible</h2>
+<p class="doc-note">
+    <code>ScrollMargin</code> is how much of the previous reply stays above an anchored turn — the
+    difference between "a new question appeared" and "here is the answer to the thing you just
+    read".
+</p>
+<Example Source="MessageScrollerPreviousContext.razor"><MessageScrollerPreviousContext /></Example>
+
 <h2 class="doc-h2">Commands</h2>
 <p class="doc-note">
     Any element carrying <code>data-scroll-to-message</code> jumps to the turn with that
@@ -40,6 +57,14 @@
 </p>
 <Example Source="MessageScrollerCommands.razor"><MessageScrollerCommands /></Example>
 
+<h2 class="doc-h2">Visibility</h2>
+<p class="doc-note">
+    The root publishes <code>data-current-anchor</code> as the viewport moves, and anything
+    carrying <code>data-anchor-mark</code> for the same turn gets <code>data-current</code>. That
+    is shadcn's <code>useMessageScrollerVisibility</code>, written where CSS can reach it.
+</p>
+<Example Source="MessageScrollerVisibility.razor"><MessageScrollerVisibility /></Example>
+
 <h2 class="doc-h2">Scrollable</h2>
 <p class="doc-note">
     The root publishes <code>data-can-scroll-start</code> and <code>data-can-scroll-end</code>, so
@@ -47,6 +72,14 @@
     through a hook.
 </p>
 <Example Source="MessageScrollerScrollable.razor"><MessageScrollerScrollable /></Example>
+
+<h2 class="doc-h2">Group Chat</h2>
+<p class="doc-note">
+    Several participants and an assistant, with a <a href="/components/marker">Marker</a> as a turn
+    of its own — a thing that happened rather than a thing someone said. It anchors like any other
+    turn, so a thread can settle on an event.
+</p>
+<Example Source="MessageScrollerGroupChat.razor"><MessageScrollerGroupChat /></Example>
 
 <h2 class="doc-h2">Load History</h2>
 <p class="doc-note">

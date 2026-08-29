@@ -1531,11 +1531,38 @@
     // Where the thread can still go, published as state so a footer can say "you are at the
     // top" in CSS. This is upstream's useMessageScrollerScrollable, which is two booleans
     // wearing a hook's clothes.
+    // Which anchored turn the reader is on: the last one whose top has passed the margin. It is
+    // upstream's useMessageScrollerVisibility, and it is published two ways — on the root for CSS,
+    // and as data-current on anything that named the same turn, because an outline row and a
+    // dash beside the card both want to light up and CSS cannot compare two attributes.
+    const anchorNow = () => {
+      let current = null
+      for (const anchor of anchors()) {
+        if (anchor.offsetTop - viewport.scrollTop <= margin() + 4) current = anchor
+      }
+      // Above the first anchor, the first anchor is still the one you are on — nothing has been
+      // passed yet, and an outline with no row lit reads as broken rather than as scrolled up.
+      return (current || anchors()[0])?.dataset.messageId || null
+    }
+
+    let announced = null
+    const announce = () => {
+      const id = anchorNow()
+      if (id === announced) return
+      announced = id
+      if (id) root.dataset.currentAnchor = id
+      else delete root.dataset.currentAnchor
+      for (const mark of document.querySelectorAll('[data-anchor-mark]')) {
+        mark.dataset.current = String(mark.dataset.anchorMark === id)
+      }
+    }
+
     const sync = () => {
       const end = atEnd()
       root.dataset.following = end ? 'true' : 'false'
       root.dataset.canScrollStart = viewport.scrollTop > 8 ? 'true' : 'false'
       root.dataset.canScrollEnd = end ? 'false' : 'true'
+      announce()
       for (const button of buttons()) {
         const done = button.dataset.direction === 'start' ? atStart() : end
         button.hidden = done

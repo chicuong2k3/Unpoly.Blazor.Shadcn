@@ -1,51 +1,53 @@
-@* Jump to a turn by name. Any element carrying data-scroll-to-message is a jump target, so a
-   menu, an outline or a plain link all work — this is the markup half of shadcn's
-   scrollToMessage, and it needs no state to do its job. *@
-<div class="flex w-full max-w-xl flex-col gap-3">
-    <DropdownMenuTrigger Target="scroller-jump" Variant="outline" Class="w-fit">
-        Jump to… <Icon Name="chevron-down" />
-    </DropdownMenuTrigger>
-    <DropdownMenuContent Id="scroller-jump" Class="w-64">
-        @foreach (var (id, text) in Questions)
-        {
-            <DropdownMenuItem data-scroll-to-message="@id">@text</DropdownMenuItem>
-        }
-    </DropdownMenuContent>
+@* Driving the transcript from outside it. Anything carrying data-scroll-to-message jumps to the
+   turn with that MessageId — a menu, an outline, a plain link — which is the markup half of
+   shadcn's scrollToMessage and needs no state to do its job.
 
-    <MessageScroller Class="relative h-72 w-full rounded-lg border">
-        <MessageScrollerViewport Class="h-full p-4">
-            <MessageScrollerContent Class="gap-6">
-                @foreach (var (id, question, answer) in Thread)
-                {
-                    <MessageScrollerItem MessageId="@id" ScrollAnchor>
-                        <Message Align="end">
-                            <MessageContent>
-                                <Bubble><BubbleContent>@question</BubbleContent></Bubble>
-                            </MessageContent>
-                        </Message>
-                    </MessageScrollerItem>
-                    <MessageScrollerItem>
-                        <Message>
-                            <MessageContent>
-                                <Bubble Variant="muted"><BubbleContent>@answer</BubbleContent></Bubble>
-                            </MessageContent>
-                        </Message>
-                    </MessageScrollerItem>
-                }
-            </MessageScrollerContent>
-        </MessageScrollerViewport>
-        <MessageScrollerButton />
-    </MessageScroller>
+   The buttons are outside the scroller entirely. That is the point: the command is a name, not a
+   reference, so whatever holds the names does not have to be anywhere near the thread. *@
+<div class="mx-auto flex w-full max-w-sm flex-col gap-4">
+    <Card Class="h-140 w-full gap-0">
+        <CardHeader Class="gap-1 border-b">
+            <CardTitle>Commands</CardTitle>
+            <CardDescription>Drive the transcript from outside.</CardDescription>
+        </CardHeader>
+
+        <CardContent Class="flex-1 overflow-hidden p-0">
+            <MessageScroller OpenAt="end">
+                <MessageScrollerViewport>
+                    <MessageScrollerContent Class="p-(--card-spacing)">
+                        <ChatTranscript Turns="Thread" />
+                    </MessageScrollerContent>
+                </MessageScrollerViewport>
+                <MessageScrollerButton Direction="start" />
+                <MessageScrollerButton />
+            </MessageScroller>
+        </CardContent>
+
+        <CardFooter Class="flex flex-wrap justify-center gap-2 border-t">
+            @foreach (var turn in Thread.Where(t => t.Role == "user"))
+            {
+                <Button Variant="secondary" Size="sm" data-scroll-to-message="@turn.Id">
+                    @turn.Text[..Math.Min(18, turn.Text.Length)]…
+                </Button>
+            }
+        </CardFooter>
+    </Card>
+
+    <div class="mx-auto max-w-sm px-0.5 text-center text-xs text-balance text-muted-foreground">
+        Use the controls to jump to any message in the conversation.
+    </div>
 </div>
 
 @code {
-    static readonly (string Id, string Question, string Answer)[] Thread =
+    static readonly ChatTranscript.Turn[] Thread =
     [
-        ("m-deploy", "How do I deploy this?", "Push to main. The workflow builds, tests and publishes."),
-        ("m-secrets", "Where do the secrets live?", "In the repository's environment, read at boot and never written to disk."),
-        ("m-rollback", "How do I roll back?", "Re-run the previous workflow: the artifact is still there for ninety days."),
+        new("cmd-1", "user", "Can something outside the thread scroll it?"),
+        new("cmd-2", "assistant", "Yes, and it needs no handle on the scroller. A button carrying data-scroll-to-message names a turn, and the compiler finds it.\n\nThat is the difference between a name and a reference: the button can live anywhere on the page, including in a menu that is not rendered until it opens."),
+        new("cmd-3", "user", "What about a table of contents?"),
+        new("cmd-4", "assistant", "The same attribute on every row. An outline is a list of names, and this is a component that answers to names.\n\nNo state is exchanged in either direction, so nothing can fall out of step."),
+        new("cmd-5", "user", "And a link from another page?"),
+        new("cmd-6", "assistant", "That is what a fragment identifier already does, so the scroller does not need to reinvent it — but the same attribute on a link works too when you want the smooth scroll and the margin rather than the browser's jump."),
+        new("cmd-7", "user", "Does it work while the thread is growing?"),
+        new("cmd-8", "assistant", "It does. The jump measures the turn at the moment it runs, so it is not affected by anything that arrived before it."),
     ];
-
-    static (string Id, string Text)[] Questions =>
-        Thread.Select(t => (t.Id, t.Question)).ToArray();
 }

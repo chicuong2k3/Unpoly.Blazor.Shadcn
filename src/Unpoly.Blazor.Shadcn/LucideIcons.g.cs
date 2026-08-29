@@ -76,6 +76,7 @@ public static class LucideIcons
             ["trending-up"] = """<path d="M16 7h6v6" /> <path d="m22 7-8.5 8.5-5-5L2 17" />""",
             ["triangle-alert"] = """<path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3" /> <path d="M12 9v4" /> <path d="M12 17h.01" />""",
             ["upload"] = """<path d="M12 3v12" /> <path d="m17 8-5-5-5 5" /> <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />""",
+            ["user-plus"] = """<path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" /> <circle cx="9" cy="7" r="4" /> <line x1="19" x2="19" y1="8" y2="14" /> <line x1="22" x2="16" y1="11" y2="11" />""",
             ["x"] = """<path d="M18 6 6 18" /> <path d="m6 6 12 12" />""",
         };
 }

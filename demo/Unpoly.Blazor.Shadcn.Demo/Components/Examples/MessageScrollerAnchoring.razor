@@ -1,34 +1,58 @@
-@* The turn marked ScrollAnchor settles at the TOP of the viewport with a peek of the exchange
-   above it, instead of the thread snapping to its own bottom. That is the difference between
-   this component and a box with overflow: auto — when a long answer arrives you are left looking
-   at the question that caused it, not at the end of the answer. *@
-<MessageScroller OpenAt="anchor" ScrollMargin="16"
-                 Class="relative h-80 w-full max-w-xl rounded-lg border">
-    <MessageScrollerViewport Class="h-full p-4">
-        <MessageScrollerContent>
-            @foreach (var (id, mine, text) in Turns)
-            {
-                <MessageScrollerItem MessageId="@id" ScrollAnchor="@mine">
-                    <Message Align="@(mine ? "end" : "start")">
-                        <MessageContent>
-                            <Bubble Variant="@(mine ? "default" : "muted")">
-                                <BubbleContent>@text</BubbleContent>
-                            </Bubble>
-                        </MessageContent>
-                    </Message>
-                </MessageScrollerItem>
-            }
-        </MessageScrollerContent>
-    </MessageScrollerViewport>
-    <MessageScrollerButton />
-</MessageScroller>
+@inject NavigationManager Nav
+
+@* Which role settles near the top edge. shadcn keeps that choice in state and puts a toggle in
+   the card header; here the toggle is a GET form and the choice is in the URL, so it is
+   bookmarkable and works before any script runs — Unpoly swaps only this card.
+
+   The anchored turn is what separates this component from a box with overflow: auto. When a long
+   answer arrives, an anchored question stays at the top of the viewport with a peek of the
+   exchange above it, instead of the thread snapping to its own bottom. *@
+<div class="mx-auto flex w-full max-w-sm flex-col gap-4" id="ms-anchoring">
+    <Card Class="h-140 w-full gap-0">
+        <CardHeader Class="gap-1 border-b">
+            <CardTitle>Anchoring Turns</CardTitle>
+            <CardDescription>Choose which role settles near the top edge.</CardDescription>
+            <CardAction>
+                <form method="get" up-autosubmit up-target="#ms-anchoring">
+                    <ToggleGroup Size="sm" Variant="outline">
+                        <ToggleGroupItem Name="anchor" Value="user" Size="sm" Variant="outline"
+                                         Checked="@(Anchor == "user")">User</ToggleGroupItem>
+                        <ToggleGroupItem Name="anchor" Value="assistant" Size="sm" Variant="outline"
+                                         Checked="@(Anchor == "assistant")">Assistant</ToggleGroupItem>
+                    </ToggleGroup>
+                </form>
+            </CardAction>
+        </CardHeader>
+
+        <CardContent Class="flex-1 overflow-hidden p-0">
+            <MessageScroller OpenAt="anchor" ScrollMargin="24">
+                <MessageScrollerViewport>
+                    <MessageScrollerContent Class="p-(--card-spacing)">
+                        <ChatTranscript Turns="Thread" AnchorRole="@Anchor" />
+                    </MessageScrollerContent>
+                </MessageScrollerViewport>
+                <MessageScrollerButton />
+            </MessageScroller>
+        </CardContent>
+    </Card>
+
+    <div class="mx-auto max-w-xs px-0.5 text-center text-xs text-muted-foreground">
+        Toggle the anchor role, then scroll to compare where turns settle.
+    </div>
+</div>
 
 @code {
-    static readonly (string Id, bool Mine, string Text)[] Turns =
+    string Anchor =>
+        System.Web.HttpUtility.ParseQueryString(new Uri(Nav.Uri).Query)["anchor"] == "assistant"
+            ? "assistant" : "user";
+
+    static readonly ChatTranscript.Turn[] Thread =
     [
-        ("q1", true, "What broke the build?"),
-        ("a1", false, "The lock file was missing, so install had nothing to resolve against."),
-        ("q2", true, "Why would it go missing?"),
-        ("a2", false, "It is in .gitignore. That is fine for a library and wrong for an application: an application wants the exact tree it was tested with, and a library wants whatever its consumer resolves. The fix is one line, and the reason it went unnoticed for so long is that a fresh install happened to resolve the same versions every time until last week."),
+        new("anc-1", "user", "Where does the view land when a long answer arrives?"),
+        new("anc-2", "assistant", "At the question, not at the end of the answer. The anchored turn settles near the top of the viewport and the reply grows beneath it.\n\nA plain overflow container has no idea which turn caused the reply, so it can only jump to the bottom — which is the disorienting part."),
+        new("anc-3", "user", "And the exchange above it?"),
+        new("anc-4", "assistant", "A peek of it stays visible. ScrollMargin is how much: enough that the previous turn is recognisable, not so much that the new one starts below the fold.\n\nTwenty-four pixels is upstream's default, and it reads as a deliberate gap rather than a mistake."),
+        new("anc-5", "user", "What if I anchor the assistant instead?"),
+        new("anc-6", "assistant", "Then the answer settles at the top and the question scrolls away above it. That is the right choice when the reply is the thing being read and the prompt was a formality.\n\nIt is one attribute, so it is worth trying both against your own content."),
     ];
 }

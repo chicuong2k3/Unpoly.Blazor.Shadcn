@@ -59,4 +59,5 @@ trash-2
 trending-up
 triangle-alert
 upload
+user-plus
 x

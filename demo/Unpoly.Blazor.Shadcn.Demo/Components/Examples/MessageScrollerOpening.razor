@@ -1,39 +1,64 @@
-@* Where a thread sits when it appears. At the end for a live chat, at the start for a
-   transcript someone is about to read from the top, and at the last anchored turn for a reader
-   coming back to a conversation they were part of. *@
-<div class="flex w-full flex-col gap-6">
-    @foreach (var (openAt, label) in Positions)
-    {
-        <div class="flex flex-col gap-2">
-            <p class="text-sm font-medium">@label</p>
-            <MessageScroller OpenAt="@openAt" Class="relative h-48 w-full max-w-lg rounded-lg border">
-                <MessageScrollerViewport Class="h-full p-4">
-                    <MessageScrollerContent Class="gap-4">
-                        @foreach (var n in Enumerable.Range(1, 8))
-                        {
-                            <MessageScrollerItem MessageId="@($"{openAt}-{n}")" ScrollAnchor="@(n == 6)">
-                                <Message Align="@(n % 2 == 0 ? "end" : "start")">
-                                    <MessageContent>
-                                        <Bubble Variant="@(n % 2 == 0 ? "default" : "muted")">
-                                            <BubbleContent>Message @n</BubbleContent>
-                                        </Bubble>
-                                    </MessageContent>
-                                </Message>
-                            </MessageScrollerItem>
-                        }
+@inject NavigationManager Nav
+
+@* Where a saved transcript opens: at the end for a live chat, at the start for something read
+   from the top, at the last anchored turn for a reader coming back to a thread they were part of.
+
+   shadcn calls this defaultScrollPosition on the provider. Here it is OpenAt on the root, and the
+   segmented control is a GET form, so the choice survives a reload. *@
+<div class="mx-auto flex w-full max-w-sm flex-col gap-4" id="ms-opening">
+    <Card Class="h-140 w-full gap-0">
+        <CardHeader Class="gap-1 border-b">
+            <CardTitle>Opening Position</CardTitle>
+            <CardDescription>Choose where a saved transcript opens.</CardDescription>
+        </CardHeader>
+
+        <CardContent Class="flex-1 overflow-hidden p-0">
+            <MessageScroller OpenAt="@Position" ScrollMargin="64">
+                <MessageScrollerViewport>
+                    <MessageScrollerContent Class="p-(--card-spacing)">
+                        <ChatTranscript Turns="Thread" />
                     </MessageScrollerContent>
                 </MessageScrollerViewport>
+                <MessageScrollerButton Direction="start" />
                 <MessageScrollerButton />
             </MessageScroller>
-        </div>
-    }
+        </CardContent>
+
+        <CardFooter Class="flex items-center justify-center border-t">
+            <form method="get" up-autosubmit up-target="#ms-opening">
+                <ToggleGroup Size="sm" Variant="outline">
+                    @foreach (var choice in new[] { "start", "anchor", "end" })
+                    {
+                        <ToggleGroupItem Name="at" Value="@choice" Size="sm" Variant="outline"
+                                         Checked="@(Position == choice)">@choice</ToggleGroupItem>
+                    }
+                </ToggleGroup>
+            </form>
+        </CardFooter>
+    </Card>
+
+    <div class="mx-auto max-w-sm px-0.5 text-center text-xs text-muted-foreground">
+        Toggle the opening position to see where the transcript starts when you open the thread.
+    </div>
 </div>
 
 @code {
-    static readonly (string OpenAt, string Label)[] Positions =
+    string Position
+    {
+        get
+        {
+            var at = System.Web.HttpUtility.ParseQueryString(new Uri(Nav.Uri).Query)["at"];
+            return at is "start" or "anchor" or "end" ? at : "end";
+        }
+    }
+
+    static readonly ChatTranscript.Turn[] Thread =
     [
-        ("end", "OpenAt=\"end\" — a live chat opens at the newest message"),
-        ("start", "OpenAt=\"start\" — a transcript opens at the beginning"),
-        ("anchor", "OpenAt=\"anchor\" — opens at the last anchored turn, where you left off"),
+        new("open-1", "user", "Does a transcript have to open at the bottom?"),
+        new("open-2", "assistant", "Only if it is live. A chat you are watching opens at the newest message, because that is the one you came for.\n\nA transcript you are reading opens at the top, like any other document."),
+        new("open-3", "user", "And one I was part of yesterday?"),
+        new("open-4", "assistant", "At the last anchored turn, which is where you left off. That is what \"anchor\" is for: not the end of the thread, but the beginning of the last thing that mattered.\n\nThe peek above it is what tells you the thread did not start there."),
+        new("open-5", "user", "Is the button affected?"),
+        new("open-6", "assistant", "It follows from the position rather than being set with it. Opening at the start means there is content below, so the down button appears; opening at the end means there is content above, so the up one does.\n\nBoth are hidden the moment you reach the end they point at."),
     ];
 }

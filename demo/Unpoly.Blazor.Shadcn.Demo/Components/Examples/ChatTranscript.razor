@@ -1,0 +1,55 @@
+@* The turns of a thread, which every message-scroller example needs and none of them is about.
+   Upstream has the same thing — its examples render a <MessageAnimated> or a <Transcript> helper
+   rather than repeating the markup nine times — and this is that helper: one item per turn, the
+   user's aligned to the end, an anchor on whichever role the caller names.
+
+   Paragraphs are split on blank lines because the text carries them, exactly as upstream's does. *@
+
+@foreach (var turn in Turns)
+{
+    <MessageScrollerItem MessageId="@turn.Id" ScrollAnchor="@(turn.Role == AnchorRole)">
+        <Message Align="@(turn.Role == "user" ? "end" : "start")">
+            @if (ShowAvatars && turn.Role != "user")
+            {
+                <MessageAvatar>
+                    <Avatar><AvatarFallback>@Initials(turn.Author ?? "AI")</AvatarFallback></Avatar>
+                </MessageAvatar>
+            }
+            <MessageContent>
+                @if (turn.Author is not null)
+                {
+                    <MessageHeader>@turn.Author</MessageHeader>
+                }
+                <Bubble Variant="@(turn.Role == "user" ? UserVariant : AssistantVariant)">
+                    <BubbleContent Class="space-y-2">
+                        @foreach (var paragraph in Paragraphs(turn.Text))
+                        {
+                            <p class="whitespace-pre-wrap">@paragraph</p>
+                        }
+                    </BubbleContent>
+                </Bubble>
+            </MessageContent>
+        </Message>
+    </MessageScrollerItem>
+}
+
+@code {
+    public record Turn(string Id, string Role, string Text, string? Author = null);
+
+    [Parameter, EditorRequired] public IReadOnlyList<Turn> Turns { get; set; } = [];
+
+    /// <summary>Which role anchors near the top. "user" is upstream's default choice.</summary>
+    [Parameter] public string AnchorRole { get; set; } = "user";
+
+    [Parameter] public string UserVariant { get; set; } = "muted";
+    [Parameter] public string AssistantVariant { get; set; } = "ghost";
+
+    [Parameter] public bool ShowAvatars { get; set; }
+
+    static IEnumerable<string> Paragraphs(string text) =>
+        text.Split("\n\n", StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+
+    static string Initials(string name) =>
+        string.Concat(name.Split(' ', StringSplitOptions.RemoveEmptyEntries)
+                          .Take(2).Select(part => part[0])).ToUpperInvariant();
+}

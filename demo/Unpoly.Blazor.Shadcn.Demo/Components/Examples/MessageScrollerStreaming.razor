@@ -1,0 +1,76 @@
+@inject NavigationManager Nav
+
+@* Auto-scroll follows the live edge of the conversation — while the reader is at the bottom, and
+   not otherwise. shadcn streams tokens from a fake transport; there is no client state here, so
+   the server sends one more turn per press and the scroller does the part that is the component:
+   the view follows the newest message, and stops following the moment you scroll up to read
+   something earlier.
+
+   The send button is a link with the next count in it, so the thread's length is in the URL and
+   the whole example works with scripting off. *@
+<div class="mx-auto flex w-full max-w-sm flex-col gap-4" id="ms-streaming">
+    <Card Class="h-140 w-full gap-0">
+        <CardHeader Class="gap-1 border-b">
+            <CardTitle>Streaming Messages</CardTitle>
+            <CardDescription>Auto-scroll follows the live edge of the conversation.</CardDescription>
+            <CardAction>
+                <Button Variant="outline" Size="icon" Href="?sent=2" up-target="#ms-streaming"
+                        aria-label="Reset conversation"><Icon Name="rotate-cw" /></Button>
+            </CardAction>
+        </CardHeader>
+
+        <CardContent Class="flex-1 overflow-hidden p-0">
+            <MessageScroller AutoScroll="true">
+                <MessageScrollerViewport>
+                    <MessageScrollerContent Class="p-(--card-spacing)">
+                        <ChatTranscript Turns="Shown" />
+                    </MessageScrollerContent>
+                </MessageScrollerViewport>
+                <MessageScrollerButton />
+            </MessageScroller>
+        </CardContent>
+
+        <CardFooter Class="flex-col gap-2">
+            <InputGroup>
+                <InputGroupControl Multiline rows="2" readonly aria-label="Next message"
+                                   Value="@(Next?.Text ?? "No messages queued. Reset the stream.")" />
+                <InputGroupAddon Align="block-end" Class="pt-1">
+                    <Button Size="icon-sm" Class="ms-auto" up-target="#ms-streaming"
+                            Href="@(Next is null ? null : $"?sent={Sent + 1}")"
+                            disabled="@(Next is null)">
+                        <Icon Name="arrow-up" /><span class="sr-only">Send</span>
+                    </Button>
+                </InputGroupAddon>
+            </InputGroup>
+        </CardFooter>
+    </Card>
+
+    <div class="px-0.5 text-center text-xs text-muted-foreground">
+        Streaming is simulated by the server. Auto-scroll is enabled.
+    </div>
+</div>
+
+@code {
+    int Sent
+    {
+        get
+        {
+            var raw = System.Web.HttpUtility.ParseQueryString(new Uri(Nav.Uri).Query)["sent"];
+            return int.TryParse(raw, out var n) ? Math.Clamp(n, 2, Thread.Length) : 2;
+        }
+    }
+
+    IReadOnlyList<ChatTranscript.Turn> Shown => Thread[..Sent];
+
+    ChatTranscript.Turn? Next => Sent < Thread.Length ? Thread[Sent] : null;
+
+    static readonly ChatTranscript.Turn[] Thread =
+    [
+        new("str-1", "user", "The thread jumps around every time a reply streams in."),
+        new("str-2", "assistant", "It pins to the bottom while you are already there, so the newest words land in place instead of the view chasing them.\n\nThe moment you scroll up, following stops and your position is kept — scrolling up is a deliberate opt-out, not a glitch to recover from."),
+        new("str-3", "user", "What if I scroll up mid-reply?"),
+        new("str-4", "assistant", "Nothing moves. The reply keeps arriving below you and the button appears to say so.\n\nOne press takes you back to the newest message and following resumes."),
+        new("str-5", "user", "And when I am back at the bottom?"),
+        new("str-6", "assistant", "Following resumes by itself, because being at the bottom is the whole condition. There is no mode to switch and nothing to remember."),
+    ];
+}
