@@ -1171,16 +1171,20 @@
       const existing = chips.querySelector(`[data-slot="combobox-chip"][data-value="${item.dataset.value}"]`)
       if (existing) { existing.remove(); delete item.dataset.selected; syncClear(); return }
       item.dataset.selected = 'true'
-      const chip = document.createElement('span')
-      chip.dataset.slot = 'combobox-chip'
+
+      // Cloned from the template the component renders, not built here. Built here it wore
+      // whatever class name the call site remembered to pass — usually none — so a chip added
+      // by clicking was bare text next to a server-rendered one that was a proper badge with a
+      // remove button. The template has all of it, including the button and its label.
+      const template = chips.querySelector('[data-combobox-chip-template]')
+      const chip = template?.content.firstElementChild?.cloneNode(true)
+      if (!chip) return
       chip.dataset.value = item.dataset.value
-      chip.className = chips.dataset.chipClass || ''
-      chip.textContent = label(item)
-      const post = document.createElement('input')
-      post.type = 'hidden'
-      post.name = chips.dataset.name || ''
-      post.value = item.dataset.value
-      chip.appendChild(post)
+      const post = chip.querySelector('input[type="hidden"]')
+      if (post) post.value = item.dataset.value
+      const remove = chip.querySelector('[data-slot="combobox-chip-remove"]')
+      if (remove) remove.setAttribute('aria-label', `Remove ${label(item)}`)
+      chip.insertBefore(document.createTextNode(label(item)), chip.firstChild)
       chips.insertBefore(chip, input)
       if (input) input.value = ''
       syncClear()

@@ -1,10 +1,12 @@
-@* ItemHeader takes the full width above the content, which is what turns a row into a card: a
-   three-column grid of models, each with its picture on top. *@
+@* ItemHeader is basis-full inside a flex-wrap row, which is what puts it on its own line above
+   everything else — no flex-col needed at the call site, and forcing one breaks it: the header
+   stops being a full-width band and the picture ends up beside the text. A three-column grid of
+   models, each with its picture on top. *@
 <div class="flex w-full max-w-xl flex-col gap-6">
     <ItemGroup Class="grid grid-cols-3 gap-4">
         @foreach (var (name, description, seed) in Models)
         {
-            <Item Variant="outline" role="listitem" Class="flex-col items-stretch">
+            <Item Variant="outline" role="listitem">
                 <ItemHeader>
                     <img src="@($"https://picsum.photos/seed/{seed}/256/256")" alt=""
                          width="128" height="128" loading="lazy"

@@ -497,7 +497,9 @@ renders `<button>` · `data-slot="combobox-chip-remove"`
 ## `<ComboboxChips>`
 renders `<div>` · `data-slot="combobox-chips"`
 
-_No parameters of its own._
+| Parameter | Type | Default | |
+|---|---|---|---|
+| `Name` | `string?` | — |  |
 
 ## `<ComboboxClear>`
 renders `<button>` · `data-slot="combobox-clear"`

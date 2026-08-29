@@ -5061,8 +5061,10 @@
     padding-inline-end: 1.5rem;
   }
   [data-slot="dialog-content"] *, [data-slot="alert-dialog-content"] * {
-    scrollbar-width: thin;
-    scrollbar-color: var(--border) transparent;
+    scrollbar-width: none;
+  }
+  [data-slot="dialog-content"] *::-webkit-scrollbar, [data-slot="alert-dialog-content"] *::-webkit-scrollbar {
+    display: none;
   }
   [data-slot="dialog"] > [data-slot="dialog-content"]:not(:has(> [data-slot="dialog-header"])), [data-slot="dialog"] > [data-slot="dialog-content"]:not(:has(> [data-slot="dialog-footer"])) {
     grid-template-rows: none;

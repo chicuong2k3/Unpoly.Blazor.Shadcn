@@ -97,14 +97,18 @@
         padding-inline-end: 1.5rem;
     }
 
-    /* A scrollable region inside a dialog shows its scrollbar. The platform's overlay scrollbar
-       takes no space and paints only while scrolling, so a clipped paragraph at the panel edge
-       was the only hint that there was more — which reads as content that has been cut off.
-       Same thin, themed bar the scroll area uses. */
+    /* No scrollbar inside a dialog. Upstream's scrollable sample says `no-scrollbar` on the box
+       it scrolls, and the reason holds: the panel is small and a bar down the inside of it reads
+       as a second window rather than as one dialog. The content that scrolls under the edge is
+       the affordance. Wheel, drag and keyboard all still work — this hides the bar, not the
+       scrolling. */
     [data-slot="dialog-content"] *,
     [data-slot="alert-dialog-content"] * {
-        scrollbar-width: thin;
-        scrollbar-color: var(--border) transparent;
+        scrollbar-width: none;
+    }
+    [data-slot="dialog-content"] *::-webkit-scrollbar,
+    [data-slot="alert-dialog-content"] *::-webkit-scrollbar {
+        display: none;
     }
 
     /* A dialog with nothing between its header and footer must not be stretched to the cap by
