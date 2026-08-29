@@ -866,6 +866,9 @@
     const value = root.querySelector('[data-slot="combobox-value"]')
     const clear = root.querySelector('[data-slot="combobox-clear"]')
     const hidden = root.querySelector('input[type="hidden"][data-combobox-value]')
+    // Captured now, because the multiple branch REMOVES unchosen inputs -- once the last one is
+    // gone there is nowhere left to read the field's name from.
+    const listName = hidden?.name || ''
     const empty = panel.querySelector('[data-slot="combobox-empty"]')
     const items = () => [...panel.querySelectorAll('[data-slot="combobox-item"]')]
 
@@ -881,7 +884,8 @@
     // never unhid it at all.
     const syncClear = () => {
       if (!clear) return
-      clear.hidden = !(hidden?.value || root.querySelector('[data-slot="combobox-chip"]'))
+      clear.hidden = !([...root.querySelectorAll('input[type="hidden"][data-combobox-value]')].some((p) => p.value)
+        || root.querySelector('[data-slot="combobox-chip"]'))
     }
 
     const filter = () => {
@@ -928,7 +932,35 @@
       // Multiple: one hidden input per chosen value, all under the same name, which is what the
       // server reads as a list. Choosing an already-chosen row removes it.
       const chips = root.querySelector('[data-slot="combobox-chips"]')
-      if (!chips) return
+      if (!chips) {
+        // Multiple without chips: the trigger keeps a count and the list keeps the ticks. The
+        // hidden inputs still toggle one per value -- this branch used to return without doing
+        // anything, which read as "multiple select is broken", because it was.
+        const posts = () => [...root.querySelectorAll('input[type="hidden"][data-combobox-value]')]
+        const existing = posts().find((p) => p.value === item.dataset.value)
+        if (existing) {
+          existing.remove()
+          delete item.dataset.selected
+          item.setAttribute('aria-selected', 'false')
+        } else {
+          const post = document.createElement('input')
+          post.type = 'hidden'
+          post.name = listName
+          post.value = item.dataset.value
+          post.dataset.comboboxValue = ''
+          root.prepend(post)
+          item.dataset.selected = 'true'
+          item.setAttribute('aria-selected', 'true')
+        }
+        const count = posts().length
+        if (value) {
+          value.textContent = count
+            ? (value.dataset.countLabel || '{n} selected').replace('{n}', count)
+            : (value.dataset.placeholder || '')
+        }
+        syncClear()
+        return
+      }
       const existing = chips.querySelector(`[data-slot="combobox-chip"][data-value="${item.dataset.value}"]`)
       if (existing) { existing.remove(); delete item.dataset.selected; syncClear(); return }
       item.dataset.selected = 'true'
@@ -949,6 +981,12 @@
     }
 
     const onClick = (event) => {
+      // Wired to the panel AND the root, because the panel may be rendered outside the root --
+      // but in the usual markup it is inside, so one click reaches both listeners. For a toggle
+      // that is add-then-remove in the same gesture, which looked exactly like "nothing
+      // happened". One handling per event.
+      if (event.comboboxHandled) return
+      event.comboboxHandled = true
       const remove = event.target.closest('[data-slot="combobox-chip-remove"]')
       if (remove) {
         const chip = remove.closest('[data-slot="combobox-chip"]')
@@ -1001,7 +1039,8 @@
     const onClear = () => {
       for (const item of items()) { delete item.dataset.selected; item.setAttribute('aria-selected', 'false') }
       for (const chip of root.querySelectorAll('[data-slot="combobox-chip"]')) chip.remove()
-      if (hidden) hidden.value = ''
+      if (multiple) for (const post of root.querySelectorAll('input[type="hidden"][data-combobox-value]')) post.remove()
+      else if (hidden) hidden.value = ''
       if (input) input.value = ''
       if (value) value.textContent = value.dataset.placeholder || ''
       syncClear()

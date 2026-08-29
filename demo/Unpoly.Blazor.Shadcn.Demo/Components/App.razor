@@ -22,7 +22,7 @@
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
         <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Architects+Daughter&family=Geist:wght@400;500;600&family=Geist+Mono&family=Inter:wght@400;500;600&family=JetBrains+Mono&family=Outfit:wght@400;500;600&display=swap" />
 
-        <link rel="stylesheet" href="app.css" />
+        <link rel="stylesheet" href="@($"app.css?v={Stamp}")" />
         <link rel="stylesheet" href="_content/Unpoly.Blazor.Shadcn/toastify/toastify.css" />
         <link rel="stylesheet" href="_content/Unpoly.Blazor.Shadcn/tomselect/tom-select.min.css" />
 
@@ -38,8 +38,8 @@
         <script src="_content/Unpoly.Blazor.Shadcn/airdatepicker/air-datepicker.js" defer></script>
         <script src="_content/Unpoly.Blazor.Shadcn/toastify/toastify.js" defer></script>
         <script src="_content/Unpoly.Blazor.Shadcn/tomselect/tom-select.complete.min.js" defer></script>
-        <script src="_content/Unpoly.Blazor.Shadcn/ui.js" defer></script>
-        <script src="demo.js" defer></script>
+        <script src="@($"_content/Unpoly.Blazor.Shadcn/ui.js?v={Stamp}")" defer></script>
+        <script src="@($"demo.js?v={Stamp}")" defer></script>
 
         <UnpolyHead />
     </UpChrome>
@@ -53,3 +53,10 @@
 </body>
 
 </html>
+
+@code {
+    // One value per build, so a bumped demo never runs on yesterday's stylesheet or script --
+    // the "component is broken" reports that were actually a cached app.css were this.
+    static readonly string Stamp =
+        typeof(App).Assembly.ManifestModule.ModuleVersionId.ToString("N")[..8];
+}

@@ -5,16 +5,16 @@
         <input type="hidden" name="sizes" value="m" data-combobox-value />
         <input type="hidden" name="sizes" value="l" data-combobox-value />
         <ComboboxTrigger id="cb-ms" Target="cb-ms-list">
-            <ComboboxValue data-placeholder="Any size">2 selected</ComboboxValue>
+            <ComboboxValue data-placeholder="Any size" data-count-label="{n} selected">2 selected</ComboboxValue>
         </ComboboxTrigger>
 
         <ComboboxContent Id="cb-ms-list" Class="w-72">
             <ComboboxList>
                 <ComboboxEmpty>No such size.</ComboboxEmpty>
-                <ComboboxItem Value="s">Small<ComboboxItemIndicator /></ComboboxItem>
-                <ComboboxItem Value="m" Selected>Medium<ComboboxItemIndicator /></ComboboxItem>
-                <ComboboxItem Value="l" Selected>Large<ComboboxItemIndicator /></ComboboxItem>
-                <ComboboxItem Value="xl">Extra large<ComboboxItemIndicator /></ComboboxItem>
+                <ComboboxItem Value="s">Small</ComboboxItem>
+                <ComboboxItem Value="m" Selected>Medium</ComboboxItem>
+                <ComboboxItem Value="l" Selected>Large</ComboboxItem>
+                <ComboboxItem Value="xl">Extra large</ComboboxItem>
             </ComboboxList>
         </ComboboxContent>
     </Combobox>
