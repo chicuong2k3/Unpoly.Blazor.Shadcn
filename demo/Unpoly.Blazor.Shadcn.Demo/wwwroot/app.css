@@ -2476,8 +2476,11 @@
   .\[--cell-size\:--spacing\(9\)\] {
     --cell-size: calc(var(--spacing) * 9);
   }
-  .\[--cell-size\:--spacing\(11\)\] {
-    --cell-size: calc(var(--spacing) * 11);
+  .\[--cell-size\:--spacing\(10\)\] {
+    --cell-size: calc(var(--spacing) * 10);
+  }
+  .\[--cell-size\:…\] {
+    --cell-size: …;
   }
   .\[contain-intrinsic-size\:auto_10rem\] {
     contain-intrinsic-size: auto 10rem;
@@ -4167,6 +4170,9 @@
     .md\:opacity-0 {
       opacity: 0%;
     }
+    .md\:\[--cell-size\:--spacing\(12\)\] {
+      --cell-size: calc(var(--spacing) * 12);
+    }
     .md\:peer-data-\[variant\=inset\]\:m-2:is(:where(.peer)[data-variant="inset"] ~ *) {
       margin: calc(var(--spacing) * 2);
     }
@@ -5543,6 +5549,9 @@
   }
   input[type="range"][data-slot="slider-input"]::-moz-range-thumb {
     pointer-events: auto;
+  }
+  [data-date-label][data-empty] {
+    color: var(--muted-foreground);
   }
   [data-slot="input-group"] :is(input[type="time"], input[type="date"], input[type="datetime-local"], input[type="month"], input[type="week"])::-webkit-calendar-picker-indicator {
     display: none;

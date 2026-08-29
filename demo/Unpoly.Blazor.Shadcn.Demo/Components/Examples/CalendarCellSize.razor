@@ -1,11 +1,22 @@
-@* One custom property sizes every day box, as upstream's --cell-size does — and the week-number
-   column and the month nav follow it, because they are laid out against the same value. Bigger
-   is worth it on a touch screen: 44px is the smallest target most guidance accepts, and a month
-   is a grid of thirty-one of them. *@
-<Calendar Name="cell-b" Month="@Month" Selected="@(Month.AddDays(11))" Today="@Today"
-          Class="mx-auto w-fit rounded-lg border p-3 [--cell-size:--spacing(11)] [&amp;_.num]:text-base" />
+@* Upstream's own sample for this section: a booking calendar where every day carries its price,
+   which is what the bigger cell is FOR — one custom property makes room for a second line, and
+   the week-number column and the month nav follow it because they measure against the same
+   value. A range, because a stay is two dates. *@
+<Card Class="mx-auto w-fit p-0">
+    <CardContent Class="p-0">
+        <Calendar Name="stay-dates" Mode="range" Month="@Month" From="@From" To="@To" Today="@Today"
+                  DayContent="Price" Class="p-3 [--cell-size:--spacing(10)] md:[--cell-size:--spacing(12)]" />
+    </CardContent>
+</Card>
 
 @code {
     static readonly DateOnly Today = DateOnly.FromDateTime(DateTime.Today);
     static readonly DateOnly Month = new(Today.Year, Today.Month, 1);
+    static readonly DateOnly From = Month.AddDays(7);
+    static readonly DateOnly To = Month.AddDays(11);
+
+    // A weekend costs more, which is the only reason a number per day is worth the room.
+    RenderFragment<DateOnly> Price => day => @<span class="text-[10px] font-normal text-muted-foreground">
+        @(day.DayOfWeek is DayOfWeek.Saturday or DayOfWeek.Sunday ? "$120" : "$100")
+    </span>;
 }

@@ -95,6 +95,7 @@
                                                    class="sr-only peer" checked="@IsChecked(d)"
                                                    disabled="@disabled" />
                                             <span class="num">@d.Day</span>
+                                            @DayContent?.Invoke(d)
                                         </label>
                                     }
                                 </td>
@@ -147,6 +148,14 @@
     /// through, a holiday tinted. Return null for the ordinary ones.
     /// </summary>
     [Parameter] public Func<DateOnly, string?>? Modifier { get; set; }
+
+    /// <summary>
+    /// Anything to draw under the number — a price, a count, a dot. shadcn does this by
+    /// replacing the whole DayButton component; a fragment is the same freedom without asking a
+    /// caller to reproduce the day's own markup to add one line to it. Give the cells room with
+    /// [--cell-size:…] or the extra line will make them ragged.
+    /// </summary>
+    [Parameter] public RenderFragment<DateOnly>? DayContent { get; set; }
 
     /// <summary>Monday first. Set it for a locale that starts on Sunday.</summary>
     [Parameter] public DayOfWeek FirstDay { get; set; } = DayOfWeek.Monday;
@@ -314,6 +323,7 @@
 
     string DayClasses(DateOnly date, bool disabled) => Cn(
         "flex size-(--cell-size) items-center justify-center rounded-md text-sm",
+        DayContent is null ? "" : "flex-col gap-0.5 leading-none",
         disabled ? "pointer-events-none opacity-40" : "cursor-pointer hover:bg-accent",
         "has-[:checked]:bg-primary has-[:checked]:text-primary-foreground",
         "has-[:focus-visible]:ring-[3px] has-[:focus-visible]:ring-ring/50",

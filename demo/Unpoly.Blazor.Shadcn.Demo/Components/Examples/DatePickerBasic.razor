@@ -1,7 +1,19 @@
-@* <input type="date">. It already has a calendar, a keyboard, a locale, a mobile picker and a
-   posted value — and Air Datepicker enhances it where a range or a disabled-day rule is needed.
-   The input posts either way. *@
-<Field Class="w-[280px]">
-    <FieldLabel For="dp-basic">Starting</FieldLabel>
-    <DatePicker id="dp-basic" name="starts" value="2026-03-11" />
+@* shadcn's own shape: a button that says the date, a popover, a calendar inside it. Choosing a
+   day writes the date onto the button and closes the panel — and because the day is a real
+   radio with a name, the form posts it with no script taking part. *@
+<Field Class="mx-auto w-52">
+    <FieldLabel For="dp-basic">Date</FieldLabel>
+    <PopoverTrigger Target="dp-basic-panel" id="dp-basic" Variant="outline"
+                    Class="w-full justify-between font-normal">
+        <span data-date-label data-empty>Pick a date</span>
+        <Icon Name="chevron-down" Class="opacity-50" />
+    </PopoverTrigger>
+    <PopoverContent Id="dp-basic-panel" Align="start" Class="p-0">
+        <Calendar Name="starts" Month="@Month" Today="@Today" Class="p-3" />
+    </PopoverContent>
 </Field>
+
+@code {
+    static readonly DateOnly Today = DateOnly.FromDateTime(DateTime.Today);
+    static readonly DateOnly Month = new(Today.Year, Today.Month, 1);
+}

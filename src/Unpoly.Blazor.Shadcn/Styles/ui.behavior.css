@@ -736,6 +736,14 @@
     input[type="range"][data-slot="slider-input"]::-webkit-slider-thumb { pointer-events: auto; }
     input[type="range"][data-slot="slider-input"]::-moz-range-thumb { pointer-events: auto; }
 
+    /* A date-picker button before anything is chosen. shadcn writes this as
+       data-[empty=true]:text-muted-foreground on the trigger; here the placeholder is the label
+       span itself, which is the thing that stops being a placeholder the moment a day is picked
+       — so the attribute lives on it and ui.js removes it as it writes the date. */
+    [data-date-label][data-empty] {
+        color: var(--muted-foreground);
+    }
+
     /* ---- Time and date fields ---------------------------------------------------------
        The browser draws its own little clock or calendar button inside these, and a group that
        already carries an icon then has two — one of them ours, one of them not, and neither

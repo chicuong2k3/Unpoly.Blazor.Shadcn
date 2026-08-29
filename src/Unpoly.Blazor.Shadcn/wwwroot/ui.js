@@ -1824,15 +1824,30 @@
     // an element swapped out from under the cursor. Then no leave event ever arrives and the
     // card sits there with the pointer nowhere near it — which is exactly what gets reported.
     // So ask the document directly: pointer over neither, focus in neither, start closing.
-    const onMove = (event) => {
-      if (!panel.matches(':popover-open')) return
-      const over = document.elementFromPoint(event.clientX, event.clientY)
-      if (over && (trigger.contains(over) || panel.contains(over))) return
-      if (trigger.contains(document.activeElement) || panel.contains(document.activeElement)) return
-      close()
+    let at = null
+    const elsewhere = () => {
+      if (!panel.matches(':popover-open') || !at) return false
+      if (trigger.contains(document.activeElement) || panel.contains(document.activeElement)) return false
+      const over = document.elementFromPoint(at.x, at.y)
+      return !over || !(trigger.contains(over) || panel.contains(over))
     }
 
+    const onMove = (event) => {
+      at = { x: event.clientX, y: event.clientY }
+      if (elsewhere()) close()
+    }
+
+    // A heartbeat, because the check above needs an event to run and a pointer can stop
+    // producing them: parked outside the window, resting over browser chrome, moved by a gesture
+    // the page never sees. Once a second, from wherever the pointer was last known to be.
+    const beat = setInterval(() => { if (elsewhere()) close() }, 1000)
+
+    // And leaving the window is leaving the card.
+    const onOut = (event) => { if (!event.relatedTarget) close() }
+
     document.addEventListener('pointermove', onMove, { passive: true })
+    document.addEventListener('pointerout', onOut, { passive: true })
+    window.addEventListener('blur', close)
     // Focus opens it for the KEYBOARD, not for the mouse. A click focuses the trigger too, and
     // then the card stayed open with the pointer long gone — the safety net leaves anything
     // holding focus alone, on purpose, so a card reached by Tab does not vanish while it is
@@ -1855,7 +1870,10 @@
       trigger.removeEventListener('pointerleave', close)
       trigger.removeEventListener('focus', onFocus)
       trigger.removeEventListener('blur', close)
+      clearInterval(beat)
       document.removeEventListener('pointermove', onMove)
+      document.removeEventListener('pointerout', onOut)
+      window.removeEventListener('blur', close)
       document.removeEventListener('keydown', onKey)
     }
   })
@@ -2170,24 +2188,35 @@
   // Without this the day was chosen — the radio really was checked, and it really would post —
   // but the panel stayed open over the page and the button still said the old date, so the
   // choice looked like it had not registered at all.
-  up.compiler('[popover] [data-slot="calendar"][data-mode="single"]', (calendar) => {
+  up.compiler('[popover] [data-slot="calendar"]', (calendar) => {
     const panel = calendar.closest('[popover]')
     if (!panel?.id) return
     const trigger = document.querySelector(`[popovertarget="${panel.id}"]`)
+    const range = calendar.dataset.mode === 'range'
+
+    const written = (value) => {
+      const [year, month, date] = value.split('-').map(Number)
+      return new Date(year, month - 1, date).toLocaleDateString(
+        document.documentElement.lang || undefined,
+        { day: 'numeric', month: 'short', year: 'numeric' })
+    }
 
     const onChange = (event) => {
-      const day = event.target
-      if (!day.matches('input[type="radio"]') || !day.value) return
+      if (!event.target.matches('input[type="radio"], input[type="checkbox"]')) return
 
       // The label is a span the caller marks, not the button's own text: the button also holds
       // an icon, and writing over its textContent would take that with it.
       const label = trigger?.querySelector('[data-date-label]')
-      if (label) {
-        const [year, month, date] = day.value.split('-').map(Number)
-        label.textContent = new Date(year, month - 1, date).toLocaleDateString(
-          document.documentElement.lang || undefined,
-          { day: 'numeric', month: 'long', year: 'numeric' })
+      const on = [...calendar.querySelectorAll('input:checked')].map((i) => i.value).sort()
+      if (label && on.length) {
+        label.textContent = range && on.length > 1
+          ? `${written(on[0])} – ${written(on[on.length - 1])}`
+          : written(on[0])
+        label.removeAttribute('data-empty')
       }
+
+      // A range needs two dates, so picking one is not finishing. A single date is.
+      if (range) return
       panel.hidePopover()
       trigger?.focus()
     }

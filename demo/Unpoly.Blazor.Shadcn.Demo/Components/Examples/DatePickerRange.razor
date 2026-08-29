@@ -1,12 +1,19 @@
-@* A range is two inputs with two names, which is also what a server wants to read — and it means
-   the second one can refuse a date before the first without any script. *@
-<div class="flex w-[420px] items-end gap-3">
-    <Field Class="flex-1">
-        <FieldLabel For="dp-from">From</FieldLabel>
-        <DatePicker id="dp-from" name="from" value="2026-03-11" max="2026-12-31" />
-    </Field>
-    <Field Class="flex-1">
-        <FieldLabel For="dp-to">To</FieldLabel>
-        <DatePicker id="dp-to" name="to" value="2026-03-18" min="2026-03-11" />
-    </Field>
-</div>
+@* A range picks two days, so the panel stays open until both ends are ticked — and the button
+   says both of them. Underneath they are two checkboxes with one name: the server takes the min
+   and the max, which is a working range picker with JavaScript switched off. *@
+<Field Class="mx-auto w-72">
+    <FieldLabel For="dp-range">Date Picker Range</FieldLabel>
+    <PopoverTrigger Target="dp-range-panel" id="dp-range" Variant="outline"
+                    Class="w-full justify-between px-2.5 font-normal">
+        <span data-date-label data-empty>Pick a range</span>
+        <Icon Name="calendar" Class="opacity-50" />
+    </PopoverTrigger>
+    <PopoverContent Id="dp-range-panel" Align="start" Class="p-0">
+        <Calendar Name="stay" Mode="range" Months="2" Month="@Month" Today="@Today" Class="p-3" />
+    </PopoverContent>
+</Field>
+
+@code {
+    static readonly DateOnly Today = DateOnly.FromDateTime(DateTime.Today);
+    static readonly DateOnly Month = new(Today.Year, Today.Month, 1);
+}
