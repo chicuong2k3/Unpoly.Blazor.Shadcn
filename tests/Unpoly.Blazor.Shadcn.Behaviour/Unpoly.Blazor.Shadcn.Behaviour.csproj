@@ -1,0 +1,37 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!-- Behaviour, not markup. The bUnit suite next door proves a component RENDERS what shadcn
+       renders; it cannot prove the panel closes, the sidebar collapses, the arrow key moves the
+       right way or the toast's Undo is reachable. Every one of those has been broken here while
+       the whole class-parity suite stayed green, which is the argument for this project. -->
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <IsPackable>false</IsPackable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="18.9.0" />
+    <PackageReference Include="Microsoft.Playwright" Version="1.*" />
+    <PackageReference Include="xunit" Version="2.9.3" />
+    <PackageReference Include="Xunit.SkippableFact" Version="1.5.61" />
+    <PackageReference Include="xunit.runner.visualstudio" Version="4.0.0">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+  </ItemGroup>
+
+  <!-- The demo IS the fixture: it is the only place every component is on a page with the real
+       stylesheet and the real ui.js. Referenced so `dotnet test` builds it first and the runner
+       has a dll to start. -->
+  <ItemGroup>
+    <ProjectReference Include="..\..\demo\Unpoly.Blazor.Shadcn.Demo\Unpoly.Blazor.Shadcn.Demo.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Using Include="Xunit" />
+  </ItemGroup>
+
+</Project>

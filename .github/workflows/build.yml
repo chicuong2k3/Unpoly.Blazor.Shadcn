@@ -92,4 +92,19 @@ jobs:
         run: python tools/gen_icons.py --check
 
       - run: dotnet build --configuration Release
+
+      # The behaviour suite drives a real browser against the real demo, and skips rather than
+      # fails when there is none — so without this step it would go green having run nothing.
+      # That is the one failure mode a skip-on-missing suite has, and it is worth one line.
+      - name: Install the browser the behaviour suite drives
+        run: pwsh tests/Unpoly.Blazor.Shadcn.Behaviour/bin/Release/net10.0/playwright.ps1 install --with-deps chromium
+
       - run: dotnet test --configuration Release --no-build --verbosity quiet
+
+      # A skipped behaviour test is a test that did not run, and the point of the suite is that
+      # it runs. This fails if any of them skipped.
+      - name: Every behaviour test actually ran
+        run: |
+          dotnet test tests/Unpoly.Blazor.Shadcn.Behaviour --configuration Release --no-build \
+            --logger "console;verbosity=minimal" | tee behaviour.log
+          grep -q "Skipped:     0" behaviour.log
