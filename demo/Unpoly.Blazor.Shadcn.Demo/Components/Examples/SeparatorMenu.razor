@@ -1,8 +1,22 @@
-@* Inside a menu it is a real role="separator", because there it does separate groups of
-   commands — which is the case where announcing it helps rather than chatters. *@
-<div class="w-56 rounded-md border p-1">
-    <div class="rounded-sm px-2 py-1.5 text-sm">Profile</div>
-    <div class="rounded-sm px-2 py-1.5 text-sm">Billing</div>
-    <Separator Decorative="false" Class="-mx-1 my-1" />
-    <div class="rounded-sm px-2 py-1.5 text-sm text-destructive">Sign out</div>
+@* Upstream's "Menu" is a menu bar rather than a menu: three labelled columns divided by vertical
+   rules, which is where a vertical separator actually earns its place. This used to draw a fake
+   dropdown with a horizontal rule in it — a different component wearing this one's name.
+
+   The last rule and the last column are hidden below md, so the row narrows to two by dropping a
+   pair rather than by wrapping. *@
+<div class="flex items-center gap-2 text-sm md:gap-4">
+    <div class="flex flex-col gap-1">
+        <span class="font-medium">Settings</span>
+        <span class="text-xs text-muted-foreground">Manage preferences</span>
+    </div>
+    <Separator Orientation="vertical" />
+    <div class="flex flex-col gap-1">
+        <span class="font-medium">Account</span>
+        <span class="text-xs text-muted-foreground">Profile &amp; security</span>
+    </div>
+    <Separator Orientation="vertical" Class="hidden md:block" />
+    <div class="hidden flex-col gap-1 md:flex">
+        <span class="font-medium">Help</span>
+        <span class="text-xs text-muted-foreground">Support &amp; docs</span>
+    </div>
 </div>

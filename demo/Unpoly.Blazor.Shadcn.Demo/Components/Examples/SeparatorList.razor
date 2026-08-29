@@ -1,22 +1,18 @@
-@* Between rows of a list, where the rule is decoration: the list already says how many items
-   there are, so a separator announced between each would be noise. *@
-<div class="w-[380px]">
-    @foreach (var (name, meta) in People)
-    {
-        <div class="flex items-center gap-3 py-3">
-            <Avatar Class="size-8"><AvatarFallback Class="text-xs">@name[..2]</AvatarFallback></Avatar>
-            <div class="text-sm">
-                <div class="font-medium">@name</div>
-                <div class="text-muted-foreground">@meta</div>
-            </div>
-        </div>
-        <Separator />
-    }
+@* Between the rows of a list of pairs, where the rule is decoration: the list already says how
+   many items it has, so a separator announced between each would be noise. *@
+<div class="flex w-full max-w-sm flex-col gap-2 text-sm">
+    <dl class="flex items-center justify-between">
+        <dt>Item 1</dt>
+        <dd class="text-muted-foreground">Value 1</dd>
+    </dl>
+    <Separator />
+    <dl class="flex items-center justify-between">
+        <dt>Item 2</dt>
+        <dd class="text-muted-foreground">Value 2</dd>
+    </dl>
+    <Separator />
+    <dl class="flex items-center justify-between">
+        <dt>Item 3</dt>
+        <dd class="text-muted-foreground">Value 3</dd>
+    </dl>
 </div>
-
-@code {
-    static readonly (string Name, string Meta)[] People =
-    [
-        ("Marta Ruiz", "128 orders"), ("Ana Lopes", "12 orders"), ("Jonas Weber", "4 orders"),
-    ];
-}

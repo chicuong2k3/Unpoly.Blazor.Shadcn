@@ -1,7 +1,10 @@
-<div dir="rtl" class="flex h-6 items-center gap-3 text-sm">
-    <span>المستندات</span>
-    <Separator Orientation="vertical" />
-    <span>القوالب</span>
-    <Separator Orientation="vertical" />
-    <span>السمات</span>
+@* The same three parts in Arabic, which is upstream's RTL sample: the rule is horizontal and
+   full width either way, and what moves is the text on both sides of it. *@
+<div dir="rtl" class="flex max-w-sm flex-col gap-4 text-sm">
+    <div class="flex flex-col gap-1.5">
+        <div class="leading-none font-medium">shadcn/ui</div>
+        <div class="text-muted-foreground">الأساس لنظام التصميم الخاص بك</div>
+    </div>
+    <Separator />
+    <div>مجموعة من المكونات المصممة بشكل جميل يمكنك تخصيصها وتوسيعها والبناء عليها.</div>
 </div>

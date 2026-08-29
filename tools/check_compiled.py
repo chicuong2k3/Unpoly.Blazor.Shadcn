@@ -40,6 +40,16 @@ SKIP = re.compile(r'^(?:@|\$|true|false|null|null!|default!|new|var|string|publi
 # through — so `group/switch` is correctly absent.
 MARKER = re.compile(r'^(?:group|peer)(?:/[\w-]+)?$')
 
+# Markup and SVG path data, which are neither of them class lists. The drawn <Select> is the
+# only component in this library built entirely in script, so it is the only place that writes
+# an <svg> as a string — and "m6 9 6 6 6-6" splits into three tokens that look exactly like
+# utilities. Recognised by shape, as everything else here is: a string holding a tag, or one
+# opening with a path command followed by coordinates.
+NOT_A_CLASS_LIST = re.compile(
+    r'^<[a-z]'                                   # markup, not a class list
+    r'|<svg'                                     # ...even when it starts with something else
+    r'|^[MmLlHhVvCcSsQqTtAaZz][\sMmLlHhVvCcSsQqTtAaZz\d.,-]*$')  # SVG path data, all of it
+
 # Classes that are genuinely absent, and why. Each one is a decision, like every other list in
 # this repo: without the reason it is a way of hiding the finding rather than answering it.
 EXPECTED_ABSENT = {
@@ -73,6 +83,8 @@ def class_strings() -> list[tuple[str, list[str]]]:
         text = path.read_text(encoding='utf-8')
         strings = re.findall(r'"([^"\n]*)"', text) + re.findall(r"'([^'\n]*)'", text)
         for quoted in strings:
+            if NOT_A_CLASS_LIST.search(quoted):
+                continue
             tokens = [t for t in quoted.split() if CANDIDATE.match(t) and not SKIP.match(t)]
             if len(tokens) >= 3:
                 out.append((path.name, tokens))

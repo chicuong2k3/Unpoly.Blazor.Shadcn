@@ -45,21 +45,46 @@
   // as shadcn does. They sit at the top rather than beside their use because a `const` read before
   // its declaration is a temporal-dead-zone error, and a compiler callback is easy to reorder.
 
+  let selectSeq = 0
+
   const SELECT_TRIGGER =
-    'border-input flex h-control w-full items-center gap-2 rounded-md border bg-transparent px-3 ' +
-    'py-2 text-control whitespace-nowrap shadow-xs transition-[color,box-shadow] outline-none ' +
-    'focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] ' +
-    'disabled:cursor-not-allowed disabled:opacity-50'
+    'border-input flex h-control w-full items-center justify-between gap-2 rounded-md border ' +
+    'bg-transparent px-3 py-2 text-control whitespace-nowrap shadow-xs ' +
+    'transition-[color,box-shadow] outline-none focus-visible:border-ring ' +
+    'focus-visible:ring-ring/50 focus-visible:ring-[3px] disabled:cursor-not-allowed ' +
+    'disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-destructive/20 ' +
+    'data-[placeholder]:text-muted-foreground data-[size=sm]:h-8 dark:bg-input/30 ' +
+    'dark:hover:bg-input/50 dark:aria-invalid:ring-destructive/40 [&_svg]:pointer-events-none ' +
+    "[&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4 " +
+    "[&_svg:not([class*='text-'])]:text-muted-foreground"
 
   const SELECT_CONTENT =
-    'bg-popover text-popover-foreground z-50 max-h-60 min-w-[8rem] overflow-x-hidden overflow-y-auto ' +
-    'rounded-md border p-1 shadow-md'
+    'bg-popover text-popover-foreground z-50 max-h-60 min-w-[8rem] overflow-x-hidden ' +
+    'overflow-y-auto rounded-md border p-1 shadow-md'
 
   const SELECT_ITEM =
     'relative flex w-full cursor-default items-center gap-2 rounded-sm py-1.5 pr-8 pl-2 text-sm ' +
     'outline-hidden select-none hover:bg-accent hover:text-accent-foreground ' +
     'data-[active]:bg-accent data-[active]:text-accent-foreground ' +
-    'data-[disabled]:pointer-events-none data-[disabled]:opacity-50'
+    'data-[disabled]:pointer-events-none data-[disabled]:opacity-50 ' +
+    "[&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4 " +
+    "[&_svg:not([class*='text-'])]:text-muted-foreground"
+
+  const SELECT_LABEL = 'px-2 py-1.5 text-xs text-muted-foreground'
+  const SELECT_SEPARATOR = 'pointer-events-none -mx-1 my-1 h-px bg-border'
+  const SELECT_INDICATOR = 'absolute right-2 flex size-3.5 items-center justify-center rtl:right-auto rtl:left-2'
+  const SELECT_SCROLL_BUTTON = 'flex cursor-default items-center justify-center py-1'
+
+  // The two icons the drawn select needs. Everywhere else an <Icon> is rendered by Razor from the
+  // committed sheet; here the whole control is built in script, so these are the only two markup
+  // strings in this file that draw a picture.
+  const svg = (paths) =>
+    `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" ` +
+    `fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" ` +
+    `stroke-linejoin="round" aria-hidden="true">${paths}</svg>`
+  const CHEVRON_DOWN = svg('<path d="m6 9 6 6 6-6"/>')
+  const CHEVRON_UP = svg('<path d="m18 15-6-6-6 6"/>')
+  const CHECK = svg('<path d="M20 6 9 17l-5-5"/>')
 
   const BUTTON_BASE =
     'inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-control ' +
@@ -2058,9 +2083,7 @@
 
   up.compiler('select[data-slot="select"]', (select) => {
     if (select.disabled || select.multiple || select.closest('[data-slot="select-root"]')) return
-
-    const options = [...select.options].map((o) => ({ value: o.value, text: o.text, disabled: o.disabled }))
-    if (options.length === 0) return
+    if (select.options.length === 0) return
 
     // Sizing and layout belong to the visible control, so the caller's own classes move to the
     // wrapper. <Select> hands them over verbatim in data-wrapper-class rather than leaving this to
@@ -2068,47 +2091,112 @@
     const wrap = el('span', cn('relative block', select.dataset.wrapperClass))
     wrap.dataset.slot = 'select-root'
 
-    const trigger = el('button', cn(SELECT_TRIGGER, 'justify-between'), { type: 'button' })
+    const trigger = el('button', SELECT_TRIGGER, { type: 'button' })
     trigger.dataset.slot = 'select-trigger'
+    trigger.dataset.size = select.dataset.size || 'default'
     trigger.setAttribute('aria-haspopup', 'listbox')
     trigger.setAttribute('aria-expanded', 'false')
+    if (select.getAttribute('aria-invalid')) trigger.setAttribute('aria-invalid', 'true')
 
     const label = el('span', 'line-clamp-1 flex items-center gap-2 text-left')
     label.dataset.slot = 'select-value'
-    const chevron = el('span', 'size-4 shrink-0 opacity-50')
+    // A real chevron. This was an empty span with a size and an opacity on it, so the trigger had
+    // a gap where shadcn has an arrow — the one part of a select everybody recognises.
+    const chevron = el('span', 'flex size-4 shrink-0 items-center justify-center opacity-50',
+                       { innerHTML: CHEVRON_DOWN })
     chevron.dataset.slot = 'select-chevron'
     trigger.append(label, chevron)
 
-    const panel = el('span', cn(SELECT_CONTENT, 'absolute inset-x-0 top-[calc(100%+4px)] hidden'))
+    // In the top layer, not absolutely positioned inside the wrapper: a select inside a card with
+    // overflow-hidden had its list clipped, and a select near the bottom of the window had it cut
+    // off. place() is the same anchoring every other panel in this library uses.
+    const panel = el('div', cn(SELECT_CONTENT, 'fixed'))
     panel.dataset.slot = 'select-content'
     panel.setAttribute('role', 'listbox')
+    panel.setAttribute('popover', 'auto')
+    panel.id = (select.id || 'select') + '-content-' + (++selectSeq)
 
-    const items = options.map((o) => {
-      const item = el('button', SELECT_ITEM, { type: 'button', textContent: o.text })
+    // The list scrolls, so it gets the two buttons Radix draws for the same reason: at the ends of
+    // a long list there is nothing else to say the list continues.
+    const scrollUp = el('div', cn(SELECT_SCROLL_BUTTON, 'hidden'), { innerHTML: CHEVRON_UP })
+    scrollUp.dataset.slot = 'select-scroll-up-button'
+    const scrollDown = el('div', cn(SELECT_SCROLL_BUTTON, 'hidden'), { innerHTML: CHEVRON_DOWN })
+    scrollDown.dataset.slot = 'select-scroll-down-button'
+    const list = el('div', 'flex flex-col')
+    panel.append(scrollUp, list, scrollDown)
+
+    // Walk the select's own children rather than its flat option list, because <optgroup> and <hr>
+    // ARE the grouping and the separator — the element has had both all along, and the drawn panel
+    // threw them away and rendered one undifferentiated column.
+    const items = []
+
+    const drawOption = (option, into) => {
+      const item = el('div', SELECT_ITEM, { role: 'option' })
       item.dataset.slot = 'select-item'
-      item.setAttribute('role', 'option')
-      if (o.disabled) item.dataset.disabled = ''
-      item.addEventListener('click', () => { choose(o.value); close(); trigger.focus() })
-      panel.append(item)
-      return { option: o, item }
-    })
+      item.tabIndex = -1
+      item.append(el('span', 'flex-1 truncate', { textContent: option.text }))
+      const indicator = el('span', SELECT_INDICATOR)
+      indicator.dataset.slot = 'select-item-indicator'
+      item.append(indicator)
+      if (option.disabled) item.dataset.disabled = ''
+      item.addEventListener('click', () => {
+        if (option.disabled) return
+        choose(option.value)
+        close()
+        trigger.focus()
+      })
+      into.append(item)
+      items.push({ option, item, indicator })
+    }
+
+    for (const child of select.children) {
+      if (child.tagName === 'OPTGROUP') {
+        const group = el('div', '', { role: 'group' })
+        group.dataset.slot = 'select-group'
+        const heading = el('div', SELECT_LABEL, { textContent: child.label })
+        heading.dataset.slot = 'select-label'
+        group.append(heading)
+        for (const option of child.children) drawOption(option, group)
+        list.append(group)
+      } else if (child.tagName === 'HR') {
+        const rule = el('div', SELECT_SEPARATOR)
+        rule.dataset.slot = 'select-separator'
+        list.append(rule)
+      } else if (child.tagName === 'OPTION') {
+        drawOption(child, list)
+      }
+    }
 
     let index = -1
 
     function sync() {
-      const current = options.find((o) => o.value === select.value)
-      label.textContent = current ? current.text : ''
-      for (const { option, item } of items) {
-        const on = option.value === select.value
-        item.dataset.selected = String(on)
-        item.setAttribute('aria-selected', String(on))
+      const current = [...select.options].find((o) => o.value === select.value)
+      label.textContent = current ? current.text : (select.dataset.placeholder || '')
+      if (current) delete trigger.dataset.placeholder
+      else trigger.dataset.placeholder = ''
+      for (const entry of items) {
+        const on = entry.option.value === select.value
+        entry.item.dataset.selected = String(on)
+        entry.item.setAttribute('aria-selected', String(on))
+        // The tick. Radix marks the chosen row and this drew nothing at all, so an open list gave
+        // no sign of which row you were already on.
+        entry.indicator.innerHTML = on ? CHECK : ''
       }
     }
 
     function active(i) {
       index = Math.max(0, Math.min(i, items.length - 1))
-      items.forEach(({ item }, k) => k === index ? item.dataset.active = '' : delete item.dataset.active)
-      items[index]?.item.scrollIntoView({ block: 'nearest' })
+      items.forEach((entry, k) => k === index ? entry.item.dataset.active = '' : delete entry.item.dataset.active)
+      if (items[index]) items[index].item.scrollIntoView({ block: 'nearest' })
+      edges()
+    }
+
+    // Which end of the list is out of view. Radix hides each button at its own end; so does this.
+    function edges() {
+      const more = panel.scrollHeight - panel.clientHeight > 1
+      scrollUp.classList.toggle('hidden', !more || panel.scrollTop < 4)
+      scrollDown.classList.toggle('hidden',
+        !more || panel.scrollTop + panel.clientHeight >= panel.scrollHeight - 4)
     }
 
     function choose(value) {
@@ -2120,24 +2208,24 @@
     }
 
     function open() {
-      panel.classList.remove('hidden')
+      panel.showPopover()
       trigger.setAttribute('aria-expanded', 'true')
-      active(items.findIndex(({ option }) => option.value === select.value))
-      document.addEventListener('pointerdown', onDocPointerDown, true)
+      // At least as wide as the control it belongs to, which is what makes it read as the same
+      // object opening rather than a menu appearing near one.
+      panel.style.minWidth = Math.round(trigger.getBoundingClientRect().width) + 'px'
+      place(panel, trigger, 'start', 'bottom', 4)
+      active(items.findIndex((entry) => entry.option.value === select.value))
       document.addEventListener('keydown', onKey, true)
     }
 
     function close() {
-      if (panel.classList.contains('hidden')) return
-      panel.classList.add('hidden')
+      if (!isOpen()) return
+      panel.hidePopover()
       trigger.setAttribute('aria-expanded', 'false')
-      document.removeEventListener('pointerdown', onDocPointerDown, true)
       document.removeEventListener('keydown', onKey, true)
     }
 
-    const isOpen = () => !panel.classList.contains('hidden')
-
-    function onDocPointerDown(e) { if (!wrap.contains(e.target)) close() }
+    const isOpen = () => panel.matches(':popover-open')
 
     function onKey(e) {
       if (!isOpen()) {
@@ -2148,6 +2236,8 @@
       else if (e.key === 'Tab') close()
       else if (e.key === 'ArrowDown') { e.preventDefault(); active(index + 1) }
       else if (e.key === 'ArrowUp') { e.preventDefault(); active(index - 1) }
+      else if (e.key === 'Home') { e.preventDefault(); active(0) }
+      else if (e.key === 'End') { e.preventDefault(); active(items.length - 1) }
       else if (e.key === 'Enter') {
         e.preventDefault()
         const hit = items[index]
@@ -2155,8 +2245,21 @@
       }
     }
 
+    // Light dismiss closes the popover without telling the trigger, and an aria-expanded that
+    // says "true" over a closed list is a lie a screen reader has no way to check.
+    const onToggle = (event) => {
+      if (event.newState !== 'closed') return
+      trigger.setAttribute('aria-expanded', 'false')
+      document.removeEventListener('keydown', onKey, true)
+    }
+
     trigger.addEventListener('click', () => (isOpen() ? close() : open()))
     trigger.addEventListener('keydown', (e) => { if (!isOpen()) onKey(e) })
+    panel.addEventListener('scroll', edges, { passive: true })
+    panel.addEventListener('toggle', onToggle)
+    // The native select is still the value. A reset, a fragment swap or another script can move
+    // it, and the drawn face has to follow rather than claim a value the form does not have.
+    select.addEventListener('change', sync)
 
     sync()
     select.before(wrap)
@@ -2166,6 +2269,8 @@
 
     return () => {
       close()
+      panel.remove()
+      select.removeEventListener('change', sync)
       select.classList.remove('sr-only')
       select.tabIndex = 0
       wrap.replaceWith(select)

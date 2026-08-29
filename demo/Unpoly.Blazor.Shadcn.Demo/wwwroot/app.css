@@ -328,9 +328,6 @@
   .top-\[1px\] {
     top: 1px;
   }
-  .top-\[calc\(100\%\+4px\)\] {
-    top: calc(100% + 4px);
-  }
   .right-0 {
     right: 0px;
   }
@@ -447,9 +444,6 @@
   }
   .my-1 {
     margin-block: var(--spacing);
-  }
-  .my-4 {
-    margin-block: calc(var(--spacing) * 4);
   }
   .-ms-1 {
     margin-inline-start: calc(var(--spacing) * -1);
@@ -3753,6 +3747,9 @@
   .data-\[orientation\=vertical\]\:w-px[data-orientation="vertical"] {
     width: 1px;
   }
+  .data-\[placeholder\]\:text-muted-foreground[data-placeholder] {
+    color: var(--muted-foreground);
+  }
   .data-\[selected\=true\]\:bg-accent[data-selected="true"] {
     background-color: var(--accent);
   }
@@ -4119,6 +4116,9 @@
     }
   }
   @media (width >= 48rem) {
+    .md\:block {
+      display: block;
+    }
     .md\:flex {
       display: flex;
     }
@@ -4151,6 +4151,9 @@
     }
     .md\:gap-1\.5 {
       gap: calc(var(--spacing) * 1.5);
+    }
+    .md\:gap-4 {
+      gap: calc(var(--spacing) * 4);
     }
     .md\:p-12 {
       padding: calc(var(--spacing) * 12);
@@ -4225,6 +4228,12 @@
     .\@md\/field-group\:has-\[\>\[data-slot\=field-content\]\]\:items-start:has( > [data-slot=field-content]) {
       align-items: flex-start;
     }
+  }
+  .rtl\:right-auto:where(:dir(rtl), [dir="rtl"], [dir="rtl"] *) {
+    right: auto;
+  }
+  .rtl\:left-2:where(:dir(rtl), [dir="rtl"], [dir="rtl"] *) {
+    left: calc(var(--spacing) * 2);
   }
   .rtl\:-translate-x-px:where(:dir(rtl), [dir="rtl"], [dir="rtl"] *) {
     --tw-translate-x: -1px;

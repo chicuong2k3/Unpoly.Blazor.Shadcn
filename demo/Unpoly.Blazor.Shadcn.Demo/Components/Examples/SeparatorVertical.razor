@@ -1,9 +1,9 @@
-@* A vertical rule needs a height from something: it is a 1px box, and a box with no height is
-   invisible. Here the row supplies it. *@
-<div class="flex h-6 items-center gap-3 text-sm">
-    <span>Docs</span>
+@* A vertical rule is a 1px box, so it needs a height from something: here the row supplies it
+   with h-5. Without one the rule is present and invisible. *@
+<div class="flex h-5 items-center gap-4 text-sm">
+    <div>Blog</div>
     <Separator Orientation="vertical" />
-    <span>Blocks</span>
+    <div>Docs</div>
     <Separator Orientation="vertical" />
-    <span>Theming</span>
+    <div>Source</div>
 </div>
