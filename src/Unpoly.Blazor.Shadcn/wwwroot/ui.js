@@ -1527,10 +1527,29 @@
       if (sidebar.dataset.collapsible) sidebar.dataset.mode = sidebar.dataset.collapsible
     }
 
+    // ctrl+b, or cmd+b on a Mac, which is the shortcut shadcn documents. Bound once per
+    // toggle rather than once per page, and guarded so it does not fire while someone is typing
+    // b in a field — a shortcut that eats a letter is worse than no shortcut.
+    const onShortcut = (event) => {
+      if (event.key !== 'b' || !(event.metaKey || event.ctrlKey) || event.altKey) return
+      const el = document.activeElement
+      if (el?.matches('input, textarea, select, [contenteditable=""], [contenteditable="true"]')) return
+      // Only the first toggle inside a wrapper acts, or a page with a trigger AND a rail would
+      // toggle twice and end up where it started.
+      if (wrapper.querySelector('[data-sidebar-toggle]') !== control) return
+      event.preventDefault()
+      onClick()
+    }
+
     control.hidden = false
     control.setAttribute('aria-expanded', String(wrapper.dataset.state === 'expanded'))
     control.addEventListener('click', onClick)
-    return () => control.removeEventListener('click', onClick)
+    document.addEventListener('keydown', onShortcut)
+
+    return () => {
+      control.removeEventListener('click', onClick)
+      document.removeEventListener('keydown', onShortcut)
+    }
   })
 
   // =============================================================================================

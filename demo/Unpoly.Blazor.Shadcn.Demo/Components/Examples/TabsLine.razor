@@ -1,13 +1,14 @@
-@* The underlined variant is a class on the list and the triggers, not a variant parameter: what
-   changes is the ground and the rule, and both are one class each. *@
+@* Variant="line" is the whole of it. The list drops its pill and its background, the triggers
+   drop theirs, and the active one grows a rule along its trailing edge — an ::after the recipe
+   already carries, positioned from the orientation so it sits under a row and beside a column.
+
+   This example used to reproduce all of that by hand with six override classes, which is how it
+   ended up with a border instead of the rule and a different offset from the text. *@
 <Tabs Value="orders" Class="w-[460px]">
-    <TabsList Class="h-auto w-full justify-start rounded-none border-b bg-transparent p-0">
-        @foreach (var (v, label) in Panels)
+    <TabsList Variant="line">
+        @foreach (var panel in Panels)
         {
-            <TabsTrigger Value="@v"
-                         Class="rounded-none border-b-2 border-transparent bg-transparent px-4 pb-3 data-[state=active]:border-primary data-[state=active]:bg-transparent data-[state=active]:shadow-none">
-                @label
-            </TabsTrigger>
+            <TabsTrigger Value="@panel.Value">@panel.Label</TabsTrigger>
         }
     </TabsList>
     <TabsContent Value="orders" Class="pt-4 text-sm text-muted-foreground">Four orders this week.</TabsContent>

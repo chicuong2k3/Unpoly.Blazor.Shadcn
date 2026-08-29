@@ -8,7 +8,9 @@
 <button type="button" data-slot="sidebar-trigger" data-sidebar-toggle hidden
         aria-label="@AriaLabel" aria-controls="@Controls" class="@Classes"
         @attributes="AdditionalAttributes">
-    <Icon Name="panel-left" />
+    @* The panel is on the reading-start edge, so the glyph has to turn with the direction —
+       it is a picture of a layout, and an unflipped one points at the wrong side. *@
+    <Icon Name="panel-left" Class="rtl:rotate-180" />
     <span class="sr-only">@AriaLabel</span>
 </button>
 

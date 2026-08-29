@@ -16,7 +16,26 @@
 </p>
 <Example Source="SidebarExample.razor"><SidebarExample /></Example>
 
+<h2 class="doc-h2">Composition</h2>
+<p class="doc-note">
+    The whole tree, which is worth reading once: nothing here is optional except the parts you do
+    not use, and the nesting is what the classes key off.
+</p>
+<CodeBlock Language="text" Title="Composition" Class="mt-4 max-w-2xl" Code="@Composition" />
+
 <h2 class="doc-h2">Structure</h2>
+<ul class="doc-list">
+    <li><code>SidebarProvider</code> — declares the widths and carries the open state.</li>
+    <li><code>Sidebar</code> — the collapsible panel itself.</li>
+    <li><code>SidebarHeader</code> — sticky at the top: branding, a title, a workspace switcher.</li>
+    <li><code>SidebarFooter</code> — sticky at the bottom: a user menu, settings, an action.</li>
+    <li><code>SidebarContent</code> — the scrollable region between the two.</li>
+    <li><code>SidebarGroup</code> — a labelled section, with an optional action beside the label.</li>
+    <li><code>SidebarMenu</code> / <code>SidebarMenuItem</code> — the rows, their badges, their actions and their submenus.</li>
+    <li><code>SidebarRail</code> — the strip along the panel's edge that toggles it.</li>
+    <li><code>SidebarInset</code> — everything that is not the panel.</li>
+    <li><code>SidebarTrigger</code> — the button that toggles it.</li>
+</ul>
 <p class="doc-note">
     <code>SidebarProvider</code> declares the widths and the state; <code>Sidebar</code> is the
     panel; <code>SidebarInset</code> is everything that is not the panel. The panel is fixed and
@@ -34,6 +53,20 @@
 </p>
 <CodeBlock Language="csharp" Title="Reading the cookie" Class="mt-4 max-w-2xl" Code="@Reading" />
 
+<h2 class="doc-h2">Width</h2>
+<p class="doc-note">
+    One sidebar: set <code>Width</code> and <code>IconWidth</code> on the provider. Several: they
+    are custom properties, so each provider can carry its own.
+</p>
+<CodeBlock Language="csharp" Title="Widths" Class="mt-4 max-w-2xl" Code="@Widths" />
+
+<h2 class="doc-h2">Keyboard Shortcut</h2>
+<p class="doc-note">
+    <Kbd>ctrl</Kbd> + <Kbd>b</Kbd>, or <Kbd>cmd</Kbd> + <Kbd>b</Kbd> on a Mac, toggles the sidebar
+    — shadcn's own shortcut. It is ignored while the focus is in a field, because a shortcut that
+    eats a letter is worse than no shortcut.
+</p>
+
 <h2 class="doc-h2">SidebarHeader</h2>
 <Example Source="SidebarHeaderExample.razor"><SidebarHeaderExample /></Example>
 
@@ -46,6 +79,14 @@
     rather than to a row in it — "add a project", not "act on this project".
 </p>
 <Example Source="SidebarGroupExample.razor"><SidebarGroupExample /></Example>
+
+<h2 class="doc-h2">Collapsible group</h2>
+<p class="doc-note">
+    shadcn wraps the group in a <code>Collapsible</code> and makes the label its trigger. The
+    collapsible here IS a <code>&lt;details&gt;</code>, so the fold is the browser's: it works with
+    no script, it is in the page for a crawler, and the chevron turns on <code>[open]</code>.
+</p>
+<Example Source="SidebarGroupCollapsible.razor"><SidebarGroupCollapsible /></Example>
 
 <h2 class="doc-h2">SidebarMenuButton</h2>
 <p class="doc-note">
@@ -99,6 +140,41 @@
 <Example Source="SidebarRtl.razor"><SidebarRtl /></Example>
 
 @code {
+    const string Composition = """
+        SidebarProvider
+        ├── Sidebar
+        │   ├── SidebarHeader
+        │   ├── SidebarContent
+        │   │   ├── SidebarGroup
+        │   │   │   ├── SidebarGroupLabel
+        │   │   │   ├── SidebarGroupAction
+        │   │   │   ├── SidebarGroupContent
+        │   │   │   └── SidebarMenu
+        │   │   │       ├── SidebarMenuItem
+        │   │   │       │   ├── SidebarMenuButton
+        │   │   │       │   ├── SidebarMenuAction
+        │   │   │       │   └── SidebarMenuBadge
+        │   │   │       └── SidebarMenuItem
+        │   │   │           ├── SidebarMenuButton
+        │   │   │           └── SidebarMenuSub
+        │   │   │               ├── SidebarMenuSubItem
+        │   │   │               └── SidebarMenuSubItem
+        │   │   └── SidebarGroup
+        │   │       └── SidebarMenu
+        │   │           ├── SidebarMenuItem
+        │   │           └── SidebarMenuItem
+        │   ├── SidebarFooter
+        │   └── SidebarRail
+        ├── SidebarInset
+        └── SidebarTrigger
+        """;
+
+    const string Widths = """
+        <SidebarProvider Width="20rem" IconWidth="4rem">
+            <Sidebar Collapsible="icon">…</Sidebar>
+        </SidebarProvider>
+        """;
+
     const string Structure = """
         <SidebarProvider>
             <Sidebar Collapsible="icon">

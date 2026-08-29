@@ -1695,10 +1695,6 @@
     border-bottom-style: var(--tw-border-style);
     border-bottom-width: 1px;
   }
-  .border-b-2 {
-    border-bottom-style: var(--tw-border-style);
-    border-bottom-width: 2px;
-  }
   .border-l {
     border-left-style: var(--tw-border-style);
     border-left-width: 1px;
@@ -2554,6 +2550,9 @@
   }
   .not-checked\:bg-input:not(:checked) {
     background-color: var(--input);
+  }
+  .group-open\/collapsible\:rotate-180:is(:where(.group\/collapsible):is([open], :popover-open, :open) *) {
+    rotate: 180deg;
   }
   .group-open\/more\:hidden:is(:where(.group\/more):is([open], :popover-open, :open) *) {
     display: none;
@@ -3956,21 +3955,11 @@
     border-start-end-radius: var(--radius-control);
     border-end-end-radius: var(--radius-control);
   }
-  .data-\[state\=active\]\:border-primary[data-state="active"] {
-    border-color: var(--primary);
-  }
   .data-\[state\=active\]\:bg-background[data-state="active"] {
     background-color: var(--background);
   }
-  .data-\[state\=active\]\:bg-transparent[data-state="active"] {
-    background-color: transparent;
-  }
   .data-\[state\=active\]\:text-foreground[data-state="active"] {
     color: var(--foreground);
-  }
-  .data-\[state\=active\]\:shadow-none[data-state="active"] {
-    --tw-shadow: 0 0 #0000;
-    box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
   }
   .group-data-\[variant\=default\]\/tabs-list\:data-\[state\=active\]\:shadow-sm:is(:where(.group\/tabs-list)[data-variant="default"] *)[data-state="active"] {
     --tw-shadow: var(--elevation-2);
