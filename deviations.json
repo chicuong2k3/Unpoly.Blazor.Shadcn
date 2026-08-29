@@ -325,9 +325,10 @@
     },
     "combobox-item-indicator": {
       "classes": [
-        "shrink-0"
+        "shrink-0",
+        "end-2"
       ],
-      "why": "<Icon> ships shrink-0 on every icon, because an icon that shrinks inside a flex row is the single most common way one ends up an ellipse. Upstream writes it per call site instead."
+      "why": "<Icon> ships shrink-0 on every icon, because an icon that shrinks inside a flex row is the single most common way one ends up an ellipse. Upstream writes it per call site instead. And the tick sits at the reading end, not the physical right, so it changes sides in Arabic with the text it follows."
     },
     "combobox-clear": {
       "classes": [
@@ -662,6 +663,12 @@
         "pr-2"
       ],
       "why": "The indicator sits on the END edge, as shadcn's current stylesheet draws it: the item is `pr-8 pl-1.5` and the indicator `absolute right-2`. The new-york-v4 source vendored here still has Radix's old start-side layout, and a tick on the left of every row is the first thing anyone comparing against shadcn.com sees."
+    },
+    "combobox-item-indicator": {
+      "classes": [
+        "right-2"
+      ],
+      "why": "Replaced by end-2 above: a side named by the screen stays put when the reading direction flips, and the tick must travel with the text."
     }
   },
   "subject": {

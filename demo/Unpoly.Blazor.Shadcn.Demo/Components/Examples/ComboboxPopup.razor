@@ -1,20 +1,26 @@
-@* The list is a [popover], so it sits in the top layer: no z-index to lose, no clipping by an
-   ancestor's overflow, and Escape closes it because the platform says so. Which is why this one
-   works inside a scrolling card, where a positioned div would be cut off. *@
+@* Upstream's popup pattern: a select-like button opens the panel, and the search box lives
+   INSIDE it — focus lands there on open, typing filters, choosing resets the search. The list
+   is a [popover], so it sits in the top layer and escapes the scrolling card unclipped. *@
 <Card Class="h-40 w-96 overflow-y-auto">
     <CardContent Class="flex flex-col gap-3">
         <p class="text-sm text-muted-foreground">A short, scrolling card.</p>
         <Combobox Target="cb-popup-list">
-            <input type="hidden" name="country" value="vn" data-combobox-value />
-            <ComboboxTrigger id="cb-popup" Target="cb-popup-list">
-                <ComboboxValue data-placeholder="Choose a country…">Việt Nam</ComboboxValue>
+            <input type="hidden" name="country" value="" data-combobox-value />
+            <ComboboxTrigger id="cb-popup" Target="cb-popup-list" Class="w-64">
+                <ComboboxValue data-placeholder="Select country">Select country</ComboboxValue>
             </ComboboxTrigger>
-            <ComboboxContent Id="cb-popup-list" Class="w-72">
+            <ComboboxContent Id="cb-popup-list" Class="w-64">
+                <ComboboxInput Target="cb-popup-list" Placeholder="Search" ShowTrigger="false" />
+                <ComboboxEmpty>No items found.</ComboboxEmpty>
                 <ComboboxList>
-                    <ComboboxEmpty>No country by that name.</ComboboxEmpty>
-                    <ComboboxItem Value="vn" Selected>Việt Nam</ComboboxItem>
-                    <ComboboxItem Value="de">Deutschland</ComboboxItem>
-                    <ComboboxItem Value="pt">Portugal</ComboboxItem>
+                    <ComboboxItem Value="argentina">Argentina</ComboboxItem>
+                    <ComboboxItem Value="australia">Australia</ComboboxItem>
+                    <ComboboxItem Value="brazil">Brazil</ComboboxItem>
+                    <ComboboxItem Value="canada">Canada</ComboboxItem>
+                    <ComboboxItem Value="france">France</ComboboxItem>
+                    <ComboboxItem Value="germany">Germany</ComboboxItem>
+                    <ComboboxItem Value="japan">Japan</ComboboxItem>
+                    <ComboboxItem Value="vietnam">Việt Nam</ComboboxItem>
                 </ComboboxList>
             </ComboboxContent>
         </Combobox>

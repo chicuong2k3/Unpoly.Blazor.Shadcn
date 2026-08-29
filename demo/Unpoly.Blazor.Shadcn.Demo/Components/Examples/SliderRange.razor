@@ -1,11 +1,4 @@
-@* A lower and an upper bound is two inputs with two names — which is also what a server wants to
-   read, so the honest shape and the useful one agree. Radix draws one root with two thumbs and
-   posts an array; this posts min and max, and the query string stays readable. *@
-<Field Class="w-[420px]">
-    <FieldLabel>Price</FieldLabel>
-    <div class="flex flex-col gap-3">
-        <Slider name="min" Min="0" Max="500" Step="10" Value="80" aria-label="Lowest price" />
-        <Slider name="max" Min="0" Max="500" Step="10" Value="320" aria-label="Highest price" />
-    </div>
-    <FieldDescription>Posts as <code>min</code> and <code>max</code>.</FieldDescription>
-</Field>
+@* Two thumbs, one strip. Underneath: two native inputs stacked, each taking the pointer only
+   on its own thumb, both posting under the one name — which a server reads as a list. *@
+<Slider Name="range" Min="0" Max="100" Step="5" Values="new double[] { 25, 50 }"
+        Class="mx-auto w-full max-w-xs" />

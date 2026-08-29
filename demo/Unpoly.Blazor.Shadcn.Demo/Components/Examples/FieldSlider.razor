@@ -1,7 +1,12 @@
-@* The label points at the input, so clicking it focuses the slider and the arrow keys take over
-   from there — which is the whole reason a range control still wants a real label. *@
-<Field Class="w-[380px]">
-    <FieldLabel For="fsl-budget">Budget</FieldLabel>
-    <Slider id="fsl-budget" name="budget" Min="0" Max="500" Step="50" Value="200" />
-    <FieldDescription>Steps of 50, enforced by the input rather than by a check afterwards.</FieldDescription>
+@* Upstream's own sample: a price range with two thumbs, the live values in the description.
+   The <output> elements are pointed at the thumbs by id — ui.js mirrors each value in, and
+   <output> is the element HTML gives that job, announced politely by screen readers. *@
+<Field Class="w-full max-w-xs">
+    <FieldTitle>Price Range</FieldTitle>
+    <FieldDescription>
+        Set your budget range ($<output for="fsl-price-0" class="font-medium tabular-nums">200</output>
+        &ndash; $<output for="fsl-price-1" class="font-medium tabular-nums">800</output>).
+    </FieldDescription>
+    <Slider Id="fsl-price" Name="price" Min="0" Max="1000" Step="10" Values="new double[] { 200, 800 }"
+            Labels=@(new[] { "Lowest price", "Highest price" }) Class="mt-2 w-full" />
 </Field>

@@ -1,12 +1,9 @@
-@* Opens on hover and on focus. A card only a mouse can reach is a card half the readers never
-   see, which is the failure this component exists to avoid rather than to introduce. *@
-<HoverCardTrigger Target="hc-basic" Class="underline underline-offset-4">@@marta</HoverCardTrigger>
-<HoverCardContent Id="hc-basic" Class="w-72 p-4">
-    <div class="flex gap-3">
-        <Avatar><AvatarFallback>MR</AvatarFallback></Avatar>
-        <div class="text-sm">
-            <div class="font-medium">Marta Ruiz</div>
-            <p class="text-muted-foreground">128 orders. Joined March 2024.</p>
-        </div>
-    </div>
+@* Upstream's own card: a link-styled trigger, then the handle, the blurb and the join date.
+   It opens on focus too — a card only a mouse can reach is a card half the readers never see. *@
+<HoverCardTrigger Target="hc-basic" OpenDelay="10" CloseDelay="100"
+                  Class="@ButtonVariants.Of("link", "default")">Hover Here</HoverCardTrigger>
+<HoverCardContent Id="hc-basic" Class="flex w-64 flex-col gap-0.5">
+    <div class="font-semibold">@@nextjs</div>
+    <div>The React Framework – created and maintained by @@vercel.</div>
+    <div class="mt-1 text-xs text-muted-foreground">Joined December 2021</div>
 </HoverCardContent>

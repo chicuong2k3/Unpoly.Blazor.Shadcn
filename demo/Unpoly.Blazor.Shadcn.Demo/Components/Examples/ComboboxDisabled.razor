@@ -1,12 +1,10 @@
-@* Two different disablings: the whole trigger, and one item inside an otherwise usable list. The
-   second is a real disabled button, so the filter skips it and so does the keyboard. *@
-<div class="flex w-72 flex-col gap-4">
+@* Two different disablings: the whole control, and one item inside an otherwise usable list.
+   The second is a real disabled button, so the filter skips it and so does the keyboard. *@
+<div class="flex w-64 flex-col gap-4">
     <Combobox Target="cb-dis-a">
-        <ComboboxTrigger id="cb-dis-trigger" Target="cb-dis-a" disabled>
-            <ComboboxValue data-placeholder="Not available">Blazor</ComboboxValue>
-        </ComboboxTrigger>
-        <ComboboxContent Id="cb-dis-a" Class="w-72">
-            <ComboboxList><ComboboxItem Value="blazor">Blazor</ComboboxItem></ComboboxList>
+        <ComboboxInput Target="cb-dis-a" Placeholder="Select a framework" Disabled />
+        <ComboboxContent Id="cb-dis-a" Class="w-64">
+            <ComboboxList><ComboboxItem Value="nextjs">Next.js</ComboboxItem></ComboboxList>
         </ComboboxContent>
     </Combobox>
 
@@ -15,7 +13,7 @@
         <ComboboxTrigger id="cb-dis-b-trigger" Target="cb-dis-b">
             <ComboboxValue data-placeholder="Choose a plan…">Pro</ComboboxValue>
         </ComboboxTrigger>
-        <ComboboxContent Id="cb-dis-b" Class="w-72">
+        <ComboboxContent Id="cb-dis-b" Class="w-64">
             <ComboboxList>
                 <ComboboxItem Value="free">Free</ComboboxItem>
                 <ComboboxItem Value="pro" Selected>Pro</ComboboxItem>

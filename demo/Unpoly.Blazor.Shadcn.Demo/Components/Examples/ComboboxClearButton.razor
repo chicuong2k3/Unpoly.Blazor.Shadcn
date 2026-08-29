@@ -1,19 +1,18 @@
-@* ComboboxClear hides itself while there is nothing to clear — the hidden attribute is toggled by
-   the same script that owns the value, so there is one source of truth for "is anything chosen". *@
-<div class="w-80">
-    <Combobox Target="cb-clear-list" Multiple>
-        <ComboboxChips data-name="topics">
-            <ComboboxChip Value="css" Name="topics" Label="CSS">CSS</ComboboxChip>
-            <ComboboxChipInput id="cb-clear-input" Placeholder="Add a topic…" AriaLabel="Topics" />
-            <ComboboxClear Label="Clear all topics" />
-        </ComboboxChips>
-
-        <ComboboxContent Id="cb-clear-list" Class="w-80">
+@* ShowClear puts an ✕ inside the frame that empties the selection — hidden while there is
+   nothing to clear, so the control never offers an action that would do nothing. *@
+<div class="w-64">
+    <Combobox Target="cb-clear-list">
+        <input type="hidden" name="framework" value="nextjs" data-combobox-value />
+        <ComboboxInput Target="cb-clear-list" Placeholder="Select a framework" ShowClear
+                       Value="Next.js" />
+        <ComboboxContent Id="cb-clear-list" Class="w-64">
+            <ComboboxEmpty>No items found.</ComboboxEmpty>
             <ComboboxList>
-                <ComboboxEmpty>No topic by that name.</ComboboxEmpty>
-                <ComboboxItem Value="css" Selected>CSS</ComboboxItem>
-                <ComboboxItem Value="html">HTML</ComboboxItem>
-                <ComboboxItem Value="a11y" Keywords="accessibility">Accessibility</ComboboxItem>
+                <ComboboxItem Value="nextjs" Selected>Next.js</ComboboxItem>
+                <ComboboxItem Value="sveltekit">SvelteKit</ComboboxItem>
+                <ComboboxItem Value="nuxtjs">Nuxt.js</ComboboxItem>
+                <ComboboxItem Value="remix">Remix</ComboboxItem>
+                <ComboboxItem Value="astro">Astro</ComboboxItem>
             </ComboboxList>
         </ComboboxContent>
     </Combobox>

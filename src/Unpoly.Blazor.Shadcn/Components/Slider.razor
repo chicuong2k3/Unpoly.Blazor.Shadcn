@@ -10,14 +10,37 @@
    So the root here IS the input, and the track, the filled range and the thumb are the three
    pseudo-elements the browser gives it, styled in ui.behavior.css with upstream's own colours.
 
-   What this cannot do is two thumbs. A range with a lower and an upper bound is two inputs with
-   two names, and pretending otherwise would mean rebuilding the whole thing. Two named inputs is
-   also what a server wants to read, so the honest shape and the useful one agree. *@
+   Values with more than one entry is upstream's several-thumb slider, and it is still native
+   inputs: one per thumb, stacked in one frame, each keeping its own drag, keyboard and
+   announcement. The frame draws the shared track and the band between the outermost thumbs —
+   server-side, as inline custom properties, so the band is right before any script runs — and
+   ui.js keeps neighbours ordered while dragging. Each thumb posts under Name, repeated, which a
+   server reads as a list; give the inputs ids and an <output for="…"> shows the live value.
 
-<input type="range" data-slot="slider" min="@Min" max="@Max" step="@Step" value="@Value"
-       disabled="@Disabled" data-disabled="@(Disabled ? "" : null)"
-       data-orientation="@Orientation" class="@Classes"
-       @attributes="AdditionalAttributes" />
+   What a row of native inputs cannot do is a vertical several-thumb slider; Orientation applies
+   to the single-thumb form only. *@
+
+@if (Values is not { Length: > 1 } values)
+{
+    <input type="range" data-slot="slider" min="@Min" max="@Max" step="@Step" value="@Value"
+           disabled="@Disabled" data-disabled="@(Disabled ? "" : null)"
+           data-orientation="@Orientation" class="@Classes"
+           @attributes="AdditionalAttributes" />
+}
+else
+{
+    <div data-slot="slider" data-range data-orientation="horizontal"
+         data-disabled="@(Disabled ? "" : null)" class="@RangeClasses" style="@Band(values)"
+         @attributes="AdditionalAttributes">
+        @for (var i = 0; i < values.Length; i++)
+        {
+            var at = i;
+            <input type="range" data-slot="slider-input" min="@Min" max="@Max" step="@Step"
+                   value="@values[at]" name="@Name" id="@IdFor(at)" disabled="@Disabled"
+                   aria-label="@(Labels?.ElementAtOrDefault(at) ?? $"Value {at + 1}")" />
+        }
+    </div>
+}
 
 @code {
     [Parameter] public double Min { get; set; }
@@ -27,6 +50,19 @@
     [Parameter] public string Step { get; set; } = "1";
 
     [Parameter] public double? Value { get; set; }
+
+    /// <summary>One thumb per entry, as upstream's value array. Two is a range.</summary>
+    [Parameter] public double[]? Values { get; set; }
+
+    /// <summary>The field every thumb posts under, repeated — the server reads a list.</summary>
+    [Parameter] public string? Name { get; set; }
+
+    /// <summary>An accessible name per thumb: "Lowest price", "Highest price".</summary>
+    [Parameter] public string[]? Labels { get; set; }
+
+    /// <summary>Base for per-thumb ids, so an <c>&lt;output for&gt;</c> can watch one thumb.
+    /// With Id "price", the thumbs are price-0, price-1, …</summary>
+    [Parameter] public string? Id { get; set; }
 
     [Parameter] public bool Disabled { get; set; }
 
@@ -39,4 +75,19 @@
         "data-[orientation=vertical]:w-auto";
 
     string Classes => Cn(Base, Class);
+
+    string RangeClasses => Cn(Base, "h-4", Class);
+
+    string? IdFor(int at) => Id is null ? null : $"{Id}-{at}";
+
+    // The band between the outermost thumbs, as percentages the stylesheet reads. Inline so the
+    // server's render is already correct — scripting refines it, it does not create it.
+    string Band(double[] values)
+    {
+        var span = Max - Min;
+        if (span <= 0) return "--slider-from: 0%; --slider-to: 0%";
+        var from = (values.Min() - Min) / span * 100;
+        var to = (values.Max() - Min) / span * 100;
+        return FormattableString.Invariant($"--slider-from: {from:0.##}%; --slider-to: {to:0.##}%");
+    }
 }

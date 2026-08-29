@@ -1,17 +1,35 @@
-@* A menu inside the frame, for a field with a mode. The panel is in the top layer, so it is not
-   clipped by the group's own overflow. *@
-<InputGroup Class="w-[420px]">
-    <InputGroupAddon>
-        <DropdownMenu>
-            <DropdownMenuTrigger Target="ig-mode" Variant="ghost" Size="sm" Class="h-7 gap-1 px-2">
-                Name<Icon Name="chevron-down" Class="size-3.5" />
+@* Upstream's pair: a file-name field whose ellipsis opens a menu, and a search field whose
+   scope reads as text. The trigger is the ordinary dropdown trigger shrunk to addon size; the
+   panel is in the top layer, so the frame's overflow cannot clip it. *@
+<div class="grid w-full max-w-sm gap-4">
+    <InputGroup>
+        <InputGroupControl name="file" placeholder="Enter file name" />
+        <InputGroupAddon Align="inline-end">
+            <DropdownMenuTrigger Target="ig-dd-more" Variant="ghost"
+                                 Class="size-6 rounded-[calc(var(--radius)-5px)] p-0 shadow-none"
+                                 aria-label="More">
+                <Icon Name="ellipsis" Class="size-3.5" />
             </DropdownMenuTrigger>
-            <DropdownMenuContent Id="ig-mode" Class="w-40">
-                <DropdownMenuItem>Name</DropdownMenuItem>
-                <DropdownMenuItem>Email</DropdownMenuItem>
-                <DropdownMenuItem>Order number</DropdownMenuItem>
+            <DropdownMenuContent Id="ig-dd-more" Class="w-40">
+                <DropdownMenuItem>Settings</DropdownMenuItem>
+                <DropdownMenuItem>Copy path</DropdownMenuItem>
+                <DropdownMenuItem>Open location</DropdownMenuItem>
             </DropdownMenuContent>
-        </DropdownMenu>
-    </InputGroupAddon>
-    <InputGroupControl name="q" type="search" placeholder="Search by name…" />
-</InputGroup>
+        </InputGroupAddon>
+    </InputGroup>
+
+    <InputGroup>
+        <InputGroupControl name="q" placeholder="Enter search query" />
+        <InputGroupAddon Align="inline-end">
+            <DropdownMenuTrigger Target="ig-dd-scope" Variant="ghost"
+                                 Class="h-6 gap-1 rounded-[calc(var(--radius)-5px)] px-2 text-xs shadow-none">
+                Search In… <Icon Name="chevron-down" Class="size-3" />
+            </DropdownMenuTrigger>
+            <DropdownMenuContent Id="ig-dd-scope" Class="w-44">
+                <DropdownMenuItem>Documentation</DropdownMenuItem>
+                <DropdownMenuItem>Blog Posts</DropdownMenuItem>
+                <DropdownMenuItem>Changelog</DropdownMenuItem>
+            </DropdownMenuContent>
+        </InputGroupAddon>
+    </InputGroup>
+</div>

@@ -458,7 +458,8 @@
 
     /* -moz- and -webkit- must be written as separate rules: one invalid selector in a list drops
        the whole list, so combining them silently loses the thumb in every browser. */
-    input[type="range"][data-slot="slider"]::-webkit-slider-thumb {
+    input[type="range"][data-slot="slider"]::-webkit-slider-thumb,
+    input[type="range"][data-slot="slider-input"]::-webkit-slider-thumb {
         appearance: none;
         width: 1rem; height: 1rem;              /* size-4 */
         margin-top: -0.3125rem;                 /* centres the thumb on the track */
@@ -468,21 +469,25 @@
         box-shadow: var(--elevation-1, 0 1px 2px 0 rgb(0 0 0 / 0.05));
         transition: box-shadow var(--duration-ui, 150ms) var(--ease-ui, ease);
     }
-    input[type="range"][data-slot="slider"]::-moz-range-thumb {
+    input[type="range"][data-slot="slider"]::-moz-range-thumb,
+    input[type="range"][data-slot="slider-input"]::-moz-range-thumb {
         width: 1rem; height: 1rem;
         border-radius: 9999px;
         border: 1px solid var(--primary);
         background: #fff;
         box-shadow: var(--elevation-1, 0 1px 2px 0 rgb(0 0 0 / 0.05));
     }
-    input[type="range"][data-slot="slider"]:hover::-webkit-slider-thumb {
+    input[type="range"][data-slot="slider"]:hover::-webkit-slider-thumb,
+    input[type="range"][data-slot="slider-input"]:hover::-webkit-slider-thumb {
         box-shadow: 0 0 0 4px var(--ring);      /* hover:ring-4 */
     }
-    input[type="range"][data-slot="slider"]:focus-visible::-webkit-slider-thumb {
+    input[type="range"][data-slot="slider"]:focus-visible::-webkit-slider-thumb,
+    input[type="range"][data-slot="slider-input"]:focus-visible::-webkit-slider-thumb {
         box-shadow: 0 0 0 4px var(--ring);      /* focus-visible:ring-4 */
     }
     input[type="range"][data-slot="slider"]:hover::-moz-range-thumb,
-    input[type="range"][data-slot="slider"]:focus-visible::-moz-range-thumb {
+    input[type="range"][data-slot="slider"]:focus-visible::-moz-range-thumb,
+    input[type="range"][data-slot="slider-input"]:focus-visible::-moz-range-thumb {
         box-shadow: 0 0 0 4px var(--ring);
     }
     input[type="range"][data-slot="slider"]:focus-visible { outline: none; }
@@ -490,6 +495,65 @@
         writing-mode: vertical-lr;
         direction: rtl;
     }
+
+    /* The fill is painted from the start, and in RTL the start is the right — the native input
+       already runs its values right-to-left, so a left-anchored gradient coloured the EMPTY
+       side. One flipped gradient per vendor pseudo, for the list-dropping reason above. */
+    input[type="range"][data-slot="slider"]:where([dir="rtl"] *)::-webkit-slider-runnable-track {
+        background: linear-gradient(to left,
+            var(--primary) 0 var(--slider-fill, 0%),
+            var(--muted) var(--slider-fill, 0%) 100%);
+    }
+    input[type="range"][data-slot="slider"]:where([dir="rtl"] *)::-moz-range-track {
+        background: linear-gradient(to left,
+            var(--primary) 0 var(--slider-fill, 0%),
+            var(--muted) var(--slider-fill, 0%) 100%);
+    }
+
+    /* ---- Slider, several thumbs ------------------------------------------------------
+       One native input per thumb, stacked in one frame. The frame paints the shared track and
+       the band between the outermost thumbs from --slider-from / --slider-to — inline from the
+       server so the first paint is right, kept current by ui.js while dragging. The inputs
+       take no pointer anywhere except their thumb, which is how two of them share one strip. */
+    [data-slot="slider"][data-range]::before,
+    [data-slot="slider"][data-range]::after {
+        content: "";
+        position: absolute;
+        inset-block-start: 50%;
+        translate: 0 -50%;
+        block-size: 0.375rem;
+        border-radius: 9999px;
+    }
+    [data-slot="slider"][data-range]::before { inset-inline: 0; background: var(--muted); }
+    [data-slot="slider"][data-range]::after {
+        inset-inline-start: var(--slider-from, 0%);
+        inline-size: calc(var(--slider-to, 0%) - var(--slider-from, 0%));
+        background: var(--primary);
+    }
+    input[type="range"][data-slot="slider-input"] {
+        appearance: none;
+        position: absolute;
+        inset: 0;
+        inline-size: 100%;
+        block-size: 100%;
+        margin: 0;
+        background: transparent;
+        cursor: pointer;
+        pointer-events: none;               /* the thumb rules above turn the thumb back on */
+    }
+    input[type="range"][data-slot="slider-input"]:disabled { cursor: not-allowed; }
+    input[type="range"][data-slot="slider-input"]:focus-visible { outline: none; }
+    input[type="range"][data-slot="slider-input"]::-webkit-slider-runnable-track {
+        height: 0.375rem;
+        background: transparent;
+    }
+    input[type="range"][data-slot="slider-input"]::-moz-range-track {
+        height: 0.375rem;
+        background: transparent;
+    }
+
+    input[type="range"][data-slot="slider-input"]::-webkit-slider-thumb { pointer-events: auto; }
+    input[type="range"][data-slot="slider-input"]::-moz-range-thumb { pointer-events: auto; }
 
     /* ---- Carousel --------------------------------------------------------------------
        Scroll-snap is the carousel. Embla exists because Safari's implementation was unusable in
@@ -649,4 +713,11 @@
 [data-slot="button-group"][data-orientation="vertical"] > :not(:last-child):is([data-slot="dropdown-menu"], [data-slot="select-root"], [data-slot="popover"]) > :is(button, select, input, [data-slot$="-trigger"]) {
     border-end-start-radius: 0;
     border-end-end-radius: 0;
+}
+
+/* Base UI renders an ItemIndicator only while its row is selected; this one is always in the
+   markup, so the not-selected state hides it here. UNLAYERED on purpose: the icon carries
+   `flex` from the utilities layer, and a layered rule loses to that whatever its specificity. */
+[data-slot="combobox-item"]:not([data-selected]) [data-slot="combobox-item-indicator"] {
+    display: none;
 }

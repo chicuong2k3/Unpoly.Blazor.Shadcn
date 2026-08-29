@@ -1,10 +1,24 @@
-@* A textarea in a group grows the frame rather than being squeezed by it, which is what the
-   has-[>textarea] rule in the recipe is for. The toolbar goes on its own row underneath. *@
-<InputGroup Class="w-[460px] items-end">
-    <Textarea name="body" rows="3" placeholder="Write a message…" aria-label="Message"
-              Class="resize-none border-0 shadow-none focus-visible:ring-0" />
-    <InputGroupAddon Align="block-end" Class="justify-between">
-        <span class="text-xs text-muted-foreground">Markdown supported</span>
-        <InputGroupButton Variant="default" Size="sm"><Icon Name="send" />Send</InputGroupButton>
+@* Upstream's editor frame: a toolbar row above, the code below, the status row underneath.
+   The block addons take their own rows, and the borders between rows belong to the addons —
+   which is exactly what Align="block-start/block-end" exists for. *@
+<InputGroup Class="w-full max-w-md">
+    <InputGroupAddon Align="block-start" Class="border-b">
+        <span class="flex items-center gap-2 font-mono text-xs font-medium">
+            <Icon Name="file-text" Class="size-4" />script.js
+        </span>
+        <InputGroupButton Size="icon-xs" Class="ms-auto" aria-label="Refresh">
+            <Icon Name="refresh-cw" />
+        </InputGroupButton>
+        <InputGroupButton Variant="ghost" Size="icon-xs" aria-label="Copy">
+            <Icon Name="copy" />
+        </InputGroupButton>
+    </InputGroupAddon>
+    <InputGroupControl Multiline name="code" placeholder="console.log('Hello, world!');"
+                       Class="min-h-[200px] resize-none font-mono" />
+    <InputGroupAddon Align="block-end" Class="border-t">
+        <span class="text-xs text-muted-foreground">Line 1, Column 1</span>
+        <InputGroupButton Variant="default" Size="sm" Class="ms-auto">
+            Run <Icon Name="arrow-right" />
+        </InputGroupButton>
     </InputGroupAddon>
 </InputGroup>

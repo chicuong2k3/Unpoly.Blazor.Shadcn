@@ -525,6 +525,22 @@ renders `<div>` · `data-slot="combobox-group"`
 |---|---|---|---|
 | `Heading` | `string?` | — |  |
 
+## `<ComboboxInput>`
+_composition only_
+
+| Parameter | Type | Default | |
+|---|---|---|---|
+| `Target` | `string?` | — |  |
+| `Placeholder` | `string?` | — |  |
+| `Id` | `string?` | — |  |
+| `Name` | `string?` | — |  |
+| `Value` | `string?` | — |  |
+| `Disabled` | `bool` | — |  |
+| `Invalid` | `bool` | — |  |
+| `ShowTrigger` | `bool` | `true` |  |
+| `ShowClear` | `bool` | — |  |
+| `OpenLabel` | `string` | `"Open list"` |  |
+
 ## `<ComboboxItem>`
 renders `<button>` · `data-slot="combobox-item"`
 
@@ -1858,6 +1874,10 @@ renders `<input>` · `data-slot="slider"`
 | `Max` | `double` | `100` |  |
 | `Step` | `string` | `"1"` |  |
 | `Value` | `double?` | — |  |
+| `Values` | `double[]?` | — |  |
+| `Name` | `string?` | — |  |
+| `Labels` | `string[]?` | — |  |
+| `Id` | `string?` | — |  |
 | `Disabled` | `bool` | — |  |
 | `Orientation` | `string` | `"horizontal"` |  |
 

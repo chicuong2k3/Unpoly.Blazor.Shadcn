@@ -1,7 +1,16 @@
-<div class="flex flex-wrap items-center gap-6">
-    <HoverCardTrigger Target="hc-top" Class="underline underline-offset-4">above</HoverCardTrigger>
-    <HoverCardContent Id="hc-top" Side="top" Class="w-56 p-3 text-sm">Opens above.</HoverCardContent>
-
-    <HoverCardTrigger Target="hc-bottom" Class="underline underline-offset-4">below</HoverCardTrigger>
-    <HoverCardContent Id="hc-bottom" Side="bottom" Class="w-56 p-3 text-sm">Opens below.</HoverCardContent>
+@* Four outline buttons, one per side, as upstream draws them. *@
+<div class="flex flex-wrap justify-center gap-2">
+    @foreach (var side in new[] { "left", "top", "bottom", "right" })
+    {
+        <HoverCardTrigger Target="@($"hc-side-{side}")" OpenDelay="100" CloseDelay="100"
+                          Class="@ButtonVariants.Of("outline", "default", "capitalize")">
+            @side
+        </HoverCardTrigger>
+        <HoverCardContent Id="@($"hc-side-{side}")" Side="@side" Class="w-64">
+            <div class="flex flex-col gap-1">
+                <h4 class="font-medium">Hover Card</h4>
+                <p>This hover card appears on the @side side of the trigger.</p>
+            </div>
+        </HoverCardContent>
+    }
 </div>

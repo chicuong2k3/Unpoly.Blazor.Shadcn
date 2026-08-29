@@ -1,18 +1,9 @@
-@* Any control, not only InputGroupControl. What the frame needs is a child that fills it and
-   draws no border of its own — a select, a date input, a file input all qualify. *@
-<div class="flex w-[420px] flex-col gap-4">
-    <InputGroup>
-        <InputGroupAddon><Icon Name="calendar" /></InputGroupAddon>
-        <input type="date" name="from" value="2026-03-11"
-               class="min-w-0 flex-1 bg-transparent px-3 text-control outline-none" aria-label="From" />
-    </InputGroup>
-
-    <InputGroup>
-        <InputGroupAddon><Icon Name="folder" /></InputGroupAddon>
-        <select name="folder" class="min-w-0 flex-1 appearance-none bg-transparent px-3 text-control outline-none"
-                aria-label="Folder">
-            <option>Contracts</option>
-            <option>Invoices</option>
-        </select>
-    </InputGroup>
-</div>
+@* Upstream reaches for react-textarea-autosize here; CSS has since grown the same feature.
+   field-sizing-content makes the textarea track its own text, no script anywhere. *@
+<InputGroup Class="w-full max-w-sm">
+    <textarea data-slot="input-group-control" name="note" placeholder="Autoresize textarea…"
+              class="field-sizing-content flex min-h-16 w-full resize-none rounded-md bg-transparent px-3 py-2.5 text-base outline-none md:text-sm"></textarea>
+    <InputGroupAddon Align="block-end">
+        <InputGroupButton Variant="default" Size="sm" Class="ms-auto">Submit</InputGroupButton>
+    </InputGroupAddon>
+</InputGroup>

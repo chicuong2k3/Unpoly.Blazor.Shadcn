@@ -908,6 +908,17 @@
         }
         if (hidden) hidden.value = item.dataset.value
         if (value) value.textContent = label(item)
+        if (input && !input.matches('[data-slot="combobox-chip-input"]')) {
+          // A search box inside the panel resets; with no ComboboxValue the text box IS the
+          // display and takes the label. Either way the filter must not survive the choice --
+          // a list opened tomorrow filtered by yesterday's label reads as items having
+          // vanished. (The popup pattern has BOTH: the trigger shows the value, the panel
+          // holds the search, and each gets its own line above.)
+          input.value = panel.contains(input) ? '' : (value ? input.value : label(item))
+          for (const other of items()) other.hidden = false
+          for (const group of panel.querySelectorAll('[data-slot="combobox-group"]')) group.hidden = false
+          if (empty) empty.hidden = true
+        }
         syncClear()
         panel.hidePopover()
         trigger?.focus()
@@ -982,7 +993,10 @@
     // all until you had already typed a character — and the two examples built on it looked
     // completely inert. Every combobox opens on focus; this one had a trigger for the button
     // form and nothing for the input form.
-    const onFocus = () => { if (!panel.matches(':popover-open')) panel.showPopover() }
+    const onFocus = () => {
+      if (!panel.matches(':popover-open')) panel.showPopover()
+      if (input && !panel.contains(input) && input.value) input.select()
+    }
 
     const onClear = () => {
       for (const item of items()) { delete item.dataset.selected; item.setAttribute('aria-selected', 'false') }
@@ -999,6 +1013,9 @@
       trigger?.setAttribute('aria-expanded', String(open))
       input?.setAttribute('aria-expanded', String(open))
       if (open) place(panel, trigger || root, 'start', 'bottom', 4)
+      // The popup pattern: the panel opened from a button and the search box lives inside it.
+      // Focus goes straight there, which is what makes it a search box rather than an ornament.
+      if (open && input && panel.contains(input)) input.focus()
     }
 
     panel.addEventListener('click', onClick)
@@ -1014,7 +1031,13 @@
     clear?.addEventListener('click', onClear)
     panel.addEventListener('toggle', onToggle)
     panel.addEventListener('pointerover', onHighlight)
-    filter()
+    // A display input showing the chosen label must not pre-filter the list to that one label --
+    // reopening would show a list of one. The filter belongs to typing, not to arriving.
+    if (input && !panel.contains(input) && input.value && hidden?.value) {
+      if (empty) empty.hidden = true
+    } else {
+      filter()
+    }
     syncClear()
 
     return () => {
@@ -1748,6 +1771,42 @@
     paint()
 
     return () => input.removeEventListener('input', paint)
+  })
+
+  // Several thumbs: the inputs are stacked, so the only rules that need script are the ones
+  // BETWEEN them — a thumb never crosses its neighbour, and the band spans the outermost two.
+  // The band's percentages arrive inline from the server; this keeps them true while dragging,
+  // and mirrors each value into any <output for="..."> pointed at the input, which is the
+  // element HTML already has for "the live result of a control".
+  up.compiler('[data-slot="slider"][data-range]', (root) => {
+    const inputs = [...root.querySelectorAll('input[type="range"]')]
+    const min = Number(inputs[0]?.min || 0)
+    const span = Number(inputs[0]?.max || 100) - min
+
+    const sync = () => {
+      const values = inputs.map((i) => Number(i.value))
+      if (span > 0) {
+        root.style.setProperty('--slider-from', `${((Math.min(...values) - min) / span) * 100}%`)
+        root.style.setProperty('--slider-to', `${((Math.max(...values) - min) / span) * 100}%`)
+      }
+      for (const input of inputs) {
+        const output = input.id && document.querySelector(`output[for="${CSS.escape(input.id)}"]`)
+        if (output) output.textContent = input.value
+      }
+    }
+
+    const order = (event) => {
+      const at = inputs.indexOf(event.target)
+      const before = inputs[at - 1], after = inputs[at + 1]
+      if (before && Number(event.target.value) < Number(before.value)) event.target.value = before.value
+      if (after && Number(event.target.value) > Number(after.value)) event.target.value = after.value
+      sync()
+    }
+
+    root.addEventListener('input', order)
+    sync()
+
+    return () => root.removeEventListener('input', order)
   })
 
   // =============================================================================================
