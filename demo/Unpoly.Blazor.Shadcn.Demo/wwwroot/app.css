@@ -2391,6 +2391,11 @@
     transition-timing-function: var(--tw-ease, var(--default-transition-timing-function));
     transition-duration: var(--tw-duration, var(--duration-ui));
   }
+  .transition-\[opacity\,color\,background-color\] {
+    transition-property: opacity,color,background-color;
+    transition-timing-function: var(--tw-ease, var(--default-transition-timing-function));
+    transition-duration: var(--tw-duration, var(--duration-ui));
+  }
   .transition-\[translate\,scale\,opacity\] {
     transition-property: translate,scale,opacity;
     transition-timing-function: var(--tw-ease, var(--default-transition-timing-function));
@@ -2413,11 +2418,6 @@
   }
   .transition-colors {
     transition-property: color, background-color, border-color, outline-color, text-decoration-color, fill, stroke, --tw-gradient-from, --tw-gradient-via, --tw-gradient-to;
-    transition-timing-function: var(--tw-ease, var(--default-transition-timing-function));
-    transition-duration: var(--tw-duration, var(--duration-ui));
-  }
-  .transition-opacity {
-    transition-property: opacity;
     transition-timing-function: var(--tw-ease, var(--default-transition-timing-function));
     transition-duration: var(--tw-duration, var(--duration-ui));
   }
@@ -5060,11 +5060,17 @@
   [data-slot="dialog-content"]:has(> [data-slot="dialog-close"]) > [data-slot="dialog-header"], [data-slot="alert-dialog-content"]:has(> [data-slot="dialog-close"]) > [data-slot="alert-dialog-header"] {
     padding-inline-end: 1.5rem;
   }
-  [data-slot="dialog-content"] *, [data-slot="alert-dialog-content"] * {
+  [data-slot="select-content"], [data-slot="command-list"], [data-slot="combobox-list"], [data-slot="dropdown-menu-content"], [data-slot="context-menu-content"], [data-slot="menubar-content"], [data-slot$="sub-content"], [data-slot="popover-content"], [data-slot="navigation-menu-content"], [data-slot="table-container"], [data-slot="message-scroller-viewport"], [data-slot="code-block-pre"], [data-slot="sidebar-content"], [data-slot="dialog-content"] *, [data-slot="alert-dialog-content"] *, [data-slot="drawer-content"] *, [data-slot="sheet-content"] * {
     scrollbar-width: none;
   }
-  [data-slot="dialog-content"] *::-webkit-scrollbar, [data-slot="alert-dialog-content"] *::-webkit-scrollbar {
+  [data-slot="select-content"]::-webkit-scrollbar, [data-slot="command-list"]::-webkit-scrollbar, [data-slot="combobox-list"]::-webkit-scrollbar, [data-slot="dropdown-menu-content"]::-webkit-scrollbar, [data-slot="context-menu-content"]::-webkit-scrollbar, [data-slot="menubar-content"]::-webkit-scrollbar, [data-slot$="sub-content"]::-webkit-scrollbar, [data-slot="popover-content"]::-webkit-scrollbar, [data-slot="navigation-menu-content"]::-webkit-scrollbar, [data-slot="table-container"]::-webkit-scrollbar, [data-slot="message-scroller-viewport"]::-webkit-scrollbar, [data-slot="code-block-pre"]::-webkit-scrollbar, [data-slot="sidebar-content"]::-webkit-scrollbar, [data-slot="dialog-content"] *::-webkit-scrollbar, [data-slot="alert-dialog-content"] *::-webkit-scrollbar, [data-slot="drawer-content"] *::-webkit-scrollbar, [data-slot="sheet-content"] *::-webkit-scrollbar {
     display: none;
+  }
+  [data-slot="scroll-area-viewport"] {
+    scrollbar-width: thin;
+  }
+  [data-slot="scroll-area-viewport"]::-webkit-scrollbar {
+    display: initial;
   }
   [data-slot="dialog"] > [data-slot="dialog-content"]:not(:has(> [data-slot="dialog-header"])), [data-slot="dialog"] > [data-slot="dialog-content"]:not(:has(> [data-slot="dialog-footer"])) {
     grid-template-rows: none;
@@ -5106,8 +5112,6 @@
   [data-slot="message-scroller-viewport"] {
     overflow-y: auto;
     overflow-anchor: auto;
-    scrollbar-width: thin;
-    scrollbar-color: var(--border) transparent;
     overscroll-behavior-y: contain;
   }
   [data-slot="drawer"] {
@@ -5410,10 +5414,6 @@
     background: currentColor;
     -webkit-mask: var(--sh-check) center / contain no-repeat;
     mask: var(--sh-check) center / contain no-repeat;
-  }
-  [data-slot="code-block-pre"] {
-    scrollbar-width: thin;
-    scrollbar-color: var(--border) transparent;
   }
   [data-slot="command-input"]::-webkit-search-cancel-button {
     margin-inline-start: 0.25rem;

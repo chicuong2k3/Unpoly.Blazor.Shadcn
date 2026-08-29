@@ -481,6 +481,12 @@
         "text-center"
       ],
       "why": "data-active is Radix's, written from React state as the user moves between boxes; nothing can set it here and nothing did, so the ring, the raised z-index and the invalid-while-active colours were dead classes and a focused box showed no focus at all. A real <input> already has that state, spelled :focus-visible. text-center because upstream's slot is a <div> centring one character with flex, and flex centring says nothing about the value inside an input: every digit sat against the start edge of its box."
+    },
+    "item-content": {
+      "classes": [
+        "min-w-0"
+      ],
+      "why": "A flex child's min-width is auto, so this block will not shrink below its longest unbreakable word — an address like shadcn@vercel.com — and the row wraps instead, putting the avatar on one line and the name on the next. Upstream's own item-dropdown example is a narrow menu, which is exactly where that happens."
     }
   },
   "dropped": {

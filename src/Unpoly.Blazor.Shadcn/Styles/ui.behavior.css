@@ -97,18 +97,61 @@
         padding-inline-end: 1.5rem;
     }
 
-    /* No scrollbar inside a dialog. Upstream's scrollable sample says `no-scrollbar` on the box
-       it scrolls, and the reason holds: the panel is small and a bar down the inside of it reads
-       as a second window rather than as one dialog. The content that scrolls under the edge is
-       the affordance. Wheel, drag and keyboard all still work — this hides the bar, not the
-       scrolling. */
+    /* Scrolling surfaces do not draw a bar. That is shadcn's own choice nearly everywhere — a
+       menu, a listbox, a command palette, a code block and a dialog all scroll with no bar down
+       the inside of them, because on a small floating surface a bar reads as a second window
+       rather than as part of this one. What scrolls under the edge is the affordance.
+
+       This hides the bar, not the scrolling: the wheel, the drag, the keyboard and every
+       programmatic scroll are untouched.
+
+       The one deliberate exception is the scroll area, whose entire job is to SHOW a scrollbar —
+       it is this port's answer to the pair Radix draws in script, and hiding it would leave a
+       component that does nothing. */
+    [data-slot="select-content"],
+    [data-slot="command-list"],
+    [data-slot="combobox-list"],
+    [data-slot="dropdown-menu-content"],
+    [data-slot="context-menu-content"],
+    [data-slot="menubar-content"],
+    [data-slot$="sub-content"],
+    [data-slot="popover-content"],
+    [data-slot="navigation-menu-content"],
+    [data-slot="table-container"],
+    [data-slot="message-scroller-viewport"],
+    [data-slot="code-block-pre"],
+    [data-slot="sidebar-content"],
     [data-slot="dialog-content"] *,
-    [data-slot="alert-dialog-content"] * {
+    [data-slot="alert-dialog-content"] *,
+    [data-slot="drawer-content"] *,
+    [data-slot="sheet-content"] * {
         scrollbar-width: none;
     }
+    [data-slot="select-content"]::-webkit-scrollbar,
+    [data-slot="command-list"]::-webkit-scrollbar,
+    [data-slot="combobox-list"]::-webkit-scrollbar,
+    [data-slot="dropdown-menu-content"]::-webkit-scrollbar,
+    [data-slot="context-menu-content"]::-webkit-scrollbar,
+    [data-slot="menubar-content"]::-webkit-scrollbar,
+    [data-slot$="sub-content"]::-webkit-scrollbar,
+    [data-slot="popover-content"]::-webkit-scrollbar,
+    [data-slot="navigation-menu-content"]::-webkit-scrollbar,
+    [data-slot="table-container"]::-webkit-scrollbar,
+    [data-slot="message-scroller-viewport"]::-webkit-scrollbar,
+    [data-slot="code-block-pre"]::-webkit-scrollbar,
+    [data-slot="sidebar-content"]::-webkit-scrollbar,
     [data-slot="dialog-content"] *::-webkit-scrollbar,
-    [data-slot="alert-dialog-content"] *::-webkit-scrollbar {
+    [data-slot="alert-dialog-content"] *::-webkit-scrollbar,
+    [data-slot="drawer-content"] *::-webkit-scrollbar,
+    [data-slot="sheet-content"] *::-webkit-scrollbar {
         display: none;
+    }
+    /* Put it back where it is the point. */
+    [data-slot="scroll-area-viewport"] {
+        scrollbar-width: thin;
+    }
+    [data-slot="scroll-area-viewport"]::-webkit-scrollbar {
+        display: initial;
     }
 
     /* A dialog with nothing between its header and footer must not be stretched to the cap by
@@ -145,8 +188,6 @@
     [data-slot="message-scroller-viewport"] {
         overflow-y: auto;
         overflow-anchor: auto;
-        scrollbar-width: thin;
-        scrollbar-color: var(--border) transparent;
         overscroll-behavior-y: contain;
     }
 
@@ -490,10 +531,7 @@
         -webkit-mask: var(--sh-check) center / contain no-repeat;
         mask: var(--sh-check) center / contain no-repeat;
     }
-    [data-slot="code-block-pre"] {
-        scrollbar-width: thin;
-        scrollbar-color: var(--border) transparent;
-    }
+
 
     /* ---- Command ---------------------------------------------------------------------
        Nothing to draw here: the compiler sets data-selected="true" on the highlighted row, which

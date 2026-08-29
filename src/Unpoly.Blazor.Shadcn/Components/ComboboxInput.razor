@@ -14,6 +14,9 @@
    input while unknown attributes belong to the frame — one element cannot be both. *@
 
 <InputGroup Class="@Class" @attributes="AdditionalAttributes">
+    @* Anything the caller puts inside becomes an addon of its own, before the control — which is
+       how upstream hangs a globe or a search icon off the start of the box. *@
+    @ChildContent
     <InputGroupControl id="@Id" name="@Name" value="@Value" role="combobox" autocomplete="off"
                        aria-autocomplete="list" aria-controls="@Target" aria-expanded="false"
                        aria-invalid="@(Invalid ? "true" : null)" disabled="@Disabled"
