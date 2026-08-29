@@ -45,8 +45,19 @@
     //
     // They are missing upstream's cva because there is no cva: the extractor read the class list
     // of the mobile sheet, and the desktop root is written inline on the component.
+    // No width, no flex, no background. This element is a MARKER: it carries the state that
+    // every selector in the family reads, and its two children do the work — the gap reserves
+    // the space in the document flow, the container is the fixed panel that fills it.
+    //
+    // It used to carry w-(--sidebar-width), so it was itself a 256px flex item beside the inset.
+    // The gap shrank on collapse and the root did not, so the inset never moved: the trigger
+    // sitting in it stayed exactly where it was while the panel narrowed away from it.
+    //
+    // The width came from upstream's cva, and upstream's cva is the MOBILE sheet — the desktop
+    // root is written inline on the component as `group peer text-sidebar-foreground hidden
+    // md:block`, which is what this is now.
     const string Base =
-        "group peer flex h-full w-(--sidebar-width) flex-col bg-sidebar text-sidebar-foreground";
+        "group peer hidden text-sidebar-foreground md:block";
 
     string GapVariant => Variant switch
     {

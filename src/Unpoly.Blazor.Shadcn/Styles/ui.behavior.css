@@ -430,32 +430,6 @@
         [data-slot="accordion-item"][open] [data-slot="accordion-content"] { animation: none; }
     }
 
-    /* ---- Sonner (Toastify-js underneath) ---------------------------------------------
-       Toastify owns the box, the stack and the animation; this dresses it in the app's own
-       surface. Its own CSS sets a gradient background, hence the override rather than a rule. */
-    .toastify[data-slot="sonner-toast"] {
-        border-radius: var(--radius-md);
-        border: 1px solid var(--border);
-        padding: 0.75rem 1rem;
-        font-size: 0.8125rem;
-        font-family: inherit;
-        background: var(--popover);
-        color: var(--popover-foreground);
-        box-shadow: 0 8px 24px -12px rgb(0 0 0 / 0.22), 0 2px 6px -2px rgb(0 0 0 / 0.08);
-    }
-    .toastify[data-slot="sonner-toast"][data-type="error"] {
-        background: color-mix(in oklab, var(--destructive) 12%, var(--popover));
-        color: var(--destructive);
-        border-color: var(--destructive);
-    }
-    .toastify[data-slot="sonner-toast"] .toast-close {
-        margin-left: 0.75rem;
-        opacity: 0.5;
-        color: inherit;
-        transition: opacity 150ms;
-    }
-    .toastify[data-slot="sonner-toast"] .toast-close:hover { opacity: 1; }
-
     /* ---- the card publishes its own padding ------------------------------------------
        Everything in a card reads --card-spacing, so a child can pull out by exactly the amount
        the card pushed in — that is the whole of the edge-to-edge pattern, one number used twice.
@@ -997,3 +971,46 @@
 [popover][data-slot$="-content"] {
     transition-property: opacity, transform, scale, translate, display, overlay;
 }
+
+/* ---- Sonner (Toastify-js underneath) -------------------------------------------------
+   UNLAYERED, and that is the whole reason it works. toastify.css is a plain stylesheet with no
+   @layer, and an unlayered declaration beats every layered one regardless of order or
+   specificity — so while these rules sat in @layer components the toast kept Toastify's own
+   2px radius, its own padding and its own transparent background, and every line here did
+   nothing at all. air-datepicker and button-group are out here for the same reason.
+
+   Sonner's shape: an icon, then the words, then the close button. shadcn passes the icons in
+   and leaves the surface alone for every type — the colour is on the glyph, not on the box. */
+.toastify[data-slot="sonner-toast"] {
+    display: flex;
+    align-items: center;
+    gap: 0.625rem;
+    border-radius: var(--radius);
+    border: 1px solid var(--border);
+    padding: 1rem;
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+    font-family: inherit;
+    background: var(--popover);
+    color: var(--popover-foreground);
+    box-shadow: 0 4px 12px rgb(0 0 0 / 0.1);
+}
+.toastify[data-slot="sonner-toast"] svg { flex: none; width: 1rem; height: 1rem; }
+.toastify[data-slot="sonner-toast"][data-type="success"] svg { color: var(--primary); }
+.toastify[data-slot="sonner-toast"][data-type="error"] svg { color: var(--destructive); }
+.toastify[data-slot="sonner-toast"][data-type="warning"] svg { color: var(--destructive); }
+.toastify[data-slot="sonner-toast"][data-type="info"] svg { color: var(--muted-foreground); }
+.toastify[data-slot="sonner-toast"][data-type="loading"] svg { animation: sh-spin 1s linear infinite; }
+.toastify[data-slot="sonner-toast"] .toast-close {
+    margin-inline-start: auto;
+    padding-inline-start: 0.5rem;
+    opacity: 0.5;
+    color: inherit;
+    font-size: 1rem;
+    line-height: 1;
+    transition: opacity 150ms;
+}
+.toastify[data-slot="sonner-toast"] .toast-close:hover { opacity: 1; }
+
+@keyframes sh-spin { to { rotate: 360deg; } }
+

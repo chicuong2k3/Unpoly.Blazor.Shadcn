@@ -44,7 +44,7 @@
                         @foreach (var row in Rows)
                         {
                             <SidebarMenuItem>
-                                <SidebarMenuButton Href="@row.Href">
+                                <SidebarMenuButton Href="@row.Href" Tooltip="@row.Label">
                                     <Icon Name="@row.Icon" /><span>@row.Label</span>
                                 </SidebarMenuButton>
                                 @if (row.Badge is not null)
@@ -58,7 +58,7 @@
                         }
 
                         <SidebarMenuItem>
-                            <SidebarMenuButton Href="/components/table">
+                            <SidebarMenuButton Href="/components/table" Tooltip="Reports">
                                 <Icon Name="menu" /><span>Reports</span>
                             </SidebarMenuButton>
                             <SidebarMenuSub>

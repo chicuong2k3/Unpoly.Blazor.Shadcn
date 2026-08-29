@@ -142,11 +142,31 @@
 
     // Toastify has no hook for arbitrary attributes, and [data-slot] is what ui.css styles.
     const node = document.querySelector('.toastify:not([data-slot])')
-    if (node) { node.dataset.slot = 'sonner-toast'; node.dataset.type = type }
+    if (!node) return
+    node.dataset.slot = 'sonner-toast'
+    node.dataset.type = type
+
+    // The glyph shadcn passes into Sonner as `icons`. Prepended rather than styled in, because
+    // the toast is built by Toastify and the icon is the one part of its shape that is ours.
+    const glyph = TOAST_ICONS[type]
+    if (glyph) node.insertAdjacentHTML('afterbegin', svg(glyph))
+  }
+
+  // shadcn's five, and the same five lucide glyphs.
+  const TOAST_ICONS = {
+    success: '<path d="M21.801 10A10 10 0 1 1 17 3.335"/><path d="m9 11 3 3L22 4"/>',
+    info: '<circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/>',
+    warning: '<path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"/><path d="M12 9v4"/><path d="M12 17h.01"/>',
+    error: '<path d="m16.24 3.56 4.2 4.2a2 2 0 0 1 .59 1.42v5.64a2 2 0 0 1-.59 1.42l-4.2 4.2a2 2 0 0 1-1.42.59H9.18a2 2 0 0 1-1.42-.59l-4.2-4.2A2 2 0 0 1 3 14.82V9.18a2 2 0 0 1 .59-1.42l4.2-4.2A2 2 0 0 1 9.18 3h5.64a2 2 0 0 1 1.42.56z"/><path d="m15 9-6 6"/><path d="m9 9 6 6"/>',
+    loading: '<path d="M21 12a9 9 0 1 1-6.219-8.56"/>',
   }
 
   toast.success = (text, o) => toast(text, { ...o, type: 'success' })
   toast.error = (text, o) => toast(text, { ...o, type: 'error' })
+  // info and warning were missing, so a page calling toast.info threw and showed nothing at all.
+  toast.info = (text, o) => toast(text, { ...o, type: 'info' })
+  toast.warning = (text, o) => toast(text, { ...o, type: 'warning' })
+  toast.loading = (text, o) => toast(text, { ...o, type: 'loading', duration: o?.duration ?? -1 })
 
   up.on('sonner:toast', (event) => toast(event.text, { type: event.flavor || event.type || 'success' }))
   // The cart event carries its own wording and predates the toast channel.
@@ -1717,9 +1737,18 @@
   // Hover AND focus, because a tooltip only reachable by mouse is a tooltip half the users never
   // see. Escape closes it, which the APG asks for and most implementations forget.
 
-  up.compiler('[data-slot="tooltip-trigger"]', (trigger) => {
-    const panel = document.getElementById(trigger.dataset.target)
+  // [data-tooltip-target] is on this list because a tooltip is not always a component of its
+  // own: a sidebar row IS the trigger, and it already has a data-slot saying what it is. The
+  // attribute is the general hook — anything can name a tip and get the whole behaviour.
+  up.compiler('[data-slot="tooltip-trigger"], [data-tooltip-target]', (trigger) => {
+    const panel = document.getElementById(trigger.dataset.target || trigger.dataset.tooltipTarget)
     if (!panel) return
+
+    // "collapsed" means: only while the sidebar this row is in has narrowed to icons. That is
+    // upstream's rule, and it is the only moment the label is not already on screen — a tip
+    // repeating a word the reader can see is noise.
+    const wanted = () => trigger.dataset.tooltipWhen !== 'collapsed'
+      || trigger.closest('[data-slot="sidebar"]')?.dataset.state === 'collapsed'
     let timer
 
     // Clicking dismisses the tip, and it stays dismissed until the pointer leaves and comes
@@ -1728,7 +1757,7 @@
     let dismissed = false
 
     const open = () => {
-      if (dismissed) return
+      if (dismissed || !wanted()) return
       clearTimeout(timer)
       timer = setTimeout(() => {
         panel.showPopover()
@@ -1758,9 +1787,7 @@
     }
     const stay = () => clearTimeout(timer)
 
-    const onEnter = (event) => { at = { x: event.clientX, y: event.clientY }; open() }
-
-    trigger.addEventListener('pointerenter', onEnter)
+    trigger.addEventListener('pointerenter', open)
     trigger.addEventListener('pointerleave', leave)
     panel.addEventListener('pointerenter', stay)
     panel.addEventListener('pointerleave', leave)
@@ -1777,7 +1804,7 @@
       panel.removeEventListener('pointerenter', stay)
       panel.removeEventListener('pointerleave', leave)
       trigger.removeEventListener('pointerdown', dismiss)
-      trigger.removeEventListener('pointerenter', onEnter)
+      trigger.removeEventListener('pointerenter', open)
       trigger.removeEventListener('pointerleave', leave)
       trigger.removeEventListener('focus', open)
       trigger.removeEventListener('blur', close)
@@ -1838,8 +1865,15 @@
     const list = root.querySelector('[data-slot="command-list"]')
     if (!input || !list) return
 
+    // A CommandDialog CONTAINS a Command, so this compiler's selector matched both and attached
+    // two controllers to one palette. Each moved the selection on the same bubbled key and they
+    // cancelled out, which is why the docs search would not move at all while the inline example
+    // was fine. The outer one stands down.
+    if (root.dataset.slot === 'command-dialog' && root.querySelector('[data-slot="command"]')) return
+
     const items = () => [...list.querySelectorAll('[data-slot="command-item"]:not([hidden])')]
     const empty = root.querySelector('[data-slot="command-empty"]')
+    const cleanup = []
 
     // Every item needs an id for aria-activedescendant to point at one.
     let seq = 0
@@ -1903,7 +1937,21 @@
     }
 
     input.addEventListener('input', filter)
-    input.addEventListener('keydown', onKey)
+
+    // The keys are bound to the ROOT, not to the input. In a command DIALOG the user agent moves
+    // focus to the first focusable element when it opens, which is the close button — so every
+    // arrow press went to the document, the list never moved, and the page scrolled underneath
+    // instead. Binding the palette's keys to the palette is the fix; the input is focused as well,
+    // because typing is what you do next.
+    root.addEventListener('keydown', onKey)
+
+    if (root.matches('dialog')) {
+      const focusInput = () => { if (root.open) input.focus({ preventScroll: true }) }
+      const watch = new MutationObserver(focusInput)
+      watch.observe(root, { attributes: true, attributeFilter: ['open'] })
+      focusInput()
+      cleanup.push(() => watch.disconnect())
+    }
     list.addEventListener('pointermove', (e) => {
       const item = e.target.closest('[data-slot="command-item"]')
       if (item && !item.hidden) highlight(item)
@@ -1911,8 +1959,9 @@
     filter()
 
     return () => {
+      for (const undo of cleanup) undo()
       input.removeEventListener('input', filter)
-      input.removeEventListener('keydown', onKey)
+      root.removeEventListener('keydown', onKey)
     }
   })
 

@@ -513,9 +513,11 @@
     "sidebar": {
       "classes": [
         "group",
-        "peer"
+        "peer",
+        "hidden",
+        "md:block"
       ],
-      "why": "Upstream's desktop sidebar root is written inline on the component — className=\"group peer text-sidebar-foreground hidden md:block\" — and the extractor read the MOBILE sheet's class list instead, which is the one it found in a cn(). The two markers are the whole of the collapse: every width rule on the gap and the container selects through group-data-[collapsible=...], and SidebarInset keys its margin off peer-data-[state=collapsed]. Without them the state flipped and nothing moved."
+      "why": "Upstream's desktop sidebar root is written inline on the component — className=\"group peer text-sidebar-foreground hidden md:block\" — and the extractor read the MOBILE sheet's class list instead, which is the one it found in a cn(). The markers are the whole of the collapse: every width rule on the gap and the container selects through group-data-[collapsible=...], and SidebarInset keys its margin off peer-data-[state=collapsed]."
     },
     "toggle-group-item": {
       "classes": [
@@ -804,6 +806,16 @@
         "disabled:opacity-50"
       ],
       "why": "The root is a <label> wrapping the real input, because a label is what makes the whole control clickable and the input is what posts. A <label> is never :disabled - only the input is - so upstream's disabled:opacity-50 matched nothing at all and a disabled toggle looked exactly like an enabled one. has-[:disabled] asks the same question of the element that can answer it."
+    },
+    "sidebar": {
+      "classes": [
+        "flex",
+        "h-full",
+        "w-(--sidebar-width)",
+        "flex-col",
+        "bg-sidebar"
+      ],
+      "why": "The same mix-up the other way: these belong to upstream's mobile sheet, not to the desktop root. w-(--sidebar-width) on the root made it a 256px flex item beside the inset, so the inset never moved when the sidebar collapsed and the trigger in it stayed put while the panel narrowed away. The width belongs to the gap child, which already has it; the flex column and the background belong to sidebar-inner, which already has those."
     }
   },
   "subject": {

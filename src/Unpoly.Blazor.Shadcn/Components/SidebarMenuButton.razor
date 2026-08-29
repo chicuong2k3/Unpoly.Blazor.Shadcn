@@ -12,7 +12,8 @@
 {
     <a href="@Href" data-slot="sidebar-menu-button" data-size="@Size" data-variant="@Variant"
        data-active="@(Active ? "true" : null)" aria-current="@(Active ? "page" : null)"
-       class="@Classes" @attributes="AdditionalAttributes">@ChildContent</a>
+       data-tooltip-target="@TipId" data-tooltip-when="@(Tooltip is null ? null : "collapsed")"
+       aria-describedby="@TipId" class="@Classes" @attributes="AdditionalAttributes">@ChildContent</a>
 }
 else
 {
@@ -24,7 +25,20 @@ else
             data-target="@Target" popovertarget="@Target"
             aria-haspopup="@(Target is null ? null : "menu")"
             aria-expanded="@(Target is null ? null : "false")"
-            class="@Classes" @attributes="AdditionalAttributes">@ChildContent</button>
+            data-tooltip-target="@TipId" data-tooltip-when="@(Tooltip is null ? null : "collapsed")"
+            aria-describedby="@TipId" class="@Classes" @attributes="AdditionalAttributes">@ChildContent</button>
+}
+
+@if (Tooltip is not null)
+{
+    @* The tip is a sibling rather than a child: it is a [popover] in the top layer, and a popover
+       inside the row would be inside the thing it describes. Side is inline-end because the rail
+       is on the reading-start edge — in Arabic that is the left, and nothing here has to say so. *@
+    <div id="@TipId" popover="manual" role="tooltip" data-slot="tooltip-content"
+         data-side="inline-end" data-placed-side="inline-end" data-side-offset="8"
+         class="z-50 w-fit rounded-md bg-foreground px-3 py-1.5 text-xs text-balance text-background">
+        @Tooltip
+    </div>
 }
 
 @code {
@@ -46,6 +60,19 @@ else
     /// cannot both go somewhere and open something.
     /// </summary>
     [Parameter] public string? Target { get; set; }
+
+    /// <summary>
+    /// A label shown beside the row while the sidebar is collapsed to icons — upstream's
+    /// tooltip prop, and shown at the same moment: it is the only time the row's own words are
+    /// not on screen, and a tip repeating a word the reader can see is noise.
+    /// </summary>
+    [Parameter] public string? Tooltip { get; set; }
+
+    static int seq;
+    string? tipId;
+
+    /// <summary>Minted once per instance, so a re-render does not hand out a new id.</summary>
+    string? TipId => Tooltip is null ? null : (tipId ??= $"sidebar-tip-{++seq}");
 
     const string Base =
         "peer/menu-button flex w-full items-center gap-2 overflow-hidden rounded-md p-2 " +
