@@ -1024,9 +1024,14 @@
       "renders a <Button>, so in the DOM the element says data-slot=\"button\" and its own size",
       "table — the one that makes it small enough to sit inside a 36px control — belongs to no",
       "slot at all. Without this it had no classes whatsoever and rendered as browser chrome",
-      "inside a styled box."
+      "inside a styled box.",
+      "NavigationMenuTrigger is the same shape: upstream renders",
+      "cn(navigationMenuTriggerStyle(), \"group\", className), so the extractor caught only the",
+      "\"group\" and the recipe that gives the trigger its height, padding, radius and open state",
+      "belongs to no slot. Without this the triggers were bare text with a chevron after them."
     ],
-    "input-group-button": "$cva:inputGroupButtonVariants"
+    "input-group-button": "$cva:inputGroupButtonVariants",
+    "navigation-menu-trigger": "$cva:navigationMenuTriggerStyle"
   },
   "multiSlot": {
     "$comment": [

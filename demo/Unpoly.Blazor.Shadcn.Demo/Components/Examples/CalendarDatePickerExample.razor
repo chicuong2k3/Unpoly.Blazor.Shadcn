@@ -11,7 +11,7 @@
         <PopoverTrigger Target="cal-dp-panel" id="cal-dp" Class="w-full justify-between font-normal">
             <span data-date-label>11 March 2026</span><Icon Name="calendar" Class="opacity-50" />
         </PopoverTrigger>
-        <PopoverContent Id="cal-dp-panel" Align="start" Class="p-3">
+        <PopoverContent Id="cal-dp-panel" Align="start" Class="w-fit p-3">
             <Calendar Name="delivery" Month="@(new DateOnly(2026, 3, 1))"
                       Selected="@(new DateOnly(2026, 3, 11))" Today="@(new DateOnly(2026, 3, 11))" />
         </PopoverContent>

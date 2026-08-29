@@ -1,13 +1,33 @@
-@* shadcn's natural-language picker parses "next tuesday" in the browser. Parsing a date is the
-   server's job here: it already has to, because a client-side parse is a convenience and the
-   value still arrives as text. up-validate echoes back what it understood, so the reader sees the
-   interpretation before submitting rather than after. *@
-<form method="post" action="/reminders" up-target="#preview-date-picker-natural" class="w-[420px]">
+@* shadcn parses "In 2 days" in the browser and shows what it understood underneath. Parsing is
+   the server's job here — the value arrives as text either way — so up-validate echoes the
+   reading back, and the calendar button is there for anyone who would rather point at a day. *@
+<form method="post" action="/reminders" up-target="#preview-date-picker-natural"
+      class="mx-auto w-64">
     <AntiforgeryToken />
-    <Field>
-        <FieldLabel For="dpn-when">When</FieldLabel>
-        <Input id="dpn-when" name="when" value="next tuesday at 9" up-validate
-               autocomplete="off" />
-        <FieldDescription>Understood as <b>Tuesday 17 March, 09:00</b>.</FieldDescription>
+    <Field data-date-field>
+        <FieldLabel For="dpn-when">Schedule Date</FieldLabel>
+        <div class="relative flex gap-2">
+            <Input id="dpn-when" name="when" value="In 2 days" data-date-label up-validate
+                   placeholder="Tomorrow or next week" autocomplete="off"
+                   Class="bg-background pe-10" />
+            <PopoverTrigger Target="dpn-panel" Variant="ghost" Size="icon"
+                            Class="absolute end-2 top-1/2 size-6 -translate-y-1/2"
+                            aria-label="Select date">
+                <Icon Name="calendar" Class="size-3.5" />
+            </PopoverTrigger>
+        </div>
+        <FieldDescription>
+            Your post will be published on <span class="font-medium">@Understood</span>.
+        </FieldDescription>
     </Field>
+    <PopoverContent Id="dpn-panel" Align="end" SideOffset="10" Class="w-fit overflow-hidden p-0">
+        <Calendar Name="publish-day" Month="@Month" Today="@Today" Class="p-3" />
+    </PopoverContent>
 </form>
+
+@code {
+    static readonly DateOnly Today = DateOnly.FromDateTime(DateTime.Today);
+    static readonly DateOnly Month = new(Today.Year, Today.Month, 1);
+
+    static string Understood => Today.AddDays(2).ToString("MMMM d, yyyy");
+}

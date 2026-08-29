@@ -1,12 +1,26 @@
-@* A date and a time are two inputs, because they are two values — and `type="time"` brings the
-   right keyboard on a phone, which a text box with a mask does not. *@
-<div class="flex w-[420px] items-end gap-3">
-    <Field Class="flex-1">
+@* A date and a time are two values, so they are two controls. The date is the popover picker; the
+   time is type="time" with step="1" for the seconds field, and the browser's own clock button is
+   hidden because the field already looks like one. *@
+<div class="mx-auto flex w-fit gap-4">
+    <Field Class="w-36">
         <FieldLabel For="dpt-date">Date</FieldLabel>
-        <DatePicker id="dpt-date" name="date" value="2026-03-11" />
+        <PopoverTrigger Target="dpt-date-panel" id="dpt-date" Variant="outline"
+                        Class="w-full justify-between font-normal">
+            <span data-date-label data-empty>Select date</span>
+            <Icon Name="chevron-down" Class="opacity-50" />
+        </PopoverTrigger>
+        <PopoverContent Id="dpt-date-panel" Align="start" Class="w-fit overflow-hidden p-0">
+            <Calendar Name="meeting-date" Month="@Month" Today="@Today" Class="p-3" />
+        </PopoverContent>
     </Field>
     <Field Class="w-32">
         <FieldLabel For="dpt-time">Time</FieldLabel>
-        <Input id="dpt-time" name="time" type="time" value="09:30" step="900" />
+        <Input id="dpt-time" name="time" type="time" step="1" value="10:30:00"
+               Class="appearance-none bg-background [&::-webkit-calendar-picker-indicator]:hidden" />
     </Field>
 </div>
+
+@code {
+    static readonly DateOnly Today = DateOnly.FromDateTime(DateTime.Today);
+    static readonly DateOnly Month = new(Today.Year, Today.Month, 1);
+}

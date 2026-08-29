@@ -1,28 +1,40 @@
-@* A <nav> with a real <ul> inside, so a screen reader announces the landmark and the item count.
-   Each panel is its own popover in the top layer rather than a slot in one shared viewport: no
-   cross-fade between panels, and in exchange nothing clips them and there is no z-index to lose. *@
+@* Upstream's whole bar in one example, because the point of a navigation menu is the row of them:
+   panels of different widths, a plain link with no panel, and a list of icons — each panel its own
+   popover in the top layer rather than a slot in one shared viewport. *@
 <NavigationMenu AriaLabel="Product" up-nav>
     <NavigationMenuList>
         <NavigationMenuItem>
-            <NavigationMenuTrigger Target="nav-features">Features</NavigationMenuTrigger>
-            <NavigationMenuContent Id="nav-features" Class="w-[420px] p-2">
-                <ul class="grid gap-1 md:grid-cols-2">
-                    <li>
-                        <NavigationMenuLink Href="/components/button">
-                            <div class="font-medium">Components</div>
-                            <p class="text-muted-foreground">Every one, with its source.</p>
+            <NavigationMenuTrigger Target="nav-home">Home</NavigationMenuTrigger>
+            <NavigationMenuContent Id="nav-home">
+                <ul class="grid gap-2 md:w-[400px] lg:w-[500px] lg:grid-cols-[.75fr_1fr]">
+                    @* The card upstream fills with a gradient and lets span three rows: the one
+                       link in the panel that is the product rather than a page of it. *@
+                    <li class="row-span-3">
+                        <NavigationMenuLink Href="/"
+                                            Class="flex h-full w-full flex-col justify-end rounded-md bg-linear-to-b from-muted/50 to-muted p-6 no-underline outline-hidden select-none focus:shadow-md">
+                            <Icon Name="circle" Class="size-6" />
+                            <div class="mt-4 mb-2 text-lg font-medium">shadcn/ui</div>
+                            <p class="text-sm leading-tight text-muted-foreground">
+                                Beautifully designed components built with Tailwind CSS.
+                            </p>
                         </NavigationMenuLink>
                     </li>
                     <li>
-                        <NavigationMenuLink Href="/blocks">
-                            <div class="font-medium">Blocks</div>
-                            <p class="text-muted-foreground">Whole sections to copy.</p>
+                        <NavigationMenuLink Href="/">
+                            <div class="font-medium">Introduction</div>
+                            <p class="text-muted-foreground">Re-usable components built using Tailwind CSS.</p>
                         </NavigationMenuLink>
                     </li>
                     <li>
                         <NavigationMenuLink Href="/theming">
-                            <div class="font-medium">Theming</div>
-                            <p class="text-muted-foreground">Tokens, and what they cannot do.</p>
+                            <div class="font-medium">Installation</div>
+                            <p class="text-muted-foreground">How to install dependencies and structure your app.</p>
+                        </NavigationMenuLink>
+                    </li>
+                    <li>
+                        <NavigationMenuLink Href="/typography">
+                            <div class="font-medium">Typography</div>
+                            <p class="text-muted-foreground">Styles for headings, paragraphs, lists and more.</p>
                         </NavigationMenuLink>
                     </li>
                 </ul>
@@ -30,10 +42,74 @@
         </NavigationMenuItem>
 
         <NavigationMenuItem>
-            <NavigationMenuLink Href="/theming">Pricing</NavigationMenuLink>
+            <NavigationMenuTrigger Target="nav-components">Components</NavigationMenuTrigger>
+            <NavigationMenuContent Id="nav-components">
+                <ul class="grid w-[400px] gap-2 md:w-[500px] md:grid-cols-2 lg:w-[600px]">
+                    @foreach (var item in Components)
+                    {
+                        <li>
+                            <NavigationMenuLink Href="@item.Href">
+                                <div class="font-medium">@item.Title</div>
+                                <p class="text-muted-foreground">@item.Blurb</p>
+                            </NavigationMenuLink>
+                        </li>
+                    }
+                </ul>
+            </NavigationMenuContent>
         </NavigationMenuItem>
+
+        @* No panel, so no trigger — but it wears what the triggers wear, which is why shadcn
+           exports the recipe separately from the component. *@
         <NavigationMenuItem>
-            <NavigationMenuLink Href="/blocks">Docs</NavigationMenuLink>
+            <NavigationMenuLink Href="/components/button" Class="@NavigationMenuTriggerStyle.Value">
+                Docs
+            </NavigationMenuLink>
+        </NavigationMenuItem>
+
+        <NavigationMenuItem>
+            <NavigationMenuTrigger Target="nav-list">List</NavigationMenuTrigger>
+            <NavigationMenuContent Id="nav-list">
+                <ul class="grid w-[200px] gap-4">
+                    <li>
+                        <NavigationMenuLink Href="/components/button">Components</NavigationMenuLink>
+                        <NavigationMenuLink Href="/">Documentation</NavigationMenuLink>
+                        <NavigationMenuLink Href="/blocks">Blocks</NavigationMenuLink>
+                    </li>
+                </ul>
+            </NavigationMenuContent>
+        </NavigationMenuItem>
+
+        <NavigationMenuItem>
+            <NavigationMenuTrigger Target="nav-icons">With Icon</NavigationMenuTrigger>
+            <NavigationMenuContent Id="nav-icons">
+                <ul class="grid w-[200px] gap-4">
+                    <li>
+                        <NavigationMenuLink Href="/blocks" Class="flex-row items-center gap-2">
+                            <Icon Name="circle-help" />Backlog
+                        </NavigationMenuLink>
+                        <NavigationMenuLink Href="/blocks" Class="flex-row items-center gap-2">
+                            <Icon Name="circle" />To Do
+                        </NavigationMenuLink>
+                        <NavigationMenuLink Href="/blocks" Class="flex-row items-center gap-2">
+                            <Icon Name="circle-check" />Done
+                        </NavigationMenuLink>
+                    </li>
+                </ul>
+            </NavigationMenuContent>
         </NavigationMenuItem>
     </NavigationMenuList>
 </NavigationMenu>
+
+@code {
+    record Entry(string Title, string Href, string Blurb);
+
+    static readonly Entry[] Components =
+    [
+        new("Alert Dialog", "/components/alert-dialog", "A modal dialog that interrupts the user with important content."),
+        new("Hover Card", "/components/hover-card", "For sighted users to preview content available behind a link."),
+        new("Progress", "/components/progress", "Displays an indicator showing the completion progress of a task."),
+        new("Scroll-area", "/components/scroll-area", "Visually or semantically separates content."),
+        new("Tabs", "/components/tabs", "A set of layered sections of content, displayed one at a time."),
+        new("Tooltip", "/components/tooltip", "A popup that displays information related to an element."),
+    ];
+}

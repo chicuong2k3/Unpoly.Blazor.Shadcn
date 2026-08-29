@@ -1,17 +1,20 @@
 @* shadcn writes asChild here so the link can be a router Link. There is no router: it is an
-   <a href>, and [up-nav] on the list is what marks the current one — Unpoly compares each href
-   with the address bar, which keeps working after a fragment swap because the swap is what
-   changed the address bar. *@
+   <a href>, wearing the trigger recipe so a bar of plain links matches a bar of triggers, and
+   [up-nav] is what marks the current one — Unpoly compares each href with the address bar, which
+   keeps working after a fragment swap because the swap is what changed the address bar. *@
 <NavigationMenu AriaLabel="Docs" up-nav>
     <NavigationMenuList>
         <NavigationMenuItem>
-            <NavigationMenuLink Href="/" up-target=".doc-main" up-preload>Overview</NavigationMenuLink>
+            <NavigationMenuLink Href="/" Class="@NavigationMenuTriggerStyle.Value"
+                                up-target=".doc-main" up-preload>Overview</NavigationMenuLink>
         </NavigationMenuItem>
         <NavigationMenuItem>
-            <NavigationMenuLink Href="/theming" up-target=".doc-main">Theming</NavigationMenuLink>
+            <NavigationMenuLink Href="/theming" Class="@NavigationMenuTriggerStyle.Value"
+                                up-target=".doc-main">Theming</NavigationMenuLink>
         </NavigationMenuItem>
         <NavigationMenuItem>
-            <NavigationMenuLink Href="/blocks" up-target=".doc-main">Blocks</NavigationMenuLink>
+            <NavigationMenuLink Href="/blocks" Class="@NavigationMenuTriggerStyle.Value"
+                                up-target=".doc-main">Blocks</NavigationMenuLink>
         </NavigationMenuItem>
     </NavigationMenuList>
 </NavigationMenu>

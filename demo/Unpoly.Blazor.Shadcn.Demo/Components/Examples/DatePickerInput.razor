@@ -1,7 +1,24 @@
-@* Inside a field frame, with the icon as an addon. The browser still draws its own picker
-   button — which is why the addon is on the leading edge and not on top of it. *@
-<InputGroup Class="w-[280px]">
-    <InputGroupAddon><Icon Name="calendar" /></InputGroupAddon>
-    <input type="date" name="due" value="2026-03-20" aria-label="Due"
-           class="min-w-0 flex-1 bg-transparent px-3 text-control outline-none" />
-</InputGroup>
+@* Here the date lives in a text box and the calendar is a small button riding inside it, which is
+   upstream's picker-with-input. The button is positioned rather than an addon because it sits ON
+   the field, not beside it — and choosing a day writes the date into the input, so the value the
+   form posts and the value on screen are the same thing. *@
+<Field Class="mx-auto w-64" data-date-field>
+    <FieldLabel For="dp-input">Subscription Date</FieldLabel>
+    <div class="relative flex gap-2">
+        <Input id="dp-input" name="subscription" value="June 01, 2025" data-date-label
+               placeholder="June 01, 2025" autocomplete="off" Class="bg-background pe-10" />
+        <PopoverTrigger Target="dp-input-panel" Variant="ghost" Size="icon"
+                        Class="absolute end-2 top-1/2 size-6 -translate-y-1/2"
+                        aria-label="Select date">
+            <Icon Name="calendar" Class="size-3.5" />
+        </PopoverTrigger>
+    </div>
+    <PopoverContent Id="dp-input-panel" Align="end" SideOffset="10" Class="w-fit overflow-hidden p-0">
+        <Calendar Name="subscription-day" Month="@Month" Today="@Today" Class="p-3" />
+    </PopoverContent>
+</Field>
+
+@code {
+    static readonly DateOnly Today = DateOnly.FromDateTime(DateTime.Today);
+    static readonly DateOnly Month = new(Today.Year, Today.Month, 1);
+}

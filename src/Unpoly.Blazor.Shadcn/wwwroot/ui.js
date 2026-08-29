@@ -2301,13 +2301,20 @@
       if (!event.target.matches('input[type="radio"], input[type="checkbox"]')) return
 
       // The label is a span the caller marks, not the button's own text: the button also holds
-      // an icon, and writing over its textContent would take that with it.
+      // an icon, and writing over its textContent would take that with it. In two of upstream's
+      // pickers the date is not on the button at all — it is the value of a text box the button
+      // sits inside — so the mark is looked up in the surrounding field as well, and an input
+      // takes it as its value rather than its text.
       const label = trigger?.querySelector('[data-date-label]')
+        || trigger?.closest('[data-slot="field"], [data-date-field]')
+             ?.querySelector('[data-date-label]')
       const on = [...calendar.querySelectorAll('input:checked')].map((i) => i.value).sort()
       if (label && on.length) {
-        label.textContent = range && on.length > 1
+        const text = range && on.length > 1
           ? `${written(on[0])} – ${written(on[on.length - 1])}`
           : written(on[0])
+        if (label.tagName === 'INPUT') label.value = text
+        else label.textContent = text
         label.removeAttribute('data-empty')
       }
 

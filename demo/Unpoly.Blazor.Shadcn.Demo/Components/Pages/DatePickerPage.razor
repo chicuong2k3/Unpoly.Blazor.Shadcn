@@ -4,9 +4,10 @@
 
 <h1 class="doc-h1">Date Picker</h1>
 <p class="doc-lede">
-    <code>&lt;input type="date"&gt;</code>, which already has a calendar, a keyboard, a locale and
-    a mobile picker. Air Datepicker enhances it where a range or a disabled-day rule is needed; the
-    input posts either way, and with scripting off it is still a date field rather than a text box.
+    A button that says the date, a popover, and a <a href="/components/calendar">Calendar</a>
+    inside it — shadcn's shape, built out of what the platform already has. The day is a real
+    radio with a name, so the form posts the date whether or not any script ran; the panel is a
+    <code>[popover]</code>, so it opens before one has.
 </p>
 
 <h2 class="doc-h2">Basic</h2>
@@ -14,30 +15,40 @@
 
 <h2 class="doc-h2">Range Picker</h2>
 <p class="doc-note">
-    Two inputs with two names, which is what a server wants to read — and what lets the second one
-    refuse a date before the first without any script.
+    Two months side by side and a panel that stays open until both ends are ticked. Underneath the
+    days are checkboxes with one name: the server takes the min and the max, which is a working
+    range picker with JavaScript switched off.
 </p>
 <Example Source="DatePickerRange.razor"><DatePickerRange /></Example>
 
 <h2 class="doc-h2">Date of Birth</h2>
 <p class="doc-note">
-    The case where a calendar is the wrong control: nobody wants to page back three hundred months.
-    <code>autocomplete="bday"</code> lets the browser fill it.
+    The same picker, narrower, opening on the month someone born thirty years ago would want.
+    Upstream draws the caption as two dropdowns for exactly that reason — see
+    <a href="/components/calendar">Calendar</a>, where the month and year selects live.
 </p>
 <Example Source="DatePickerBirthday.razor"><DatePickerBirthday /></Example>
 
 <h2 class="doc-h2">Input</h2>
+<p class="doc-note">
+    The date in a text box, with the calendar as a small button riding inside it. Choosing a day
+    writes the date into the input, so what posts and what is on screen are one value.
+</p>
 <Example Source="DatePickerInput.razor"><DatePickerInput /></Example>
 
 <h2 class="doc-h2">Time Picker</h2>
+<p class="doc-note">
+    A date and a time are two values, so they are two controls — and <code>type="time"</code>
+    brings the right keyboard on a phone, which a text box with a mask does not.
+</p>
 <Example Source="DatePickerTime.razor"><DatePickerTime /></Example>
 
 <h2 class="doc-h2">Natural Language Picker</h2>
 <p class="doc-note">
-    shadcn's parses "next tuesday" in the browser. Parsing a date is the server's job here — it
-    already has to, because a client-side parse is a convenience and the value still arrives as
-    text — and <code>up-validate</code> echoes back what it understood, so the reader sees the
-    interpretation before submitting rather than after.
+    shadcn parses "In 2 days" in the browser and prints what it understood underneath. Parsing is
+    the server's job here — it already has to, because the value arrives as text either way — so
+    <code>up-validate</code> echoes the reading back, and the calendar button is there for anyone
+    who would rather point at a day.
 </p>
 <Example Source="DatePickerNatural.razor"><DatePickerNatural /></Example>
 
@@ -49,4 +60,8 @@
 <Example Source="CalendarExample.razor"><CalendarExample /></Example>
 
 <h2 class="doc-h2">RTL</h2>
+<p class="doc-note">
+    Nothing in the markup says "left" or "right": the chevron, the panel's alignment and the
+    calendar's own week all follow <code>dir</code>, which is what lets one component serve both.
+</p>
 <Example Source="DatePickerRtl.razor"><DatePickerRtl /></Example>

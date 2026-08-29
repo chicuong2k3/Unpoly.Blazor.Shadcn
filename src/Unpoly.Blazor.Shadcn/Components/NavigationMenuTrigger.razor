@@ -16,8 +16,9 @@
     /// <summary>The id of the <see cref="NavigationMenuContent"/> this opens.</summary>
     [Parameter, EditorRequired] public string Target { get; set; } = default!;
 
-    const string Base =
-        "group";
-
-    string Classes => Cn(Base, Class);
+    // The whole recipe, which the component had dropped: upstream renders
+    // cn(navigationMenuTriggerStyle(), "group", className) and this carried only the "group".
+    // A trigger with no height, no padding and no background is bare text with a chevron after
+    // it, which is what the menu bar looked like.
+    string Classes => NavigationMenuTriggerStyle.Of(Cn("group", Class));
 }
