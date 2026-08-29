@@ -5853,6 +5853,26 @@
 .toastify[data-slot="sonner-toast"][data-type="loading"] svg {
   animation: sh-spin 1s linear infinite;
 }
+.toastify[data-slot="sonner-toast"] [data-slot="sonner-action"] {
+  margin-inline-start: auto;
+  flex: none;
+  height: 1.5rem;
+  padding-inline: 0.5rem;
+  border-radius: calc(var(--radius) - 2px);
+  background: var(--primary);
+  color: var(--primary-foreground);
+  font-size: 0.75rem;
+  font-weight: 500;
+  font-family: inherit;
+  cursor: pointer;
+  transition: opacity 150ms;
+}
+.toastify[data-slot="sonner-toast"] [data-slot="sonner-action"]:hover {
+  opacity: 0.9;
+}
+.toastify[data-slot="sonner-toast"]:has([data-slot="sonner-action"]) .toast-close {
+  margin-inline-start: 0;
+}
 .toastify[data-slot="sonner-toast"] .toast-close {
   margin-inline-start: auto;
   padding-inline-start: 0.5rem;

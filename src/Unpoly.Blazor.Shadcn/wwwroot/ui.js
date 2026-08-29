@@ -150,6 +150,25 @@
     // the toast is built by Toastify and the icon is the one part of its shape that is ours.
     const glyph = TOAST_ICONS[type]
     if (glyph) node.insertAdjacentHTML('afterbegin', svg(glyph))
+
+    // Sonner's `action`, which this used to accept and silently drop: the option was read for
+    // its type and its duration and never for this, so a toast written with an Undo showed the
+    // words and no way to undo anything.
+    //
+    // `label` is sonner's name for it; `text` is accepted too, because that is what this port's
+    // own examples had been writing against a feature that did not exist.
+    const action = options.action
+    if (action) {
+      const button = el('button', '', { type: 'button', textContent: action.label ?? action.text ?? 'Undo' })
+      button.dataset.slot = 'sonner-action'
+      button.addEventListener('click', (event) => {
+        event.stopPropagation()
+        action.onClick?.(event)
+        // A toast whose action has been taken has nothing left to say.
+        node.remove()
+      })
+      node.insertBefore(button, node.querySelector('.toast-close'))
+    }
   }
 
   // shadcn's five, and the same five lucide glyphs.

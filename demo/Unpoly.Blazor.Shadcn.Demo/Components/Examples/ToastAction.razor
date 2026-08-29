@@ -1,8 +1,16 @@
 @* A toast with something to do. Keep it to an undo or a link: a toast disappears, so anything
-   that has to be done cannot live only in one. *@
+   that has to be done cannot live only in one.
+
+   `action: { label, onClick }` is sonner's shape, and the call site reads the same as it would
+   there — which is the point of this whole file. Taking the action dismisses the toast, because
+   a toast whose action has been taken has nothing left to say. *@
 <div class="flex flex-wrap items-center gap-3">
-    <Button Variant="outline"
-            onclick="toast('Order archived', { action: { text: 'Undo', onClick: () => toast('Restored') } })">
+    <Button Variant="outline" Type="button"
+            onclick="toast('Order archived', { action: { label: 'Undo', onClick: () => toast.success('Order restored') } })">
         With an undo
+    </Button>
+    <Button Variant="outline" Type="button"
+            onclick="toast.error('Payment failed', { action: { label: 'Retry', onClick: () => toast.success('Payment taken') } })">
+        With a retry
     </Button>
 </div>
