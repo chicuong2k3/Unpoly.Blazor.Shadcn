@@ -11,7 +11,7 @@
 }
 else
 {
-    <Input data-slot="input-group-control" Type="@Type" Class="@Classes"
+    <Input data-slot="input-group-control" Type="@Type" value="@Value" Class="@Classes"
            @attributes="AdditionalAttributes" />
 }
 
@@ -21,7 +21,12 @@ else
 
     [Parameter] public string Type { get; set; } = "text";
 
-    /// <summary>Only meaningful when Multiline — a textarea's value is its content.</summary>
+    /// <summary>
+    /// The value, for either branch. It has to be a parameter AND be written back onto the
+    /// input: Blazor matches parameters case-insensitively, so a plain `value="10:30"` at the
+    /// call site binds to this property instead of reaching the DOM — and the control rendered
+    /// empty while the markup plainly said otherwise.
+    /// </summary>
     [Parameter] public string? Value { get; set; }
 
     const string Base =

@@ -1,6 +1,8 @@
-@* Three variants: filled, a rule with a word on it, and an outline. *@
-<div class="flex flex-wrap items-center gap-3">
-    <Marker><MarkerContent>Default</MarkerContent></Marker>
-    <Marker Variant="separator"><MarkerContent>Separator</MarkerContent></Marker>
-    <Marker Variant="border"><MarkerContent>Border</MarkerContent></Marker>
+@* Three variants, stacked as upstream shows them: a plain line of note, a rule with a word
+   sitting on it, and a line with a border under it. A marker is a full-width row in a stream of
+   messages rather than a chip — that is what all three are for. *@
+<div class="flex w-full max-w-sm flex-col gap-8">
+    <Marker><MarkerContent>A default marker for inline notes.</MarkerContent></Marker>
+    <Marker Variant="separator"><MarkerContent>A separator marker</MarkerContent></Marker>
+    <Marker Variant="border"><MarkerContent>A border marker for row boundaries.</MarkerContent></Marker>
 </div>

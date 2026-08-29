@@ -1,16 +1,12 @@
-@* A state beside a line of text. The colour is a class rather than a variant, and written with
-   theme tokens so it follows a theme change. *@
-<div class="flex flex-wrap items-center gap-3">
-    <Marker Class="text-emerald-600 dark:text-emerald-400">
-        <MarkerIcon><Icon Name="circle-check" Class="size-3" /></MarkerIcon>
-        <MarkerContent>Delivered</MarkerContent>
+@* role="status" is the whole accessibility of a marker that reports progress: the region is
+   polite, so a screen reader announces the text when it changes without interrupting anything. *@
+<div class="flex w-full max-w-sm flex-col gap-8">
+    <Marker role="status">
+        <MarkerIcon><Spinner /></MarkerIcon>
+        <MarkerContent>Compacting conversation</MarkerContent>
     </Marker>
-    <Marker Class="text-amber-600 dark:text-amber-400">
-        <MarkerIcon><Icon Name="circle" Class="size-3" /></MarkerIcon>
-        <MarkerContent>In transit</MarkerContent>
-    </Marker>
-    <Marker Class="text-destructive">
-        <MarkerIcon><Icon Name="circle-alert" Class="size-3" /></MarkerIcon>
-        <MarkerContent>Failed</MarkerContent>
+    <Marker Variant="separator" role="status">
+        <MarkerIcon><Spinner /></MarkerIcon>
+        <MarkerContent>Running tests</MarkerContent>
     </Marker>
 </div>

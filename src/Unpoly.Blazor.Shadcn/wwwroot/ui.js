@@ -1833,9 +1833,16 @@
     }
 
     document.addEventListener('pointermove', onMove, { passive: true })
+    // Focus opens it for the KEYBOARD, not for the mouse. A click focuses the trigger too, and
+    // then the card stayed open with the pointer long gone — the safety net leaves anything
+    // holding focus alone, on purpose, so a card reached by Tab does not vanish while it is
+    // being read. :focus-visible is the browser's own answer to "did this focus come from the
+    // keyboard", which is exactly the question.
+    const onFocus = () => { if (trigger.matches(':focus-visible')) open() }
+
     trigger.addEventListener('pointerenter', open)
     trigger.addEventListener('pointerleave', close)
-    trigger.addEventListener('focus', open)
+    trigger.addEventListener('focus', onFocus)
     trigger.addEventListener('blur', close)
     panel.addEventListener('pointerenter', () => clearTimeout(closeTimer))
     panel.addEventListener('pointerleave', close)
@@ -1846,7 +1853,7 @@
       clearTimeout(closeTimer)
       trigger.removeEventListener('pointerenter', open)
       trigger.removeEventListener('pointerleave', close)
-      trigger.removeEventListener('focus', open)
+      trigger.removeEventListener('focus', onFocus)
       trigger.removeEventListener('blur', close)
       document.removeEventListener('pointermove', onMove)
       document.removeEventListener('keydown', onKey)

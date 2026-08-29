@@ -14,7 +14,7 @@
                             <Avatar><AvatarFallback>ML</AvatarFallback></Avatar>
                         </MessageAvatar>
                         <MessageContent>
-                            <MessageHeader>
+                            <MessageHeader Class="gap-2">
                                 <span class="font-medium">Mai Linh</span>
                                 <time class="num text-xs text-muted-foreground" datetime="2026-03-11T09:12">09:12</time>
                             </MessageHeader>
@@ -35,7 +35,10 @@
                 <MessageScrollerItem>
                     <Message Align="end">
                         <MessageContent>
-                            <Bubble>
+                            @* mb-4: the reactions chip hangs three-quarters of its own height
+                               below the bubble, so whatever follows has to leave room for it or
+                               it lands on top — which is what it was doing to the attachment. *@
+                            <Bubble Class="mb-4">
                                 <BubbleContent>Sent it this morning. The PDF is attached.</BubbleContent>
                                 <BubbleReactions>
                                     <Badge Variant="secondary">2 reactions</Badge>

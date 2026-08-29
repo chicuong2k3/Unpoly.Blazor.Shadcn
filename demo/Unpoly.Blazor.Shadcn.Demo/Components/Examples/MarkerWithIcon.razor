@@ -1,6 +1,16 @@
 @* The icon is aria-hidden: the marker's text is the label, and reading the shape beside it aloud
-   adds nothing. *@
-<div class="flex flex-wrap items-center gap-3">
-    <Marker><MarkerIcon><Icon Name="check" Class="size-3" /></MarkerIcon><MarkerContent>Read</MarkerContent></Marker>
-    <Marker Variant="border"><MarkerIcon><Icon Name="info" Class="size-3" /></MarkerIcon><MarkerContent>Cited</MarkerContent></Marker>
+   adds nothing. The third one stacks, which is what flex-col does to a marker. *@
+<div class="flex w-full max-w-sm flex-col gap-12">
+    <Marker>
+        <MarkerIcon><Icon Name="git-branch" /></MarkerIcon>
+        <MarkerContent>Switched to a new branch</MarkerContent>
+    </Marker>
+    <Marker Variant="separator">
+        <MarkerIcon><Icon Name="search" /></MarkerIcon>
+        <MarkerContent>Explored 4 files</MarkerContent>
+    </Marker>
+    <Marker Class="flex-col">
+        <MarkerIcon><Icon Name="badge-check" /></MarkerIcon>
+        <MarkerContent>Syncing completed</MarkerContent>
+    </Marker>
 </div>

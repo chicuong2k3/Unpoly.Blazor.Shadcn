@@ -1,12 +1,13 @@
-@* One custom property sizes every day box, as upstream's --cell-size does. Bigger is worth it on
-   a touch screen: 44px is the smallest target most guidance accepts, and a month is a grid of
-   thirty-one of them. *@
-<div class="flex flex-wrap items-start justify-center gap-4">
-    <Calendar Name="cell-a" Month="@Month" Selected="@(Month.AddDays(11))" Today="@Today"
-              Class="w-fit rounded-lg border p-3" />
-    <Calendar Name="cell-b" Month="@Month" Selected="@(Month.AddDays(11))" Today="@Today"
-              Class="w-fit rounded-lg border p-3 [--cell-size:--spacing(11)] [&amp;_.num]:text-base" />
-</div>
+@* One custom property sizes every day box, as upstream's --cell-size does — and the week-number
+   column and the month nav follow it, because they are laid out against the same value. Bigger
+   is worth it on a touch screen: 44px is the smallest target most guidance accepts, and a month
+   is a grid of thirty-one of them. *@
+<Card Class="mx-auto w-fit p-0">
+    <CardContent Class="p-0">
+        <Calendar Name="cell-b" Month="@Month" Selected="@(Month.AddDays(11))" Today="@Today"
+                  Class="p-3 [--cell-size:--spacing(11)] [&amp;_.num]:text-base" />
+    </CardContent>
+</Card>
 
 @code {
     static readonly DateOnly Today = DateOnly.FromDateTime(DateTime.Today);

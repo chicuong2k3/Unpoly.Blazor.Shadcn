@@ -1,12 +1,18 @@
-@* A citation that goes somewhere. It is an <a>, so it is followable and openable in a tab —
-   which a span with a click handler is not. *@
-<p class="w-[460px] text-sm leading-relaxed">
-    The library reproduces shadcn's class strings exactly
-    <a href="/components/button" class="align-middle">
-        <Marker Variant="border"><MarkerContent>1</MarkerContent></Marker>
-    </a>
-    and generates them from its source
-    <a href="/theming" class="align-middle">
-        <Marker Variant="border"><MarkerContent>2</MarkerContent></Marker>
-    </a>.
-</p>
+@* A marker that goes somewhere IS the link, and one that does something is the button — one
+   element, one focus stop, and the status bar tells you where the first one leads. *@
+<div class="flex w-full max-w-sm flex-col gap-8">
+    <Marker Href="/components/button">
+        <MarkerIcon><Icon Name="git-branch" /></MarkerIcon>
+        <MarkerContent>View the pull request</MarkerContent>
+    </Marker>
+
+    <form method="post" action="/markers/revert" id="marker-revert-form"
+          up-target="#preview-marker-links" up-disable>
+        <AntiforgeryToken />
+        <button type="submit" data-slot="marker" data-variant="default"
+                class="group/marker relative flex min-h-4 w-full items-center gap-2 text-start text-control text-muted-foreground transition-colors hover:text-foreground [&amp;_svg:not([class*='size-'])]:size-4">
+            <MarkerIcon><Icon Name="refresh-cw" /></MarkerIcon>
+            <MarkerContent>Revert this change</MarkerContent>
+        </button>
+    </form>
+</div>

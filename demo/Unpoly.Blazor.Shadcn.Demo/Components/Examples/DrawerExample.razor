@@ -1,12 +1,13 @@
-@* shadcn's own demo: a delivery-time picker. On a desktop it opens from the END edge — the
-   bottom sheet is the phone's gesture surface, and a pointer reaches a side panel more
-   naturally — which is exactly what upstream's isMobile switch chooses.
+@* shadcn's own demo: a delivery-time picker, opening from the bottom, which is what <Drawer>
+   does when nothing says otherwise. Upstream's isMobile switch chooses the SWIPE direction —
+   down on a phone, right on a desktop — not the edge the panel comes from; reading it as the
+   edge is how this sample ended up on the side of the screen instead.
 
    Each slot is a card the whole of which is the label, with the radio on the trailing edge:
    FieldLabel wrapping a Field is the press-anywhere pattern, and it needs no handler. *@
 <DrawerTrigger Target="drawer-demo" Variant="secondary">Open Drawer</DrawerTrigger>
 
-<Drawer Id="drawer-demo" Direction="right">
+<Drawer Id="drawer-demo">
     <DrawerHeader>
         <DrawerTitle>Pick a delivery time</DrawerTitle>
         <DrawerDescription>We&#39;ll prepare your order as soon as possible.</DrawerDescription>

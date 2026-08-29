@@ -1,4 +1,16 @@
-<div class="flex flex-wrap items-center gap-3">
-    <Marker Variant="border"><MarkerContent>Draft</MarkerContent></Marker>
-    <Marker Variant="border"><MarkerContent>Source 1</MarkerContent></Marker>
+@* A line under each row, for a run of steps that belong together — the border is the boundary
+   between one and the next rather than a box around either. *@
+<div class="flex w-full max-w-sm flex-col gap-3">
+    <Marker Variant="border">
+        <MarkerIcon><Icon Name="git-branch" /></MarkerIcon>
+        <MarkerContent>Switched to release-candidate</MarkerContent>
+    </Marker>
+    <Marker Variant="border">
+        <MarkerIcon><Icon Name="search" /></MarkerIcon>
+        <MarkerContent>Reviewed 8 related files</MarkerContent>
+    </Marker>
+    <Marker Variant="border">
+        <MarkerIcon><Icon Name="file-text" /></MarkerIcon>
+        <MarkerContent>Updated the changelog</MarkerContent>
+    </Marker>
 </div>

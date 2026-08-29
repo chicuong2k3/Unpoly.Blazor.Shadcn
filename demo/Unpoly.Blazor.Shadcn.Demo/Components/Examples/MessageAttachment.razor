@@ -1,21 +1,27 @@
 @* A file on a turn. The attachment is a sibling of the bubble rather than inside it, so a long
-   message and its files do not share one rounded box. *@
-<Message Align="end" Class="w-[460px]">
-    <MessageContent>
-        <Bubble><BubbleContent>Sent it this morning. The PDF is attached.</BubbleContent></Bubble>
-        <AttachmentGroup>
-            <li>
-                <Attachment Size="sm" Class="w-56">
-                    <AttachmentMedia><Icon Name="file" /></AttachmentMedia>
-                    <AttachmentContent>
-                        <AttachmentTitle>acme-invoice.pdf</AttachmentTitle>
-                        <AttachmentDescription>82 KB</AttachmentDescription>
-                    </AttachmentContent>
-                    <AttachmentTrigger Href="/files/acme-invoice.pdf" target="_blank" rel="noreferrer">
-                        <span class="sr-only">Open acme-invoice.pdf</span>
-                    </AttachmentTrigger>
-                </Attachment>
-            </li>
-        </AttachmentGroup>
-    </MessageContent>
-</Message>
+   message and its files do not share one rounded box — and the card carries its own actions, so
+   downloading does not mean opening the file first. *@
+<div class="flex w-full max-w-sm flex-col gap-8">
+    <Message>
+        <MessageContent>
+            <Bubble Variant="muted">
+                <BubbleContent>Done. Here's the PDF with the image added as the cover page.</BubbleContent>
+            </Bubble>
+            <Attachment>
+                <AttachmentMedia><Icon Name="file-text" /></AttachmentMedia>
+                <AttachmentContent>
+                    <AttachmentTitle>sales-dashboard.pdf</AttachmentTitle>
+                    <AttachmentDescription>PDF · 2.4 MB</AttachmentDescription>
+                </AttachmentContent>
+                <AttachmentActions>
+                    <AttachmentAction Href="/files/sales-dashboard.pdf" download
+                                      AriaLabel="Download sales-dashboard.pdf"
+                                      Size="icon-sm" Variant="secondary"
+                                      title="Download">
+                        <Icon Name="download" />
+                    </AttachmentAction>
+                </AttachmentActions>
+            </Attachment>
+        </MessageContent>
+    </Message>
+</div>

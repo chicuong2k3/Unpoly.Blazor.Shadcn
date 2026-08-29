@@ -128,12 +128,13 @@ renders `<div>` · `data-slot="attachment"`
 | `State` | `string?` | — |  |
 
 ## `<AttachmentAction>`
-renders `<button>` · `data-slot="attachment-action"`
+renders `<a>` · `data-slot="attachment-action"`
 
 | Parameter | Type | Default | |
 |---|---|---|---|
 | `AriaLabel` | `string` | `default!` |  |
-| `Variant` | `string` | `"ghost"` | **required** |
+| `Href` | `string?` | — | **required** |
+| `Variant` | `string` | `"ghost"` |  |
 | `Size` | `string` | `"icon-sm"` |  |
 
 ## `<AttachmentActions>`
@@ -1256,10 +1257,11 @@ renders `<label>` · `data-slot="label"`
 _No parameters of its own._
 
 ## `<Marker>`
-renders `<span>` · `data-slot="marker"`
+renders `<a>` · `data-slot="marker"`
 
 | Parameter | Type | Default | |
 |---|---|---|---|
+| `Href` | `string?` | — |  |
 | `Variant` | `string` | `"default"` |  |
 
 ## `<MarkerContent>`

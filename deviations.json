@@ -305,9 +305,10 @@
     "combobox-content": {
       "classes": [
         "border",
-        "z-50"
+        "z-50",
+        "*:data-[slot=input-group]:w-auto"
       ],
-      "why": "Upstream draws the border and the stacking on a Popup primitive that has no slot of its own. In the top layer z-50 is inert, but the panel is styled the same either way and one class is cheaper than a second code path."
+      "why": "Upstream draws the border and the stacking on a Popup primitive that has no slot of its own. In the top layer z-50 is inert, but the panel is styled the same either way and one class is cheaper than a second code path. The search box inside the panel is an InputGroup, which is w-full, and this recipe also gives it a 4px margin — 100% plus margins is wider than the panel, so the box hung over the right-hand edge of the list. Upstream says the same thing from the other side, passing w-auto from ComboboxInput; said here it applies to the group that is actually inside the panel and leaves a group used anywhere else alone."
     },
     "combobox-trigger": {
       "classes": [

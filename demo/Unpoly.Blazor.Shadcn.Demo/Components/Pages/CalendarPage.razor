@@ -19,9 +19,11 @@
 
 <h2 class="doc-h2">Date Picker</h2>
 <p class="doc-note">
-    For a form field, <a href="/components/date-picker">DatePicker</a> around
-    <code>&lt;input type="date"&gt;</code> is smaller and brings the OS picker on a phone. Reach
-    for this when the month has to be visible while choosing.
+    You can use the <code>&lt;Calendar&gt;</code> component to build a date picker: put it in a
+    <a href="/components/popover">Popover</a> and let the trigger show the chosen day. For an
+    ordinary form field, <a href="/components/date-picker">DatePicker</a> around
+    <code>&lt;input type="date"&gt;</code> is smaller and brings the OS picker on a phone; reach
+    for the calendar when the shape of the month is part of the choice.
 </p>
 <Example Source="CalendarDatePickerExample.razor"><CalendarDatePickerExample /></Example>
 
@@ -58,6 +60,11 @@
 <Example Source="CalendarCellSize.razor"><CalendarCellSize /></Example>
 
 <h2 class="doc-h2">Week Numbers</h2>
+<p class="doc-note">
+    Use <code>ShowWeekNumber</code> to show week numbers. They are ISO 8601, and each one is a
+    <code>&lt;th scope="row"&gt;</code>, so a screen reader announces it as the heading of its
+    row rather than as another day.
+</p>
 <Example Source="CalendarWeekNumbers.razor"><CalendarWeekNumbers /></Example>
 
 <h2 class="doc-h2">Persian / Hijri / Jalali Calendar</h2>

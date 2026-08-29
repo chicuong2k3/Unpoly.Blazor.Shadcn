@@ -3,10 +3,24 @@
 @* A small labelled mark in a stream of text — a citation, a source, a step number. shadcn ships
    it with its AI components, where it points at whatever a model is quoting. *@
 
-<span data-slot="marker" data-variant="@Variant" class="@Classes"
-      @attributes="AdditionalAttributes">@ChildContent</span>
+@* Upstream makes this polymorphic with `render`; here an Href renders the <a> — so a marker
+   that points somewhere is followable, openable in a tab and shows its target in the status bar,
+   which a span wrapped in a link cannot do without making two focus stops out of one thing. *@
+@if (Href is not null)
+{
+    <a href="@Href" data-slot="marker" data-variant="@Variant" class="@Classes"
+       @attributes="AdditionalAttributes">@ChildContent</a>
+}
+else
+{
+    <span data-slot="marker" data-variant="@Variant" class="@Classes"
+          @attributes="AdditionalAttributes">@ChildContent</span>
+}
 
 @code {
+    /// <summary>Where it points. With one, the marker itself is the link.</summary>
+    [Parameter] public string? Href { get; set; }
+
     /// <summary>default | separator | border</summary>
     [Parameter] public string Variant { get; set; } = "default";
 

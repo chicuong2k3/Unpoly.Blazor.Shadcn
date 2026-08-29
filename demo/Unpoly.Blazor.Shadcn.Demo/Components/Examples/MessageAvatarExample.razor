@@ -1,12 +1,30 @@
-@* The avatar is aria-hidden, because the author's name is in the header right beside it —
+@* Upstream's own trio: two people, three turns, and the avatar on the side each of them speaks
+   from — flex-row-reverse on an end-aligned message does that with no second class string. The
+   avatar is aria-hidden, because the author's name is in the header right beside it, and
    announcing "MR, Marta Ruiz" on every message is announcing it twice. *@
-<Message Class="w-[440px]">
-    <MessageAvatar><Avatar><AvatarFallback>MR</AvatarFallback></Avatar></MessageAvatar>
-    <MessageContent>
-        <MessageHeader>
-            <span class="font-medium">Marta Ruiz</span>
-            <time class="num text-xs text-muted-foreground" datetime="2026-03-11T09:12">09:12</time>
-        </MessageHeader>
-        <Bubble Variant="muted"><BubbleContent>Did the invoice go out?</BubbleContent></Bubble>
-    </MessageContent>
-</Message>
+<div class="flex w-full max-w-sm flex-col gap-6">
+    <Message>
+        <MessageAvatar><Avatar><AvatarFallback>MR</AvatarFallback></Avatar></MessageAvatar>
+        <MessageContent>
+            <Bubble Variant="muted">
+                <BubbleContent>The build failed during dependency installation.</BubbleContent>
+            </Bubble>
+        </MessageContent>
+    </Message>
+
+    <Message Align="end">
+        <MessageAvatar><Avatar><AvatarFallback>BT</AvatarFallback></Avatar></MessageAvatar>
+        <MessageContent>
+            <Bubble><BubbleContent>Can you share the exact error?</BubbleContent></Bubble>
+        </MessageContent>
+    </Message>
+
+    <Message>
+        <MessageAvatar><Avatar><AvatarFallback>MR</AvatarFallback></Avatar></MessageAvatar>
+        <MessageContent>
+            <Bubble Variant="muted">
+                <BubbleContent>ENOENT: no such file or directory, open 'package-lock.json'.</BubbleContent>
+            </Bubble>
+        </MessageContent>
+    </Message>
+</div>

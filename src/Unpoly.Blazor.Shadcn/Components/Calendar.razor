@@ -52,7 +52,7 @@
             var month = AddMonths(First, offset);
             <table data-slot="calendar-month"
                    class="w-auto border-separate border-spacing-y-1">
-                <caption class="@(MonthUrl is null && Span == 1 ? "sr-only" : "pb-2 text-sm font-medium")">
+                <caption class="@(Span == 1 ? "sr-only" : "pb-2 text-sm font-medium")">
                     @MonthName(month)
                 </caption>
                 <thead>
@@ -66,8 +66,8 @@
                         @foreach (var day in Weekdays)
                         {
                             <th scope="col" class="pb-2 text-xs font-normal text-muted-foreground">
-                                <span aria-hidden="true">@day[..1]</span>
-                                <span class="sr-only">@day</span>
+                                <span aria-hidden="true">@day.Head</span>
+                                <span class="sr-only">@day.Full</span>
                             </th>
                         }
                     </tr>
@@ -152,6 +152,13 @@
     [Parameter] public DayOfWeek FirstDay { get; set; } = DayOfWeek.Monday;
 
     /// <summary>
+    /// The language the month and day names are written in, and the digits they are written
+    /// with. Null follows the request's own culture. An Arabic calendar in English words is a
+    /// direction, not a translation, which is what dir="rtl" alone produces.
+    /// </summary>
+    [Parameter] public System.Globalization.CultureInfo? Culture { get; set; }
+
+    /// <summary>
     /// Where the previous and next months live, as a function of the month. Without it no
     /// navigation is drawn at all — a component cannot invent an application's URLs, and two
     /// arrows that go nowhere are worse than none.
@@ -196,7 +203,7 @@
     string MonthName(DateOnly month)
     {
         var stamp = month.ToDateTime(TimeOnly.MinValue);
-        var culture = (System.Globalization.CultureInfo)Speaks(CalendarSystem).Clone();
+        var culture = (System.Globalization.CultureInfo)Words.Clone();
         try
         {
             if (CalendarSystem is not null) culture.DateTimeFormat.Calendar = CalendarSystem;
@@ -249,11 +256,29 @@
 
     bool IsEnd(DateOnly d) => From is not null && To is not null && (d == From || d == To);
 
-    string[] Weekdays =>
+    System.Globalization.CultureInfo Words => Culture ?? Speaks(CalendarSystem);
+
+    // The platform already has a name for "as short as a column header can be", and it is not
+    // the first two letters of the abbreviation: every Arabic day name begins with ال, so
+    // slicing gave seven identical columns. The full name goes in the sr-only span beside it.
+    (string Head, string Full)[] Weekdays =>
         Enumerable.Range(0, 7)
-            .Select(i => System.Globalization.CultureInfo.CurrentCulture.DateTimeFormat
-                .GetAbbreviatedDayName((DayOfWeek)(((int)FirstDay + i) % 7)))
+            .Select(i => (DayOfWeek)(((int)FirstDay + i) % 7))
+            .Select(day => (Head: Head(day), Full: Words.DateTimeFormat.GetDayName(day)))
             .ToArray();
+
+    // Two letters where the language has two to give, which is what shadcn shows and what tells
+    // Tuesday from Thursday. Some cultures — and the invariant one — call a single glyph the
+    // shortest name, and for Arabic that single glyph is the right answer.
+    string Head(DayOfWeek day)
+    {
+        var shortest = Words.DateTimeFormat.GetShortestDayName(day);
+        if (shortest.Length >= 2) return shortest;
+        var abbreviated = Words.DateTimeFormat.GetAbbreviatedDayName(day);
+        return Words.TwoLetterISOLanguageName is "ar" or "he" or "fa" or "ja" or "zh" or "ko"
+            ? shortest
+            : abbreviated[..Math.Min(2, abbreviated.Length)];
+    }
 
     IEnumerable<DateOnly?[]> WeeksOf(DateOnly month)
     {

@@ -1,7 +1,6 @@
-@* The separator variant is a rule with a word sitting on it, for a break in a stream of
-   messages: "yesterday", "unread from here". *@
-<div class="flex w-[420px] flex-col gap-3 text-sm">
-    <p class="text-muted-foreground">Sent it this morning.</p>
-    <Marker Variant="separator"><MarkerContent>Yesterday</MarkerContent></Marker>
-    <p class="text-muted-foreground">Did the invoice go out?</p>
+@* A rule with a word sitting on it, for a break in a stream: a date, a summary, a compaction. *@
+<div class="flex w-full max-w-sm flex-col gap-8">
+    <Marker Variant="separator"><MarkerContent>Today</MarkerContent></Marker>
+    <Marker Variant="separator"><MarkerContent>Worked for 42s</MarkerContent></Marker>
+    <Marker Variant="separator"><MarkerContent>Conversation compacted</MarkerContent></Marker>
 </div>

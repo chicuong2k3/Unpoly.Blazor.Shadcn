@@ -1,9 +1,10 @@
-@* Arabic. The columns run from the reading edge because a table follows the document direction,
-   the month navigation flips with it, and the day names come from the culture rather than from a
-   hardcoded list — so nothing here is translated by hand. *@
+@* Arabic, and written in Arabic: the month, the day names and the numerals all come from the
+   culture rather than from a hardcoded list. dir="rtl" alone gives a mirrored English calendar,
+   which is a direction rather than a translation — the week starts on Saturday too. *@
 <div dir="rtl">
     <Calendar Name="day-rtl" Month="@Month" Selected="@(Month.AddDays(11))" Today="@Today"
-              FirstDay="DayOfWeek.Saturday"
+              FirstDay="DayOfWeek.Saturday" Culture="@Arabic"
+              CalendarSystem="@Gregorian"
               MonthUrl="@(m => $"/components/calendar?month={m:yyyy-MM}")"
               Class="w-fit rounded-lg border p-3 [--cell-size:--spacing(9)]" />
 </div>
@@ -11,4 +12,11 @@
 @code {
     static readonly DateOnly Today = DateOnly.FromDateTime(DateTime.Today);
     static readonly DateOnly Month = new(Today.Year, Today.Month, 1);
+    static readonly System.Globalization.CultureInfo Arabic =
+        System.Globalization.CultureInfo.GetCultureInfo("ar-SA");
+
+    // ar-SA counts in Hijri years by default, and this sample is about direction and language
+    // rather than about a different calendar — that one has a section of its own below.
+    static readonly System.Globalization.Calendar Gregorian =
+        new System.Globalization.GregorianCalendar();
 }
