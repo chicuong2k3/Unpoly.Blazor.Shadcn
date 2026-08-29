@@ -761,12 +761,27 @@
         // already highlighted and one flick away from being chosen. The gap is the panel's own
         // padding, so the pointer lands on the frame and the list starts unhighlighted.
         const gap = 6
-        const spot = side === 'top' ? [px - box.width / 2, py - box.height - gap]
-          : side === 'bottom' ? [px - box.width / 2, py + gap]
-          : side === 'left' ? [px - box.width - gap, py - box.height / 2]
-          : [px + gap, py - box.height / 2]
-        put(panel, { left: Math.max(8, Math.min(spot[0], window.innerWidth - box.width - 8)) },
-            Math.max(8, Math.min(spot[1], window.innerHeight - box.height - 8)))
+        // Flip to the opposite side when the chosen one has no room. Clamping instead slid the
+        // panel back UNDER the cursor, which is the one place it must not be: the row beneath
+        // the pointer lights up the moment the menu appears, and a menu that opens with a row
+        // already chosen is a menu one twitch away from choosing it.
+        let at = side
+        if (at === 'left' && px - box.width - gap < 8) at = 'right'
+        else if (at === 'right' && px + box.width + gap > window.innerWidth - 8) at = 'left'
+        else if (at === 'top' && py - box.height - gap < 8) at = 'bottom'
+        else if (at === 'bottom' && py + box.height + gap > window.innerHeight - 8) at = 'top'
+
+        // Opening to the LEFT pins the panel's right edge rather than subtracting its own width
+        // from the cursor: the width is measured before the panel has settled, and the gap came
+        // out as zero — the panel touching the pointer, which is the whole thing being avoided.
+        const across = at === 'left' || at === 'right'
+        const top = across ? Math.max(8, Math.min(py - box.height / 2, window.innerHeight - box.height - 8))
+          : at === 'top' ? py - box.height - gap : py + gap
+        const edge = at === 'left' ? { right: window.innerWidth - (px - gap) }
+          : at === 'right' ? { left: px + gap }
+          : { left: Math.max(8, Math.min(px - box.width / 2, window.innerWidth - box.width - 8)) }
+        put(panel, edge, top)
+        panel.dataset.placedSide = at
         trigger.setAttribute('aria-expanded', 'true')
         panel.focus({ preventScroll: true })
         return
