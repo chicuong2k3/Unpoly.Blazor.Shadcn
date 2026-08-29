@@ -19,8 +19,10 @@
 
 <h2 class="doc-h2">Custom Close Button</h2>
 <p class="doc-note">
-    <code>formmethod="dialog"</code> closes the <code>&lt;dialog&gt;</code> it is inside — no id to
-    point at, no JavaScript, and it keeps working if <code>ui.js</code> never loads.
+    <code>&lt;DialogClose&gt;</code> closes the dialog it is inside — no id to point at
+    and no handler to write. It used to say <code>formmethod="dialog"</code> here, which the
+    platform honours only on a submit button that <em>has a form owner</em>: outside a form
+    that button is inert, so the advice produced a Close button that did nothing.
 </p>
 <Example Source="DialogCustomClose.razor"><DialogCustomClose /></Example>
 

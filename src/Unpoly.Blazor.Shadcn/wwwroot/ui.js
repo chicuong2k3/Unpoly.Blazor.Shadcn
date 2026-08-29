@@ -222,7 +222,11 @@
   // A close button anywhere inside the dialog, including the corner X. [data-dialog-close] is
   // the attribute a component sets when it wants this behaviour under a different slot name —
   // AlertDialogCancel does, and its own comment said so while nothing bound it.
-  up.compiler('[data-slot="dialog-close"], [data-slot="sheet-close"], [data-dialog-close]',
+  // drawer-close is on this list because it was not, and nothing else bound it: the button
+  // relied on formmethod="dialog", which only acts on a submit button that HAS a form owner, and
+  // no drawer in the demo is inside a form. So every Close and Cancel in a drawer did nothing.
+  up.compiler('[data-slot="dialog-close"], [data-slot="sheet-close"], ' +
+              '[data-slot="drawer-close"], [data-dialog-close]',
               (button) => {
     const close = (event) => { event.preventDefault(); button.closest('dialog')?.close() }
     button.addEventListener('click', close)
@@ -340,6 +344,11 @@
     const flip = rtl(anchor)
     const room = document.documentElement.clientWidth
 
+    // inline-start and inline-end are sides too. They fell through to the bottom branch in
+    // silence, which is what the RTL samples ask for and what they were not getting.
+    if (side === 'inline-start') side = flip ? 'right' : 'left'
+    else if (side === 'inline-end') side = flip ? 'left' : 'right'
+
     // Beside, rather than above or below. Only top and bottom were handled, so a panel asking
     // for left or right silently got bottom -- the side was in the markup, in the docs and in
     // the data attribute, and nothing anywhere did it.
@@ -366,6 +375,12 @@
     if (top + p.height > window.innerHeight - 8) {
       top = Math.max(8, a.top - p.height - offset)
       panel.dataset.placedSide = 'top'
+    }
+    // And the other edge. Only the bottom was checked, so a panel asking for the top near the
+    // top of the window was given a negative offset and drawn off the screen entirely.
+    if (top < 8) {
+      top = Math.min(a.bottom + offset, window.innerHeight - p.height - 8)
+      panel.dataset.placedSide = 'bottom'
     }
 
     // Pin the edge that has to line up, rather than deriving it by subtracting the panel's own
@@ -1255,14 +1270,20 @@
     if (!panel) return
     let timer
 
+    // Clicking dismisses the tip, and it stays dismissed until the pointer leaves and comes
+    // back. Without this the click's own focus event reopened it a millisecond later, so the
+    // dismissal was real and invisible.
+    let dismissed = false
+
     const open = () => {
+      if (dismissed) return
       clearTimeout(timer)
       timer = setTimeout(() => {
         panel.showPopover()
         place(panel, trigger, 'center', panel.dataset.side || 'top',
               Number(panel.dataset.sideOffset || 6))
         panel.dataset.state = 'delayed-open'
-      }, Number(trigger.dataset.delay ?? 200))
+      }, Number(trigger.dataset.delay ?? 0))
     }
 
     const close = () => {
@@ -1273,16 +1294,37 @@
 
     const onKey = (event) => { if (event.key === 'Escape') close() }
 
+    // The pointer may travel INTO the tip. Radix calls this hoverable content and leaves it on
+    // by default; without it a tip holding a <Kbd> or a link cannot be reached at all, because
+    // leaving the trigger closed it before the pointer arrived. The hover card three hundred
+    // lines down already did this.
+    const leave = (event) => {
+      const to = event.relatedTarget
+      if (to && (panel.contains(to) || trigger.contains(to))) return
+      dismissed = false
+      close()
+    }
+    const stay = () => clearTimeout(timer)
+
     trigger.addEventListener('pointerenter', open)
-    trigger.addEventListener('pointerleave', close)
+    trigger.addEventListener('pointerleave', leave)
+    panel.addEventListener('pointerenter', stay)
+    panel.addEventListener('pointerleave', leave)
+    // Clicking the thing dismisses its label: whatever the click does next, the tip is now
+    // sitting on top of the result.
+    const dismiss = () => { dismissed = true; close() }
+    trigger.addEventListener('pointerdown', dismiss)
     trigger.addEventListener('focus', open)
     trigger.addEventListener('blur', close)
     document.addEventListener('keydown', onKey)
 
     return () => {
       close()
+      panel.removeEventListener('pointerenter', stay)
+      panel.removeEventListener('pointerleave', leave)
+      trigger.removeEventListener('pointerdown', dismiss)
       trigger.removeEventListener('pointerenter', open)
-      trigger.removeEventListener('pointerleave', close)
+      trigger.removeEventListener('pointerleave', leave)
       trigger.removeEventListener('focus', open)
       trigger.removeEventListener('blur', close)
       document.removeEventListener('keydown', onKey)
@@ -1584,7 +1626,8 @@
       clearTimeout(closeTimer)
       openTimer = setTimeout(() => {
         panel.showPopover()
-        place(panel, trigger, panel.dataset.align, panel.dataset.side, 8)
+        place(panel, trigger, panel.dataset.align, panel.dataset.side,
+              Number(panel.dataset.sideOffset || 4))
       }, Number(trigger.dataset.openDelay ?? 600))
     }
 

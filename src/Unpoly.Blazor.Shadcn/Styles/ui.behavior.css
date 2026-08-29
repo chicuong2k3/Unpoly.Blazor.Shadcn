@@ -208,9 +208,35 @@
 
        The delay still lives in the timer that calls showPopover(). This rule only decides
        whether an open tooltip can be seen, and the answer is yes. */
+    /* Upstream animates with tailwindcss-animate -- animate-in, zoom-in-95 and a slide per
+       side. That plugin is not installed here (it is listed in tools/check_compiled.py with the
+       reason), so those classes compile to nothing and the tip appeared with no motion at all.
+       The same animation, written as a keyframe, because a keyframe needs no plugin: fade and
+       zoom, sliding in from whichever side it ENDED UP on. */
     [data-slot="tooltip-content"] { opacity: 0; transition: opacity 120ms ease-out; }
     [data-slot="tooltip-content"][data-state="delayed-open"],
-    [data-slot="tooltip-content"]:popover-open { opacity: 1; }
+    [data-slot="tooltip-content"]:popover-open {
+        opacity: 1;
+        animation: sh-tip-in 150ms var(--ease-ui, cubic-bezier(0.16, 1, 0.3, 1));
+    }
+    [data-slot="tooltip-content"][data-placed-side="top"] { --sh-tip-from: 0 0.5rem; }
+    [data-slot="tooltip-content"][data-placed-side="bottom"] { --sh-tip-from: 0 -0.5rem; }
+    [data-slot="tooltip-content"][data-placed-side="left"] { --sh-tip-from: 0.5rem 0; }
+    [data-slot="tooltip-content"][data-placed-side="right"] { --sh-tip-from: -0.5rem 0; }
+
+    @keyframes sh-tip-in {
+        from { opacity: 0; scale: 0.95; translate: var(--sh-tip-from, 0 0); }
+        to { opacity: 1; scale: 1; translate: 0 0; }
+    }
+
+    /* The hover card carries the same dead plugin classes, and the same keyframe answers them. */
+    [data-slot="hover-card-content"]:popover-open {
+        animation: sh-tip-in 150ms var(--ease-ui, cubic-bezier(0.16, 1, 0.3, 1));
+    }
+    [data-slot="hover-card-content"][data-placed-side="top"] { --sh-tip-from: 0 0.5rem; }
+    [data-slot="hover-card-content"][data-placed-side="bottom"] { --sh-tip-from: 0 -0.5rem; }
+    [data-slot="hover-card-content"][data-placed-side="left"] { --sh-tip-from: 0.5rem 0; }
+    [data-slot="hover-card-content"][data-placed-side="right"] { --sh-tip-from: -0.5rem 0; }
 
     /* The arrow. Upstream renders a Radix Arrow element -- a rotated, rounded square in the
        tooltip's own colour -- and this is that square, as a pseudo-element, because a tooltip

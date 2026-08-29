@@ -1,18 +1,23 @@
-@* A close button of your own. formmethod="dialog" is what closes the <dialog> it is inside —
-   no id to point at, no JavaScript, and it keeps working if ui.js never loads. *@
-<DialogTrigger Target="dlg-custom">Open</DialogTrigger>
+@* Upstream's own sample: a share link. The label is there for a screen reader and invisible to
+   everyone else, the input is read-only because the point is to copy it, and the footer aligns
+   its buttons to the start rather than the end. *@
+<DialogTrigger Target="dlg-custom">Share</DialogTrigger>
 
-<Dialog Id="dlg-custom" ShowCloseButton="false">
+<Dialog Id="dlg-custom">
     <DialogHeader>
-        <DialogTitle>Rename the project</DialogTitle>
-        <DialogDescription>This is what your team will see.</DialogDescription>
+        <DialogTitle>Share link</DialogTitle>
+        <DialogDescription>Anyone who has this link will be able to view this.</DialogDescription>
     </DialogHeader>
-    <div class="px-6">
-        <Input name="name" value="Website redesign" aria-label="Project name" />
+    <div class="flex items-center gap-2">
+        <Field Class="flex-1">
+            <FieldLabel For="dlg-share-link" Class="sr-only">Link</FieldLabel>
+            <Input id="dlg-share-link" value="https://ui.shadcn.com/docs/installation" readonly />
+        </Field>
+        <Button Type="button" Size="icon" Class="shrink-0" aria-label="Copy link">
+            <Icon Name="copy" />
+        </Button>
     </div>
-    <DialogFooter>
-        <Button>Save</Button>
-        <button type="submit" formmethod="dialog"
-                class="@ButtonVariants.Of("ghost", "default")">Not now</button>
+    <DialogFooter Class="sm:justify-start">
+        <DialogClose Variant="secondary">Close</DialogClose>
     </DialogFooter>
 </Dialog>

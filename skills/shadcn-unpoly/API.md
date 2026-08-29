@@ -1093,6 +1093,7 @@ renders `<div>` · `data-slot="hover-card-content"`
 | `Id` | `string` | `default!` |  |
 | `Align` | `string` | `"center"` | **required** |
 | `Side` | `string` | `"bottom"` |  |
+| `SideOffset` | `int` | `4` |  |
 
 ## `<HoverCardTrigger>`
 renders `<a>` · `data-slot="hover-card-trigger"`
@@ -2042,6 +2043,6 @@ renders `<button>` · `data-slot="tooltip-trigger"`
 | Parameter | Type | Default | |
 |---|---|---|---|
 | `Target` | `string` | `default!` |  |
-| `Delay` | `int` | `200` | **required** |
+| `Delay` | `int` | — | **required** |
 | `Variant` | `string?` | — |  |
 | `Size` | `string` | `"default"` |  |

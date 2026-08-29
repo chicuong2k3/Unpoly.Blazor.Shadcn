@@ -1,16 +1,21 @@
-@* Everything scrolls, header included. Reach for this when the header is not worth the vertical
-   space on a phone — and for the other case, pin it, which is the example above. *@
-<DialogTrigger Target="dlg-scroll">Open</DialogTrigger>
+@* Only the middle scrolls. The header and the close button stay where they are, and the inner
+   box is pulled out to the panel's own padding with -mx-4 px-4 so the scrollbar sits at the
+   edge of the dialog rather than in a channel of its own — which is exactly what upstream does. *@
+<DialogTrigger Target="dlg-scroll">Scrollable Content</DialogTrigger>
 
-<Dialog Id="dlg-scroll" Class="max-h-[70vh] overflow-y-auto">
+<Dialog Id="dlg-scroll">
     <DialogHeader>
-        <DialogTitle>Release notes</DialogTitle>
-        <DialogDescription>Everything in 2.4.</DialogDescription>
+        <DialogTitle>Scrollable Content</DialogTitle>
+        <DialogDescription>This is a dialog with scrollable content.</DialogDescription>
     </DialogHeader>
-    <div class="flex flex-col gap-3 px-6 text-sm text-muted-foreground">
-        @foreach (var n in Enumerable.Range(1, 14))
+    <div class="-mx-4 max-h-[50vh] overflow-y-auto px-4">
+        @foreach (var n in Enumerable.Range(1, 10))
         {
-            <p>Change @n — one line about what moved and why.</p>
+            <p class="mb-4 leading-normal text-sm text-muted-foreground">
+                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor
+                incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis
+                nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+            </p>
         }
     </div>
 </Dialog>

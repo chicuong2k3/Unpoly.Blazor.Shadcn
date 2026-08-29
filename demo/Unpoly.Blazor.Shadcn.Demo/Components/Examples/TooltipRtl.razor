@@ -1,4 +1,32 @@
-<div dir="rtl" class="flex items-center gap-3">
-    <TooltipTrigger Target="tip-rtl" Variant="outline">مرِّر هنا</TooltipTrigger>
-    <TooltipContent Id="tip-rtl">تلميح قصير</TooltipContent>
+@* Four physical sides and two logical ones, in a right-to-left page. The point is the pair at
+   the end: left and right stay where they are named, while inline-start and inline-end follow
+   the reading direction — so a tip that should hug the start of the line is written once and is
+   correct in both directions. *@
+<div dir="rtl" class="grid gap-4">
+    <div class="flex flex-wrap justify-center gap-2">
+        @foreach (var (side, label) in Physical)
+        {
+            <TooltipTrigger Target="@($"tip-rtl-{side}")" Variant="outline">@label</TooltipTrigger>
+            <TooltipContent Id="@($"tip-rtl-{side}")" Side="@side" dir="rtl">إضافة إلى المكتبة</TooltipContent>
+        }
+    </div>
+    <div class="flex flex-wrap justify-center gap-2">
+        @foreach (var (side, label) in Logical)
+        {
+            <TooltipTrigger Target="@($"tip-rtl-{side}")" Variant="outline">@label</TooltipTrigger>
+            <TooltipContent Id="@($"tip-rtl-{side}")" Side="@side" dir="rtl">إضافة إلى المكتبة</TooltipContent>
+        }
+    </div>
 </div>
+
+@code {
+    static readonly (string Side, string Label)[] Physical =
+    [
+        ("left", "يسار"), ("top", "أعلى"), ("bottom", "أسفل"), ("right", "يمين"),
+    ];
+
+    static readonly (string Side, string Label)[] Logical =
+    [
+        ("inline-start", "بداية السطر"), ("inline-end", "نهاية السطر"),
+    ];
+}

@@ -1,7 +1,43 @@
-<div dir="rtl">
-    <HoverCardTrigger Target="hc-rtl" Class="underline underline-offset-4">مارتا</HoverCardTrigger>
-    <HoverCardContent Id="hc-rtl" Class="w-64 p-4 text-sm">
-        <div class="font-medium">مارتا رويز</div>
-        <p class="text-muted-foreground">١٢٨ طلبًا.</p>
-    </HoverCardContent>
+@* The same six sides as the tooltip's RTL sample, because the question is the same one: which
+   of these follow the reading direction? left and right do not; inline-start and inline-end do,
+   so one card definition is correct in Arabic and in English both. *@
+<div dir="rtl" class="grid gap-4">
+    <div class="flex flex-wrap justify-center gap-2">
+        @foreach (var (side, label) in Physical)
+        {
+            <HoverCardTrigger Target="@($"hc-rtl-{side}")" OpenDelay="100" CloseDelay="100"
+                              Class="@ButtonVariants.Of("outline")">@label</HoverCardTrigger>
+            <HoverCardContent Id="@($"hc-rtl-{side}")" Side="@side" dir="rtl">
+                <div class="flex flex-col gap-1">
+                    <h4 class="font-medium">حقيبة ظهر</h4>
+                    <p class="text-sm text-muted-foreground">٤٩٠٫٠٠٠ ₫</p>
+                </div>
+            </HoverCardContent>
+        }
+    </div>
+    <div class="flex flex-wrap justify-center gap-2">
+        @foreach (var (side, label) in Logical)
+        {
+            <HoverCardTrigger Target="@($"hc-rtl-{side}")" OpenDelay="100" CloseDelay="100"
+                              Class="@ButtonVariants.Of("outline")">@label</HoverCardTrigger>
+            <HoverCardContent Id="@($"hc-rtl-{side}")" Side="@side" dir="rtl">
+                <div class="flex flex-col gap-1">
+                    <h4 class="font-medium">حقيبة ظهر</h4>
+                    <p class="text-sm text-muted-foreground">٤٩٠٫٠٠٠ ₫</p>
+                </div>
+            </HoverCardContent>
+        }
+    </div>
 </div>
+
+@code {
+    static readonly (string Side, string Label)[] Physical =
+    [
+        ("left", "يسار"), ("top", "أعلى"), ("bottom", "أسفل"), ("right", "يمين"),
+    ];
+
+    static readonly (string Side, string Label)[] Logical =
+    [
+        ("inline-start", "بداية السطر"), ("inline-end", "نهاية السطر"),
+    ];
+}

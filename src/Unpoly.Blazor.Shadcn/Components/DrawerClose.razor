@@ -1,9 +1,11 @@
 @inherits UiComponentBase
 
-@* formmethod="dialog" closes the <dialog> it is inside with no JavaScript and no id to point at
-   — the platform's own close button, which keeps working if ui.js never loads. *@
+@* Closes the drawer it is inside. It used to be a submit button carrying formmethod="dialog",
+   which the platform honours only when the button HAS a form owner — and a drawer is not
+   normally inside a form, so every Close and Cancel in one was inert. Same shape as DialogClose
+   now: an ordinary button, closed by the compiler that already handles every other close. *@
 
-<button type="submit" formmethod="dialog" data-slot="drawer-close" class="@Classes"
+<button type="button" data-slot="drawer-close" class="@Classes"
         @attributes="AdditionalAttributes">@ChildContent</button>
 
 @code {

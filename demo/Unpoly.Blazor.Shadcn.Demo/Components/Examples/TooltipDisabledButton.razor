@@ -1,11 +1,8 @@
 @* A disabled button fires no pointer events, so a tooltip on it never opens — which is the one
-   moment a reader most needs to be told why it is disabled. Wrap it: the span takes the hover,
-   the button stays disabled, and the reason is announced because the wrapper is focusable and
-   describes it. *@
-<div class="flex items-center gap-3">
-    <span tabindex="0" data-slot="tooltip-trigger" data-target="tip-why"
-          aria-describedby="tip-why" class="inline-flex rounded-md">
-        <Button disabled>Publish</Button>
-    </span>
-    <TooltipContent Id="tip-why">Add a payment method first.</TooltipContent>
-</div>
+   moment a reader most needs to be told why. Wrap it: the span takes the hover, the button
+   stays disabled, and the reason is announced because the wrapper is focusable. *@
+<span tabindex="0" data-slot="tooltip-trigger" data-target="tip-why"
+      aria-describedby="tip-why" class="inline-block w-fit">
+    <Button Variant="outline" disabled>Disabled</Button>
+</span>
+<TooltipContent Id="tip-why">This feature is currently unavailable</TooltipContent>

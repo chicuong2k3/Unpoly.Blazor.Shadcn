@@ -6,7 +6,12 @@
 @code {
     [Parameter, EditorRequired] public string Id { get; set; } = default!;
     [Parameter] public string Align { get; set; } = "center";
+    /// <summary>top | right | bottom | left | inline-start | inline-end.</summary>
     [Parameter] public string Side { get; set; } = "bottom";
+
+    /// <summary>Pixels between the trigger and the card. Upstream's default is 4; ui.js read a
+    /// hardcoded 8 because there was no parameter to read instead.</summary>
+    [Parameter] public int SideOffset { get; set; } = 4;
 
     const string Base =
         "z-50 w-64 origin-(--radix-hover-card-content-transform-origin) rounded-md border " +
