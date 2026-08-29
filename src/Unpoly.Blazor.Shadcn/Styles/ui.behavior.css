@@ -146,6 +146,24 @@
     [data-slot="sheet-content"] *::-webkit-scrollbar {
         display: none;
     }
+    /* Nothing floating is ever wider than the window it floats in. The part that hangs off is
+       unreachable, because a popover has nothing to scroll it back into view. */
+    [popover][data-slot] {
+        max-inline-size: calc(100vw - 1rem);
+    }
+
+    /* And a panel with no width class of its own sizes to its content. The user agent starts a
+       popover at fit-content, but this port POSITIONS the panel itself — upstream nests it in a
+       Radix positioner that is already fit-content — and a positioned box with `width: auto`
+       stretches to the space it is given instead. The date picker went full-window, and the
+       calendar's right-hand half sat off the edge of the screen.
+
+       :where() so this stays at zero specificity: any w-* class the caller writes still wins,
+       which is how the menus and lists that DO name a width keep it. */
+    [popover][data-slot]:where(:not([class*="w-"])) {
+        inline-size: fit-content;
+    }
+
     /* Put it back where it is the point. */
     [data-slot="scroll-area-viewport"] {
         scrollbar-width: thin;

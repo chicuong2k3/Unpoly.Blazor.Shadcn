@@ -1,4 +1,8 @@
-@* Inside a popover, which is shadcn's date-picker shape. For a form field, <DatePicker> around
+@* Inside a popover, which is shadcn's date-picker shape. No width class at all, where
+   upstream writes w-auto: there the panel sits inside a Radix positioner that is already
+   fit-content, while here the panel IS the positioned element, and a positioned box with
+   `width: auto` stretches to the space it is offered — which put the right-hand half of the
+   calendar off the edge of the window. A panel that names no width now sizes to its content. For a form field, <DatePicker> around
    <input type="date"> is smaller and brings the OS picker on a phone — reach for this when the
    month has to be visible while choosing. *@
 <div class="w-[280px]">
@@ -7,7 +11,7 @@
         <PopoverTrigger Target="cal-dp-panel" id="cal-dp" Class="w-full justify-between font-normal">
             11 March 2026<Icon Name="calendar" Class="opacity-50" />
         </PopoverTrigger>
-        <PopoverContent Id="cal-dp-panel" Align="start" Class="w-auto p-3">
+        <PopoverContent Id="cal-dp-panel" Align="start" Class="p-3">
             <Calendar Name="delivery" Month="@(new DateOnly(2026, 3, 1))"
                       Selected="@(new DateOnly(2026, 3, 11))" Today="@(new DateOnly(2026, 3, 11))" />
         </PopoverContent>

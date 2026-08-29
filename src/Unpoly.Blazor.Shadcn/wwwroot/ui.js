@@ -1081,6 +1081,10 @@
 
     const shown = () => items().filter((i) => !i.hidden)
 
+    // Set while a choice is closing the list, so the focus that closing returns to the input
+    // cannot open it again. See onFocus.
+    let justChose = false
+
     // data-label when the row carries one, because textContent on a row with an avatar and a
     // description returns all three run together — and that string is what the trigger shows.
     const label = (item) => item.dataset.label || item.textContent.replace(/\s+/g, ' ').trim()
@@ -1131,8 +1135,12 @@
           if (empty) empty.hidden = true
         }
         syncClear()
+        justChose = true
         panel.hidePopover()
         trigger?.focus()
+        // Cleared once that focus has been and gone. Clicking the box later is a new gesture and
+        // opens the list as usual.
+        setTimeout(() => { justChose = false }, 0)
         return
       }
 
@@ -1243,6 +1251,11 @@
     // completely inert. Every combobox opens on focus; this one had a trigger for the button
     // form and nothing for the input form.
     const onFocus = () => {
+      // Not straight after choosing: closing the list hands focus back to the input, and that
+      // focus would open it again. Chrome sent it to the body and hid the loop; Opera sends it
+      // to the input, and the list reopened the instant it closed — which reads as "choosing
+      // does nothing at all".
+      if (justChose) return
       // A click on the input fires focus and click, and the trigger button inside the same
       // frame may open the panel between them -- showPopover() during another show throws
       // "Invalid to show a popover during another show operation", which killed the rest of the

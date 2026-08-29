@@ -17,6 +17,11 @@
              behave the way a range picker should: a third click starts again, and the days
              between fill in as you go.
 
+   The month table sizes itself rather than filling its container. A day is a fixed 36px box, so
+   there is nothing for w-full to distribute — and inside a [popover], whose width is fit-content,
+   a percentage width is circular: the table asked for all of the available width, the popover
+   grew to the viewport, and the panel hung off the right edge of the window.
+
    For picking a single date in a form, <DatePicker> around <input type="date"> is smaller and
    better still. This is for when the month has to be visible — availability, a booking grid,
    anything where the shape of the month is the information. *@
@@ -45,7 +50,8 @@
         @for (var offset = 0; offset < Span; offset++)
         {
             var month = First.AddMonths(offset);
-            <table data-slot="calendar-month" class="w-full border-separate border-spacing-y-1">
+            <table data-slot="calendar-month"
+                   class="w-auto border-separate border-spacing-y-1">
                 <caption class="@(MonthUrl is null && Span == 1 ? "sr-only" : "pb-2 text-sm font-medium")">
                     @month.ToString("MMMM yyyy")
                 </caption>

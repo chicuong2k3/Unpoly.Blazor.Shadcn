@@ -487,6 +487,13 @@
         "min-w-0"
       ],
       "why": "A flex child's min-width is auto, so this block will not shrink below its longest unbreakable word — an address like shadcn@vercel.com — and the row wraps instead, putting the avatar on one line and the name on the next. Upstream's own item-dropdown example is a narrow menu, which is exactly where that happens."
+    },
+    "field": {
+      "classes": [
+        "[&>*:not([popover])]:w-full",
+        "@md/field-group:[&>*:not([popover])]:w-auto"
+      ],
+      "why": "A field stretches its children to its own width, which is right for every child that is part of the field — and a [popover] is not. It is in the top layer, positioned by script against its trigger, and a child of the field in the MARKUP only. Upstream never meets this because Radix portals its panel to <body>; here the panel stays where it is written, so `[&>*]:w-full` reached it and a date picker's calendar was stretched to the whole window with half of it off the screen. Excluding [popover] is the same rule, said about the children it was actually meant for."
     }
   },
   "dropped": {
@@ -713,6 +720,13 @@
         "disabled:cursor-not-allowed"
       ],
       "why": "Replaced by *:disabled:cursor-not-allowed above — the element carrying the slot here is the container, which can never be :disabled."
+    },
+    "field": {
+      "classes": [
+        "[&>*]:w-full",
+        "@md/field-group:[&>*]:w-auto"
+      ],
+      "why": "A field stretches its children to its own width, which is right for every child that is part of the field — and a [popover] is not. It is in the top layer, positioned by script against its trigger, and a child of the field in the MARKUP only. Upstream never meets this because Radix portals its panel to <body>; here the panel stays where it is written, so `[&>*]:w-full` reached it and a date picker's calendar was stretched to the whole window with half of it off the screen. Excluding [popover] is the same rule, said about the children it was actually meant for."
     }
   },
   "subject": {

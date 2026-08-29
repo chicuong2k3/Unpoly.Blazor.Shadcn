@@ -4621,9 +4621,6 @@
     width: calc(var(--spacing) * 8);
     height: calc(var(--spacing) * 8);
   }
-  .\[\&\>\*\]\:w-full > * {
-    width: 100%;
-  }
   .\[\&\>\*\]\:focus-visible\:relative > *:focus-visible {
     position: relative;
   }
@@ -4632,11 +4629,6 @@
   }
   .\[\&\>\*\]\:data-\[slot\=field\]\:p-4 > *[data-slot="field"] {
     padding: calc(var(--spacing) * 4);
-  }
-  @container field-group (width >= 28rem) {
-    .\@md\/field-group\:\[\&\>\*\]\:w-auto > * {
-      width: auto;
-    }
   }
   .\[\&\>\*\:not\(\:first-child\)\]\:rounded-s-none > :not(:first-child) {
     border-start-start-radius: 0;
@@ -4661,6 +4653,14 @@
   .\[\&\>\*\:not\(\:last-child\)\]\:rounded-b-none > :not(:last-child) {
     border-bottom-right-radius: 0;
     border-bottom-left-radius: 0;
+  }
+  .\[\&\>\*\:not\(\[popover\]\)\]\:w-full > :not([popover]) {
+    width: 100%;
+  }
+  @container field-group (width >= 28rem) {
+    .\@md\/field-group\:\[\&\>\*\:not\(\[popover\]\)\]\:w-auto > :not([popover]) {
+      width: auto;
+    }
   }
   .\[\&\>\.sr-only\]\:w-auto > .sr-only {
     width: auto;
@@ -5065,6 +5065,12 @@
   }
   [data-slot="select-content"]::-webkit-scrollbar, [data-slot="command-list"]::-webkit-scrollbar, [data-slot="combobox-list"]::-webkit-scrollbar, [data-slot="dropdown-menu-content"]::-webkit-scrollbar, [data-slot="context-menu-content"]::-webkit-scrollbar, [data-slot="menubar-content"]::-webkit-scrollbar, [data-slot$="sub-content"]::-webkit-scrollbar, [data-slot="popover-content"]::-webkit-scrollbar, [data-slot="navigation-menu-content"]::-webkit-scrollbar, [data-slot="table-container"]::-webkit-scrollbar, [data-slot="message-scroller-viewport"]::-webkit-scrollbar, [data-slot="code-block-pre"]::-webkit-scrollbar, [data-slot="sidebar-content"]::-webkit-scrollbar, [data-slot="dialog-content"] *::-webkit-scrollbar, [data-slot="alert-dialog-content"] *::-webkit-scrollbar, [data-slot="drawer-content"] *::-webkit-scrollbar, [data-slot="sheet-content"] *::-webkit-scrollbar {
     display: none;
+  }
+  [popover][data-slot] {
+    max-inline-size: calc(100vw - 1rem);
+  }
+  [popover][data-slot]:where(:not([class*="w-"])) {
+    inline-size: fit-content;
   }
   [data-slot="scroll-area-viewport"] {
     scrollbar-width: thin;
