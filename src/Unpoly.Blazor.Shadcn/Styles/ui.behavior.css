@@ -534,6 +534,10 @@
         appearance: none;
         position: absolute;
         inset: 0;
+        /* Above the band. A parent's ::after paints after its children, so the filled range was
+           drawn ON TOP of the thumbs -- the lower one vanished into it entirely, and the upper
+           one survived only because it sits on the band's own edge. */
+        z-index: 1;
         inline-size: 100%;
         block-size: 100%;
         margin: 0;
