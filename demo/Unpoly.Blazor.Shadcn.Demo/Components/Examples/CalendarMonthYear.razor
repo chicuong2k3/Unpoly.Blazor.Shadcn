@@ -1,22 +1,44 @@
-@* Two selects rather than paging. On a booking screen the month is one step away; on a date of
-   birth it is three hundred, which is why <DatePicker> exists. Both are GET forms, so the month
-   stays in the URL. *@
+@inject NavigationManager Nav
+
+@* Two selects rather than paging, and they actually move the calendar: the form is a GET, so the
+   month lands in the URL and the page renders that month. That is the whole state machine — no
+   handler, no field, and a month someone can bookmark or send to a colleague. Unpoly swaps only
+   the calendar, so the selects keep their focus. *@
 <div class="flex w-fit flex-col gap-3 rounded-lg border p-3">
-    <form method="get" up-autosubmit up-target="[data-slot=calendar]" class="flex gap-2">
+    @* One id, one target. [data-slot=calendar] matched fourteen calendars on this page and
+       Unpoly swapped the first of them — the Basic sample at the top — so the selects moved a
+       calendar, just not this one. *@
+    <form method="get" up-autosubmit up-target="#calendar-month-year" id="calendar-month-year-form"
+          class="flex gap-2">
         <Select name="month" aria-label="Month" Class="w-[130px]">
             @foreach (var m in Enumerable.Range(1, 12))
             {
-                <SelectItem Value="@m.ToString()" Selected="@(m == 3)">
+                <SelectItem Value="@m.ToString()" Selected="@(m == Shown.Month)">
                     @System.Globalization.CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(m)
                 </SelectItem>
             }
         </Select>
         <Select name="year" aria-label="Year" Class="w-[100px]">
-            @foreach (var y in Enumerable.Range(2024, 5))
+            @foreach (var y in Enumerable.Range(Shown.Year - 2, 5))
             {
-                <SelectItem Value="@y.ToString()" Selected="@(y == 2026)">@y</SelectItem>
+                <SelectItem Value="@y.ToString()" Selected="@(y == Shown.Year)">@y</SelectItem>
             }
         </Select>
     </form>
-    <Calendar Name="day" Month="@(new DateOnly(2026, 3, 1))" Today="@(new DateOnly(2026, 3, 11))" />
+    <Calendar id="calendar-month-year" Name="picked-day" Month="@Shown" Today="@Today" />
 </div>
+
+@code {
+    static readonly DateOnly Today = DateOnly.FromDateTime(DateTime.Today);
+
+    DateOnly Shown
+    {
+        get
+        {
+            var query = System.Web.HttpUtility.ParseQueryString(new Uri(Nav.Uri).Query);
+            var month = int.TryParse(query["month"], out var m) && m is >= 1 and <= 12 ? m : Today.Month;
+            var year = int.TryParse(query["year"], out var y) && y is >= 1 and <= 9999 ? y : Today.Year;
+            return new DateOnly(year, month, 1);
+        }
+    }
+}

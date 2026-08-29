@@ -34,13 +34,13 @@
            bookmarkable, the back button moves through months, and it all works before any
            JavaScript has run. Give it an up-target and only the calendar is swapped. *@
         <div data-slot="calendar-nav" class="mb-2 flex items-center justify-between gap-2">
-            <a href="@MonthUrl(Month.AddMonths(-1))"
+            <a href="@MonthUrl(AddMonths(First, -1))"
                class="@Cn(ButtonVariants.Of("ghost", "icon-sm"))"
                aria-label="@PreviousLabel"><Icon Name="chevron-left" Class="rtl:rotate-180" /></a>
 
             <span class="text-sm font-medium" aria-live="polite">@Caption</span>
 
-            <a href="@MonthUrl(Month.AddMonths(Span))"
+            <a href="@MonthUrl(AddMonths(First, Span))"
                class="@Cn(ButtonVariants.Of("ghost", "icon-sm"))"
                aria-label="@NextLabel"><Icon Name="chevron-right" Class="rtl:rotate-180" /></a>
         </div>
@@ -49,14 +49,20 @@
     <div data-slot="calendar-months" class="flex flex-col gap-4 sm:flex-row">
         @for (var offset = 0; offset < Span; offset++)
         {
-            var month = First.AddMonths(offset);
+            var month = AddMonths(First, offset);
             <table data-slot="calendar-month"
                    class="w-auto border-separate border-spacing-y-1">
                 <caption class="@(MonthUrl is null && Span == 1 ? "sr-only" : "pb-2 text-sm font-medium")">
-                    @month.ToString("MMMM yyyy")
+                    @MonthName(month)
                 </caption>
                 <thead>
                     <tr>
+                        @if (ShowWeekNumber)
+                        {
+                            <th scope="col" class="pb-2 pe-1 text-xs font-normal text-muted-foreground">
+                                <span aria-hidden="true">#</span><span class="sr-only">@WeekLabel</span>
+                            </th>
+                        }
                         @foreach (var day in Weekdays)
                         {
                             <th scope="col" class="pb-2 text-xs font-normal text-muted-foreground">
@@ -70,6 +76,12 @@
                     @foreach (var week in WeeksOf(month))
                     {
                         <tr>
+                            @if (ShowWeekNumber)
+                            {
+                                <th scope="row" class="num pe-1 text-xs font-normal text-muted-foreground">
+                                    @WeekNumber(week)
+                                </th>
+                            }
                             @foreach (var date in week)
                             {
                                 <td class="@CellClasses(date)">
@@ -122,6 +134,20 @@
     /// <summary>Days that cannot be chosen — a booked date, a closing day, the past.</summary>
     [Parameter] public Func<DateOnly, bool>? Disabled { get; set; }
 
+    /// <summary>
+    /// A leading column numbering the weeks, as shadcn's showWeekNumber. ISO 8601 numbering,
+    /// which is what a planning screen means by "week 32".
+    /// </summary>
+    [Parameter] public bool ShowWeekNumber { get; set; }
+
+    [Parameter] public string WeekLabel { get; set; } = "Week";
+
+    /// <summary>
+    /// Extra classes for particular days, as shadcn's modifiersClassNames: a booked date struck
+    /// through, a holiday tinted. Return null for the ordinary ones.
+    /// </summary>
+    [Parameter] public Func<DateOnly, string?>? Modifier { get; set; }
+
     /// <summary>Monday first. Set it for a locale that starts on Sunday.</summary>
     [Parameter] public DayOfWeek FirstDay { get; set; } = DayOfWeek.Monday;
 
@@ -135,20 +161,87 @@
     [Parameter] public string PreviousLabel { get; set; } = "Previous month";
     [Parameter] public string NextLabel { get; set; } = "Next month";
 
+    /// <summary>
+    /// The calendar SYSTEM to count months in — a Hijri month is not a Gregorian month with
+    /// Arabic numerals, it starts on a different day and is 29 or 30 days long. Leave it null
+    /// for the culture's own. .NET ships these, which is the only reason this is a parameter and
+    /// not a rewrite: HijriCalendar, UmAlQuraCalendar, PersianCalendar, all of them.
+    /// </summary>
+    [Parameter] public System.Globalization.Calendar? CalendarSystem { get; set; }
+
     int Span => Math.Max(1, Months);
 
-    DateOnly First => new(Month.Year, Month.Month, 1);
+    System.Globalization.Calendar Cal =>
+        CalendarSystem ?? System.Globalization.CultureInfo.CurrentCulture.Calendar;
+
+    // The first of the month IN THE CHOSEN SYSTEM, as a Gregorian date — which is what every
+    // other date here is, so nothing below has to know which system produced it.
+    DateOnly First
+    {
+        get
+        {
+            var day = new DateTime(Month.Year, Month.Month, 1);
+            return DateOnly.FromDateTime(
+                Cal.ToDateTime(Cal.GetYear(day), Cal.GetMonth(day), 1, 0, 0, 0, 0));
+        }
+    }
+
+    // Written in the chosen system: "رمضان ١٤٤٦", not the Gregorian month those days fall in.
+    //
+    // A culture will only accept a calendar it lists as optional — en-US cannot format a Hijri
+    // date, and asking it to throws rather than approximating. So the month name comes from a
+    // culture that CAN express the system, and from the current one when there is nothing to
+    // convert; anything unforeseen falls back to the calendar's own numbers, which are still
+    // true even when nobody has a name for them.
+    string MonthName(DateOnly month)
+    {
+        var stamp = month.ToDateTime(TimeOnly.MinValue);
+        var culture = (System.Globalization.CultureInfo)Speaks(CalendarSystem).Clone();
+        try
+        {
+            if (CalendarSystem is not null) culture.DateTimeFormat.Calendar = CalendarSystem;
+            return stamp.ToString("MMMM yyyy", culture);
+        }
+        catch (ArgumentOutOfRangeException)
+        {
+            return $"{Cal.GetMonth(stamp)}/{Cal.GetYear(stamp)}";
+        }
+    }
+
+    // A culture that lists this calendar among the ones it can format.
+    static System.Globalization.CultureInfo Speaks(System.Globalization.Calendar? system)
+    {
+        var current = System.Globalization.CultureInfo.CurrentCulture;
+        if (system is null || current.OptionalCalendars.Any(c => c.GetType() == system.GetType()))
+        {
+            return current;
+        }
+
+        foreach (var name in new[] { "ar-SA", "fa-IR", "th-TH", "he-IL", "ja-JP", "zh-TW", "ko-KR" })
+        {
+            var candidate = System.Globalization.CultureInfo.GetCultureInfo(name);
+            if (candidate.OptionalCalendars.Any(c => c.GetType() == system.GetType()))
+            {
+                return candidate;
+            }
+        }
+
+        return current;
+    }
 
     string Caption
     {
         get
         {
-            var last = First.AddMonths(Span - 1);
-            return First == last
-                ? First.ToString("MMMM yyyy")
-                : First.ToString("MMMM yyyy") + " – " + last.ToString("MMMM yyyy");
+            var last = AddMonths(First, Span - 1);
+            return First == last ? MonthName(First) : MonthName(First) + " – " + MonthName(last);
         }
     }
+
+    // Months are added in the chosen system too: adding one to a Hijri month is 29 or 30 days,
+    // and DateOnly.AddMonths would quietly add a Gregorian one.
+    DateOnly AddMonths(DateOnly from, int months) =>
+        DateOnly.FromDateTime(Cal.AddMonths(from.ToDateTime(TimeOnly.MinValue), months));
 
     bool IsChecked(DateOnly d) => Mode == "range" ? d == From || d == To : d == Selected;
 
@@ -164,9 +257,10 @@
 
     IEnumerable<DateOnly?[]> WeeksOf(DateOnly month)
     {
-        var first = new DateOnly(month.Year, month.Month, 1);
+        var first = month;
         var lead = ((int)first.DayOfWeek - (int)FirstDay + 7) % 7;
-        var days = DateTime.DaysInMonth(month.Year, month.Month);
+        var stamp = first.ToDateTime(TimeOnly.MinValue);
+        var days = Cal.GetDaysInMonth(Cal.GetYear(stamp), Cal.GetMonth(stamp));
 
         var cells = new List<DateOnly?>();
         cells.AddRange(Enumerable.Repeat((DateOnly?)null, lead));
@@ -186,12 +280,22 @@
 
     // aria-current is what tells a screen reader which day is today; a ring only tells eyes, and
     // a calendar where today is a colour and nothing else is one half its readers cannot orient in.
+    static int WeekNumber(DateOnly?[] week)
+    {
+        var day = week.FirstOrDefault(d => d is not null);
+        return day is null ? 0
+            : System.Globalization.ISOWeek.GetWeekOfYear(day.Value.ToDateTime(TimeOnly.MinValue));
+    }
+
     string DayClasses(DateOnly date, bool disabled) => Cn(
-        "flex size-9 items-center justify-center rounded-md text-sm",
+        "flex size-(--cell-size) items-center justify-center rounded-md text-sm",
         disabled ? "pointer-events-none opacity-40" : "cursor-pointer hover:bg-accent",
         "has-[:checked]:bg-primary has-[:checked]:text-primary-foreground",
         "has-[:focus-visible]:ring-[3px] has-[:focus-visible]:ring-ring/50",
-        date == Today ? "ring-1 ring-primary" : "");
+        date == Today ? "ring-1 ring-primary" : "",
+        Modifier?.Invoke(date) ?? "");
 
-    string Classes => Cn("", Class);
+    // The cell size is one custom property, as upstream's, so a caller changes every day box —
+    // and the week-number column that lines up with them — with one class: [--cell-size:...].
+    string Classes => Cn("[--cell-size:--spacing(9)]", Class);
 }

@@ -1,21 +1,37 @@
-@* Presets are links, so each one is a URL: "last 30 days" can be sent to a colleague and reached
-   by the back button, which a click handler that mutates state cannot offer. *@
-<div class="flex flex-wrap items-start gap-4">
-    <div class="flex w-40 flex-col gap-1">
-        @foreach (var (label, href) in Presets)
+@inject NavigationManager Nav
+
+@* Presets are links, so each one is a URL: "in a week" can be sent to a colleague and reached by
+   the back button, which a click handler mutating a state variable cannot offer. The link carries
+   the day it means; the calendar renders the month that day is in and marks it. *@
+<Card id="calendar-presets" Class="mx-auto w-fit max-w-[320px]" Size="sm">
+    <CardContent>
+        <Calendar Name="preset-day" Month="@Chosen" Selected="@Chosen" Today="@Today" Class="p-0" />
+    </CardContent>
+    <CardFooter Class="flex flex-wrap gap-2 border-t">
+        @foreach (var (label, days) in Presets)
         {
-            <a href="@href" up-target="[data-slot=calendar]"
-               class="@(ButtonVariants.Of("ghost", "sm", "justify-start"))">@label</a>
+            var day = Today.AddDays(days);
+            <a href="@($"/components/calendar?on={day:yyyy-MM-dd}")" up-target="#calendar-presets"
+               class="@ButtonVariants.Of("outline", "sm", "flex-1")"
+               aria-current="@(day == Chosen ? "date" : null)">@label</a>
         }
-    </div>
-    <Calendar Name="day" Month="@(new DateOnly(2026, 3, 1))" Today="@(new DateOnly(2026, 3, 11))"
-              Class="w-fit rounded-lg border p-3" />
-</div>
+    </CardFooter>
+</Card>
 
 @code {
-    static readonly (string Label, string Href)[] Presets =
+    static readonly DateOnly Today = DateOnly.FromDateTime(DateTime.Today);
+
+    static readonly (string Label, int Days)[] Presets =
     [
-        ("Today", "?range=today"), ("Last 7 days", "?range=7d"),
-        ("Last 30 days", "?range=30d"), ("This month", "?range=month"),
+        ("Today", 0), ("Tomorrow", 1), ("In 3 days", 3), ("In a week", 7), ("In 2 weeks", 14),
     ];
+
+    DateOnly Chosen
+    {
+        get
+        {
+            var query = System.Web.HttpUtility.ParseQueryString(new Uri(Nav.Uri).Query);
+            return DateOnly.TryParse(query["on"], out var on) ? on : Today;
+        }
+    }
 }

@@ -322,6 +322,12 @@
     /* Upstream animates with tailwindcss-animate -- animate-in, zoom-in-95 and a slide per
        side. That plugin is not installed here (it is listed in tools/check_compiled.py with the
        reason), so those classes compile to nothing and the tip appeared with no motion at all.
+
+       The arrow hangs off the panel with no `relative` on it, and deliberately: a [popover] is
+       position:fixed, which is already a containing block for an absolutely positioned child.
+       Adding `relative` DEMOTED it — a top-layer element that is not fixed is treated as
+       absolute — so the tip started scrolling with the page and landed hundreds of pixels from
+       its trigger on any page far enough down to scroll.
        The same animation, written as a keyframe, because a keyframe needs no plugin: fade and
        zoom, sliding in from whichever side it ENDED UP on. */
     [data-slot="tooltip-content"] { opacity: 0; transition: opacity 120ms ease-out; }

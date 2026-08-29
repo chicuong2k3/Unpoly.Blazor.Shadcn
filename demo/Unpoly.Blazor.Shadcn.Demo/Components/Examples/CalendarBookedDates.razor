@@ -1,10 +1,17 @@
-@* Disabled is a predicate, so the rule lives in one place and the markup does not repeat it.
-   A disabled day is still announced — which tells a reader the date exists and is taken, rather
-   than leaving them to wonder why nothing happened. *@
-<Calendar Name="stay" Month="@(new DateOnly(2026, 3, 1))" Today="@(new DateOnly(2026, 3, 11))"
-          Disabled="@(d => Booked.Contains(d.Day) || d.DayOfWeek == DayOfWeek.Sunday)"
-          Class="w-fit rounded-lg border p-3" />
+@* Booked days are disabled AND struck through, which is upstream's own pair: disabled says the
+   click will do nothing, the line says why. Disabled is a predicate, so the rule lives in one
+   place; Modifier is the same idea for the styling. *@
+<Card Class="mx-auto w-fit p-0">
+    <CardContent Class="p-0">
+        <Calendar Name="stay" Month="@Month" Selected="@(Month.AddDays(5))" Today="@Today"
+                  Disabled="@(d => Booked.Contains(d.Day))"
+                  Modifier="@(d => Booked.Contains(d.Day) ? "line-through opacity-100" : null)"
+                  Class="p-3" />
+    </CardContent>
+</Card>
 
 @code {
-    static readonly int[] Booked = [12, 13, 14, 20, 21];
+    static readonly DateOnly Today = DateOnly.FromDateTime(DateTime.Today);
+    static readonly DateOnly Month = new(Today.Year, Today.Month, 1);
+    static readonly int[] Booked = [12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26];
 }

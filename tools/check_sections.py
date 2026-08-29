@@ -50,8 +50,6 @@ NOT_HERE = {
     ('carousel', 'Options'): 'the same',
     ('sidebar', 'useSidebar'): 'a React hook; the state is a cookie the server reads',
     ('sidebar', 'Controlled Sidebar'): 'the same',
-    ('calendar', 'Persian / Hijri / Jalali Calendar'):
-        'react-day-picker ships the calendar systems; this is a table of days',
     ('calendar', 'Selected Date (With TimeZone)'): 'a server concern, and DateOnly has no zone',
     ('combobox', 'Auto Highlight'): 'the first match is always highlighted here',
     ('data-table', 'Basic Table'): 'TanStack Table is React; on static SSR the URL is the state',

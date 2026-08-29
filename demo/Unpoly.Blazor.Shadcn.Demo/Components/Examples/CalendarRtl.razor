@@ -1,7 +1,14 @@
-@* The columns run from the reading edge because a table follows the document direction, and the
-   month navigation flips with it. *@
+@* Arabic. The columns run from the reading edge because a table follows the document direction,
+   the month navigation flips with it, and the day names come from the culture rather than from a
+   hardcoded list — so nothing here is translated by hand. *@
 <div dir="rtl">
-    <Calendar Name="day-rtl" Month="@(new DateOnly(2026, 3, 1))" Today="@(new DateOnly(2026, 3, 11))"
+    <Calendar Name="day-rtl" Month="@Month" Selected="@(Month.AddDays(11))" Today="@Today"
+              FirstDay="DayOfWeek.Saturday"
               MonthUrl="@(m => $"/components/calendar?month={m:yyyy-MM}")"
-              Class="w-fit rounded-lg border p-3" />
+              Class="w-fit rounded-lg border p-3 [--cell-size:--spacing(9)]" />
 </div>
+
+@code {
+    static readonly DateOnly Today = DateOnly.FromDateTime(DateTime.Today);
+    static readonly DateOnly Month = new(Today.Year, Today.Month, 1);
+}

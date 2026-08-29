@@ -7,7 +7,7 @@
 <form method="post" action="/bookings" up-target="#preview-calendar-range" up-disable
       id="calendar-range-form" class="flex flex-col items-start gap-3">
     <AntiforgeryToken />
-    <Calendar Mode="range" Months="2" Name="stay" Month="@ThisMonth" From="@From" To="@To"
+    <Calendar Mode="range" Months="2" Name="range-stay" Month="@ThisMonth" From="@From" To="@To"
               Disabled="@(d => d < Today)" Class="w-fit rounded-lg border p-3" />
     <Button Type="submit" Size="sm">Book these nights</Button>
 </form>

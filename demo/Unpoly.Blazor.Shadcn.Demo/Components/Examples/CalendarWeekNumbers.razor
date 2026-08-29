@@ -1,45 +1,14 @@
-@* A leading column of week numbers, which a planning screen needs and a booking screen does not.
-   It is a th scope="row", so the number is announced as the row header rather than as a day. *@
-<div class="w-fit rounded-lg border p-3">
-    <table class="border-separate border-spacing-1">
-        <caption class="sr-only">March 2026, with week numbers</caption>
-        <thead>
-            <tr>
-                <th scope="col" class="pb-2 text-xs font-normal text-muted-foreground">
-                    <span aria-hidden="true">#</span><span class="sr-only">Week</span>
-                </th>
-                @foreach (var d in Days)
-                {
-                    <th scope="col" class="pb-2 text-xs font-normal text-muted-foreground">
-                        <span aria-hidden="true">@d[..1]</span><span class="sr-only">@d</span>
-                    </th>
-                }
-            </tr>
-        </thead>
-        <tbody>
-            @for (var week = 0; week < 5; week++)
-            {
-                <tr>
-                    <th scope="row" class="num pe-1 text-xs font-normal text-muted-foreground">@(10 + week)</th>
-                    @for (var column = 1; column <= 7; column++)
-                    {
-                        var date = week * 7 + column;
-                        <td class="p-0">
-                            @if (date <= 31)
-                            {
-                                <label class="flex size-9 cursor-pointer items-center justify-center rounded-md text-sm hover:bg-accent has-[:checked]:bg-primary has-[:checked]:text-primary-foreground">
-                                    <input type="radio" name="wk" value="@date" class="sr-only peer" />
-                                    <span class="num">@date</span>
-                                </label>
-                            }
-                        </td>
-                    }
-                </tr>
-            }
-        </tbody>
-    </table>
-</div>
+@* ShowWeekNumber puts an ISO week number in front of each row, which a planning screen needs and
+   a booking screen does not. It is a th scope="row", so a screen reader announces it as the
+   heading of the row rather than as another day. *@
+<Card Class="mx-auto w-fit p-0">
+    <CardContent Class="p-0">
+        <Calendar Name="week-day" Month="@Month" Selected="@(Month.AddDays(11))" Today="@Today"
+                  ShowWeekNumber Class="p-3" />
+    </CardContent>
+</Card>
 
 @code {
-    static readonly string[] Days = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
+    static readonly DateOnly Today = DateOnly.FromDateTime(DateTime.Today);
+    static readonly DateOnly Month = new(Today.Year, Today.Month, 1);
 }

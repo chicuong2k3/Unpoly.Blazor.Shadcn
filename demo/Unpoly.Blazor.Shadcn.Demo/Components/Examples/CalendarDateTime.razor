@@ -1,10 +1,34 @@
-@* A day and a time are two values, so they are two controls. type="time" brings the right
-   keyboard on a phone, which a text box with a mask does not. *@
-<div class="flex w-fit flex-col gap-3 rounded-lg border p-3">
-    <Calendar Name="day" Month="@(new DateOnly(2026, 3, 1))"
-              Selected="@(new DateOnly(2026, 3, 11))" Today="@(new DateOnly(2026, 3, 11))" />
-    <Field Orientation="horizontal">
-        <FieldLabel For="cal-time">Time</FieldLabel>
-        <Input id="cal-time" name="time" type="time" value="09:30" step="900" Class="w-32" />
-    </Field>
-</div>
+@* A day and a time are two values, so they are two controls: the calendar above, a start and an
+   end time in the footer. type="time" brings the right keyboard on a phone, which a text box
+   with a mask does not, and step="1" is what makes the seconds field appear. *@
+<Card Size="sm" Class="mx-auto w-fit">
+    <CardContent>
+        <Calendar Name="meeting-day" Month="@Month" Selected="@(Month.AddDays(11))" Today="@Today"
+                  Class="p-0" />
+    </CardContent>
+    <CardFooter Class="border-t bg-card">
+        <FieldGroup>
+            <Field>
+                <FieldLabel For="time-from">Start Time</FieldLabel>
+                <InputGroup>
+                    <InputGroupControl id="time-from" name="from" Type="time" step="1"
+                                       value="10:30:00" Class="appearance-none" />
+                    <InputGroupAddon><Icon Name="clock" Class="text-muted-foreground" /></InputGroupAddon>
+                </InputGroup>
+            </Field>
+            <Field>
+                <FieldLabel For="time-to">End Time</FieldLabel>
+                <InputGroup>
+                    <InputGroupControl id="time-to" name="to" Type="time" step="1"
+                                       value="12:30:00" Class="appearance-none" />
+                    <InputGroupAddon><Icon Name="clock" Class="text-muted-foreground" /></InputGroupAddon>
+                </InputGroup>
+            </Field>
+        </FieldGroup>
+    </CardFooter>
+</Card>
+
+@code {
+    static readonly DateOnly Today = DateOnly.FromDateTime(DateTime.Today);
+    static readonly DateOnly Month = new(Today.Year, Today.Month, 1);
+}

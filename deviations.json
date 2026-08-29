@@ -463,12 +463,6 @@
       ],
       "why": "The indicator sits on the END edge, as shadcn's current stylesheet draws it: the item is `pr-8 pl-1.5` and the indicator `absolute right-2`. The new-york-v4 source vendored here still has Radix's old start-side layout, and a tick on the left of every row is the first thing anyone comparing against shadcn.com sees."
     },
-    "tooltip-content": {
-      "classes": [
-        "relative"
-      ],
-      "why": "relative: upstream renders the arrow as a child element (Radix's Arrow, positioned by the same engine that places the panel); here it is a pseudo-element, so the panel has to be its containing block. A child element would mean every call site remembering to write one."
-    },
     "input-otp-slot": {
       "classes": [
         "focus-visible:z-10",
@@ -494,6 +488,12 @@
         "@md/field-group:[&>*:not([popover])]:w-auto"
       ],
       "why": "A field stretches its children to its own width, which is right for every child that is part of the field — and a [popover] is not. It is in the top layer, positioned by script against its trigger, and a child of the field in the MARKUP only. Upstream never meets this because Radix portals its panel to <body>; here the panel stays where it is written, so `[&>*]:w-full` reached it and a date picker's calendar was stretched to the whole window with half of it off the screen. Excluding [popover] is the same rule, said about the children it was actually meant for."
+    },
+    "calendar": {
+      "classes": [
+        "[--cell-size:--spacing(9)]"
+      ],
+      "why": "The cell size is one custom property here, as it is upstream — upstream just declares it on the react-day-picker root, which this port does not have. One class changes every day box and the week-number column that lines up with them, which is what the Custom Cell Size sample is demonstrating."
     }
   },
   "dropped": {
@@ -727,6 +727,12 @@
         "@md/field-group:[&>*]:w-auto"
       ],
       "why": "A field stretches its children to its own width, which is right for every child that is part of the field — and a [popover] is not. It is in the top layer, positioned by script against its trigger, and a child of the field in the MARKUP only. Upstream never meets this because Radix portals its panel to <body>; here the panel stays where it is written, so `[&>*]:w-full` reached it and a date picker's calendar was stretched to the whole window with half of it off the screen. Excluding [popover] is the same rule, said about the children it was actually meant for."
+    },
+    "navigation-menu-content": {
+      "classes": [
+        "md:absolute"
+      ],
+      "why": "Upstream's panel sits inside a NavigationMenuViewport, where md:absolute places it. Here the panel IS a [popover] positioned by script against its trigger — and a top-layer element that is not position:fixed is treated as absolute, so it scrolls away from the trigger it belongs to. The same class demoted the tooltip and moved it three hundred pixels up its own page."
     }
   },
   "subject": {
