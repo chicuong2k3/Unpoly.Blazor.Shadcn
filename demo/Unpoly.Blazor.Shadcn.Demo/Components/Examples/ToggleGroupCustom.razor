@@ -1,13 +1,31 @@
-@* Multiple makes the items checkboxes rather than radios, which is the DOM's own version of
-   Radix's type="multiple" — and it means the group posts a list with no JavaScript at all. *@
-<ToggleGroup aria-label="Text style">
-    <ToggleGroupItem Name="style" Value="bold" Multiple Checked aria-label="Bold">
-        <span class="font-bold">B</span>
-    </ToggleGroupItem>
-    <ToggleGroupItem Name="style" Value="italic" Multiple aria-label="Italic">
-        <span class="italic">I</span>
-    </ToggleGroupItem>
-    <ToggleGroupItem Name="style" Value="underline" Multiple aria-label="Underline">
-        <span class="underline">U</span>
-    </ToggleGroupItem>
-</ToggleGroup>
+@* Upstream's custom group: four weights, each item showing what it does. The point is that an
+   item is markup — put whatever you like inside it, and the recipe supplies only the frame.
+
+   font-normal on the group is what stops the recipe's own font-medium reaching the labels, so
+   "Light" beside a light Aa is not itself half-bold. *@
+<div class="flex flex-col items-center gap-3">
+    <ToggleGroup Class="font-normal" aria-label="Font weight">
+        @foreach (var weight in Weights)
+        {
+            <ToggleGroupItem Name="tg-weight" Value="@weight.Value"
+                             Checked="@(weight.Value == "normal")"
+                             Class="h-auto flex-col gap-1 px-4 py-2" aria-label="@weight.Label">
+                <span class="@($"text-xl leading-none {weight.Class}")">Aa</span>
+                <span class="text-xs text-muted-foreground">@weight.Label</span>
+            </ToggleGroupItem>
+        }
+    </ToggleGroup>
+    <p class="text-sm text-muted-foreground">
+        Use <code class="font-mono text-xs">font-normal</code> to set the font weight.
+    </p>
+</div>
+
+@code {
+    static readonly (string Value, string Label, string Class)[] Weights =
+    [
+        ("light", "Light", "font-light"),
+        ("normal", "Normal", "font-normal"),
+        ("medium", "Medium", "font-medium"),
+        ("bold", "Bold", "font-bold"),
+    ];
+}

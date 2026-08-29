@@ -111,6 +111,36 @@ public class ClassParityTests : BunitContext
             Upstream.Slot("badge").With("variant", variant));
     }
 
+    // Toggle's variant and size tables were both baked into its base, so Variant and Size were
+    // parameters that changed nothing — an outline toggle had no border and a small one was the
+    // height of a large one. Nothing caught it, because the parity theory renders a component
+    // with its DEFAULTS: a table that exists and is never consulted passes. These ask for the
+    // other cells, which is the only way a recipe stays honest.
+    [Theory]
+    [InlineData("default")]
+    [InlineData("outline")]
+    public void Every_toggle_variant_matches_shadcn(string variant)
+    {
+        var toggle = this.RenderByName("Toggle", new Dictionary<string, object> { ["Variant"] = variant })
+            .Subject("Toggle");
+
+        AssertSameClasses("toggle", toggle.GetAttribute("class"),
+            Upstream.Slot("toggle").With("variant", variant));
+    }
+
+    [Theory]
+    [InlineData("default")]
+    [InlineData("sm")]
+    [InlineData("lg")]
+    public void Every_toggle_size_matches_shadcn(string size)
+    {
+        var toggle = this.RenderByName("Toggle", new Dictionary<string, object> { ["Size"] = size })
+            .Subject("Toggle");
+
+        AssertSameClasses("toggle", toggle.GetAttribute("class"),
+            Upstream.Slot("toggle").With("size", size));
+    }
+
     [Theory]
     [InlineData("default")]
     [InlineData("destructive")]

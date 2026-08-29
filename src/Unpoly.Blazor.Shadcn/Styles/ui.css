@@ -37,7 +37,11 @@
        this library does not, which is the one place its default theme departs from shadcn's.
        Tokens are not part of the parity contract — class strings are — so this costs nothing
        there, and `[data-theme="notebook"]` is the opposite look for anyone who wants lines. */
-    --background: oklch(0.98 0 0);
+    /* oklch(1 0 0), which is shadcn's. 0.98 is their --surface, a docs-site token, and it was
+       sitting on --background here: the page ground was a nearly-grey that made every
+       bg-background surface disappear into bg-muted next to it. The active tab was the visible
+       casualty — a white chip on a 0.97 list, reading as a 1% difference. */
+    --background: oklch(1 0 0);
     --foreground: oklch(0.145 0 0);
     --card: oklch(1 0 0);
     --card-foreground: oklch(0.145 0 0);

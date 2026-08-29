@@ -62,6 +62,7 @@ telescope
 trash-2
 trending-up
 triangle-alert
+underline
 upload
 user-plus
 x

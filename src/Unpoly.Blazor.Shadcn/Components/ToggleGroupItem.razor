@@ -30,7 +30,8 @@
         "inline-flex items-center justify-center gap-2 rounded-md text-control font-medium " +
         "whitespace-nowrap transition-[color,box-shadow] outline-none hover:bg-muted " +
         "hover:text-muted-foreground focus-visible:border-ring focus-visible:ring-[3px] " +
-        "focus-visible:ring-ring/50 disabled:pointer-events-none disabled:opacity-50 " +
+        "focus-visible:ring-ring/50 has-[:disabled]:pointer-events-none " +
+        "has-[:disabled]:opacity-50 " +
         "aria-invalid:border-destructive aria-invalid:ring-destructive/20 " +
         "has-[:checked]:bg-accent has-[:checked]:text-accent-foreground " +
         "dark:aria-invalid:ring-destructive/40 [&_svg]:pointer-events-none [&_svg]:shrink-0 " +
@@ -38,8 +39,24 @@
         "focus-visible:z-10 data-[spacing=0]:rounded-none data-[spacing=0]:shadow-none " +
         "data-[spacing=0]:first:rounded-s-md data-[spacing=0]:last:rounded-e-md " +
         "data-[spacing=0]:data-[variant=outline]:border-s-0 " +
-        "data-[spacing=0]:data-[variant=outline]:first:border-s bg-transparent h-control " +
-        "min-w-9 px-2";
+        "data-[spacing=0]:data-[variant=outline]:first:border-s";
 
-    string Classes => Cn(Base, Class);
+    // The same two tables Toggle was missing, and missing here for the same reason: the default
+    // variant's bg-transparent and the default size's h-9/min-w-9/px-2 were written into the
+    // base, so Variant and Size were parameters that changed nothing.
+    string VariantClass => Variant switch
+    {
+        "outline" => "border border-input bg-transparent shadow-xs hover:bg-accent " +
+                     "hover:text-accent-foreground",
+        _ => "bg-transparent",
+    };
+
+    string SizeClass => Size switch
+    {
+        "sm" => "h-8 min-w-8 px-1.5",
+        "lg" => "h-10 min-w-10 px-2.5",
+        _ => "h-control min-w-9 px-2",
+    };
+
+    string Classes => Cn(Base, VariantClass, SizeClass, Class);
 }

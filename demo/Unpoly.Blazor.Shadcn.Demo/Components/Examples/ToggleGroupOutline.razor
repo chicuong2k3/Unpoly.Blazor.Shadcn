@@ -1,11 +1,11 @@
-<ToggleGroup Variant="outline" aria-label="Alignment">
-    <ToggleGroupItem Name="tg-align" Value="start" Variant="outline" Checked aria-label="Start">
-        <Icon Name="menu" />
+@* The outline variant, on the group and on every item. Both, because Razor has no context for an
+   item to read the group's choice from — the group's own attribute styles the seams between them,
+   and each item styles itself. *@
+<ToggleGroup Variant="outline" aria-label="Calls">
+    <ToggleGroupItem Name="tg-calls" Value="all" Variant="outline" Checked aria-label="Toggle all">
+        All
     </ToggleGroupItem>
-    <ToggleGroupItem Name="tg-align" Value="center" Variant="outline" aria-label="Center">
-        <Icon Name="minus" />
-    </ToggleGroupItem>
-    <ToggleGroupItem Name="tg-align" Value="end" Variant="outline" aria-label="End">
-        <Icon Name="menu" />
+    <ToggleGroupItem Name="tg-calls" Value="missed" Variant="outline" aria-label="Toggle missed">
+        Missed
     </ToggleGroupItem>
 </ToggleGroup>

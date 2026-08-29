@@ -504,9 +504,25 @@
     },
     "toggle": {
       "classes": [
-        "group/toggle"
+        "group/toggle",
+        "has-[:disabled]:pointer-events-none",
+        "has-[:disabled]:opacity-50"
       ],
-      "why": "Upstream's own example writes group-aria-pressed/toggle on the icon inside a Toggle, so the root carries group/toggle there too — the extractor reads the cva, and this one is written on the component. Here it is group-has-[:checked]/toggle rather than group-aria-pressed, because the pressed state is a real checked checkbox inside the label rather than an attribute on the button."
+      "why": "Upstream's own example writes group-aria-pressed/toggle on the icon inside a Toggle, so the root carries group/toggle there too — the extractor reads the cva, and this one is written on the component. Here it is group-has-[:checked]/toggle rather than group-aria-pressed, because the pressed state is a real checked checkbox inside the label rather than an attribute on the button. The root is a <label> wrapping the real input, because a label is what makes the whole control clickable and the input is what posts. A <label> is never :disabled - only the input is - so upstream's disabled:opacity-50 matched nothing at all and a disabled toggle looked exactly like an enabled one. has-[:disabled] asks the same question of the element that can answer it."
+    },
+    "sidebar": {
+      "classes": [
+        "group",
+        "peer"
+      ],
+      "why": "Upstream's desktop sidebar root is written inline on the component — className=\"group peer text-sidebar-foreground hidden md:block\" — and the extractor read the MOBILE sheet's class list instead, which is the one it found in a cn(). The two markers are the whole of the collapse: every width rule on the gap and the container selects through group-data-[collapsible=...], and SidebarInset keys its margin off peer-data-[state=collapsed]. Without them the state flipped and nothing moved."
+    },
+    "toggle-group-item": {
+      "classes": [
+        "has-[:disabled]:pointer-events-none",
+        "has-[:disabled]:opacity-50"
+      ],
+      "why": "The root is a <label> wrapping the real input, because a label is what makes the whole control clickable and the input is what posts. A <label> is never :disabled - only the input is - so upstream's disabled:opacity-50 matched nothing at all and a disabled toggle looked exactly like an enabled one. has-[:disabled] asks the same question of the element that can answer it."
     }
   },
   "dropped": {
@@ -774,6 +790,20 @@
         "data-[vaul-drawer-direction=left]:sm:max-w-sm"
       ],
       "why": "Every one of these places the panel against an edge, and shadcn's current drawer does not sit against one: it floats, half a rem off every side, rounded on all four corners. The geometry is in ui.behavior.css because it differs per direction and because a utility beats a layered rule — left in the class list, they pinned the panel flush and the stylesheet could not move it."
+    },
+    "toggle": {
+      "classes": [
+        "disabled:pointer-events-none",
+        "disabled:opacity-50"
+      ],
+      "why": "The root is a <label> wrapping the real input, because a label is what makes the whole control clickable and the input is what posts. A <label> is never :disabled - only the input is - so upstream's disabled:opacity-50 matched nothing at all and a disabled toggle looked exactly like an enabled one. has-[:disabled] asks the same question of the element that can answer it."
+    },
+    "toggle-group-item": {
+      "classes": [
+        "disabled:pointer-events-none",
+        "disabled:opacity-50"
+      ],
+      "why": "The root is a <label> wrapping the real input, because a label is what makes the whole control clickable and the input is what posts. A <label> is never :disabled - only the input is - so upstream's disabled:opacity-50 matched nothing at all and a disabled toggle looked exactly like an enabled one. has-[:disabled] asks the same question of the element that can answer it."
     }
   },
   "subject": {

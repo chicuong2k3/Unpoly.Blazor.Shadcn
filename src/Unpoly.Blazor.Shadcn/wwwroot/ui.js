@@ -1522,9 +1522,14 @@
       control.setAttribute('aria-expanded', String(open))
     }
 
-    // Remember the mode before the first collapse clears the attribute.
+    // data-mode is rendered by the component and says which mode this sidebar collapses INTO,
+    // whether or not it is collapsed right now. This used to read data-collapsible instead —
+    // which is empty while expanded — so an icon sidebar that had never been collapsed fell back
+    // to offcanvas and slid away rather than narrowing.
     for (const sidebar of sidebars()) {
-      if (sidebar.dataset.collapsible) sidebar.dataset.mode = sidebar.dataset.collapsible
+      if (!sidebar.dataset.mode && sidebar.dataset.collapsible) {
+        sidebar.dataset.mode = sidebar.dataset.collapsible
+      }
     }
 
     // ctrl+b, or cmd+b on a Mac, which is the shortcut shadcn documents. Bound once per
@@ -2065,6 +2070,25 @@
   //
   // The pointer is allowed to travel from the trigger into the panel without it closing, which
   // is the one thing that makes a hover card usable and the one thing implementations forget.
+
+  // One sweep for every hover card on the page, registered once and owned by nobody.
+  //
+  // Each trigger's own compiler closes its card, and that is enough right up until the compiler
+  // is not there: a fragment swap that replaces the TRIGGER but not the panel runs the
+  // destructor and leaves the panel open in the top layer with nothing listening for it. The
+  // per-trigger net cannot cover that, because the thing that would have closed it is the thing
+  // that went away.
+  //
+  // So: twice a second, any open card whose trigger and panel are both un-hovered and unfocused
+  // gets closed, whoever opened it. :hover is the browser's own answer and needs no coordinates.
+  setInterval(() => {
+    for (const panel of document.querySelectorAll('[data-slot="hover-card-content"]')) {
+      if (!panel.matches(':popover-open')) continue
+      const trigger = document.querySelector(`[data-slot="hover-card-trigger"][data-target="${CSS.escape(panel.id)}"]`)
+      if (trigger?.matches(':hover, :focus-visible') || panel.matches(':hover, :focus-within')) continue
+      panel.hidePopover()
+    }
+  }, 500)
 
   up.compiler('[data-slot="hover-card-trigger"]', (trigger) => {
     const panel = document.getElementById(trigger.dataset.target)

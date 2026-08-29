@@ -1,5 +1,14 @@
-<ToggleGroup Variant="outline" aria-label="Range">
-    <ToggleGroupItem Name="tgd" Value="day" Variant="outline" Checked>Day</ToggleGroupItem>
-    <ToggleGroupItem Name="tgd" Value="week" Variant="outline">Week</ToggleGroupItem>
-    <ToggleGroupItem Name="tgd" Value="year" Variant="outline" Disabled>Year — Pro only</ToggleGroupItem>
+@* The whole group unavailable, which is upstream's example — every item disabled rather than one
+   of them. The glyphs dim with the control because the label asks has-[:disabled] of the input it
+   wraps; a <label> is never :disabled itself, so asking it directly dimmed nothing. *@
+<ToggleGroup aria-label="Text style">
+    <ToggleGroupItem Name="tgd" Value="bold" Disabled aria-label="Toggle bold">
+        <Icon Name="bold" />
+    </ToggleGroupItem>
+    <ToggleGroupItem Name="tgd" Value="italic" Disabled aria-label="Toggle italic">
+        <Icon Name="italic" />
+    </ToggleGroupItem>
+    <ToggleGroupItem Name="tgd" Value="underline" Disabled aria-label="Toggle underline">
+        <Icon Name="underline" />
+    </ToggleGroupItem>
 </ToggleGroup>

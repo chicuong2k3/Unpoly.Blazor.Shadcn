@@ -1,5 +1,7 @@
-@* Both variants, both unavailable. The label dims with the input because the recipe reads the
-   input's own :disabled, not because the two were set separately and have to agree. *@
+@* Both variants, both unavailable, and the text dims with them. The recipe asks has-[:disabled]
+   of the input the label wraps — a <label> is never :disabled itself, so upstream's
+   disabled:opacity-50 matched nothing here and a disabled toggle looked exactly like an enabled
+   one. *@
 <div class="flex flex-wrap items-center gap-2">
     <Toggle Disabled aria-label="Toggle disabled">Disabled</Toggle>
     <Toggle Variant="outline" Disabled aria-label="Toggle disabled outline">Disabled</Toggle>
