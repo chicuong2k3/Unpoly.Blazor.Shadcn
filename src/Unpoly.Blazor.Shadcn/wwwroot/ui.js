@@ -1032,7 +1032,11 @@
     // completely inert. Every combobox opens on focus; this one had a trigger for the button
     // form and nothing for the input form.
     const onFocus = () => {
-      if (!panel.matches(':popover-open')) panel.showPopover()
+      // A click on the input fires focus and click, and the trigger button inside the same
+      // frame may open the panel between them -- showPopover() during another show throws
+      // "Invalid to show a popover during another show operation", which killed the rest of the
+      // handler. Ask the browser, and let the one that got there first win.
+      if (!panel.matches(':popover-open')) { try { panel.showPopover() } catch { /* already opening */ } }
       if (input && !panel.contains(input) && input.value) input.select()
     }
 

@@ -5595,6 +5595,9 @@
 [data-slot="combobox-item"]:not([data-selected]) [data-slot="combobox-item-indicator"] {
   display: none;
 }
+[popover][data-slot$="-content"] {
+  transition-property: opacity, transform, scale, translate, display, overlay;
+}
 :root {
   --radius: 0.625rem;
   --background: oklch(0.98 0 0);

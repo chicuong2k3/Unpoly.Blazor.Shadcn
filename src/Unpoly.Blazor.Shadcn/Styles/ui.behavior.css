@@ -721,3 +721,15 @@
 [data-slot="combobox-item"]:not([data-selected]) [data-slot="combobox-item-indicator"] {
     display: none;
 }
+
+/* A panel is POSITIONED by script and ANIMATED by CSS, and those must not be the same property.
+   shadcn's panels carry `duration-100`, which Tailwind pairs with `transition-property: all` --
+   so the left and top this file's place() writes were transitioned too. On the second open the
+   values are already there and nothing moves; on the FIRST one they go from the popover's
+   unpositioned corner to the anchor, and the panel visibly flies across the page. It read as a
+   deliberate animation, which is why it survived so long.
+
+   The fade and zoom shadcn actually asks for are opacity and transform, and they still run. */
+[popover][data-slot$="-content"] {
+    transition-property: opacity, transform, scale, translate, display, overlay;
+}
