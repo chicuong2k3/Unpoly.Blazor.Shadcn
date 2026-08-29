@@ -16,8 +16,14 @@
 }
 else
 {
+    @* Target makes the row open a menu, which is what the header and footer rows do in every
+       sidebar shadcn ships. popovertarget alone would open it and leave it unplaced: the compiler
+       that anchors a panel matches on the trigger's slot, so this slot is on its list. *@
     <button type="button" data-slot="sidebar-menu-button" data-size="@Size" data-variant="@Variant"
             data-active="@(Active ? "true" : null)" aria-pressed="@(Active ? "true" : null)"
+            data-target="@Target" popovertarget="@Target"
+            aria-haspopup="@(Target is null ? null : "menu")"
+            aria-expanded="@(Target is null ? null : "false")"
             class="@Classes" @attributes="AdditionalAttributes">@ChildContent</button>
 }
 
@@ -31,6 +37,15 @@ else
     [Parameter] public string Size { get; set; } = "default";
 
     [Parameter] public bool Active { get; set; }
+
+    /// <summary>
+    /// The id of a <see cref="DropdownMenuContent"/> this row opens — the workspace switcher
+    /// in a header, the account menu in a footer. Upstream writes it as
+    /// <c>&lt;DropdownMenuTrigger render={&lt;SidebarMenuButton/&gt;}&gt;</c>; Razor has no
+    /// cloneElement, so it is a parameter. Ignored when the row is a link, because a row
+    /// cannot both go somewhere and open something.
+    /// </summary>
+    [Parameter] public string? Target { get; set; }
 
     const string Base =
         "peer/menu-button flex w-full items-center gap-2 overflow-hidden rounded-md p-2 " +

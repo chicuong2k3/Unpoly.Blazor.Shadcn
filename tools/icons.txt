@@ -21,6 +21,7 @@ circle-fading-plus
 circle-x
 clock
 copy
+credit-card
 download
 ellipsis
 ellipsis-vertical
@@ -40,6 +41,7 @@ image
 info
 layout-grid
 loader-circle
+log-out
 menu
 message-circle
 minus

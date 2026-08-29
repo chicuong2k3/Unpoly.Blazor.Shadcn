@@ -1827,6 +1827,7 @@ renders `<a>` · `data-slot="sidebar-menu-button"`
 | `Variant` | `string` | `"default"` |  |
 | `Size` | `string` | `"default"` |  |
 | `Active` | `bool` | — |  |
+| `Target` | `string?` | — |  |
 
 ## `<SidebarMenuItem>`
 renders `<li>` · `data-slot="sidebar-menu-item"`

@@ -1,0 +1,28 @@
+@* The footer is where who you are goes. Same shape as the header and the same reason for
+   Size="lg" — an avatar, a name and an address are three lines of information in one row. *@
+<SidebarFrame Height="280px">
+    <Sidebar Collapsible="icon">
+        <SidebarContent />
+        <SidebarFooter>
+            <SidebarMenu>
+                <SidebarMenuItem>
+                    <SidebarMenuButton Size="lg" Target="sb-account">
+                        <Avatar Class="size-8 rounded-lg"><AvatarFallback Class="rounded-lg">CN</AvatarFallback></Avatar>
+                        <div class="grid flex-1 text-start text-sm leading-tight">
+                            <span class="truncate font-medium">shadcn</span>
+                            <span class="truncate text-xs">m@@example.com</span>
+                        </div>
+                        <Icon Name="ellipsis" Class="ms-auto" />
+                    </SidebarMenuButton>
+                    <DropdownMenuContent Id="sb-account" Align="end" Side="top" Class="w-56">
+                        <DropdownMenuItem><Icon Name="settings" />Account</DropdownMenuItem>
+                        <DropdownMenuItem><Icon Name="credit-card" />Billing</DropdownMenuItem>
+                        <DropdownMenuSeparator />
+                        <DropdownMenuItem Variant="destructive"><Icon Name="log-out" />Sign out</DropdownMenuItem>
+                    </DropdownMenuContent>
+                </SidebarMenuItem>
+            </SidebarMenu>
+        </SidebarFooter>
+    </Sidebar>
+    <SidebarInset Class="p-4 text-sm text-muted-foreground">The footer holds who you are.</SidebarInset>
+</SidebarFrame>

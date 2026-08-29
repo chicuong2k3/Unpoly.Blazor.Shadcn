@@ -1,0 +1,28 @@
+@* An action that belongs to one row: rename it, delete it, open its menu. ShowOnHover keeps it
+   out of the way until the pointer is on the row — but it stays reachable by keyboard, because
+   the class hides it visually and focus brings it back. *@
+<SidebarFrame Height="300px">
+    <Sidebar Collapsible="icon">
+        <SidebarContent>
+            <SidebarGroup>
+                <SidebarGroupLabel>Projects</SidebarGroupLabel>
+                <SidebarGroupContent>
+                    <SidebarMenu>
+                        @foreach (var name in new[] { "Design engineering", "Sales and marketing", "Travel" })
+                        {
+                            <SidebarMenuItem>
+                                <SidebarMenuButton Href="/components/card">
+                                    <Icon Name="folder" /><span>@name</span>
+                                </SidebarMenuButton>
+                                <SidebarMenuAction ShowOnHover AriaLabel="@($"More actions for {name}")">
+                                    <Icon Name="ellipsis" />
+                                </SidebarMenuAction>
+                            </SidebarMenuItem>
+                        }
+                    </SidebarMenu>
+                </SidebarGroupContent>
+            </SidebarGroup>
+        </SidebarContent>
+    </Sidebar>
+    <SidebarInset Class="p-4 text-sm text-muted-foreground">Hover a row, or tab into it.</SidebarInset>
+</SidebarFrame>

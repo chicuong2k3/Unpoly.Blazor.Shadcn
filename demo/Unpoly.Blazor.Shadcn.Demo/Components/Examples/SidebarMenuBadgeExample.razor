@@ -1,0 +1,24 @@
+@* A count on the row. It is a sibling of the button rather than a child, so the number is not
+   read out as part of the link's name — "Inbox, 12" is a link called Inbox with a badge, not a
+   link called "Inbox 12". *@
+<SidebarFrame Height="280px">
+    <Sidebar Collapsible="icon">
+        <SidebarContent>
+            <SidebarGroup>
+                <SidebarGroupContent>
+                    <SidebarMenu>
+                        <SidebarMenuItem>
+                            <SidebarMenuButton Href="/components/card"><Icon Name="info" /><span>Inbox</span></SidebarMenuButton>
+                            <SidebarMenuBadge>12</SidebarMenuBadge>
+                        </SidebarMenuItem>
+                        <SidebarMenuItem>
+                            <SidebarMenuButton Href="/components/badge"><Icon Name="folder" /><span>Drafts</span></SidebarMenuButton>
+                            <SidebarMenuBadge>3</SidebarMenuBadge>
+                        </SidebarMenuItem>
+                    </SidebarMenu>
+                </SidebarGroupContent>
+            </SidebarGroup>
+        </SidebarContent>
+    </Sidebar>
+    <SidebarInset Class="p-4 text-sm text-muted-foreground">The count is a sibling, not part of the link.</SidebarInset>
+</SidebarFrame>

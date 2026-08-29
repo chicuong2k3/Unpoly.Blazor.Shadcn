@@ -1,0 +1,41 @@
+@* The trigger toggles the sidebar and writes the cookie the server reads next time. It ships
+   hidden and ui.js reveals it: with no JavaScript there is nothing to toggle, and a button that
+   does nothing is worse than one that is absent — the sidebar stays open and every link in it is
+   still there.
+
+   The rail is the other way to do it: the strip along the panel's edge, which is a wider target
+   and is where people reach when the trigger has scrolled away. *@
+<SidebarFrame Height="300px">
+    <Sidebar Collapsible="icon">
+        <SidebarContent>
+            <SidebarGroup>
+                <SidebarGroupContent>
+                    <SidebarMenu>
+                        <SidebarMenuItem>
+                            <SidebarMenuButton Href="/components/sidebar">
+                                <Icon Name="circle" /><span>Dashboard</span>
+                            </SidebarMenuButton>
+                        </SidebarMenuItem>
+                        <SidebarMenuItem>
+                            <SidebarMenuButton Href="/components/card">
+                                <Icon Name="folder" /><span>Projects</span>
+                            </SidebarMenuButton>
+                        </SidebarMenuItem>
+                    </SidebarMenu>
+                </SidebarGroupContent>
+            </SidebarGroup>
+        </SidebarContent>
+        <SidebarRail />
+    </Sidebar>
+    <SidebarInset Class="p-4">
+        <div class="flex items-center gap-2">
+            <SidebarTrigger />
+            <Separator Orientation="vertical" Class="h-4" />
+            <span class="text-sm font-medium">Dashboard</span>
+        </div>
+        <p class="mt-3 text-sm text-muted-foreground">
+            Toggle it, then reload the page: it stays as you left it, because the state is a
+            cookie the server reads rather than anything held in the browser.
+        </p>
+    </SidebarInset>
+</SidebarFrame>

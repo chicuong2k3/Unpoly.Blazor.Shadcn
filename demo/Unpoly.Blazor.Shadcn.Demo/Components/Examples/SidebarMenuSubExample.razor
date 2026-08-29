@@ -1,0 +1,33 @@
+@* A second level, as a real nested list. The parent row is a <details> summary in everything but
+   name here: the sub-list is markup, so it is in the page whether or not any script ran, and a
+   crawler or a screen reader sees the whole tree. *@
+<SidebarFrame Height="340px">
+    <Sidebar Collapsible="icon">
+        <SidebarContent up-nav>
+            <SidebarGroup>
+                <SidebarGroupLabel>Reports</SidebarGroupLabel>
+                <SidebarGroupContent>
+                    <SidebarMenu>
+                        <SidebarMenuItem>
+                            <SidebarMenuButton Href="/components/table">
+                                <Icon Name="menu" /><span>Revenue</span>
+                            </SidebarMenuButton>
+                            <SidebarMenuSub>
+                                <SidebarMenuSubItem>
+                                    <SidebarMenuSubButton Href="/components/table" Active>Monthly</SidebarMenuSubButton>
+                                </SidebarMenuSubItem>
+                                <SidebarMenuSubItem>
+                                    <SidebarMenuSubButton Href="/components/chart">Quarterly</SidebarMenuSubButton>
+                                </SidebarMenuSubItem>
+                                <SidebarMenuSubItem>
+                                    <SidebarMenuSubButton Href="/components/badge" Size="sm">Churn</SidebarMenuSubButton>
+                                </SidebarMenuSubItem>
+                            </SidebarMenuSub>
+                        </SidebarMenuItem>
+                    </SidebarMenu>
+                </SidebarGroupContent>
+            </SidebarGroup>
+        </SidebarContent>
+    </Sidebar>
+    <SidebarInset Class="p-4 text-sm text-muted-foreground">A second level, in markup.</SidebarInset>
+</SidebarFrame>

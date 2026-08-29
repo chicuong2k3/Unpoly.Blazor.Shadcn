@@ -486,7 +486,11 @@
               // The navigation menu was missing from this list, and nothing else placed it: its
               // panel fell back to the popover's own idea of where to be, which was full width
               // and two hundred pixels below the bar it belongs to.
-              '[data-slot="navigation-menu-trigger"]',
+              '[data-slot="navigation-menu-trigger"], ' +
+              // A sidebar row that opens a menu is the most common sidebar pattern there is —
+              // the workspace switcher and the account menu are both one — and it was not on
+              // this list, so both opened wherever the popover's own default put them.
+              '[data-slot="sidebar-menu-button"][data-target]',
               (trigger) => {
     const panel = document.getElementById(trigger.dataset.target)
     if (!panel) return

@@ -841,11 +841,11 @@
   .min-h-\[200px\] {
     min-height: 200px;
   }
-  .min-h-\[420px\] {
-    min-height: 420px;
-  }
   .min-h-full {
     min-height: 100%;
+  }
+  .min-h-full\! {
+    min-height: 100% !important;
   }
   .min-h-svh {
     min-height: 100svh;
@@ -1882,6 +1882,9 @@
   .bg-sidebar-border {
     background-color: var(--sidebar-border);
   }
+  .bg-sidebar-primary {
+    background-color: var(--sidebar-primary);
+  }
   .bg-transparent {
     background-color: transparent;
   }
@@ -2279,6 +2282,9 @@
     @supports (color: color-mix(in lab, red, red)) {
       color: color-mix(in oklab, var(--sidebar-foreground) 70%, transparent);
     }
+  }
+  .text-sidebar-primary-foreground {
+    color: var(--sidebar-primary-foreground);
   }
   .text-white {
     color: var(--color-white);
@@ -4522,6 +4528,15 @@
   }
   .\[\&_\[data-chart-tooltip-label\]\]\:hidden [data-chart-tooltip-label] {
     display: none;
+  }
+  .\[\&_\[data-slot\=sidebar-container\]\]\:absolute\! [data-slot=sidebar-container] {
+    position: absolute !important;
+  }
+  .\[\&_\[data-slot\=sidebar-container\]\]\:flex\! [data-slot=sidebar-container] {
+    display: flex !important;
+  }
+  .\[\&_\[data-slot\=sidebar-container\]\]\:h-full\! [data-slot=sidebar-container] {
+    height: 100% !important;
   }
   .\[\&_img\]\:size-full img {
     width: 100%;

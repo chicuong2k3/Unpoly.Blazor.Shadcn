@@ -1,0 +1,22 @@
+@* A sidebar is position:fixed, because in a real application it IS the left edge of the window.
+   Inside a documentation page that means it escapes onto the page and covers the site's own
+   navigation — so every example here is given a containing block of its own.
+
+   `transform` is what does that: any transformed ancestor becomes the containing block for a
+   fixed descendant. It is a twenty-year-old CSS rule and the only way to bound one without
+   rewriting the component. The height overrides are the same story — the panel asks for h-svh
+   because in an application that is exactly right.
+
+   Nothing in this file belongs in an application. *@
+<div class="relative w-full overflow-hidden rounded-lg border [&_[data-slot=sidebar-container]]:absolute! [&_[data-slot=sidebar-container]]:h-full! [&_[data-slot=sidebar-container]]:flex!"
+     style="@($"transform: translateZ(0); height: {Height}")">
+    <SidebarProvider Open="@Open" Class="min-h-full! items-start">@ChildContent</SidebarProvider>
+</div>
+
+@code {
+    [Parameter] public RenderFragment? ChildContent { get; set; }
+
+    [Parameter] public bool Open { get; set; } = true;
+
+    [Parameter] public string Height { get; set; } = "420px";
+}

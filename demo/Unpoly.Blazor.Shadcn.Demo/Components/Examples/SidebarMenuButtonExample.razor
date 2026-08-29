@@ -1,0 +1,44 @@
+@* Every state the button has. Active is the current page — set by the server, or by [up-nav]
+   on an ancestor, which marks it from the address bar and keeps doing so after a fragment swap.
+
+   Size="sm" and "lg" are upstream's; lg is what the header and footer rows use. A button with a
+   Tooltip shows it only when the sidebar is collapsed to icons, which is the one moment the label
+   is not on screen. *@
+<SidebarFrame Height="360px">
+    <Sidebar Collapsible="icon">
+        <SidebarContent>
+            <SidebarGroup>
+                <SidebarGroupContent>
+                    <SidebarMenu>
+                        <SidebarMenuItem>
+                            <SidebarMenuButton Active Href="/components/sidebar">
+                                <Icon Name="circle" /><span>Dashboard — active</span>
+                            </SidebarMenuButton>
+                        </SidebarMenuItem>
+                        <SidebarMenuItem>
+                            <SidebarMenuButton Href="/components/card">
+                                <Icon Name="folder" /><span>Projects</span>
+                            </SidebarMenuButton>
+                        </SidebarMenuItem>
+                        <SidebarMenuItem>
+                            <SidebarMenuButton Size="sm" Href="/components/badge">
+                                <Icon Name="info" /><span>Small</span>
+                            </SidebarMenuButton>
+                        </SidebarMenuItem>
+                        <SidebarMenuItem>
+                            <SidebarMenuButton Variant="outline" Href="/components/button">
+                                <Icon Name="plus" /><span>Outline</span>
+                            </SidebarMenuButton>
+                        </SidebarMenuItem>
+                        <SidebarMenuItem>
+                            <SidebarMenuButton disabled><Icon Name="eye" /><span>Disabled</span></SidebarMenuButton>
+                        </SidebarMenuItem>
+                    </SidebarMenu>
+                </SidebarGroupContent>
+            </SidebarGroup>
+        </SidebarContent>
+    </Sidebar>
+    <SidebarInset Class="p-4 text-sm text-muted-foreground">
+        Active, small, outline and disabled rows.
+    </SidebarInset>
+</SidebarFrame>

@@ -1,0 +1,44 @@
+@* Side="right" and dir="rtl" are two different things and the example needs both: the panel moves
+   to the right because that is where a sidebar goes in a right-to-left page, and the rows mirror
+   because the text does. The chevrons and the rail follow from the direction with nothing set. *@
+<div dir="rtl">
+    <SidebarFrame Height="320px">
+        <Sidebar Collapsible="icon" Side="right">
+            <SidebarHeader>
+                <SidebarMenu>
+                    <SidebarMenuItem>
+                        <SidebarMenuButton Size="lg" Href="/">
+                            <Icon Name="circle" />
+                            <span class="font-medium">شركة أكمي</span>
+                        </SidebarMenuButton>
+                    </SidebarMenuItem>
+                </SidebarMenu>
+            </SidebarHeader>
+            <SidebarContent>
+                <SidebarGroup>
+                    <SidebarGroupLabel>المنصة</SidebarGroupLabel>
+                    <SidebarGroupContent>
+                        <SidebarMenu>
+                            <SidebarMenuItem>
+                                <SidebarMenuButton Href="/components/card"><Icon Name="folder" /><span>المشاريع</span></SidebarMenuButton>
+                                <SidebarMenuBadge>١٢</SidebarMenuBadge>
+                            </SidebarMenuItem>
+                            <SidebarMenuItem>
+                                <SidebarMenuButton Href="/components/avatar"><Icon Name="eye" /><span>الفريق</span></SidebarMenuButton>
+                                <SidebarMenuAction ShowOnHover AriaLabel="إجراءات"><Icon Name="ellipsis" /></SidebarMenuAction>
+                            </SidebarMenuItem>
+                        </SidebarMenu>
+                    </SidebarGroupContent>
+                </SidebarGroup>
+            </SidebarContent>
+            <SidebarRail />
+        </Sidebar>
+        <SidebarInset Class="p-4">
+            <div class="flex items-center gap-2">
+                <SidebarTrigger />
+                <Separator Orientation="vertical" Class="h-4" />
+                <span class="text-sm font-medium">لوحة التحكم</span>
+            </div>
+        </SidebarInset>
+    </SidebarFrame>
+</div>

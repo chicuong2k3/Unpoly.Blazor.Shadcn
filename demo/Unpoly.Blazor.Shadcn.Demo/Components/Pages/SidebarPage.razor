@@ -7,19 +7,139 @@
     Twenty-three components, and one decision that shapes all of them: the open state is a <code>sidebar_state</code> cookie, which is where shadcn keeps it too. The server reads it and the first paint is already right.
 </p>
 
-<h2 class="doc-h2">Reading the cookie</h2>
-
 <p class="doc-note">
-    One line in the page that renders the layout. Nothing else in the library needs to know.
+    The whole shell: a header that says what you are inside, groups of rows, a footer that says who
+    you are, a rail along the edge and an inset for the page itself. Every example on this page is
+    given a containing block of its own — a sidebar is <code>position: fixed</code> because in an
+    application it IS the left edge of the window, and inside a documentation page that means it
+    would cover this one.
 </p>
-<CodeBlock Language="csharp" Title="MainLayout.razor" Class="mt-4 max-w-2xl" Code="@Reading" />
+<Example Source="SidebarExample.razor"><SidebarExample /></Example>
+
+<h2 class="doc-h2">Structure</h2>
+<p class="doc-note">
+    <code>SidebarProvider</code> declares the widths and the state; <code>Sidebar</code> is the
+    panel; <code>SidebarInset</code> is everything that is not the panel. The panel is fixed and
+    takes no space, so a spacer inside it reserves the width — that is what stops the page jumping
+    when it collapses.
+</p>
+<CodeBlock Language="csharp" Title="MainLayout.razor" Class="mt-4 max-w-2xl" Code="@Structure" />
+
+<h2 class="doc-h2">SidebarProvider</h2>
+<p class="doc-note">
+    shadcn keeps the open state in React and mirrors it into a cookie so the next page renders the
+    same way. Here the cookie is the whole mechanism: the server reads it and passes
+    <code>Open</code>, so the first paint is already right and there is no flash of a sidebar
+    opening itself. <code>ui.js</code> writes the cookie when the trigger is used.
+</p>
+<CodeBlock Language="csharp" Title="Reading the cookie" Class="mt-4 max-w-2xl" Code="@Reading" />
+
+<h2 class="doc-h2">SidebarHeader</h2>
+<Example Source="SidebarHeaderExample.razor"><SidebarHeaderExample /></Example>
+
+<h2 class="doc-h2">SidebarFooter</h2>
+<Example Source="SidebarFooterExample.razor"><SidebarFooterExample /></Example>
+
+<h2 class="doc-h2">SidebarGroup</h2>
+<p class="doc-note">
+    A labelled section. <code>SidebarGroupAction</code> is the button that belongs to the group
+    rather than to a row in it — "add a project", not "act on this project".
+</p>
+<Example Source="SidebarGroupExample.razor"><SidebarGroupExample /></Example>
+
+<h2 class="doc-h2">SidebarMenuButton</h2>
+<p class="doc-note">
+    <code>Active</code> is the current page, and with <code>[up-nav]</code> on the menu you rarely
+    set it: Unpoly compares each href with the address bar and marks the match, which keeps working
+    after a fragment swap because the swap is what changed the address bar.
+</p>
+<Example Source="SidebarMenuButtonExample.razor"><SidebarMenuButtonExample /></Example>
+
+<h2 class="doc-h2">SidebarMenuAction</h2>
+<Example Source="SidebarMenuActionExample.razor"><SidebarMenuActionExample /></Example>
+
+<h2 class="doc-h2">SidebarMenuSub</h2>
+<Example Source="SidebarMenuSubExample.razor"><SidebarMenuSubExample /></Example>
+
+<h2 class="doc-h2">SidebarMenuBadge</h2>
+<Example Source="SidebarMenuBadgeExample.razor"><SidebarMenuBadgeExample /></Example>
+
+<h2 class="doc-h2">SidebarMenuSkeleton</h2>
+<Example Source="SidebarMenuSkeletonExample.razor"><SidebarMenuSkeletonExample /></Example>
+
+<h2 class="doc-h2">SidebarTrigger</h2>
+<p class="doc-note">
+    The trigger ships hidden and <code>ui.js</code> reveals it: with no JavaScript there is nothing
+    to toggle, and a button that does nothing is worse than one that is absent — the sidebar stays
+    open and every link in it is still there. <code>SidebarRail</code> is the other way to do it.
+</p>
+<Example Source="SidebarTriggerExample.razor"><SidebarTriggerExample /></Example>
+
+<h2 class="doc-h2">Controlled Sidebar</h2>
+<p class="doc-note">
+    The state is already outside the component, so "controlled" means passing <code>Open</code>
+    yourself instead of reading the cookie. Both the provider and the panel take it, because Razor
+    has no context for one to read it from the other.
+</p>
+<Example Source="SidebarControlled.razor"><SidebarControlled /></Example>
+
+<h2 class="doc-h2">Theming</h2>
+<p class="doc-note">
+    The sidebar has its own eight tokens, separate from the page's, so a dark rail beside a light
+    page needs no overrides — set them on <code>:root</code> and every part follows.
+</p>
+<CodeBlock Language="css" Title="Sidebar tokens" Class="mt-4 max-w-2xl" Code="@Tokens" />
+
+<h2 class="doc-h2">RTL</h2>
+<p class="doc-note">
+    <code>Side="right"</code> and <code>dir="rtl"</code> are two different things and a mirrored
+    layout needs both: the panel moves because that is where a sidebar goes in a right-to-left
+    page, and the rows mirror because the text does.
+</p>
+<Example Source="SidebarRtl.razor"><SidebarRtl /></Example>
 
 @code {
+    const string Structure = """
+        <SidebarProvider>
+            <Sidebar Collapsible="icon">
+                <SidebarHeader>…</SidebarHeader>
+                <SidebarContent>
+                    <SidebarGroup>
+                        <SidebarGroupLabel>Platform</SidebarGroupLabel>
+                        <SidebarGroupContent>
+                            <SidebarMenu>
+                                <SidebarMenuItem>
+                                    <SidebarMenuButton Href="/inbox">Inbox</SidebarMenuButton>
+                                </SidebarMenuItem>
+                            </SidebarMenu>
+                        </SidebarGroupContent>
+                    </SidebarGroup>
+                </SidebarContent>
+                <SidebarFooter>…</SidebarFooter>
+                <SidebarRail />
+            </Sidebar>
+            <SidebarInset>@Body</SidebarInset>
+        </SidebarProvider>
+        """;
+
     const string Reading = """
         @* The cascading HttpContext every Unpoly.Blazor page already has. *@
         <SidebarProvider Open="@(Ctx.Request.Cookies["sidebar_state"] != "false")">
-            <Sidebar Collapsible="icon">…</Sidebar>
+            <Sidebar Collapsible="icon" Open="@(Ctx.Request.Cookies["sidebar_state"] != "false")">…</Sidebar>
             <SidebarInset>@Body</SidebarInset>
         </SidebarProvider>
+        """;
+
+    const string Tokens = """
+        :root {
+          --sidebar: oklch(0.985 0 0);
+          --sidebar-foreground: oklch(0.145 0 0);
+          --sidebar-primary: oklch(0.205 0 0);
+          --sidebar-primary-foreground: oklch(0.985 0 0);
+          --sidebar-accent: oklch(0.97 0 0);
+          --sidebar-accent-foreground: oklch(0.205 0 0);
+          --sidebar-border: oklch(0.922 0 0);
+          --sidebar-ring: oklch(0.708 0 0);
+        }
         """;
 }

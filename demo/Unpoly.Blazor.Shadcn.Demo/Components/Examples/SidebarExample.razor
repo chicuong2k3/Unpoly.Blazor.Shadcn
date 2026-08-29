@@ -4,15 +4,10 @@
 
    [up-nav] marks the current row: Unpoly compares each href with the address bar, which keeps
    working after a fragment swap because the swap is what changes the address bar. *@
-@* A sidebar is position:fixed, because in a real app it IS the left edge of the window. Inside a
-   documentation page that means it escapes onto the page and covers the site's own navigation —
-   so this example gives it a containing block of its own. `transform` is what does that: any
-   transformed ancestor becomes the containing block for a fixed descendant, which is a twenty-
-   year-old CSS rule and the only way to bound one without rewriting the component.
-
-   Nothing here belongs in an application. There the sidebar IS the window's edge. *@
-<div class="w-full overflow-hidden rounded-lg border" style="transform: translateZ(0)">
-    <SidebarProvider Open Class="min-h-[420px] items-start">
+@* SidebarFrame is documentation chrome, not part of the component: a sidebar is position:fixed
+   because in an application it IS the left edge of the window, and inside a page it has to be
+   given a containing block or it covers this one. *@
+<SidebarFrame Height="480px">
         <Sidebar Collapsible="icon">
             <SidebarHeader>
                 <SidebarMenu>
@@ -100,8 +95,7 @@
                 a cookie the server reads rather than anything held in the browser.
             </p>
         </SidebarInset>
-    </SidebarProvider>
-</div>
+</SidebarFrame>
 
 @code {
     static readonly (string Label, string Icon, string Href, string? Badge)[] Rows =
