@@ -349,9 +349,6 @@
   .bottom-2 {
     bottom: calc(var(--spacing) * 2);
   }
-  .bottom-4 {
-    bottom: calc(var(--spacing) * 4);
-  }
   .left-0 {
     left: 0px;
   }
@@ -732,6 +729,9 @@
   }
   .h-80 {
     height: calc(var(--spacing) * 80);
+  }
+  .h-140 {
+    height: calc(var(--spacing) * 140);
   }
   .h-\[100dvh\] {
     height: 100dvh;
@@ -1903,6 +1903,9 @@
   .object-cover {
     object-fit: cover;
   }
+  .p-\(--card-spacing\) {
+    padding: var(--card-spacing);
+  }
   .p-0 {
     padding: 0px;
   }
@@ -1932,6 +1935,9 @@
   }
   .px-0 {
     padding-inline: 0px;
+  }
+  .px-0\.5 {
+    padding-inline: calc(var(--spacing) * 0.5);
   }
   .px-1 {
     padding-inline: var(--spacing);
@@ -4484,9 +4490,6 @@
   }
   .\[\&_svg\]\:shrink-0 svg {
     flex-shrink: 0;
-  }
-  .\[\&_svg\]\:rotate-180 svg {
-    rotate: 180deg;
   }
   .data-\[direction\=start\]\:\[\&_svg\]\:rotate-180[data-direction="start"] svg {
     rotate: 180deg;

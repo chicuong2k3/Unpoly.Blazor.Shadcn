@@ -1,97 +1,121 @@
-@* shadcn ships these with its AI components. Nothing in them is specific to a model — this is
-   the right shape for any thread, and the demo's chat block is the same parts arranged for a
-   two-person conversation.
+@* Upstream's chat, part for part: a Card with a titled header and a reset button in its action
+   slot, the scroller filling the body, and a composer in the footer — an InputGroup whose
+   block-end addon carries a "+" menu and the send button. The caption underneath is theirs too.
 
-   The scroller follows the newest message only while you are already at the bottom; scroll up to
-   read something and it stops, and a button appears saying so. *@
-<MessageScroller Class="relative h-80 w-full max-w-xl rounded-lg border">
-    <MessageScrollerViewport Class="h-full p-4">
-        <MessageScrollerContent>
-            <MessageGroup>
-                <MessageScrollerItem>
-                    <Message>
-                        <MessageAvatar>
-                            <Avatar><AvatarFallback>ML</AvatarFallback></Avatar>
-                        </MessageAvatar>
-                        <MessageContent>
-                            <MessageHeader Class="gap-2">
-                                <span class="font-medium">Mai Linh</span>
-                                <time class="num text-xs text-muted-foreground" datetime="2026-03-11T09:12">09:12</time>
-                            </MessageHeader>
-                            @* Consecutive turns by one author, drawn as one block and named
-                               once rather than once per bubble. *@
-                            <BubbleGroup AriaLabel="From Mai Linh">
-                                <Bubble Variant="muted">
-                                    <BubbleContent>Did the invoice go out?</BubbleContent>
-                                </Bubble>
-                                <Bubble Variant="muted">
-                                    <BubbleContent>No rush.</BubbleContent>
-                                </Bubble>
-                            </BubbleGroup>
-                        </MessageContent>
-                    </Message>
-                </MessageScrollerItem>
+   What is not theirs is the streaming: shadcn drives this from useChat against a fake transport,
+   so tokens arrive one at a time. There is no client state here, so the thread is rendered by the
+   server and the scroller does the part that is actually the component — following the newest
+   message only while you are already at the bottom, and anchoring the turn that caused a long
+   reply to the top of the viewport. *@
+<div class="relative flex flex-col gap-4">
+    <Card Class="mx-auto h-140 w-full max-w-sm gap-0">
+        <CardHeader Class="gap-1 border-b">
+            <CardTitle>New Chat</CardTitle>
+            <CardDescription>How can I help you today?</CardDescription>
+            <CardAction>
+                <TooltipTrigger Target="chat-reset-tip" id="chat-reset"
+                                Class="@ButtonVariants.Of("outline", "icon")"
+                                aria-label="Reset conversation">
+                    <Icon Name="rotate-cw" />
+                </TooltipTrigger>
+                <TooltipContent Id="chat-reset-tip">Reset</TooltipContent>
+            </CardAction>
+        </CardHeader>
 
-                <MessageScrollerItem>
-                    <Message Align="end">
-                        <MessageContent>
-                            @* mb-4: the reactions chip hangs three-quarters of its own height
-                               below the bubble, so whatever follows has to leave room for it or
-                               it lands on top — which is what it was doing to the attachment. *@
-                            <Bubble Class="mb-4">
-                                <BubbleContent>Sent it this morning. The PDF is attached.</BubbleContent>
-                                <BubbleReactions>
-                                    <Badge Variant="secondary">2 reactions</Badge>
-                                </BubbleReactions>
-                            </Bubble>
+        <CardContent Class="flex-1 overflow-hidden p-0">
+            <MessageScroller Class="size-full">
+                <MessageScrollerViewport>
+                    <MessageScrollerContent Class="p-(--card-spacing)">
+                        @foreach (var turn in Thread)
+                        {
+                            @* The user's turn is the anchor: when the answer to it is long, this
+                               is what stays at the top of the viewport instead of the thread
+                               snapping to its own bottom. *@
+                            <MessageScrollerItem ScrollAnchor="@turn.FromUser">
+                                <Message Align="@(turn.FromUser ? "end" : "start")">
+                                    @if (!turn.FromUser)
+                                    {
+                                        <MessageAvatar>
+                                            <Avatar><AvatarFallback>AI</AvatarFallback></Avatar>
+                                        </MessageAvatar>
+                                    }
+                                    <MessageContent>
+                                        @if (turn.FromUser)
+                                        {
+                                            <Bubble><BubbleContent>@turn.Text</BubbleContent></Bubble>
+                                        }
+                                        else
+                                        {
+                                            @* An assistant turn is prose, not a bubble — which is
+                                               how every one of these reads upstream. *@
+                                            <div class="flex flex-col gap-3 text-sm">
+                                                @foreach (var paragraph in turn.Text.Split("\n\n"))
+                                                {
+                                                    <p>@paragraph</p>
+                                                }
+                                            </div>
+                                        }
+                                    </MessageContent>
+                                </Message>
+                            </MessageScrollerItem>
+                        }
+                    </MessageScrollerContent>
+                </MessageScrollerViewport>
 
-                            <AttachmentGroup>
-                                <li>
-                                    <Attachment Size="sm">
-                                        @* The trigger is a sheet over the whole card, so the
-                                           media and the text are its siblings, not its children. *@
-                                        <AttachmentMedia><Icon Name="file" /></AttachmentMedia>
-                                        <AttachmentContent>
-                                            <AttachmentTitle>acme-invoice.pdf</AttachmentTitle>
-                                            <AttachmentDescription>82 KB</AttachmentDescription>
-                                        </AttachmentContent>
-                                        <AttachmentTrigger Href="/files/acme-invoice.pdf" target="_blank" rel="noreferrer">
-                                            <span class="sr-only">Open acme-invoice.pdf</span>
-                                        </AttachmentTrigger>
-                                        <AttachmentActions>
-                                            <AttachmentAction AriaLabel="Remove acme-invoice.pdf">
-                                                <Icon Name="x" />
-                                            </AttachmentAction>
-                                        </AttachmentActions>
-                                    </Attachment>
-                                </li>
-                            </AttachmentGroup>
+                @* No positioning at the call site: the button's own recipe centres it and slides
+                   it in from below, and an absolute corner here would override both. *@
+                <MessageScrollerButton />
+            </MessageScroller>
+        </CardContent>
 
-                            <MessageFooter>
-                                <Marker Variant="border">
-                                    <MarkerIcon><Icon Name="check" Class="size-3" /></MarkerIcon>
-                                    <MarkerContent>Read</MarkerContent>
-                                </Marker>
-                            </MessageFooter>
-                        </MessageContent>
-                    </Message>
-                </MessageScrollerItem>
+        <CardFooter Class="flex-col gap-2">
+            <form method="post" action="/messages" up-target="#preview-conversation-example"
+                  class="w-full">
+                <AntiforgeryToken />
+                <InputGroup>
+                    <InputGroupControl Multiline id="chat-message" name="message" rows="2"
+                                       placeholder="Ask anything" aria-label="Message" />
+                    <InputGroupAddon Align="block-end" Class="pt-1">
+                        <InputGroupButton popovertarget="chat-tools" type="button" Size="icon-sm"
+                                          Variant="outline" aria-label="Add files">
+                            <Icon Name="plus" />
+                        </InputGroupButton>
+                        <DropdownMenuContent Id="chat-tools" Align="start" Side="top" Class="w-44">
+                            <DropdownMenuItem><Icon Name="paperclip" />Add Photos &amp; Files</DropdownMenuItem>
+                            <DropdownMenuSeparator />
+                            <DropdownMenuItem><Icon Name="image" />Create Image</DropdownMenuItem>
+                            <DropdownMenuItem><Icon Name="telescope" />Deep Research</DropdownMenuItem>
+                            <DropdownMenuItem><Icon Name="globe" />Web Search</DropdownMenuItem>
+                        </DropdownMenuContent>
 
-                <MessageScrollerItem>
-                    <Message>
-                        <MessageAvatar>
-                            <Avatar><AvatarFallback>ML</AvatarFallback></Avatar>
-                        </MessageAvatar>
-                        <MessageContent>
-                            <Bubble Variant="muted">
-                                <BubbleContent>Perfect, thank you.</BubbleContent>
-                            </Bubble>
-                        </MessageContent>
-                    </Message>
-                </MessageScrollerItem>
-            </MessageGroup>
-        </MessageScrollerContent>
-    </MessageScrollerViewport>
+                        <InputGroupButton type="submit" Variant="default" Size="icon-sm"
+                                          Class="ms-auto">
+                            <Icon Name="arrow-up" />
+                            <span class="sr-only">Send</span>
+                        </InputGroupButton>
+                    </InputGroupAddon>
+                </InputGroup>
+            </form>
+        </CardFooter>
+    </Card>
 
-    <MessageScrollerButton Class="absolute right-4 bottom-4" />
-</MessageScroller>
+    <div class="px-0.5 text-center text-xs text-muted-foreground">
+        Demo is read only. The thread is rendered by the server.
+    </div>
+</div>
+
+@code {
+    record Turn(bool FromUser, string Text);
+
+    static readonly Turn[] Thread =
+    [
+        new(true, "I'm building a chat for our app and the scroll behaviour is driving me nuts. Every time the reply streams in, the whole thread jumps around."),
+        new(false, "That's the classic streaming scroll problem. Put the list inside a MessageScroller and it pins to the bottom as text arrives, so the newest words land in place.\n\nThe important part: it only follows while the reader is already at the bottom. The moment they scroll up to read something earlier, following backs off and their position is kept."),
+        new(true, "Okay, but when someone sends a new message the view still feels jarring — like the whole conversation reloads from the top."),
+        new(false, "That is what ScrollAnchor on an item fixes. Mark the turn that should settle near the top instead of snapping to the document bottom.\n\nIt leaves a peek of the previous exchange above the anchor, so the context is not lost. The reply starts in view without the disorienting jump a plain overflow container gives you."),
+        new(true, "And if they've scrolled up to re-read an older answer? I don't want to yank them back down."),
+        new(false, "You won't. Following only runs when the viewport is already at the bottom, so scrolling up is a deliberate opt-out.\n\nWhen there is something below they have not seen, the scroll button appears at the bottom of the viewport. One tap takes them back to the newest message."),
+        new(true, "Last one — does this work with assistive tech?"),
+        new(false, "The content sets role=\"log\" and aria-relevant=\"additions\", so new messages are announced as they arrive.\n\nThe scroll button is a real button with an sr-only label, and it is out of the tab order while you are already at the bottom — no ghost focus stops."),
+    ];
+}

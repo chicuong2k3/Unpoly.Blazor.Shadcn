@@ -33,8 +33,10 @@ file-warning
 folder
 git-branch
 git-fork
+globe
 grip-vertical
 heart
+image
 info
 layout-grid
 loader-circle
@@ -47,10 +49,12 @@ pencil
 plus
 refresh-cw
 repeat
+rotate-cw
 search
 send
 settings
 share
+telescope
 trash-2
 trending-up
 triangle-alert

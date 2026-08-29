@@ -524,7 +524,17 @@
     const over = (event) => {
       clearTimeout(closing)
       const trigger = event.target.closest('[data-slot="navigation-menu-trigger"]')
-      if (!trigger) return
+      if (!trigger) {
+        // Something in the bar with no panel of its own — a plain link, the gap between two
+        // items. Arriving there is leaving whatever is open, and it used to leave it open with
+        // the pointer nowhere near it. Not while inside a panel: that is where the pointer goes
+        // to use the thing it just opened.
+        if (!event.target.closest('[data-slot="navigation-menu-content"]')) {
+          clearTimeout(opening)
+          openPanels().forEach((panel) => panel.hidePopover())
+        }
+        return
+      }
       clearTimeout(opening)
       const panel = panelOf(trigger)
       if (!panel || panel.matches(':popover-open')) return
@@ -1634,7 +1644,9 @@
     }
     const stay = () => clearTimeout(timer)
 
-    trigger.addEventListener('pointerenter', open)
+    const onEnter = (event) => { at = { x: event.clientX, y: event.clientY }; open() }
+
+    trigger.addEventListener('pointerenter', onEnter)
     trigger.addEventListener('pointerleave', leave)
     panel.addEventListener('pointerenter', stay)
     panel.addEventListener('pointerleave', leave)
@@ -1651,7 +1663,7 @@
       panel.removeEventListener('pointerenter', stay)
       panel.removeEventListener('pointerleave', leave)
       trigger.removeEventListener('pointerdown', dismiss)
-      trigger.removeEventListener('pointerenter', open)
+      trigger.removeEventListener('pointerenter', onEnter)
       trigger.removeEventListener('pointerleave', leave)
       trigger.removeEventListener('focus', open)
       trigger.removeEventListener('blur', close)
@@ -1978,7 +1990,13 @@
     let at = null
     const elsewhere = () => {
       if (!panel.matches(':popover-open') || !at) return false
-      if (trigger.contains(document.activeElement) || panel.contains(document.activeElement)) return false
+      // Keyboard focus is exempt, mouse focus is not. A CLICK focuses the trigger too, and a
+      // card that opens over its own trigger then produces no leave event either — so the two
+      // exemptions met and the card stayed open with the pointer long gone. :focus-visible is
+      // the browser's own answer to "did this focus come from the keyboard", which is the same
+      // question that decides whether focus opens it at all.
+      const held = trigger.contains(document.activeElement) || panel.contains(document.activeElement)
+      if (held && (trigger.matches(':focus-visible') || panel.matches(':focus-within'))) return false
       const over = document.elementFromPoint(at.x, at.y)
       return !over || !(trigger.contains(over) || panel.contains(over))
     }

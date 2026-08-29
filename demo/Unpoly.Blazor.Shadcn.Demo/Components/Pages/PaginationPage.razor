@@ -12,12 +12,18 @@
 <Example Source="PaginationExample.razor"><PaginationExample /></Example>
 
 <h2 class="doc-h2">Simple</h2>
+<p class="doc-note">
+    Numbers and nothing else. For a list short enough to show every page, an arrow is a control
+    that says less than the number beside it.
+</p>
 <Example Source="PaginationSimple.razor"><PaginationSimple /></Example>
 
 <h2 class="doc-h2">Icons Only</h2>
 <p class="doc-note">
-    They still need names: an arrow announced as "button" is a button nobody can identify in a
-    list of them.
+    A table footer: rows-per-page on one side, the two arrows on the other.
+    <code>mx-0 w-auto</code> is what stops the nav centring itself — here it is one half of a row
+    rather than the whole width. The arrows keep their names, because an arrow announced as
+    "button" is a button nobody can identify in a list of them.
 </p>
 <Example Source="PaginationIconsOnly.razor"><PaginationIconsOnly /></Example>
 
@@ -33,7 +39,8 @@
 
 <h2 class="doc-h2">RTL</h2>
 <p class="doc-note">
-    The arrows flip, because "previous" is a direction in the reading order rather than on the
-    screen. It is the one place a mirrored layout usually gets wrong.
+    Translated, not merely mirrored: Arabic labels and Arabic-Indic digits, which is what upstream
+    shows. The arrows flip by themselves — "previous" is a direction in the reading order rather
+    than on the screen, and rotating them again at the call site is how that gets got wrong twice.
 </p>
 <Example Source="PaginationRtl.razor"><PaginationRtl /></Example>

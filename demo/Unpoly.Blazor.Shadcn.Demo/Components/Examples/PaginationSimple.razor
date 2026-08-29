@@ -1,11 +1,14 @@
-@* Previous and next and nothing else, for a list whose length nobody knows. Links, so a page is
-   a URL — shareable, openable in a tab, and reachable by the back button. *@
+@* Numbers and nothing else, which is upstream's Simple: five pages, the current one outlined,
+   no arrows. For a list short enough to show every page, an arrow is a control that says less
+   than the number beside it. *@
 <Pagination>
     <PaginationContent>
-        <PaginationItem><PaginationPrevious Href="/components/pagination?page=2" /></PaginationItem>
-        <PaginationItem>
-            <span class="num px-3 text-sm text-muted-foreground">Page 3</span>
-        </PaginationItem>
-        <PaginationItem><PaginationNext Href="/components/pagination?page=4" /></PaginationItem>
+        @foreach (var n in Enumerable.Range(1, 5))
+        {
+            var href = "/components/pagination?page=" + n;
+            <PaginationItem>
+                <PaginationLink Href="@href" IsActive="@(n == 2)">@n</PaginationLink>
+            </PaginationItem>
+        }
     </PaginationContent>
 </Pagination>

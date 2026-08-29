@@ -1,26 +1,21 @@
-@* Arrows without words, for a toolbar with no room. They still need names: an arrow announced as
-   "button" is a button nobody can identify in a list of them. *@
-<Pagination>
-    <PaginationContent>
-        <PaginationItem>
-            <PaginationLink Href="/components/pagination?page=1" Size="icon" aria-label="First page">
-                <Icon Name="chevrons-left" />
-            </PaginationLink>
-        </PaginationItem>
-        <PaginationItem>
-            <PaginationLink Href="/components/pagination?page=2" Size="icon" aria-label="Previous page">
-                <Icon Name="chevron-left" />
-            </PaginationLink>
-        </PaginationItem>
-        <PaginationItem>
-            <PaginationLink Href="/components/pagination?page=4" Size="icon" aria-label="Next page">
-                <Icon Name="chevron-right" />
-            </PaginationLink>
-        </PaginationItem>
-        <PaginationItem>
-            <PaginationLink Href="/components/pagination?page=9" Size="icon" aria-label="Last page">
-                <Icon Name="chevrons-right" />
-            </PaginationLink>
-        </PaginationItem>
-    </PaginationContent>
-</Pagination>
+@* Upstream's Icons Only is a table footer: rows-per-page on one side, the two arrows on the
+   other. mx-0 w-auto is what stops the nav centring itself — here it is one half of a row rather
+   than the whole width. *@
+<div class="flex items-center justify-between gap-4">
+    <Field Orientation="horizontal" Class="w-fit">
+        <FieldLabel For="pagination-rows">Rows per page</FieldLabel>
+        <Select id="pagination-rows" name="rows" Class="w-20">
+            @foreach (var size in new[] { 10, 25, 50, 100 })
+            {
+                <SelectItem Value="@size.ToString()" Selected="@(size == 25)">@size</SelectItem>
+            }
+        </Select>
+    </Field>
+
+    <Pagination Class="mx-0 w-auto">
+        <PaginationContent>
+            <PaginationItem><PaginationPrevious Href="/components/pagination?page=1" /></PaginationItem>
+            <PaginationItem><PaginationNext Href="/components/pagination?page=3" /></PaginationItem>
+        </PaginationContent>
+    </Pagination>
+</div>

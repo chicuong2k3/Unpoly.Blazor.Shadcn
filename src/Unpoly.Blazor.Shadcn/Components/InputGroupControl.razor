@@ -6,7 +6,9 @@
 
 @if (Multiline)
 {
-    <Textarea data-slot="input-group-control" Class="@Classes" Value="@Value"
+    @* resize-none and py-3 are upstream's own, and only on this branch: a box the reader can
+       drag bigger tears the frame it is sitting in. *@
+    <Textarea data-slot="input-group-control" Class="@Cn("resize-none py-3", Classes)" Value="@Value"
               @attributes="AdditionalAttributes" />
 }
 else

@@ -1,15 +1,23 @@
-@* The arrows flip, because "previous" is a direction in the reading order rather than on the
-   screen — which is the one place a mirrored layout usually gets wrong. *@
+@* Arabic, and written in Arabic: the labels are translated and the page numbers are Arabic-Indic
+   digits, because a mirrored English row is a direction rather than a translation.
+
+   Nothing rotates the chevrons here. They carry rtl:rotate-180 already, so "previous" points the
+   way the reader came from — which is the one thing a mirrored pagination usually gets wrong, and
+   rotating them again at the call site is how it gets got wrong twice. *@
 <div dir="rtl">
     <Pagination>
         <PaginationContent>
             <PaginationItem>
-                <PaginationPrevious Href="/components/pagination?page=2" Class="[&_svg]:rotate-180" />
+                <PaginationPrevious Href="/components/pagination?page=1" Label="السابق"
+                                    AriaLabel="الصفحة السابقة" />
             </PaginationItem>
-            <PaginationItem><PaginationLink Href="/components/pagination?page=3" IsActive>٣</PaginationLink></PaginationItem>
-            <PaginationItem><PaginationLink Href="/components/pagination?page=4">٤</PaginationLink></PaginationItem>
+            <PaginationItem><PaginationLink Href="/components/pagination?page=1">١</PaginationLink></PaginationItem>
+            <PaginationItem><PaginationLink Href="/components/pagination?page=2" IsActive>٢</PaginationLink></PaginationItem>
+            <PaginationItem><PaginationLink Href="/components/pagination?page=3">٣</PaginationLink></PaginationItem>
+            <PaginationItem><PaginationEllipsis SrLabel="صفحات أخرى" /></PaginationItem>
             <PaginationItem>
-                <PaginationNext Href="/components/pagination?page=4" Class="[&_svg]:rotate-180" />
+                <PaginationNext Href="/components/pagination?page=3" Label="التالي"
+                                AriaLabel="الصفحة التالية" />
             </PaginationItem>
         </PaginationContent>
     </Pagination>
