@@ -1,4 +1,8 @@
 @inject NavigationManager Nav
+@* The links carry the page's own path, not a bare "?query". Blazor renders <base href="/">,
+   and a bare query string resolves against the BASE — so "?older=4" is /?older=4, the site root,
+   and the example vanished the moment you used it. Every link that only changes the query has to
+   say where it is. *@
 
 @* Several participants and an assistant, with a Marker as a turn of its own. A marker is a thing
    that happened rather than a thing someone said — joined, renamed, pinned — and it anchors like
@@ -39,7 +43,7 @@
 
         <CardFooter Class="flex flex-col items-center gap-2 border-t">
             <Button Variant="outline" Size="sm" up-target="#ms-group"
-                    Href="@(Joined ? "?joined=0" : "?joined=1")">
+                    Href="@($"{Page}?joined={(Joined ? 0 : 1)}")">
                 @(Joined ? "Reset the conversation" : "Add Rocky to the conversation")
             </Button>
             <p class="text-xs text-muted-foreground">
@@ -55,6 +59,8 @@
 </div>
 
 @code {
+    const string Page = "/components/message-scroller";
+
     bool Joined =>
         System.Web.HttpUtility.ParseQueryString(new Uri(Nav.Uri).Query)["joined"] == "1";
 

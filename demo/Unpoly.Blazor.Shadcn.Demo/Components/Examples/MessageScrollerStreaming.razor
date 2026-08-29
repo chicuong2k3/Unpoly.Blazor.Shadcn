@@ -1,4 +1,8 @@
 @inject NavigationManager Nav
+@* The links carry the page's own path, not a bare "?query". Blazor renders <base href="/">,
+   and a bare query string resolves against the BASE — so "?older=4" is /?older=4, the site root,
+   and the example vanished the moment you used it. Every link that only changes the query has to
+   say where it is. *@
 
 @* Auto-scroll follows the live edge of the conversation — while the reader is at the bottom, and
    not otherwise. shadcn streams tokens from a fake transport; there is no client state here, so
@@ -14,7 +18,7 @@
             <CardTitle>Streaming Messages</CardTitle>
             <CardDescription>Auto-scroll follows the live edge of the conversation.</CardDescription>
             <CardAction>
-                <Button Variant="outline" Size="icon" Href="?sent=2" up-target="#ms-streaming"
+                <Button Variant="outline" Size="icon" Href="@($"{Page}?sent=2")" up-target="#ms-streaming"
                         aria-label="Reset conversation"><Icon Name="rotate-cw" /></Button>
             </CardAction>
         </CardHeader>
@@ -36,7 +40,7 @@
                                    Value="@(Next?.Text ?? "No messages queued. Reset the stream.")" />
                 <InputGroupAddon Align="block-end" Class="pt-1">
                     <Button Size="icon-sm" Class="ms-auto" up-target="#ms-streaming"
-                            Href="@(Next is null ? null : $"?sent={Sent + 1}")"
+                            Href="@(Next is null ? null : $"{Page}?sent={Sent + 1}")"
                             disabled="@(Next is null)">
                         <Icon Name="arrow-up" /><span class="sr-only">Send</span>
                     </Button>
@@ -51,6 +55,8 @@
 </div>
 
 @code {
+    const string Page = "/components/message-scroller";
+
     int Sent
     {
         get

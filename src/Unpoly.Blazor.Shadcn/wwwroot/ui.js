@@ -1668,12 +1668,23 @@
     // A programmatic scroll hides the scrollbar while it runs, which is what the viewport's own
     // data-autoscrolling:scrollbar-none class has always been written against and what nothing
     // was setting.
+    // `chase` is the reason this is not one line. Every item carries content-visibility: auto,
+    // so an item that has never been on screen has an ESTIMATED height until it is — which means
+    // scrollHeight changes WHILE a smooth scroll to the bottom is running, and the scroll stops
+    // at a target that was true when it started. Pressing "jump to newest" landed twenty pixels
+    // short and the thread did not resume following, because twenty pixels short is not the end.
+    //
+    // So a scroll that asked for the end checks when it settles, and finishes the job.
     let settle
-    const glide = (top, behavior = 'smooth') => {
+    const glide = (top, behavior = 'smooth', chase = false) => {
       viewport.dataset.autoscrolling = 'true'
       viewport.scrollTo({ top, behavior })
       clearTimeout(settle)
-      settle = setTimeout(() => { delete viewport.dataset.autoscrolling; sync() }, 400)
+      settle = setTimeout(() => {
+        if (chase && !atEnd()) viewport.scrollTop = viewport.scrollHeight
+        delete viewport.dataset.autoscrolling
+        sync()
+      }, 400)
     }
 
     // An anchored turn sits at the TOP of the viewport with a peek of what came before it,
@@ -1686,7 +1697,7 @@
       return true
     }
 
-    const toEnd = (behavior = 'smooth') => glide(viewport.scrollHeight, behavior)
+    const toEnd = (behavior = 'smooth') => glide(viewport.scrollHeight, behavior, true)
     const toStart = (behavior = 'smooth') => glide(0, behavior)
 
     const onButton = (event) => {
@@ -1734,9 +1745,17 @@
 
     // Where it opens: the end, the start, or the last anchored turn — which is where a reader
     // coming back to a long thread left off.
+    // Placed twice, for the same reason `chase` exists: at the moment the compiler runs, every
+    // item below the fold is an ESTIMATE of its height, so an anchored turn's offsetTop is a
+    // guess and the thread opens near the right place rather than at it. The second pass runs
+    // once layout has settled and lands on the real number.
     const openAt = root.dataset.openAt || 'end'
-    if (openAt === 'start') viewport.scrollTop = 0
-    else if (openAt !== 'anchor' || !toAnchor('auto')) viewport.scrollTop = viewport.scrollHeight
+    const place = () => {
+      if (openAt === 'start') viewport.scrollTop = 0
+      else if (openAt !== 'anchor' || !toAnchor('auto')) viewport.scrollTop = viewport.scrollHeight
+    }
+    place()
+    requestAnimationFrame(() => { place(); height = viewport.scrollHeight; top = viewport.scrollTop; sync() })
     height = viewport.scrollHeight
     top = viewport.scrollTop
     sync()

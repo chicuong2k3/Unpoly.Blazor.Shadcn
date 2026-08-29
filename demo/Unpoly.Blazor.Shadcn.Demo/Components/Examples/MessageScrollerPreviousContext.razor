@@ -1,4 +1,8 @@
 @inject NavigationManager Nav
+@* The links carry the page's own path, not a bare "?query". Blazor renders <base href="/">,
+   and a bare query string resolves against the BASE — so "?older=4" is /?older=4, the site root,
+   and the example vanished the moment you used it. Every link that only changes the query has to
+   say where it is. *@
 
 @* How much of the previous reply stays in view above an anchored turn. That is ScrollMargin, and
    it is the difference between "a new question appeared" and "here is the answer to the thing you
@@ -35,7 +39,7 @@
             </form>
 
             <Button Size="sm" Class="w-full" up-target="#ms-context"
-                    Href="@(Sent < Thread.Length ? $"?margin={Margin}&sent={Sent + 1}" : null)"
+                    Href="@(Sent < Thread.Length ? $"{Page}?margin={Margin}&sent={Sent + 1}" : null)"
                     disabled="@(Sent >= Thread.Length)">
                 @(Sent < Thread.Length ? "Send the next message" : "No messages queued")
             </Button>
@@ -48,6 +52,8 @@
 </div>
 
 @code {
+    const string Page = "/components/message-scroller";
+
     System.Collections.Specialized.NameValueCollection Query =>
         System.Web.HttpUtility.ParseQueryString(new Uri(Nav.Uri).Query);
 

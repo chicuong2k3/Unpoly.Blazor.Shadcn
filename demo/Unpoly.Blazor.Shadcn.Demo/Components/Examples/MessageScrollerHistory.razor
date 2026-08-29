@@ -1,4 +1,8 @@
 @inject NavigationManager Nav
+@* The links carry the page's own path, not a bare "?query". Blazor renders <base href="/">,
+   and a bare query string resolves against the BASE — so "?older=4" is /?older=4, the site root,
+   and the example vanished the moment you used it. Every link that only changes the query has to
+   say where it is. *@
 
 @* Older messages arrive at the TOP, and the reader does not move. Following new content is only
    right when the content is new: a prepend grows the scroll height above the reader, and
@@ -30,7 +34,7 @@
             @if (Older > 0)
             {
                 <Button Variant="outline" Size="sm" up-target="#ms-history"
-                        Href="@($"?older={Older - 2}")">
+                        Href="@($"{Page}?older={Older - 2}")">
                     <Icon Name="arrow-up" />Load earlier messages
                 </Button>
             }
@@ -48,6 +52,8 @@
 </div>
 
 @code {
+    const string Page = "/components/message-scroller";
+
     // How many of the oldest turns are still hidden. The link counts it down by two, which is one
     // exchange — and the URL is the whole of the state.
     int Older
