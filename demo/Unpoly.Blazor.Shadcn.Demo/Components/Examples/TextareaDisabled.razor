@@ -1,6 +1,7 @@
-<Field Class="w-[420px]">
-    <FieldLabel For="ta-locked">Signed contract</FieldLabel>
-    <Textarea id="ta-locked" rows="3" disabled
-              value="This agreement is between Acme Inc and the supplier named above." />
-    <FieldDescription>Locked once both parties have signed.</FieldDescription>
+@* Disabled on the control AND on the field: the control stops accepting input, and the field
+   greys its label to say so. Upstream writes exactly this pair — a disabled box under a
+   full-strength label reads as a box that is merely empty. *@
+<Field Disabled Class="w-[420px]">
+    <FieldLabel For="ta-disabled">Message</FieldLabel>
+    <Textarea id="ta-disabled" rows="3" placeholder="Type your message here." disabled />
 </Field>

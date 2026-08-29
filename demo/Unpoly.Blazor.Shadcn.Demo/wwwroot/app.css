@@ -5491,6 +5491,16 @@
   [data-slot="switch"]:checked:where([dir="rtl"] *)::after {
     translate: calc(-1 * (2rem - 1rem - 4px)) 0;
   }
+  [data-slot="switch"][data-size="sm"]::after {
+    block-size: 0.75rem;
+    inline-size: 0.75rem;
+  }
+  [data-slot="switch"][data-size="sm"]:checked::after {
+    translate: calc(1.5rem - 0.75rem - 4px) 0;
+  }
+  [data-slot="switch"][data-size="sm"]:checked:where([dir="rtl"] *)::after {
+    translate: calc(-1 * (1.5rem - 0.75rem - 4px)) 0;
+  }
   [data-slot="code-block-copy"][data-copied] svg {
     display: none;
   }

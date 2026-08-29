@@ -1003,6 +1003,7 @@ renders `<div>` · `data-slot="field"`
 |---|---|---|---|
 | `Orientation` | `string` | `"vertical"` |  |
 | `Invalid` | `bool` | — |  |
+| `Disabled` | `bool` | — |  |
 
 ## `<FieldContent>`
 renders `<div>` · `data-slot="field-content"`

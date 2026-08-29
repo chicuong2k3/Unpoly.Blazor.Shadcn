@@ -1,8 +1,13 @@
-@* aria-invalid is what turns the field destructive — the border, the ring and the label all read
-   it, so there is one source of truth and a screen reader shares it. *@
+@* aria-invalid is what turns the control destructive — the border and the ring read it, and a
+   screen reader reads the same attribute, so there is one source of truth.
+
+   The description stays muted. It is a description, not an error: it says what the field wants,
+   and it says the same thing whether or not the value is wrong. Only FieldError is destructive,
+   and this example has none — which is upstream's, and the difference between a form that
+   points at the problem and one that turns red all over. *@
 <Field Invalid Class="w-[420px]">
-    <FieldLabel For="ta-reason">Reason for the refund</FieldLabel>
-    <Textarea id="ta-reason" name="reason" rows="3" aria-invalid="true"
-              aria-describedby="ta-reason-error" />
-    <FieldError id="ta-reason-error">Tell us what happened — a word or two is enough.</FieldError>
+    <FieldLabel For="ta-invalid">Message</FieldLabel>
+    <Textarea id="ta-invalid" name="message" rows="3" placeholder="Type your message here."
+              aria-invalid="true" aria-describedby="ta-invalid-help" />
+    <FieldDescription id="ta-invalid-help">Please enter a valid message.</FieldDescription>
 </Field>

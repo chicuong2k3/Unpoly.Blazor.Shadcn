@@ -1,5 +1,21 @@
-@* Inside the field's own frame, which is what an addon is for. *@
-<InputGroup Class="w-[320px]">
-    <InputGroupControl name="q" type="search" placeholder="Searching…" value="wax jacket" />
-    <InputGroupAddon Align="inline-end"><Spinner Class="size-4" /></InputGroupAddon>
-</InputGroup>
+@* Both of upstream's: a spinner as an inline-end addon on a single-line control, and a spinner
+   in a block-end addon under a textarea, sharing that row with a label and the send button.
+
+   Both controls are disabled, which is the point — the spinner is there because the field is
+   busy, and a field that is busy is a field you cannot type into. *@
+<div class="flex w-full max-w-md flex-col gap-4">
+    <InputGroup>
+        <InputGroupControl placeholder="Send a message..." disabled />
+        <InputGroupAddon Align="inline-end"><Spinner /></InputGroupAddon>
+    </InputGroup>
+
+    <InputGroup>
+        <InputGroupControl Multiline rows="2" placeholder="Send a message..." disabled />
+        <InputGroupAddon Align="block-end">
+            <Spinner /> Validating...
+            <InputGroupButton Variant="default" Size="icon-sm" Class="ms-auto">
+                <Icon Name="arrow-up" /><span class="sr-only">Send</span>
+            </InputGroupButton>
+        </InputGroupAddon>
+    </InputGroup>
+</div>

@@ -553,6 +553,22 @@
         translate: calc(-1 * (2rem - 1rem - 4px)) 0;
     }
 
+    /* The small switch, which had none of its own. The thumb was 1rem at every size, so in a
+       24x14 track it was TALLER than the track it rides in — and on the unchecked side the track
+       showed past it, which is the sliver of background that gets reported. Upstream sizes the
+       thumb per size (size-4 / size-3); so does this, and the travel follows from the two
+       numbers rather than being a second thing to keep in step. */
+    [data-slot="switch"][data-size="sm"]::after {
+        block-size: 0.75rem;
+        inline-size: 0.75rem;
+    }
+    [data-slot="switch"][data-size="sm"]:checked::after {
+        translate: calc(1.5rem - 0.75rem - 4px) 0;
+    }
+    [data-slot="switch"][data-size="sm"]:checked:where([dir="rtl"] *)::after {
+        translate: calc(-1 * (1.5rem - 0.75rem - 4px)) 0;
+    }
+
     /* ---- CodeBlock -------------------------------------------------------------------
        The confirmation lives on the button: a toast for something this small is a toast people
        learn to ignore. The tick replaces the icon rather than sitting beside it, so the button

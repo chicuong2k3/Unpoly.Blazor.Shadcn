@@ -1,10 +1,15 @@
-@* Vertical is a layout change, so it is layout classes. The compiler does not care which way the
-   list runs; it moves focus with the arrow keys either way. *@
-<Tabs Value="general" Class="flex w-[520px] flex-row gap-6">
-    <TabsList Class="h-auto flex-col items-stretch">
-        <TabsTrigger Value="general" Class="justify-start">General</TabsTrigger>
-        <TabsTrigger Value="billing" Class="justify-start">Billing</TabsTrigger>
-        <TabsTrigger Value="team" Class="justify-start">Team</TabsTrigger>
+@* Orientation is the whole of it. Every vertical rule in this family is written
+   group-data-[orientation=vertical]/tabs — the column layout, the full-width triggers, the
+   indicator moving from the bottom edge to the trailing one — so setting layout classes by hand
+   instead left the component in its horizontal state wearing a row of overrides.
+
+   The compiler does not care which way the list runs; it moves focus with the arrow keys either
+   way. *@
+<Tabs Value="general" Orientation="vertical" Class="w-[520px] gap-6">
+    <TabsList>
+        <TabsTrigger Value="general">General</TabsTrigger>
+        <TabsTrigger Value="billing">Billing</TabsTrigger>
+        <TabsTrigger Value="team">Team</TabsTrigger>
     </TabsList>
     <div class="flex-1">
         <TabsContent Value="general" Class="text-sm text-muted-foreground">Name, timezone, language.</TabsContent>
