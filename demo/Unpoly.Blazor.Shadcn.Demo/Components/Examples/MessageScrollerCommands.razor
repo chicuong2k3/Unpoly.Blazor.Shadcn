@@ -1,0 +1,51 @@
+@* Jump to a turn by name. Any element carrying data-scroll-to-message is a jump target, so a
+   menu, an outline or a plain link all work — this is the markup half of shadcn's
+   scrollToMessage, and it needs no state to do its job. *@
+<div class="flex w-full max-w-xl flex-col gap-3">
+    <DropdownMenuTrigger Target="scroller-jump" Variant="outline" Class="w-fit">
+        Jump to… <Icon Name="chevron-down" />
+    </DropdownMenuTrigger>
+    <DropdownMenuContent Id="scroller-jump" Class="w-64">
+        @foreach (var (id, text) in Questions)
+        {
+            <DropdownMenuItem data-scroll-to-message="@id">@text</DropdownMenuItem>
+        }
+    </DropdownMenuContent>
+
+    <MessageScroller Class="relative h-72 w-full rounded-lg border">
+        <MessageScrollerViewport Class="h-full p-4">
+            <MessageScrollerContent Class="gap-6">
+                @foreach (var (id, question, answer) in Thread)
+                {
+                    <MessageScrollerItem MessageId="@id" ScrollAnchor>
+                        <Message Align="end">
+                            <MessageContent>
+                                <Bubble><BubbleContent>@question</BubbleContent></Bubble>
+                            </MessageContent>
+                        </Message>
+                    </MessageScrollerItem>
+                    <MessageScrollerItem>
+                        <Message>
+                            <MessageContent>
+                                <Bubble Variant="muted"><BubbleContent>@answer</BubbleContent></Bubble>
+                            </MessageContent>
+                        </Message>
+                    </MessageScrollerItem>
+                }
+            </MessageScrollerContent>
+        </MessageScrollerViewport>
+        <MessageScrollerButton />
+    </MessageScroller>
+</div>
+
+@code {
+    static readonly (string Id, string Question, string Answer)[] Thread =
+    [
+        ("m-deploy", "How do I deploy this?", "Push to main. The workflow builds, tests and publishes."),
+        ("m-secrets", "Where do the secrets live?", "In the repository's environment, read at boot and never written to disk."),
+        ("m-rollback", "How do I roll back?", "Re-run the previous workflow: the artifact is still there for ninety days."),
+    ];
+
+    static (string Id, string Text)[] Questions =>
+        Thread.Select(t => (t.Id, t.Question)).ToArray();
+}

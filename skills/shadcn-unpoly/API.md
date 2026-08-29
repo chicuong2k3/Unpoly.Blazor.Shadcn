@@ -1414,13 +1414,20 @@ _No parameters of its own._
 ## `<MessageScroller>`
 renders `<div>` · `data-slot="message-scroller"`
 
-_No parameters of its own._
+| Parameter | Type | Default | |
+|---|---|---|---|
+| `OpenAt` | `string` | `"end"` |  |
+| `ScrollMargin` | `int` | `24` |  |
+| `AutoScroll` | `bool` | `true` |  |
 
 ## `<MessageScrollerButton>`
 renders `<button>` · `data-slot="message-scroller-button"`
 
 | Parameter | Type | Default | |
 |---|---|---|---|
+| `Direction` | `string` | `"end"` |  |
+| `Variant` | `string` | `"secondary"` |  |
+| `Size` | `string` | `"icon-sm"` |  |
 | `AriaLabel` | `string` | `"Jump to the newest message"` |  |
 
 ## `<MessageScrollerContent>`
@@ -1431,7 +1438,10 @@ _No parameters of its own._
 ## `<MessageScrollerItem>`
 renders `<div>` · `data-slot="message-scroller-item"`
 
-_No parameters of its own._
+| Parameter | Type | Default | |
+|---|---|---|---|
+| `ScrollAnchor` | `bool` | — |  |
+| `MessageId` | `string?` | — |  |
 
 ## `<MessageScrollerViewport>`
 renders `<div>` · `data-slot="message-scroller-viewport"`

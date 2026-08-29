@@ -484,8 +484,17 @@
       panel.focus({ preventScroll: true })
     }
 
-    // A dropdown pinned to a trigger that has scrolled away is worse than one that closed.
-    const onScroll = () => { if (panel.matches(':popover-open')) panel.hidePopover() }
+    // A dropdown pinned to a trigger that has scrolled away is worse than one that closed — but
+    // only a scroll that MOVED the trigger counts. The listener is on the window with capture,
+    // so it hears every element's scroll, and a chat transcript scrolling in the corner of the
+    // page was closing menus that had nothing to do with it.
+    const onScroll = (event) => {
+      if (!panel.matches(':popover-open')) return
+      const scroller = event?.target
+      const moved = !scroller || scroller === document || scroller === window
+        || (scroller.contains?.(trigger) && scroller !== panel && !panel.contains(scroller))
+      if (moved) panel.hidePopover()
+    }
 
     panel.addEventListener('toggle', onToggle)
     window.addEventListener('scroll', onScroll, { passive: true, capture: true })
@@ -1410,42 +1419,116 @@
 
   up.compiler('[data-slot="message-scroller"]', (root) => {
     const viewport = root.querySelector('[data-slot="message-scroller-viewport"]')
-    const button = root.querySelector('[data-slot="message-scroller-button"]')
     if (!viewport) return
+
+    const buttons = () => [...root.querySelectorAll('[data-slot="message-scroller-button"]')]
+    const margin = () => Number(root.dataset.scrollMargin || 24)
+    const follows = () => root.dataset.autoScroll !== 'false'
+    const anchors = () => [...viewport.querySelectorAll('[data-scroll-anchor="true"]')]
 
     // Not === 0: a fractional scroll height never reaches the exact bottom, and a scroller that
     // is one pixel off is a scroller that never follows anything again.
-    const atBottom = () =>
-      viewport.scrollHeight - viewport.scrollTop - viewport.clientHeight < 8
+    const atEnd = () => viewport.scrollHeight - viewport.scrollTop - viewport.clientHeight < 8
+    const atStart = () => viewport.scrollTop < 8
 
+    // Where the thread can still go, published as state so a footer can say "you are at the
+    // top" in CSS. This is upstream's useMessageScrollerScrollable, which is two booleans
+    // wearing a hook's clothes.
     const sync = () => {
-      const following = atBottom()
-      root.dataset.following = following ? 'true' : 'false'
-      if (button) {
-        button.hidden = following
-        button.dataset.active = following ? '' : 'true'
-        if (following) delete button.dataset.active
+      const end = atEnd()
+      root.dataset.following = end ? 'true' : 'false'
+      root.dataset.canScrollStart = viewport.scrollTop > 8 ? 'true' : 'false'
+      root.dataset.canScrollEnd = end ? 'false' : 'true'
+      for (const button of buttons()) {
+        const done = button.dataset.direction === 'start' ? atStart() : end
+        button.hidden = done
+        if (done) delete button.dataset.active
+        else button.dataset.active = 'true'
       }
     }
 
-    const toBottom = () => viewport.scrollTo({ top: viewport.scrollHeight, behavior: 'smooth' })
+    // A programmatic scroll hides the scrollbar while it runs, which is what the viewport's own
+    // data-autoscrolling:scrollbar-none class has always been written against and what nothing
+    // was setting.
+    let settle
+    const glide = (top, behavior = 'smooth') => {
+      viewport.dataset.autoscrolling = 'true'
+      viewport.scrollTo({ top, behavior })
+      clearTimeout(settle)
+      settle = setTimeout(() => { delete viewport.dataset.autoscrolling; sync() }, 400)
+    }
 
-    // New content only pulls the view down when the reader was already at the bottom.
+    // An anchored turn sits at the TOP of the viewport with a peek of what came before it,
+    // rather than the thread scrolling to its own bottom. That is the whole point of the
+    // component: when a long answer arrives you are left looking at the question that caused it.
+    const toAnchor = (behavior = 'smooth') => {
+      const last = anchors().pop()
+      if (!last) return false
+      glide(last.offsetTop - margin(), behavior)
+      return true
+    }
+
+    const toEnd = (behavior = 'smooth') => glide(viewport.scrollHeight, behavior)
+    const toStart = (behavior = 'smooth') => glide(0, behavior)
+
+    const onButton = (event) => {
+      const button = event.target.closest('[data-slot="message-scroller-button"]')
+      if (button) (button.dataset.direction === 'start' ? toStart : toEnd)()
+    }
+
+    // Anything on the page can ask for a turn by name — a jump menu, an outline, a link. It is
+    // the markup half of upstream's scrollToMessage, and it needs no state to work.
+    const onJump = (event) => {
+      const jump = event.target.closest('[data-scroll-to-message]')
+      if (!jump) return
+      const item = viewport.querySelector(
+        '[data-message-id="' + CSS.escape(jump.dataset.scrollToMessage) + '"]')
+      if (!item) return
+      event.preventDefault()
+      glide(item.offsetTop - margin())
+    }
+
+    // New content follows only when the reader is at the bottom AND the thread was told to
+    // follow. Content that arrives ABOVE them is different: prepending older messages grows the
+    // scroll height above the reader, and following that is how "load older" throws away the
+    // place they were reading. Then the scroll position moves by exactly what was added, so the
+    // page under their eyes does not move at all.
+    let height = viewport.scrollHeight
+    let top = viewport.scrollTop
     const watch = new MutationObserver(() => {
-      if (root.dataset.following !== 'false') viewport.scrollTop = viewport.scrollHeight
+      const grew = viewport.scrollHeight - height
+      const prepended = grew > 0 && viewport.scrollTop === top && top > 0
+      height = viewport.scrollHeight
+      if (prepended) {
+        viewport.scrollTop = top + grew
+      } else if (follows() && root.dataset.following !== 'false') {
+        if (!toAnchor('auto')) viewport.scrollTop = viewport.scrollHeight
+      }
+      top = viewport.scrollTop
       sync()
     })
     watch.observe(viewport, { childList: true, subtree: true })
 
-    viewport.addEventListener('scroll', sync, { passive: true })
-    button?.addEventListener('click', toBottom)
-    viewport.scrollTop = viewport.scrollHeight
+    const onScroll = () => { top = viewport.scrollTop; sync() }
+    viewport.addEventListener('scroll', onScroll, { passive: true })
+    root.addEventListener('click', onButton)
+    document.addEventListener('click', onJump)
+
+    // Where it opens: the end, the start, or the last anchored turn — which is where a reader
+    // coming back to a long thread left off.
+    const openAt = root.dataset.openAt || 'end'
+    if (openAt === 'start') viewport.scrollTop = 0
+    else if (openAt !== 'anchor' || !toAnchor('auto')) viewport.scrollTop = viewport.scrollHeight
+    height = viewport.scrollHeight
+    top = viewport.scrollTop
     sync()
 
     return () => {
       watch.disconnect()
-      viewport.removeEventListener('scroll', sync)
-      button?.removeEventListener('click', toBottom)
+      clearTimeout(settle)
+      viewport.removeEventListener('scroll', onScroll)
+      root.removeEventListener('click', onButton)
+      document.removeEventListener('click', onJump)
     }
   })
 

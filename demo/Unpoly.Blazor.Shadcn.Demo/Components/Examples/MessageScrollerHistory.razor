@@ -1,0 +1,31 @@
+@* Older messages arrive at the TOP, and the reader must not move. The scroller measures what
+   the prepend added and moves the scroll position by exactly that much, so the words under their
+   eyes stay where they were — following new content is only right when the content is new. *@
+<form method="post" action="/threads/older" id="scroller-history-form"
+      up-target="#scroller-history-content:before" up-disable class="flex flex-col gap-3">
+    <AntiforgeryToken />
+    <MessageScroller Class="relative h-72 w-full max-w-lg rounded-lg border">
+        <MessageScrollerViewport Class="h-full p-4">
+            <MessageScrollerContent id="scroller-history-content" Class="gap-4">
+                <MessageScrollerItem>
+                    <Marker Variant="separator"><MarkerContent>Earlier today</MarkerContent></Marker>
+                </MessageScrollerItem>
+                @foreach (var n in Enumerable.Range(1, 6))
+                {
+                    <MessageScrollerItem>
+                        <Message Align="@(n % 2 == 0 ? "end" : "start")">
+                            <MessageContent>
+                                <Bubble Variant="@(n % 2 == 0 ? "default" : "muted")">
+                                    <BubbleContent>Message @n</BubbleContent>
+                                </Bubble>
+                            </MessageContent>
+                        </Message>
+                    </MessageScrollerItem>
+                }
+            </MessageScrollerContent>
+        </MessageScrollerViewport>
+        <MessageScrollerButton />
+    </MessageScroller>
+
+    <Button Type="submit" Variant="outline" Size="sm" Class="w-fit">Load older messages</Button>
+</form>

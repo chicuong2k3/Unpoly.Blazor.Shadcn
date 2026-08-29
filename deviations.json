@@ -871,6 +871,12 @@
     "attachment-action": {
       "variant": "ghost",
       "size": "icon-sm"
+    },
+    "message-scroller-button": {
+      "variant": "secondary",
+      "size": "icon-sm",
+      "withSlotClasses": true,
+      "why": "Upstream renders it as render={<Button variant=\"secondary\" size=\"icon-sm\" />} with the positioning override as the Button's className. Blazor has no cloneElement, so the button IS the element and wears the recipe directly — without it the element had a colour and nothing else: no radius, no size, no focus ring."
     }
   },
   "defaultVariant": {

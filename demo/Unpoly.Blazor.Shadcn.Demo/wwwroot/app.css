@@ -724,6 +724,9 @@
   .h-64 {
     height: calc(var(--spacing) * 64);
   }
+  .h-72 {
+    height: calc(var(--spacing) * 72);
+  }
   .h-80 {
     height: calc(var(--spacing) * 80);
   }
@@ -2554,6 +2557,15 @@
   }
   .group-data-\[align\=end\]\/message\:self-end:is(:where(.group\/message)[data-align="end"] *) {
     align-self: flex-end;
+  }
+  .group-data-\[can-scroll-end\=false\]\/message-scroller\:inline:is(:where(.group\/message-scroller)[data-can-scroll-end="false"] *) {
+    display: inline;
+  }
+  .group-data-\[can-scroll-start\=false\]\/message-scroller\:inline:is(:where(.group\/message-scroller)[data-can-scroll-start="false"] *) {
+    display: inline;
+  }
+  .group-data-\[can-scroll-start\=true\]\/message-scroller\:group-data-\[can-scroll-end\=true\]\/message-scroller\:inline:is(:where(.group\/message-scroller)[data-can-scroll-start="true"] *):is(:where(.group\/message-scroller)[data-can-scroll-end="true"] *) {
+    display: inline;
   }
   .group-data-\[collapsible\=icon\]\:-mt-8:is(:where(.group)[data-collapsible="icon"] *) {
     margin-top: calc(var(--spacing) * -8);

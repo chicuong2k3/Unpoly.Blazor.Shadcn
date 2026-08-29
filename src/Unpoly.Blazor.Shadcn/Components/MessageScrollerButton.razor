@@ -1,15 +1,36 @@
 @inherits UiComponentBase
 
-@* "Back to the newest message". It ships hidden and the compiler reveals it only once the
-   viewport has actually been scrolled away from the bottom — a button that scrolls you where you
-   already are is one people learn to ignore. *@
+@* "Back to the newest message" — or to the oldest, which is what Direction picks. It ships
+   hidden and the compiler reveals it only once the viewport has actually been scrolled away
+   from that end: a button that takes you where you already are is one people learn to ignore.
 
-<button type="button" data-slot="message-scroller-button" data-scroll-to-bottom data-direction="down" hidden
-        aria-label="@AriaLabel" class="@Classes" @attributes="AdditionalAttributes">
-    <Icon Name="arrow-down" />
+   Direction is "end" and "start", not "down" and "up", because those are the words the recipe
+   uses — five of its classes key off data-[direction=end] and data-[direction=start], and while
+   this said "down" none of them matched. The button had no position and no enter animation, so
+   every call site placed it in a corner by hand. *@
+
+<button type="button" data-slot="message-scroller-button" data-scroll-to-bottom
+        data-direction="@Direction" data-variant="@Variant" data-size="@Size" hidden
+        aria-label="@(ChildContent is null ? AriaLabel : null)" class="@Classes"
+        @attributes="AdditionalAttributes">
+    @if (ChildContent is null)
+    {
+        <Icon Name="arrow-down" />
+    }
+    else
+    {
+        @ChildContent
+    }
 </button>
 
 @code {
+    /// <summary>end | start — the end of the thread it takes you to.</summary>
+    [Parameter] public string Direction { get; set; } = "end";
+
+    [Parameter] public string Variant { get; set; } = "secondary";
+    [Parameter] public string Size { get; set; } = "icon-sm";
+
+    /// <summary>Announced when the button carries only an icon.</summary>
     [Parameter] public string AriaLabel { get; set; } = "Jump to the newest message";
 
     const string Base =
@@ -27,5 +48,8 @@
         "data-[direction=start]:data-[active=false]:-translate-y-full rtl:translate-x-1/2 " +
         "data-[direction=start]:[&_svg]:rotate-180";
 
-    string Classes => Cn(Base, Class);
+    // The button recipe first: upstream renders a <Button variant="secondary" size="icon-sm">
+    // and layers the override on top. Without it the element had a colour and nothing else —
+    // no radius, no size, no focus ring.
+    string Classes => Cn(ButtonVariants.Of(Variant, Size), Base, Class);
 }

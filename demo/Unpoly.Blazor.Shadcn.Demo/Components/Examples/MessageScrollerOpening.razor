@@ -1,0 +1,39 @@
+@* Where a thread sits when it appears. At the end for a live chat, at the start for a
+   transcript someone is about to read from the top, and at the last anchored turn for a reader
+   coming back to a conversation they were part of. *@
+<div class="flex w-full flex-col gap-6">
+    @foreach (var (openAt, label) in Positions)
+    {
+        <div class="flex flex-col gap-2">
+            <p class="text-sm font-medium">@label</p>
+            <MessageScroller OpenAt="@openAt" Class="relative h-48 w-full max-w-lg rounded-lg border">
+                <MessageScrollerViewport Class="h-full p-4">
+                    <MessageScrollerContent Class="gap-4">
+                        @foreach (var n in Enumerable.Range(1, 8))
+                        {
+                            <MessageScrollerItem MessageId="@($"{openAt}-{n}")" ScrollAnchor="@(n == 6)">
+                                <Message Align="@(n % 2 == 0 ? "end" : "start")">
+                                    <MessageContent>
+                                        <Bubble Variant="@(n % 2 == 0 ? "default" : "muted")">
+                                            <BubbleContent>Message @n</BubbleContent>
+                                        </Bubble>
+                                    </MessageContent>
+                                </Message>
+                            </MessageScrollerItem>
+                        }
+                    </MessageScrollerContent>
+                </MessageScrollerViewport>
+                <MessageScrollerButton />
+            </MessageScroller>
+        </div>
+    }
+</div>
+
+@code {
+    static readonly (string OpenAt, string Label)[] Positions =
+    [
+        ("end", "OpenAt=\"end\" — a live chat opens at the newest message"),
+        ("start", "OpenAt=\"start\" — a transcript opens at the beginning"),
+        ("anchor", "OpenAt=\"anchor\" — opens at the last anchored turn, where you left off"),
+    ];
+}

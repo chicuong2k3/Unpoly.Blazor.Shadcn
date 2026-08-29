@@ -1,0 +1,31 @@
+@* The thread publishes what it can still do — data-can-scroll-start and data-can-scroll-end on
+   the root — so a footer can say where you are without a line of script of its own. shadcn reads
+   the same two booleans through a hook; here they are state on an element, and CSS does the
+   rest. *@
+<MessageScroller OpenAt="start" Class="relative h-64 w-full max-w-lg rounded-lg border">
+    <MessageScrollerViewport Class="h-full p-4">
+        <MessageScrollerContent Class="gap-4">
+            @foreach (var n in Enumerable.Range(1, 10))
+            {
+                <MessageScrollerItem>
+                    <Message Align="@(n % 2 == 0 ? "end" : "start")">
+                        <MessageContent>
+                            <Bubble Variant="@(n % 2 == 0 ? "default" : "muted")">
+                                <BubbleContent>Message @n of 10</BubbleContent>
+                            </Bubble>
+                        </MessageContent>
+                    </Message>
+                </MessageScrollerItem>
+            }
+        </MessageScrollerContent>
+    </MessageScrollerViewport>
+    <MessageScrollerButton />
+
+    <div class="border-t px-4 py-2 text-xs text-muted-foreground">
+        <span class="hidden group-data-[can-scroll-start=false]/message-scroller:inline">You are at the top.</span>
+        <span class="hidden group-data-[can-scroll-end=false]/message-scroller:inline">You are at the bottom.</span>
+        <span class="hidden group-data-[can-scroll-start=true]/message-scroller:group-data-[can-scroll-end=true]/message-scroller:inline">
+            There is more in both directions.
+        </span>
+    </div>
+</MessageScroller>
