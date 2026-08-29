@@ -340,8 +340,33 @@
     const flip = rtl(anchor)
     const room = document.documentElement.clientWidth
 
+    // Beside, rather than above or below. Only top and bottom were handled, so a panel asking
+    // for left or right silently got bottom -- the side was in the markup, in the docs and in
+    // the data attribute, and nothing anywhere did it.
+    if (side === 'left' || side === 'right') {
+      const wantsLeft = side === 'left'
+      let top = Math.max(8, Math.min(a.top + (a.height - p.height) / 2,
+                                     window.innerHeight - p.height - 8))
+      // Flip to the other side when the chosen one has no room, as every popover library does.
+      const fitsLeft = a.left - p.width - offset >= 8
+      const fitsRight = a.right + p.width + offset <= room - 8
+      const left = (wantsLeft && fitsLeft) || (!wantsLeft && !fitsRight)
+      panel.dataset.placedSide = left ? 'left' : 'right'
+      // Pin the edge that meets the trigger, never `left minus my own width`: the width is
+      // measured before the panel has settled at its final size, and the gap comes out wrong by
+      // the difference -- four pixels here, every time, on the left side only.
+      put(panel, left ? { right: room - (a.left - offset) } : { left: a.right + offset }, top)
+      return
+    }
+
     let top = side === 'top' ? a.top - p.height - offset : a.bottom + offset
-    if (top + p.height > window.innerHeight - 8) top = Math.max(8, a.top - p.height - offset)
+    // Where it ENDED UP, which is not always where it asked to be. data-side stays the request,
+    // because every caller reads it back on the next open; the arrow needs the outcome.
+    panel.dataset.placedSide = side === 'top' ? 'top' : 'bottom'
+    if (top + p.height > window.innerHeight - 8) {
+      top = Math.max(8, a.top - p.height - offset)
+      panel.dataset.placedSide = 'top'
+    }
 
     // Pin the edge that has to line up, rather than deriving it by subtracting the panel's own
     // width from the other edge. That subtraction was wrong by however much the measured width
@@ -480,11 +505,28 @@
       }
     }
 
+    // Leaving the menu unlights the row, as Radix does. Highlighting here IS focus, so the row
+    // keeps it until something else takes it -- which left a menu you had merely passed through
+    // showing a lit row with the pointer nowhere near it. Focus goes back to the panel, so the
+    // arrow keys still start from the top and nothing traps it outside the menu.
+    const onLeave = (event) => {
+      if (event.relatedTarget && panel.contains(event.relatedTarget)) return
+      const item = panel.contains(document.activeElement) ? document.activeElement : null
+      if (item && item !== panel) panel.focus({ preventScroll: true })
+    }
+
+    // Somewhere for focus to go when the pointer leaves. A [popover] is not focusable on its
+    // own, and focus with nowhere to land falls to <body> -- which closes the menu, because
+    // light dismiss treats that as focus leaving.
+    panel.tabIndex = -1
+
     panel.addEventListener('keydown', onKey)
     panel.addEventListener('pointerover', onOver)
+    panel.addEventListener('pointerleave', onLeave)
     return () => {
       panel.removeEventListener('keydown', onKey)
       panel.removeEventListener('pointerover', onOver)
+      panel.removeEventListener('pointerleave', onLeave)
       clearTimeout(hoverTimer)
     }
   })
@@ -500,6 +542,11 @@
     const onClick = (event) => {
       const item = event.target.closest('[data-slot$="-item"]')
       if (!item || item.closest('[data-slot$="-sub-trigger"]') || item.hasAttribute('data-disabled')) return
+      // A row that carries STATE is not a row that performs an action: ticking one is meant to
+      // be repeatable, and closing the menu after each tick made "select several" mean "open the
+      // menu three times". Base UI's CheckboxItem and RadioItem default to closeOnClick: false
+      // for the same reason.
+      if (item.matches('[data-slot$="-checkbox-item"], [data-slot$="-radio-item"]')) return
       // The chain, not just this panel: an item in a submenu closes the menu it hangs off too.
       // Every family listed by NAME — the first version said [data-slot$="menu-content"], and
       // "menubar-content" does not end in "menu-content", so a menubar item never closed its
@@ -1208,7 +1255,8 @@
       clearTimeout(timer)
       timer = setTimeout(() => {
         panel.showPopover()
-        place(panel, trigger, 'center', panel.dataset.side || 'top', 6)
+        place(panel, trigger, 'center', panel.dataset.side || 'top',
+              Number(panel.dataset.sideOffset || 6))
         panel.dataset.state = 'delayed-open'
       }, Number(trigger.dataset.delay ?? 200))
     }

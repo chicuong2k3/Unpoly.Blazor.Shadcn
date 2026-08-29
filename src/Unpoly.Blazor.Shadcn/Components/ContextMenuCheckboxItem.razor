@@ -6,7 +6,7 @@
    checkbox control in a menu row reads as a form, and a menu is not a form. *@
 
 <label data-slot="context-menu-checkbox-item" role="menuitemcheckbox"
-       aria-checked="@(Checked ? "true" : "false")"
+       aria-checked="@(Checked ? "true" : "false")" tabindex="-1"
        data-disabled="@(Disabled ? "" : null)" class="@Classes"
        @attributes="AdditionalAttributes">
     @* The indicator is a tick that exists only while checked — upstream's ItemIndicator with a

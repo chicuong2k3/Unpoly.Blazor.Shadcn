@@ -461,6 +461,12 @@
         "ps-2"
       ],
       "why": "The indicator sits on the END edge, as shadcn's current stylesheet draws it: the item is `pr-8 pl-1.5` and the indicator `absolute right-2`. The new-york-v4 source vendored here still has Radix's old start-side layout, and a tick on the left of every row is the first thing anyone comparing against shadcn.com sees."
+    },
+    "tooltip-content": {
+      "classes": [
+        "relative"
+      ],
+      "why": "relative: upstream renders the arrow as a child element (Radix's Arrow, positioned by the same engine that places the panel); here it is a pseudo-element, so the panel has to be its containing block. A child element would mean every call site remembering to write one."
     }
   },
   "dropped": {

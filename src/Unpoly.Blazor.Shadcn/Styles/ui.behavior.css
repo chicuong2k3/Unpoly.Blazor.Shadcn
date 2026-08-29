@@ -212,6 +212,38 @@
     [data-slot="tooltip-content"][data-state="delayed-open"],
     [data-slot="tooltip-content"]:popover-open { opacity: 1; }
 
+    /* The arrow. Upstream renders a Radix Arrow element -- a rotated, rounded square in the
+       tooltip's own colour -- and this is that square, as a pseudo-element, because a tooltip
+       that needs a child element to look right is a tooltip every call site has to remember to
+       write. It points from whichever side the tip ENDED UP on, which is why place() records
+       the outcome separately from the requested side: a tip that flipped for want of room and
+       kept pointing the old way is worse than one with no arrow at all. */
+    [data-slot="tooltip-content"]::after {
+        content: "";
+        position: absolute;
+        inline-size: 0.625rem;                  /* size-2.5, as upstream */
+        block-size: 0.625rem;
+        background: var(--foreground);
+        border-radius: 2px;
+        rotate: 45deg;
+    }
+    [data-slot="tooltip-content"][data-placed-side="top"]::after {
+        inset-block-end: 0; inset-inline-start: 50%;
+        translate: -50% calc(50% - 2px);
+    }
+    [data-slot="tooltip-content"][data-placed-side="bottom"]::after {
+        inset-block-start: 0; inset-inline-start: 50%;
+        translate: -50% calc(-50% + 2px);
+    }
+    [data-slot="tooltip-content"][data-placed-side="left"]::after {
+        inset-inline-end: 0; inset-block-start: 50%;
+        translate: calc(50% - 2px) -50%;
+    }
+    [data-slot="tooltip-content"][data-placed-side="right"]::after {
+        inset-inline-start: 0; inset-block-start: 50%;
+        translate: calc(-50% + 2px) -50%;
+    }
+
     /* ---- Button, while Unpoly has a request in flight ---------------------------------
        Unpoly marks the element that started a request with `.up-active`. On a submit button
        that is the honest place for the progress: the page stays legible, and [up-disable]

@@ -5172,6 +5172,35 @@
   [data-slot="tooltip-content"][data-state="delayed-open"], [data-slot="tooltip-content"]:popover-open {
     opacity: 1;
   }
+  [data-slot="tooltip-content"]::after {
+    content: "";
+    position: absolute;
+    inline-size: 0.625rem;
+    block-size: 0.625rem;
+    background: var(--foreground);
+    border-radius: 2px;
+    rotate: 45deg;
+  }
+  [data-slot="tooltip-content"][data-placed-side="top"]::after {
+    inset-block-end: 0;
+    inset-inline-start: 50%;
+    translate: -50% calc(50% - 2px);
+  }
+  [data-slot="tooltip-content"][data-placed-side="bottom"]::after {
+    inset-block-start: 0;
+    inset-inline-start: 50%;
+    translate: -50% calc(-50% + 2px);
+  }
+  [data-slot="tooltip-content"][data-placed-side="left"]::after {
+    inset-inline-end: 0;
+    inset-block-start: 50%;
+    translate: calc(50% - 2px) -50%;
+  }
+  [data-slot="tooltip-content"][data-placed-side="right"]::after {
+    inset-inline-start: 0;
+    inset-block-start: 50%;
+    translate: calc(-50% + 2px) -50%;
+  }
   [data-slot="button"].up-active {
     pointer-events: none;
   }

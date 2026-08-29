@@ -4,7 +4,7 @@
    one group share a Name, which is what makes them a group in the DOM. *@
 
 <label data-slot="dropdown-menu-radio-item" role="menuitemradio"
-       aria-checked="@(Checked ? "true" : "false")"
+       aria-checked="@(Checked ? "true" : "false")" tabindex="-1"
        data-disabled="@(Disabled ? "" : null)" class="@Classes"
        @attributes="AdditionalAttributes">
     <span class="pointer-events-none absolute end-2 flex size-4 items-center justify-center">

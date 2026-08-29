@@ -4,7 +4,7 @@
    one group share a Name, which is what makes them a group in the DOM. *@
 
 <label data-slot="context-menu-radio-item" role="menuitemradio"
-       aria-checked="@(Checked ? "true" : "false")"
+       aria-checked="@(Checked ? "true" : "false")" tabindex="-1"
        data-disabled="@(Disabled ? "" : null)" class="@Classes"
        @attributes="AdditionalAttributes">
     @* Upstream's indicator: a filled dot that exists only while chosen — not a radio control.
