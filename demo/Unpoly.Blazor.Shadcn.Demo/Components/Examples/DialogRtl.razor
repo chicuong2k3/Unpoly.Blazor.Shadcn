@@ -1,4 +1,8 @@
-@* The corner X moves to the other corner: it is placed with logical insets, not with right-4. *@
+@* The same dialog as the first sample, in Arabic. Nothing is reordered by hand: the buttons are
+   written cancel-then-confirm exactly as in the English one, and the row flips because it is a
+   flex row in an RTL container. Writing them the other way round here — which is how this
+   started — puts the confirm button on the wrong side of its own cancel. The corner X moves too,
+   because it is placed with logical insets rather than right-4. *@
 <div dir="rtl">
     <DialogTrigger Target="dlg-rtl">فتح</DialogTrigger>
     <Dialog Id="dlg-rtl">
@@ -6,10 +10,10 @@
             <DialogTitle>إعادة تسمية المشروع</DialogTitle>
             <DialogDescription>هذا ما سيراه فريقك.</DialogDescription>
         </DialogHeader>
-        <div class="px-6"><Input name="name" value="تصميم الموقع" aria-label="اسم المشروع" /></div>
+        <Input name="name" value="تصميم الموقع" aria-label="اسم المشروع" />
         <DialogFooter>
-            <Button>حفظ</Button>
             <DialogClose>إلغاء</DialogClose>
+            <Button>حفظ</Button>
         </DialogFooter>
     </Dialog>
 </div>

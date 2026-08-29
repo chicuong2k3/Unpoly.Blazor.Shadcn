@@ -617,6 +617,10 @@
     width: calc(var(--spacing) * 6);
     height: calc(var(--spacing) * 6);
   }
+  .size-6\.5 {
+    width: calc(var(--spacing) * 6.5);
+    height: calc(var(--spacing) * 6.5);
+  }
   .size-7 {
     width: calc(var(--spacing) * 7);
     height: calc(var(--spacing) * 7);
@@ -1340,6 +1344,9 @@
   }
   .grid-cols-2 {
     grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .grid-cols-3 {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
   }
   .grid-cols-4 {
     grid-template-columns: repeat(4, minmax(0, 1fr));
@@ -5044,6 +5051,22 @@
   [data-slot="dialog"][open] > *, [data-slot="alert-dialog"][open] > *, [data-slot="command-dialog"][open] > * {
     animation: sh-dialog-in 200ms cubic-bezier(0.16, 1, 0.3, 1);
   }
+  [data-slot="dialog"] > [data-slot="dialog-content"], [data-slot="alert-dialog"] > [data-slot="alert-dialog-content"] {
+    position: relative;
+    max-block-size: calc(100dvh - 4rem);
+    grid-template-rows: auto minmax(0, 1fr) auto;
+    overflow: hidden;
+  }
+  [data-slot="dialog-content"]:has(> [data-slot="dialog-close"]) > [data-slot="dialog-header"], [data-slot="alert-dialog-content"]:has(> [data-slot="dialog-close"]) > [data-slot="alert-dialog-header"] {
+    padding-inline-end: 1.5rem;
+  }
+  [data-slot="dialog-content"] *, [data-slot="alert-dialog-content"] * {
+    scrollbar-width: thin;
+    scrollbar-color: var(--border) transparent;
+  }
+  [data-slot="dialog"] > [data-slot="dialog-content"]:not(:has(> [data-slot="dialog-header"])), [data-slot="dialog"] > [data-slot="dialog-content"]:not(:has(> [data-slot="dialog-footer"])) {
+    grid-template-rows: none;
+  }
   [data-slot="sheet"] {
     margin: 0;
     padding: 0;
@@ -5718,8 +5741,8 @@
   --control-h: 2.25rem;
   --control-text: 0.875rem;
   --font-numeric: inherit;
-  --elevation-1: 0 1px 2px 0 rgb(0 0 0 / 0.06);
-  --elevation-2: 0 1px 3px 0 rgb(0 0 0 / 0.08), 0 1px 2px -1px rgb(0 0 0 / 0.06);
+  --elevation-1: 0 0 #0000;
+  --elevation-2: 0 0 #0000;
   --elevation-3: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
   --elevation-4: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
   --radius-control: calc(var(--radius) - 2px);

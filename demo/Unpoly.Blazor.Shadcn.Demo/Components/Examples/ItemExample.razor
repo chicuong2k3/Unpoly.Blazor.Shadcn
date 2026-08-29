@@ -1,21 +1,21 @@
-@* A row: media on the left, content in the middle, actions on the right. Give it an Href and
-   the whole row becomes a link — which is also what makes it followable by Unpoly. *@
-<ItemGroup Class="w-[460px]">
-    <Item Href="/components/avatar">
-        <ItemMedia><Avatar><AvatarFallback>MR</AvatarFallback></Avatar></ItemMedia>
+@* Upstream's own pair: a plain row with an action, then a small LINKED row — Href makes the
+   whole row the link, which is the shape a list of navigable rows wants. *@
+<div class="flex w-full max-w-md flex-col gap-6">
+    <Item Variant="outline">
         <ItemContent>
-            <ItemTitle>Marta Ruiz</ItemTitle>
-            <ItemDescription>128 orders · joined March 2024</ItemDescription>
+            <ItemTitle>Basic Item</ItemTitle>
+            <ItemDescription>A simple item with title and description.</ItemDescription>
         </ItemContent>
-        <ItemActions><Icon Name="chevron-right" Class="text-muted-foreground" /></ItemActions>
+        <ItemActions>
+            <Button Variant="outline" Size="sm">Action</Button>
+        </ItemActions>
     </Item>
-    <ItemSeparator />
-    <Item>
-        <ItemMedia><Avatar><AvatarFallback>AL</AvatarFallback></Avatar></ItemMedia>
+
+    <Item Variant="outline" Size="sm" Href="#">
+        <ItemMedia><Icon Name="badge-check" Class="size-5" /></ItemMedia>
         <ItemContent>
-            <ItemTitle>Ana Lopes</ItemTitle>
-            <ItemDescription>12 orders</ItemDescription>
+            <ItemTitle>Your profile has been verified.</ItemTitle>
         </ItemContent>
-        <ItemActions><Button Variant="ghost" Size="sm">Message</Button></ItemActions>
+        <ItemActions><Icon Name="chevron-right" Class="size-4" /></ItemActions>
     </Item>
-</ItemGroup>
+</div>

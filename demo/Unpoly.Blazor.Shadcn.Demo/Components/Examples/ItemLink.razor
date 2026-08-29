@@ -1,26 +1,21 @@
-@* Give it an Href and the whole row is a link — one target, one focus stop, and Unpoly follows
-   it. A row with a link inside it instead gives you a small target and two tab stops. *@
-<ItemGroup Class="w-[420px] rounded-lg border" up-nav>
-    <Item Href="/components/card" Class="px-4">
-        <ItemContent><ItemTitle>Card</ItemTitle>
-            <ItemDescription>Seven parts</ItemDescription></ItemContent>
-        <ItemActions><Icon Name="chevron-right" Class="text-muted-foreground" /></ItemActions>
+@* Href makes the WHOLE row the link: one target, one focus stop, and Unpoly follows it. A row
+   with a link inside it gives you a small target and two tab stops instead. The second row
+   leaves the site — target and rel ride through as ordinary attributes. *@
+<div class="flex w-full max-w-md flex-col gap-6">
+    <Item Variant="outline" Href="/components/card">
+        <ItemContent>
+            <ItemTitle>Visit our documentation</ItemTitle>
+            <ItemDescription>Learn how to get started with our components.</ItemDescription>
+        </ItemContent>
+        <ItemActions><Icon Name="chevron-right" Class="size-4" /></ItemActions>
     </Item>
-    <ItemSeparator />
-    <Item Href="/components/table" Class="px-4">
-        <ItemContent><ItemTitle>Table</ItemTitle>
-            <ItemDescription>In a scroll container</ItemDescription></ItemContent>
-        <ItemActions><Icon Name="chevron-right" Class="text-muted-foreground" /></ItemActions>
-    </Item>
-</ItemGroup>
 
-@* And a row that leaves the site. target and rel ride through as ordinary attributes, and the
-   icon says where it goes before it is clicked rather than after. *@
-<Item Href="https://ui.shadcn.com/docs/components/base/item" Variant="outline"
-      target="_blank" rel="noopener noreferrer" Class="mt-3 w-[420px]">
-    <ItemContent>
-        <ItemTitle>The upstream docs</ItemTitle>
-        <ItemDescription>Opens in a new tab</ItemDescription>
-    </ItemContent>
-    <ItemActions><Icon Name="external-link" Class="text-muted-foreground" /></ItemActions>
-</Item>
+    <Item Variant="outline" Href="https://ui.shadcn.com/docs/components/base/item"
+          target="_blank" rel="noopener noreferrer">
+        <ItemContent>
+            <ItemTitle>External resource</ItemTitle>
+            <ItemDescription>Opens in a new tab with security attributes.</ItemDescription>
+        </ItemContent>
+        <ItemActions><Icon Name="external-link" Class="size-4" /></ItemActions>
+    </Item>
+</div>

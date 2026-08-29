@@ -1,22 +1,52 @@
-@* A group with separators between the rows and none at the ends, which is what an ItemGroup
-   handles so each row does not carry a border that has to agree with its neighbour. *@
-<ItemGroup Class="w-[420px] rounded-lg border">
-    @foreach (var (name, meta, last) in People.Select((p, i) => (p.Name, p.Meta, i == People.Length - 1)))
+@* Two ways to group. Upstream's own sample is a stack of outline rows, each keeping its own
+   border; underneath it, the other shape the API supports — one border around the lot with an
+   ItemSeparator between rows, which is what a list wants when the rows belong together rather
+   than merely sitting near each other. Nothing separates the ends. *@
+<ItemGroup Class="w-full max-w-sm gap-4">
+    @foreach (var (name, meta, initials) in People)
     {
-        <Item Class="px-4">
-            <ItemMedia><Avatar Class="size-8"><AvatarFallback Class="text-xs">@name[..2]</AvatarFallback></Avatar></ItemMedia>
-            <ItemContent><ItemTitle>@name</ItemTitle><ItemDescription>@meta</ItemDescription></ItemContent>
+        <Item Variant="outline" role="listitem">
+            <ItemMedia>
+                <Avatar Class="size-10"><AvatarFallback>@initials</AvatarFallback></Avatar>
+            </ItemMedia>
+            <ItemContent>
+                <ItemTitle>@name</ItemTitle>
+                <ItemDescription>@meta</ItemDescription>
+            </ItemContent>
+            <ItemActions>
+                <Button Variant="ghost" Size="icon-sm" aria-label="@($"More about {name}")">
+                    <Icon Name="ellipsis-vertical" />
+                </Button>
+            </ItemActions>
         </Item>
-        @if (!last)
+    }
+</ItemGroup>
+
+@code {
+    static readonly (string Name, string Meta, string Initials)[] People =
+    [
+        ("Marta Ruiz", "128 orders", "MR"),
+        ("Ana Lopes", "12 orders", "AL"),
+        ("Bảo Trần", "3 orders", "BT"),
+    ];
+}
+
+<ItemGroup Class="mt-6 w-full max-w-sm rounded-lg border">
+    @for (var i = 0; i < People.Length; i++)
+    {
+        var (name, meta, initials) = People[i];
+        <Item role="listitem" Class="px-4">
+            <ItemMedia>
+                <Avatar Class="size-8"><AvatarFallback Class="text-xs">@initials</AvatarFallback></Avatar>
+            </ItemMedia>
+            <ItemContent>
+                <ItemTitle>@name</ItemTitle>
+                <ItemDescription>@meta</ItemDescription>
+            </ItemContent>
+        </Item>
+        @if (i < People.Length - 1)
         {
             <ItemSeparator />
         }
     }
 </ItemGroup>
-
-@code {
-    static readonly (string Name, string Meta)[] People =
-    [
-        ("Marta Ruiz", "128 orders"), ("Ana Lopes", "12 orders"), ("Bảo Trần", "3 orders"),
-    ];
-}

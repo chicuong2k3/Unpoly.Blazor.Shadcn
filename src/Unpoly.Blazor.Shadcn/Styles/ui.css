@@ -99,11 +99,16 @@
        These map Tailwind's own namespaces onto runtime custom properties, so a theme file can
        change them from :root without touching a single class string — which is why adding
        them costs nothing in parity. See themes/README.md for what does and does not transfer. */
-    /* Slightly more present than Tailwind's defaults, because they are now doing the work a
-       border used to do. Still soft: a card that announces itself is a card competing with its
-       own contents. */
-    --elevation-1: 0 1px 2px 0 rgb(0 0 0 / 0.06);
-    --elevation-2: 0 1px 3px 0 rgb(0 0 0 / 0.08), 0 1px 2px -1px rgb(0 0 0 / 0.06);
+    /* Flat at rest, lifted when floating — which is what shadcn's current sheet does, and what
+       this port did not: a card, an input and an outline button all carried a shadow the live
+       docs have not had for a while. Nothing about them changes but these two values; the class
+       strings still say shadow-xs and shadow-sm, so parity with upstream's source is untouched
+       and a theme that wants the old look sets them back from :root.
+
+       Levels three and four stay, because shadcn keeps them: a popover, a dropdown and a dialog
+       are ABOVE the page rather than part of it, and a shadow is how that is said. */
+    --elevation-1: 0 0 #0000;
+    --elevation-2: 0 0 #0000;
     --elevation-3: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
     --elevation-4: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
 

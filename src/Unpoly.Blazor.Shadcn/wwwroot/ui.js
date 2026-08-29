@@ -233,6 +233,36 @@
     return () => button.removeEventListener('click', close)
   })
 
+  // The page must not scroll behind a modal. The platform makes the background inert to CLICKS
+  // and to the keyboard, but the wheel still scrolls it — so the dialog sat pinned while the
+  // page slid past behind it, which nothing built on Radix does because Radix locks the scroll.
+  // Counted rather than toggled: drawers nest, and the first one to close must not unlock the
+  // page while another is still open.
+  let locks = 0
+  up.compiler('dialog[data-slot="dialog"], dialog[data-slot="alert-dialog"], ' +
+              'dialog[data-slot="command-dialog"], dialog[data-slot="sheet"], ' +
+              'dialog[data-slot="drawer"]', (dialog) => {
+    const onToggle = () => {
+      // A non-modal drawer does not lock anything: staying usable is the whole point of it.
+      if (dialog.dataset.modal === 'false') return
+      locks += dialog.open ? 1 : -1
+      locks = Math.max(0, locks)
+      document.documentElement.style.overflow = locks > 0 ? 'hidden' : ''
+    }
+
+    const watch = new MutationObserver(onToggle)
+    watch.observe(dialog, { attributes: true, attributeFilter: ['open'] })
+    if (dialog.open) onToggle()
+
+    return () => {
+      watch.disconnect()
+      if (dialog.open && dialog.dataset.modal !== 'false') {
+        locks = Math.max(0, locks - 1)
+        if (locks === 0) document.documentElement.style.overflow = ''
+      }
+    }
+  })
+
   // Clicking the backdrop dismisses. The <dialog> element IS the backdrop area, so a click whose
   // target is the dialog itself — rather than the panel inside it — landed outside.
   up.compiler('dialog[data-dismissable]', (dialog) => {
@@ -494,7 +524,21 @@
     // and needing a CLICK to open a submenu reads as broken. Hovering a plain item closes any
     // submenu hanging off this panel, so moving down the list retracts what you passed.
     let hoverTimer
+    // Where the pointer actually is when the retract timer fires. Crossing the parent's other
+    // rows on the way to an open submenu is the ordinary diagonal path, and it was enough to
+    // retract the submenu out from under the pointer just before it arrived — the report was
+    // "moving into the submenu loses the menu", and it is this.
+    let at = { x: 0, y: 0 }
+    const owned = () => [...panel.querySelectorAll('[data-slot$="-sub-trigger"]')]
+      .map((trigger) => document.getElementById(trigger.dataset.target))
+      .filter((child) => child && child.matches(':popover-open'))
+    const pointerInSubmenu = () => {
+      const under = document.elementFromPoint(at.x, at.y)
+      return !!under && owned().some((child) => child.contains(under))
+    }
+
     const onOver = (event) => {
+      at = { x: event.clientX, y: event.clientY }
       const sub = event.target.closest('[data-slot$="-sub-trigger"]')
       clearTimeout(hoverTimer)
       if (sub && panel.contains(sub)) {
@@ -511,11 +555,11 @@
       if (item && panel.contains(item) && !item.hasAttribute('data-disabled')) item.focus()
       if (item && item.parentElement?.closest('[data-slot]') !== null) {
         hoverTimer = setTimeout(() => {
-          for (const open of panel.querySelectorAll(':scope ~ * [data-slot$="sub-content"]:popover-open')) open.hidePopover()
-          for (const id of [...panel.querySelectorAll('[data-slot$="-sub-trigger"]')].map((s) => s.dataset.target)) {
-            const child = document.getElementById(id)
-            if (child?.matches(':popover-open')) child.hidePopover()
-          }
+          // Not if the pointer has already reached the submenu. It is a sibling in the top
+          // layer rather than a descendant of this panel, so no containment check on the event
+          // can see it — where the pointer IS can.
+          if (pointerInSubmenu()) return
+          for (const child of owned()) child.hidePopover()
         }, 150)
       }
     }
@@ -526,6 +570,9 @@
     // arrow keys still start from the top and nothing traps it outside the menu.
     const onLeave = (event) => {
       if (event.relatedTarget && panel.contains(event.relatedTarget)) return
+      // Leaving INTO this panel's own submenu is not leaving the menu: the row that opened it
+      // has to stay lit, or the trail back to where you came from goes out behind you.
+      if (event.relatedTarget && owned().some((child) => child.contains(event.relatedTarget))) return
       const item = panel.contains(document.activeElement) ? document.activeElement : null
       if (item && item !== panel) panel.focus({ preventScroll: true })
     }

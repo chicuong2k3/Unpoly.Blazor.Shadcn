@@ -73,6 +73,47 @@
         animation: sh-dialog-in 200ms cubic-bezier(0.16, 1, 0.3, 1);
     }
 
+    /* The panel is the containing block for its own corner button. Upstream's DialogContent is
+       `fixed`, which this port drops because the frame does the centring — and dropping it took
+       the positioning context with it, so `absolute top-4 end-4` resolved against the VIEWPORT
+       and the close X drew in the corner of the page, outside the dialog it belongs to.
+
+       Also the panel's own scrolling: a dialog taller than the screen has to keep its box and
+       let the middle scroll, not spill its footer down the page. The height cap is the same
+       one shadcn uses; grid-template-rows keeps the header and footer at their natural size and
+       gives everything between them what is left. */
+    [data-slot="dialog"] > [data-slot="dialog-content"],
+    [data-slot="alert-dialog"] > [data-slot="alert-dialog-content"] {
+        position: relative;
+        max-block-size: calc(100dvh - 4rem);
+        grid-template-rows: auto minmax(0, 1fr) auto;
+        overflow: hidden;
+    }
+    /* The corner button and the title share the top row, and in Arabic they share the same
+       SIDE of it — the X is at the reading end, and so is the end of a long title, so the two
+       collided. Space for it, only when there is one. */
+    [data-slot="dialog-content"]:has(> [data-slot="dialog-close"]) > [data-slot="dialog-header"],
+    [data-slot="alert-dialog-content"]:has(> [data-slot="dialog-close"]) > [data-slot="alert-dialog-header"] {
+        padding-inline-end: 1.5rem;
+    }
+
+    /* A scrollable region inside a dialog shows its scrollbar. The platform's overlay scrollbar
+       takes no space and paints only while scrolling, so a clipped paragraph at the panel edge
+       was the only hint that there was more — which reads as content that has been cut off.
+       Same thin, themed bar the scroll area uses. */
+    [data-slot="dialog-content"] *,
+    [data-slot="alert-dialog-content"] * {
+        scrollbar-width: thin;
+        scrollbar-color: var(--border) transparent;
+    }
+
+    /* A dialog with nothing between its header and footer must not be stretched to the cap by
+       the 1fr row: only a panel that actually has a middle gets one. */
+    [data-slot="dialog"] > [data-slot="dialog-content"]:not(:has(> [data-slot="dialog-header"])),
+    [data-slot="dialog"] > [data-slot="dialog-content"]:not(:has(> [data-slot="dialog-footer"])) {
+        grid-template-rows: none;
+    }
+
     [data-slot="sheet"] {
         margin: 0;
         padding: 0;

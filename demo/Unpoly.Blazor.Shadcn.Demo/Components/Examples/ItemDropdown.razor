@@ -1,20 +1,34 @@
-@* A menu at the end of the row. The row is not a link here: a link with a menu inside it is a
-   link you cannot open without hitting the menu by accident. *@
-<Item Variant="outline" Class="w-[420px]">
-    <ItemMedia><Avatar Class="size-8"><AvatarFallback Class="text-xs">JW</AvatarFallback></Avatar></ItemMedia>
-    <ItemContent><ItemTitle>Jonas Weber</ItemTitle><ItemDescription>Editor</ItemDescription></ItemContent>
-    <ItemActions>
-        <DropdownMenu>
-            <DropdownMenuTrigger Target="item-menu" Variant="ghost" Size="icon-sm"
-                                 aria-label="Actions for Jonas Weber">
-                <Icon Name="ellipsis" />
-            </DropdownMenuTrigger>
-            <DropdownMenuContent Id="item-menu" Align="end" Class="w-44">
-                <DropdownMenuItem>Change role</DropdownMenuItem>
-                <DropdownMenuItem>Resend invitation</DropdownMenuItem>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem Variant="destructive" data-ask="Remove Jonas Weber?">Remove</DropdownMenuItem>
-            </DropdownMenuContent>
-        </DropdownMenu>
-    </ItemActions>
-</Item>
+@* Upstream uses Item the other way round from every other sample here: not a row with a menu in
+   it, but a row INSIDE each menu entry — which is how a picker shows an avatar, a name and an
+   address without three separate class strings per row. *@
+<DropdownMenuTrigger Target="item-dd" Variant="outline">
+    Select <Icon Name="chevron-down" />
+</DropdownMenuTrigger>
+
+<DropdownMenuContent Id="item-dd" Align="end" Class="w-48">
+    @foreach (var (username, email) in People)
+    {
+        <DropdownMenuItem>
+            <Item Size="xs" Class="w-full p-2">
+                <ItemMedia>
+                    <Avatar Class="size-6.5">
+                        <AvatarFallback>@username[..1].ToUpperInvariant()</AvatarFallback>
+                    </Avatar>
+                </ItemMedia>
+                <ItemContent Class="gap-0">
+                    <ItemTitle>@username</ItemTitle>
+                    <ItemDescription Class="leading-none">@email</ItemDescription>
+                </ItemContent>
+            </Item>
+        </DropdownMenuItem>
+    }
+</DropdownMenuContent>
+
+@code {
+    static readonly (string Username, string Email)[] People =
+    [
+        ("shadcn", "shadcn@vercel.com"),
+        ("maxleiter", "maxleiter@vercel.com"),
+        ("evilrabbit", "evilrabbit@vercel.com"),
+    ];
+}

@@ -1,12 +1,14 @@
-@* Two rows, as upstream: one person with an action, then a whole group in the media slot. The
-   stack is negative spacing plus a ring in the page's own colour, so the overlap reads as depth
-   rather than as avatars that have collided. *@
-<div class="flex w-full max-w-md flex-col gap-4">
+@* Two rows, as upstream: one person with a round icon action, then a whole team as a stack in
+   the media slot. The stack is negative spacing plus a ring in the page's own colour, so the
+   overlap reads as depth rather than as avatars that have collided. *@
+<div class="flex w-full max-w-lg flex-col gap-6">
     <Item Variant="outline">
-        <ItemMedia><Avatar Class="size-10"><AvatarFallback>MR</AvatarFallback></Avatar></ItemMedia>
+        <ItemMedia>
+            <Avatar Class="size-10"><AvatarFallback>ER</AvatarFallback></Avatar>
+        </ItemMedia>
         <ItemContent>
-            <ItemTitle>Marta Ruiz</ItemTitle>
-            <ItemDescription>Last active 2 hours ago</ItemDescription>
+            <ItemTitle>Evil Rabbit</ItemTitle>
+            <ItemDescription>Last seen 5 months ago</ItemDescription>
         </ItemContent>
         <ItemActions>
             <Button Variant="outline" Size="icon-sm" Class="rounded-full" aria-label="Invite">
@@ -16,15 +18,19 @@
     </Item>
 
     <Item Variant="outline">
-        <ItemMedia Class="-space-x-2 *:data-[slot=avatar]:ring-2 *:data-[slot=avatar]:ring-background">
-            <Avatar Class="size-8"><AvatarFallback Class="text-xs">MR</AvatarFallback></Avatar>
-            <Avatar Class="size-8"><AvatarFallback Class="text-xs">AL</AvatarFallback></Avatar>
-            <Avatar Class="size-8"><AvatarFallback Class="text-xs">BT</AvatarFallback></Avatar>
+        <ItemMedia>
+            <div class="flex -space-x-2 *:data-[slot=avatar]:ring-2 *:data-[slot=avatar]:ring-background">
+                <Avatar Class="hidden sm:flex"><AvatarFallback>CN</AvatarFallback></Avatar>
+                <Avatar Class="hidden sm:flex"><AvatarFallback>LR</AvatarFallback></Avatar>
+                <Avatar><AvatarFallback>ER</AvatarFallback></Avatar>
+            </div>
         </ItemMedia>
         <ItemContent>
-            <ItemTitle>Fulfilment team</ItemTitle>
-            <ItemDescription>3 people can edit this order</ItemDescription>
+            <ItemTitle>No teams</ItemTitle>
+            <ItemDescription>Create a team to collaborate with others.</ItemDescription>
         </ItemContent>
-        <ItemActions><Badge Variant="secondary">Owner</Badge></ItemActions>
+        <ItemActions>
+            <Button Size="sm" Variant="outline">Create</Button>
+        </ItemActions>
     </Item>
 </div>

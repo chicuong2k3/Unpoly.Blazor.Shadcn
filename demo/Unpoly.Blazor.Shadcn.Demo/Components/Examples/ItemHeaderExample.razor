@@ -1,14 +1,29 @@
-@* A header and a footer around the row, for a card that is a row rather than a panel. *@
-<Item Variant="outline" Class="w-[420px] flex-col items-stretch gap-3">
-    <ItemHeader>
-        <ItemTitle>Order #3201</ItemTitle>
-        <Badge Variant="secondary">Paid</Badge>
-    </ItemHeader>
-    <ItemContent>
-        <ItemDescription>Two items, shipped on 12 March.</ItemDescription>
-    </ItemContent>
-    <ItemFooter>
-        <span class="num text-sm font-medium">$248.00</span>
-        <Button Variant="ghost" Size="sm" Href="/components/table">Details</Button>
-    </ItemFooter>
-</Item>
+@* ItemHeader takes the full width above the content, which is what turns a row into a card: a
+   three-column grid of models, each with its picture on top. *@
+<div class="flex w-full max-w-xl flex-col gap-6">
+    <ItemGroup Class="grid grid-cols-3 gap-4">
+        @foreach (var (name, description, seed) in Models)
+        {
+            <Item Variant="outline" role="listitem" Class="flex-col items-stretch">
+                <ItemHeader>
+                    <img src="@($"https://picsum.photos/seed/{seed}/256/256")" alt=""
+                         width="128" height="128" loading="lazy"
+                         class="aspect-square w-full rounded-sm object-cover" />
+                </ItemHeader>
+                <ItemContent>
+                    <ItemTitle>@name</ItemTitle>
+                    <ItemDescription>@description</ItemDescription>
+                </ItemContent>
+            </Item>
+        }
+    </ItemGroup>
+</div>
+
+@code {
+    static readonly (string Name, string Description, string Seed)[] Models =
+    [
+        ("v0-1.5-sm", "Everyday tasks and UI generation.", "sm"),
+        ("v0-1.5-lg", "Advanced thinking or reasoning.", "lg"),
+        ("v0-2.0-mini", "Open Source model for everyone.", "mini"),
+    ];
+}
