@@ -1,0 +1,30 @@
+@inherits UiComponentBase
+@using Unpoly.Blazor.Shadcn.ECharts.Models
+@* ECharts calendar heatmap — GitHub contributions *@
+
+@if (IsLoading)
+{ <div data-slot="chart-skeleton" class="@SkeletonClasses" style="@($"height:{Height};width:{(Width ?? "100%")}")" role="status"><div class="h-full w-full animate-pulse rounded-md bg-muted"></div></div> }
+else { <EChart Options="@BuildOptions()" Height="@Height" Width="@Width" Theme="@Theme" AriaLabel="@AriaLabel" Class="@Class" AdditionalAttributes="@AdditionalAttributes" /> }
+
+@code {
+    [Parameter] public string Range { get; set; } = "2024";
+    [Parameter] public object? Data { get; set; } // ["2024-01-01", value]
+    [Parameter] public string[]? Colors { get; set; }
+    [Parameter] public string Height { get; set; } = "200px";
+    [Parameter] public string? Width { get; set; }
+    [Parameter] public string Theme { get; set; } = "default";
+    [Parameter] public string? AriaLabel { get; set; }
+    [Parameter] public bool IsLoading { get; set; }
+    [Parameter] public Dictionary<string, object?>? OptionOverride { get; set; }
+    string[] Palette => Colors ?? [];
+    string SkeletonClasses => Cn("block w-full max-w-full rounded-md border p-4", Class);
+    object BuildOptions() => new EChartsOption
+    {
+        Color = Palette.Length>0?Palette:null,
+        Tooltip = new EChartsTooltip{Position="top",Formatter="{c}"},
+        Calendar = new{range=Range},
+        Series = [new EChartsSeries{Type="heatmap",Data=Data,CoordinateSystem="calendar"}],
+        VisualMap = new{min=0,max=100,calculable=true,orient="horizontal",left="center",top="0"},
+        ExtensionData = OptionOverride
+    };
+}

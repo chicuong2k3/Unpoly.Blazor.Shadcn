@@ -1,0 +1,31 @@
+@inherits UiComponentBase
+@using Unpoly.Blazor.Shadcn.ECharts.Models
+@* ECharts radar — Lumeo parity *@
+@if (IsLoading)
+{ <div data-slot="chart-skeleton" class="@SkeletonClasses" style="@($"height:{Height};width:{(Width ?? "100%")}")" role="status"><div class="h-full w-full animate-pulse rounded-md bg-muted"></div></div> }
+else { <EChart Options="@BuildOptions()" Height="@Height" Width="@Width" Theme="@Theme" AriaLabel="@AriaLabel" Class="@Class" AdditionalAttributes="@AdditionalAttributes" /> }
+@code {
+    [Parameter] public EChartsRadarIndicator[] Indicators { get; set; } = [];
+    [Parameter] public double[] Values { get; set; } = [];
+    [Parameter] public IReadOnlyList<ChartSeriesData>? Series { get; set; }
+    [Parameter] public string SeriesName { get; set; } = "Value";
+    [Parameter] public string Shape { get; set; } = "polygon";
+    [Parameter] public bool ShowLegend { get; set; } = true;
+    [Parameter] public bool ShowTooltip { get; set; } = true;
+    [Parameter] public string[]? Colors { get; set; }
+    [Parameter] public string[]? Color { get; set; }
+    [Parameter] public string Height { get; set; } = "350px";
+    [Parameter] public string? Width { get; set; }
+    [Parameter] public string Theme { get; set; } = "default";
+    [Parameter] public string? AriaLabel { get; set; }
+    [Parameter] public bool IsLoading { get; set; }
+    [Parameter] public Dictionary<string, object?>? OptionOverride { get; set; }
+    string[] Palette => Colors ?? Color ?? [];
+    string SkeletonClasses => Cn("block w-full max-w-full rounded-md border p-4", Class);
+    object BuildOptions()
+    {
+        EChartsSeries[] series = Series is {Count:>0} ? Series.Select(s=>new EChartsSeries{Type="radar",Name=s.Name,Data=new[]{new{value=s.Values,name=s.Name}},AreaStyle=new{}}).ToArray()
+            : [new EChartsSeries{Type="radar",Name=SeriesName,Data=new[]{new{value=Values,name=SeriesName}},AreaStyle=new{}}];
+        return new EChartsOption{Color=Palette.Length>0?Palette:null, Tooltip=ShowTooltip?new EChartsTooltip{Trigger="item"}:null, Legend=ShowLegend&&series.Length>1?new EChartsLegend{Data=series.Select(s=>s.Name!).ToArray(),Bottom="0"}:null, Radar=new EChartsRadar{Indicator=Indicators,Shape=Shape}, Series=series, ExtensionData=OptionOverride};
+    }
+}

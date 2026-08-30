@@ -65,6 +65,8 @@ public static class ComponentCatalog
         ["SidebarMenuAction"] = new() { ["AriaLabel"] = "More actions for Inbox" },
         ["SidebarMenuSubButton"] = new() { ["Href"] = "/x" },
         ["AttachmentAction"] = new() { ["AriaLabel"] = "Remove rate-card.xlsx" },
+        ["QrCode"] = new() { ["Value"] = "https://example.com" },
+        ["ImageCompare"] = new() { ["BeforeSrc"] = "/a.jpg", ["AfterSrc"] = "/b.jpg" },
     };
 
     public static IEnumerable<Type> All =>

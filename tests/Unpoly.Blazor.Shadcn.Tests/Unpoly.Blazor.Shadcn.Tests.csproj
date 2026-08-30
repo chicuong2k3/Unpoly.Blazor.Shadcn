@@ -24,6 +24,7 @@
 
   <ItemGroup>
     <ProjectReference Include="../../src/Unpoly.Blazor.Shadcn/Unpoly.Blazor.Shadcn.csproj" />
+    <ProjectReference Include="../../src/Unpoly.Blazor.Shadcn.ECharts/Unpoly.Blazor.Shadcn.ECharts.csproj" />
   </ItemGroup>
 
   <ItemGroup>

@@ -1,24 +1,24 @@
 @inherits UiComponentBase
 
-@* Not a shadcn component — shadcn's docs draw their code blocks with a bespoke MDX pipeline and
-   ship nothing you can use. This is the piece its own documentation needs and does not export,
-   and this library's documentation is built out of this library, so it has to exist here.
+@* CodeBlock — now with Prism.js (https://prismjs.com).
 
-   Three decisions worth stating:
+   Shadcn''s docs use MDX and export nothing; this component is the docs site itself.
+   Previously it rendered raw text with no highlighting ("colour comes back the day
+   someone wants it enough to pay for it"). That day is now: Prism core + autoloader +
+   normalize-whitespace + line-numbers, vendored under wwwroot/prism/ and highlighted
+   via up.compiler(''[data-slot="code-block"]'') so it survives Unpoly fragment swaps.
 
-   The content is `Code`, a string, not ChildContent. Razor would try to parse markup inside a
-   <pre> as components — a snippet containing `<Button>` would render a button rather than show
-   one, which is the opposite of the point.
-
-   No syntax highlighting. Highlighting needs either a parser per language on the client or a
-   build step, and both mean a copy of the snippet in a second form; the whole point of the
-   generated docs is that there is one copy. Colour comes back the day someone wants it enough to
-   pay for it in bytes, and it is a compiler over this element, not a change here.
-
-   The copy button is markup, not a parameter that toggles JavaScript on: the compiler in ui.js
-   binds to [data-slot="code-block-copy"] and does nothing if the clipboard is unavailable, which
-   is the honest failure — a button that silently does nothing is worse than one that is absent,
-   so it hides itself instead. *@
+   Decisions:
+   - Code is still a string, not ChildContent — Razor would parse `<Button>` as a component.
+   - Language is a Prism language (`csharp`, `cshtml`/`razor`, `javascript`, `typescript`,
+     `css`, `html`, `json`, `bash`, `yaml`, `sql`, …). Class `language-xxxx` is added to
+     both <pre> and <code> as Prism recommends; `data-language` is kept for parity/tests.
+   - `ShowLineNumbers` adds `line-numbers` to <pre> (prism-line-numbers.css). Off by default.
+   - Copy button is unchanged — compiler in ui.js reveals it when navigator.clipboard exists.
+     Prism''s own copy plugin is not used to avoid duplicate buttons.
+   - Prism is loaded `data-manual` so it does not auto-highlight on DOMContentLoaded;
+     the compiler calls `Prism.highlightElement` per block and re-runs on every Unpoly swap.
+*@
 
 <div data-slot="code-block" class="@Classes" @attributes="AdditionalAttributes">
     @if (Title is not null || ShowCopy)
@@ -37,26 +37,52 @@
         </div>
     }
 
-    <pre data-slot="code-block-pre" class="overflow-x-auto p-4 text-[12.5px] leading-relaxed"
-         tabindex="0"><code data-slot="code-block-code" data-language="@Language">@Code</code></pre>
+    <pre data-slot="code-block-pre"
+         class="@PreClasses"
+         tabindex="0"><code data-slot="code-block-code"
+                            data-language="@Language"
+                            class="@CodeClasses">@Code</code></pre>
 </div>
 
 @code {
-    /// <summary>The snippet. A string, not markup — see the note above.</summary>
+    /// <summary>The snippet. A string, not markup — Razor would otherwise parse it.</summary>
     [Parameter, EditorRequired] public string Code { get; set; } = "";
 
     /// <summary>Shown in the header, usually a file name.</summary>
     [Parameter] public string? Title { get; set; }
 
-    /// <summary>Recorded on the &lt;code&gt; as data-language, for a highlighter to find later.</summary>
+    /// <summary>Prism language: csharp, cshtml, razor, javascript, typescript, css, html, json, bash, yaml, sql, diff, docker, etc.</summary>
     [Parameter] public string? Language { get; set; }
 
     [Parameter] public bool ShowCopy { get; set; } = true;
 
     [Parameter] public string CopyLabel { get; set; } = "Copy";
 
+    /// <summary>When true, adds Prism line-numbers (requires prism-line-numbers.css/js).</summary>
+    [Parameter] public bool ShowLineNumbers { get; set; }
+
     const string Base =
         "bg-card text-card-foreground overflow-hidden rounded-lg border font-mono";
 
     string Classes => Cn(Base, Class);
+
+    // Normalize Language for Prism: `razor` → `cshtml`, `cs` → `csharp`, `js` → `javascript`, `ts` → `typescript`, `sh` → `bash`, `yml` → `yaml`.
+    string? NormalizedLanguage => Language?.Trim().ToLowerInvariant() switch
+    {
+        "razor" => "cshtml",
+        "cs" => "csharp",
+        "js" => "javascript",
+        "ts" => "typescript",
+        "sh" or "shell" => "bash",
+        "yml" => "yaml",
+        null or "" => null,
+        var other => other
+    };
+
+    string CodeClasses => NormalizedLanguage is null ? "" : $"language-{NormalizedLanguage}";
+
+    string PreClasses => Cn(
+        "overflow-x-auto p-4 text-[12.5px] leading-relaxed",
+        NormalizedLanguage is not null ? $"language-{NormalizedLanguage}" : null,
+        ShowLineNumbers ? "line-numbers" : null);
 }

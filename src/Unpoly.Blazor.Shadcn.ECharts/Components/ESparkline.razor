@@ -1,0 +1,57 @@
+@inherits UiComponentBase
+@using Unpoly.Blazor.Shadcn.ECharts.Models
+
+@* ESparkline — ECharts sparkline for Blazor static SSR + Unpoly. Reuses echarts.js lazy-loader.
+   Tiny inline chart: no axes, no tooltip unless enabled. For pure SVG fallback without ECharts,
+   use Sparkline in core. *@
+
+<EChart Options="@BuildOptions()" Height="@Height" Width="@Width" Theme="@Theme"
+        AriaLabel="@AriaLabel" Class="@Class" AdditionalAttributes="@AdditionalAttributes" />
+
+@code {
+    [Parameter] public double[] Data { get; set; } = [];
+    [Parameter] public string Type { get; set; } = "line"; // line | area | bars
+    [Parameter] public bool ShowArea { get; set; }
+    [Parameter] public bool ShowDots { get; set; }
+    [Parameter] public double StrokeWidth { get; set; } = 1.5;
+    [Parameter] public string? Color { get; set; }
+    [Parameter] public string Height { get; set; } = "28px";
+    [Parameter] public string? Width { get; set; } = "100px";
+    [Parameter] public string Theme { get; set; } = "default";
+    [Parameter] public string? AriaLabel { get; set; }
+    [Parameter] public Dictionary<string, object?>? OptionOverride { get; set; }
+
+    object BuildOptions()
+    {
+        var vals = Data;
+        var isBars = Type == "bars";
+        var isArea = Type == "area" || ShowArea;
+
+        // Sparkline: hide everything, just the shape. No grid, no axes labels.
+        var seriesType = isBars ? "bar" : "line";
+        var series = new EChartsSeries
+        {
+            Type = seriesType,
+            Data = vals,
+            ShowSymbol = ShowDots,
+            Smooth = true,
+            LineStyle = new { width = StrokeWidth },
+            AreaStyle = isArea ? new { opacity = 0.2 } : null,
+            ItemStyle = new { color = Color ?? "hsl(var(--primary))" },
+            SymbolSize = ShowDots ? 4 : 0
+        };
+
+        var opt = new EChartsOption
+        {
+            Color = Color is not null ? new[] { Color } : null,
+            Grid = new EChartsGrid { Left = "0", Right = "0", Top = "2", Bottom = "2", ContainLabel = false },
+            XAxis = new EChartsAxis { Type = "category", Data = Enumerable.Range(0, vals.Length).Select(i => i.ToString()).ToArray(), BoundaryGap = false, AxisLabel = new { show = false }, AxisLine = new { show = false }, SplitLine = new { show = false } },
+            YAxis = new { type = "value", show = false, min = "dataMin", max = "dataMax" },
+            Tooltip = new EChartsTooltip { Show = false },
+            Series = [series],
+            AnimationDuration = 300,
+            ExtensionData = OptionOverride
+        };
+        return opt;
+    }
+}

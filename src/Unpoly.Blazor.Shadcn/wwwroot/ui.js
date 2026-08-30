@@ -34,6 +34,41 @@
   //   }
   const config = () => window.shadcnUi || {}
 
+  // ---- lazy assets — only when a component that needs them is actually on the page -----------
+  // SSR + Unpoly renders HTML on the server. The old wiring loaded prism.js / qrcode.js for
+  // *every* request even when the page had no <CodeBlock> or <QrCode>. That is 80 KB + 20 KB
+  // of blocking download on a marketing page that ships no code at all. Each compiler below
+  // calls `loadScript` on first use and caches the promise, so a request that never renders the
+  // component never fetches the file — and a request that renders ten blocks fetches it once.
+  const loaded = new Set()
+  const loadScript = (src) => {
+    if (loaded.has(src) || document.querySelector(`script[src="${CSS.escape(src)}"]`)) {
+      loaded.add(src); return Promise.resolve()
+    }
+    return new Promise((resolve, reject) => {
+      const s = document.createElement('script')
+      s.src = src
+      s.defer = true
+      s.onload = () => { loaded.add(src); resolve() }
+      s.onerror = reject
+      document.head.appendChild(s)
+    })
+  }
+  const ensurePrism = () => {
+    if (typeof Prism !== 'undefined' && Prism.highlightElement) return Promise.resolve()
+    window.Prism = window.Prism || {}; window.Prism.manual = true
+    // core prism.js must load first; languages are bundled via explicit script tags in the page
+    // when the app opts in, otherwise autoloader fetches the single language needed for this block
+    return loadScript('_content/Unpoly.Blazor.Shadcn/prism/prism.js')
+      .then(() => loadScript('_content/Unpoly.Blazor.Shadcn/prism/prism-normalize-whitespace.min.js'))
+      .then(() => loadScript('_content/Unpoly.Blazor.Shadcn/prism/prism-line-numbers.min.js'))
+      .catch(() => {})
+  }
+  const ensureQrcode = () => {
+    if (typeof QRCode !== 'undefined') return Promise.resolve()
+    return loadScript('_content/Unpoly.Blazor.Shadcn/qrcodejs/qrcode.min.js').catch(() => {})
+  }
+
   // ---- cn ------------------------------------------------------------------------------------
   const cn = (...parts) => parts.filter(Boolean).join(' ')
 
@@ -1887,6 +1922,139 @@
   })
 
   // =============================================================================================
+  // CodeBlock — Prism highlight (https://prismjs.com)
+  // =============================================================================================
+  // Static SSR renders <pre><code class="language-xxxx"> as text. Unpoly swaps fragments underneath,
+  // so highlighting must run on every insertion (first load AND every fragment swap) via up.compiler.
+  // Prism is loaded `data-manual` so it does not auto-highlight on DOMContentLoaded; this compiler
+  // calls highlightElement per block. No destructor needed — Prism writes spans inside <code> and
+  // Unpoly removes the whole block on the next swap.
+  // `prism-normalize-whitespace` trims, `prism-line-numbers` adds the gutter when <pre> has
+  // `line-numbers`. Autoloader lazily fetches missing languages from the CDN or from ./components/
+  // relative to prism.js when self-hosted.
+  up.compiler('[data-slot="code-block"]', (root) => {
+    const code = root.querySelector('[data-slot="code-block-code"]')
+    if (!code) return
+    if (!code.className.match(/\blanguage-/)) code.classList.add('language-none')
+    const run = () => {
+      if (typeof Prism === 'undefined' || !Prism.highlightElement) return
+      try { Prism.highlightElement(code) } catch (_) {}
+    }
+    if (typeof Prism !== 'undefined' && Prism.highlightElement) {
+      const m = code.className.match(/\blanguage-([\w-]+)\b/)
+      const lang = m && m[1] !== 'none' ? m[1] : null
+      if (lang && !Prism.languages[lang]) {
+        loadScript(`_content/Unpoly.Blazor.Shadcn/prism/prism-${lang}.min.js`).then(run).catch(run)
+      } else run()
+    } else {
+      ensurePrism().then(() => {
+        const m = code.className.match(/\blanguage-([\w-]+)\b/)
+        const lang = m && m[1] !== 'none' ? m[1] : null
+        if (lang && Prism.languages && !Prism.languages[lang]) {
+          return loadScript(`_content/Unpoly.Blazor.Shadcn/prism/prism-${lang}.min.js`).catch(()=>{}).then(run)
+        }
+        run()
+      })
+    }
+  })
+
+  // =============================================================================================
+  // QR Code — qrcodejs (https://github.com/davidshimjs/qrcodejs)
+  // =============================================================================================
+  // Static SSR renders <div data-qrcode data-value="..."> empty. This compiler fills it via
+  // `new QRCode(el, {text, width, height, colorDark, colorLight, correctLevel})`. On every
+  // Unpoly fragment swap the compiler re-runs, so a value change via markup just works.
+  // `colorDark`/`colorLight` may be CSS variables (`var(--foreground)`) — resolved via
+  // getComputedStyle so dark mode just works when no explicit colors are given.
+  // Quiet zone is CSS padding on the generated canvas/img; `data-margin="0"` removes it.
+  up.compiler('[data-slot="qr-code"][data-qrcode]', (el) => {
+    const cssVar = (name, fallback) => {
+      const v = getComputedStyle(document.documentElement).getPropertyValue(name).trim()
+      return v || fallback
+    }
+    const resolveColor = (raw, fallback) => {
+      if (!raw) return fallback
+      const m = raw.match(/^var\((--[^)]+)\)$/)
+      if (m) return cssVar(m[1], fallback)
+      return raw
+    }
+    const levelMap = { L: 1, M: 0, Q: 3, H: 2, '1': 1, '0': 0, '3': 3, '2': 2 }
+
+    const build = () => {
+      if (typeof QRCode === 'undefined') return
+      const text = el.dataset.value ?? ''
+      if (!text) { el.innerHTML = ''; return }
+
+      const size = parseInt(el.dataset.size || '128', 10) || 128
+      const rawLevel = (el.dataset.correctLevel || 'M').toUpperCase()
+      const correctLevel = levelMap[rawLevel] ?? 0
+
+      const colorDark = resolveColor(el.dataset.colorDark, cssVar('--foreground', '#0a0a0a'))
+      const colorLight = resolveColor(el.dataset.colorLight, cssVar('--card', '#ffffff') || '#ffffff')
+
+      const margin = parseInt(el.dataset.margin || '4', 10)
+      el.style.padding = Number.isFinite(margin) && margin > 0 ? margin + 'px' : '0'
+      el.style.background = colorLight
+
+      el.innerHTML = ''
+      new QRCode(el, { text, width: size, height: size, colorDark, colorLight, correctLevel })
+    }
+
+    const init = () => {
+      if (typeof QRCode === 'undefined') {
+        ensureQrcode().then(build).catch(() => {})
+      } else build()
+    }
+    init()
+
+    const mo = new MutationObserver((muts) => {
+      for (const m of muts) {
+        if (m.attributeName === 'data-value' || m.attributeName === 'data-size' ||
+            m.attributeName === 'data-correct-level' || m.attributeName === 'data-color-dark' ||
+            m.attributeName === 'data-color-light' || m.attributeName === 'data-margin') {
+          build(); break
+        }
+      }
+    })
+    mo.observe(el, { attributes: true, attributeFilter: ['data-value','data-size','data-correct-level','data-color-dark','data-color-light','data-margin'] })
+
+    // Rebuild on theme switch so cssVar-resolved colors pick up the new palette
+    const themeMo = new MutationObserver(build)
+    themeMo.observe(document.documentElement, { attributes: true, attributeFilter: ['class','data-theme','style'] })
+
+    return () => {
+      mo.disconnect()
+      themeMo.disconnect()
+      el.innerHTML = ''
+    }
+  })
+
+  // =============================================================================================
+  // ImageCompare — img-comparison-slider WC (sneas, 3KB)
+  // =============================================================================================
+  // Static SSR renders <img-comparison-slider> with two <img slot="first/second">. This compiler
+  // lazy-loads the WC definition only when [data-slot="image-compare"] is on the page, so a landing
+  // page with no compare never fetches the 11KB script.
+  up.compiler('[data-slot="image-compare"][data-image-compare]', (el) => {
+    const slider = el.querySelector('img-comparison-slider')
+    if (!slider) return
+    const ensure = () => {
+      if (customElements.get('img-comparison-slider')) {
+        slider.value = el.dataset.position || '50'
+        return Promise.resolve()
+      }
+      return loadScript('_content/Unpoly.Blazor.Shadcn/image-compare/img-comparison-slider.js')
+        .then(() => { slider.value = el.dataset.position || '50' }).catch(()=>{})
+    }
+    ensure()
+    const mo = new MutationObserver((muts) => {
+      for (const m of muts) if (m.attributeName === 'data-position') { slider.value = el.dataset.position || '50'; break }
+    })
+    mo.observe(el, { attributes: true, attributeFilter: ['data-position'] })
+    return () => mo.disconnect()
+  })
+
+  // =============================================================================================
   // Command
   // =============================================================================================
   // Upstream is cmdk, which keeps the filtered list in React state. Here every item is already in
@@ -2610,27 +2778,6 @@
       if (name !== null) input.setAttribute('name', name)
       input.readOnly = false
     }
-  })
-
-  // =============================================================================================
-  // TagsInput — the multi-select shadcn does not ship
-  // =============================================================================================
-  // Tom Select (vendored under /tomselect, Apache-2.0). A shop with forty collections should not
-  // make an operator scroll a wall of checkboxes to tick two. It enhances a real <select multiple>,
-  // so the form posts exactly as it did and still works with scripting off.
-
-  up.compiler('select[data-slot="tags-input"]', (select) => {
-    if (typeof TomSelect !== 'function') { console.warn('[ui] TomSelect not loaded'); return }
-
-    const control = new TomSelect(select, {
-      plugins: ['remove_button'],
-      placeholder: select.dataset.placeholder || 'Search…',
-      maxOptions: null,
-      hideSelected: true,
-      searchField: ['text'],
-    })
-
-    return () => control.destroy()
   })
 
   // =============================================================================================

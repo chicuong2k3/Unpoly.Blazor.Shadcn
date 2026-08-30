@@ -14,12 +14,16 @@
 @import "../../../themes/fluent.css";
 
 /* The CLI does not pick up .razor on its own — without these every utility written in markup is
-   silently dropped. ui.js is here because it builds the Select panel, the dropdown and the
-   confirm dialog out of class strings that exist nowhere else. */
+    silently dropped. ui.js is here because it builds the Select panel, the dropdown and the
+    confirm dialog out of class strings that exist nowhere else. */
 @source "../Components/**/*.razor";
 @source "../../../src/Unpoly.Blazor.Shadcn/Components/**/*.razor";
 @source "../../../src/Unpoly.Blazor.Shadcn/ButtonVariants.cs";
 @source "../../../src/Unpoly.Blazor.Shadcn/wwwroot/ui.js";
+@source "../../../src/Unpoly.Blazor.Shadcn.ECharts/Components/**/*.razor";
+@source "../../../src/Unpoly.Blazor.Shadcn.ECharts/wwwroot/echarts.js";
+@source "../../../src/Unpoly.Blazor.Shadcn.Maps/Components/**/*.razor";
+@source "../../../src/Unpoly.Blazor.Shadcn.Maps/wwwroot/map/map.js";
 
 @layer base {
     body { @apply bg-background text-foreground antialiased; }

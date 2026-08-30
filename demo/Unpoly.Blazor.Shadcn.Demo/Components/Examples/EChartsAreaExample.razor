@@ -1,0 +1,8 @@
+@using Unpoly.Blazor.Shadcn.ECharts.Components
+
+<EAreaChart Categories="@Categories" Values="@Values" SeriesName="Orders" Height="280px" AriaLabel="Area chart" />
+
+@code {
+    string[] Categories = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
+    double[] Values = [120, 132, 101, 134, 90, 230, 210];
+}

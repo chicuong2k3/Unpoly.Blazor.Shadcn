@@ -1,0 +1,51 @@
+@inherits UiComponentBase
+
+@* Map — MapLibre GL geographic map, Lumeo.Maps parity.
+   Static SSR renders a div with data-* attributes; a up.compiler lazy-loads maplibre-gl.js/css
+   and creates the map. Separated into Unpoly.Blazor.Shadcn.Maps so apps without maps never fetch ~150KB MapLibre.
+   Style "Auto" follows site theme (light/dark) via data-theme. *@
+
+<div data-slot="map"
+     data-map
+     data-center-lat="@CenterLat"
+     data-center-lng="@CenterLng"
+     data-zoom="@Zoom"
+     data-style="@Style"
+     data-interactive="@(Interactive ? "true" : "false")"
+     style="@StyleValue"
+     class="@Classes"
+     role="region"
+     aria-label="@AriaLabel"
+     @attributes="AdditionalAttributes">
+    <div data-map-container class="h-full w-full"></div>
+    <div hidden data-map-markers>@ChildContent</div>
+</div>
+
+@code {
+    /// <summary>Center latitude. Default Ho Chi Minh City.</summary>
+    [Parameter] public double CenterLat { get; set; } = 10.8231;
+
+    /// <summary>Center longitude.</summary>
+    [Parameter] public double CenterLng { get; set; } = 106.6297;
+
+    /// <summary>Zoom level 0-22. Default 12.</summary>
+    [Parameter] public double Zoom { get; set; } = 12;
+
+    /// <summary>MapLibre style URL or preset: "Auto" follows theme, or raw style.json URL.</summary>
+    [Parameter] public string Style { get; set; } = "Auto";
+
+    /// <summary>Whether map is interactive (drag/zoom). Default true.</summary>
+    [Parameter] public bool Interactive { get; set; } = true;
+
+    /// <summary>Height CSS. Default 350px.</summary>
+    [Parameter] public string Height { get; set; } = "350px";
+
+    /// <summary>Width CSS. Default 100%.</summary>
+    [Parameter] public string? Width { get; set; }
+
+    [Parameter] public string? AriaLabel { get; set; } = "Map";
+
+    string StyleValue => $"height:{Height};width:{(Width ?? "100%")};";
+
+    string Classes => Cn("relative w-full overflow-hidden rounded-lg border bg-muted", Class);
+}

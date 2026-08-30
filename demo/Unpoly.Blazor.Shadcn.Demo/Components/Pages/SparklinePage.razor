@@ -1,0 +1,34 @@
+@page "/components/sparkline"
+
+<PageTitle>Sparkline — Unpoly.Blazor.Shadcn</PageTitle>
+
+<h1 class="doc-h1">Sparkline</h1>
+<p class="doc-lede">Compact inline SVG trend — drop in table cells, KPI strips. No JS, pure Razor SVG.</p>
+
+<h2 class="doc-h2">Line</h2>
+<Sparkline Data="@data" Type="line" Width="120px" Height="28px" />
+
+<h2 class="doc-h2">Area + Bars</h2>
+<div class="flex gap-6">
+    <Sparkline Data="@data" Type="area" ShowArea Width="120px" Height="28px" />
+    <Sparkline Data="@data" Type="bars" Width="120px" Height="28px" />
+</div>
+
+<h2 class="doc-h2">In Table</h2>
+<Table>
+    <TableHeader><TableRow><TableHead>Ticker</TableHead><TableHead>Price</TableHead><TableHead>Trend</TableHead></TableRow></TableHeader>
+    <TableBody>
+        <TableRow><TableCell>AAPL</TableCell><TableCell>$189.42</TableCell><TableCell><Sparkline Data="@aapl" Width="80px" Height="20px" Color="hsl(var(--chart-2))" /></TableCell></TableRow>
+        <TableRow><TableCell>TSLA</TableCell><TableCell>$243.11</TableCell><TableCell><Sparkline Data="@tsla" Width="80px" Height="20px" Color="hsl(var(--destructive))" /></TableCell></TableRow>
+    </TableBody>
+</Table>
+
+<h2 class="doc-h2">ECharts Sparkline (optional)</h2>
+<p class="doc-note">When ECharts is available, use <code>ESparkline</code> for area/bars with lazy-load.</p>
+<ESparkline Data="@data" Type="area" ShowArea Width="120px" Height="32px" />
+
+@code {
+    double[] data = [12, 18, 9, 22, 8, 19, 13, 14, 23, 18, 46, 52];
+    double[] aapl = [5, 8, 6, 10, 7, 9, 12, 11, 13, 10];
+    double[] tsla = [13, 11, 12, 8, 9, 6, 7, 5, 4, 6];
+}

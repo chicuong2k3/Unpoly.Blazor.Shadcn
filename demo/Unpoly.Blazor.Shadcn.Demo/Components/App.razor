@@ -24,7 +24,9 @@
 
         <link rel="stylesheet" href="@($"app.css?v={Stamp}")" />
         <link rel="stylesheet" href="_content/Unpoly.Blazor.Shadcn/toastify/toastify.css" />
-        <link rel="stylesheet" href="_content/Unpoly.Blazor.Shadcn/tomselect/tom-select.min.css" />
+        <link rel="stylesheet" href="_content/Unpoly.Blazor.Shadcn/prism/prism.css" />
+        <link rel="stylesheet" href="_content/Unpoly.Blazor.Shadcn/prism/prism-line-numbers.css" />
+        <link rel="stylesheet" href="_content/Unpoly.Blazor.Shadcn/prism/prism-shadcn.css" />
 
         <script>
             // Inline and synchronous on purpose. Anything deferred paints the default theme first.
@@ -35,10 +37,14 @@
             })();
         </script>
 
+        @* Prism, QRCode, ECharts are lazy-loaded by up.compiler inside ui.js / echarts.js
+           only when a [data-slot="code-block"], [data-slot="qr-code"] or [data-echarts] is actually
+           on the page. No request for those ~1.1MB on a landing page that ships no chart or code. *@
         <script src="_content/Unpoly.Blazor.Shadcn/airdatepicker/air-datepicker.js" defer></script>
         <script src="_content/Unpoly.Blazor.Shadcn/toastify/toastify.js" defer></script>
-        <script src="_content/Unpoly.Blazor.Shadcn/tomselect/tom-select.complete.min.js" defer></script>
         <script src="@($"_content/Unpoly.Blazor.Shadcn/ui.js?v={Stamp}")" defer></script>
+        <script src="@($"_content/Unpoly.Blazor.Shadcn.ECharts/echarts.js?v={Stamp}")" defer></script>
+        <script src="@($"_content/Unpoly.Blazor.Shadcn.Maps/map/map.js?v={Stamp}")" defer></script>
         <script src="@($"demo.js?v={Stamp}")" defer></script>
 
         <UnpolyHead />

@@ -1,0 +1,19 @@
+@* MapMarker — declarative marker for Map. Renders hidden; JS reads data-* and creates MapLibre marker. *@
+
+<div data-slot="map-marker"
+     data-marker
+     data-lat="@Lat"
+     data-lng="@Lng"
+     data-popup="@Popup"
+     data-draggable="@(Draggable ? "true" : null)"
+     hidden>
+    @ChildContent
+</div>
+
+@code {
+    [Parameter] public double Lat { get; set; }
+    [Parameter] public double Lng { get; set; }
+    [Parameter] public string? Popup { get; set; }
+    [Parameter] public bool Draggable { get; set; }
+    [Parameter] public RenderFragment? ChildContent { get; set; }
+}

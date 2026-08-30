@@ -1,0 +1,44 @@
+@inherits UiComponentBase
+@using Unpoly.Blazor.Shadcn.ECharts.Models
+@* ECharts gauge — speedometer with pointer and color zones *@
+
+@if (IsLoading)
+{ <div data-slot="chart-skeleton" class="@SkeletonClasses" style="@($"height:{Height};width:{(Width ?? "100%")}")" role="status"><div class="h-full w-full animate-pulse rounded-md bg-muted"></div></div> }
+else { <EChart Options="@BuildOptions()" Height="@Height" Width="@Width" Theme="@Theme" AriaLabel="@AriaLabel" Class="@Class" AdditionalAttributes="@AdditionalAttributes" /> }
+
+@code {
+    [Parameter] public double Value { get; set; }
+    [Parameter] public double Min { get; set; } = 0;
+    [Parameter] public double Max { get; set; } = 100;
+    [Parameter] public string Name { get; set; } = "Gauge";
+    [Parameter] public string? Unit { get; set; }
+    [Parameter] public bool ShowPointer { get; set; } = true;
+    [Parameter] public string[]? Colors { get; set; }
+    [Parameter] public string Height { get; set; } = "350px";
+    [Parameter] public string? Width { get; set; }
+    [Parameter] public string Theme { get; set; } = "default";
+    [Parameter] public string? AriaLabel { get; set; }
+    [Parameter] public bool IsLoading { get; set; }
+    [Parameter] public Dictionary<string, object?>? OptionOverride { get; set; }
+    string[] Palette => Colors ?? [];
+    string SkeletonClasses => Cn("block w-full max-w-full rounded-md border p-4", Class);
+    object BuildOptions()
+    {
+        var detailFmt = Unit is null ? "{value}" : "{value}" + Unit;
+        return new EChartsOption
+        {
+            Color = Palette.Length>0?Palette:null,
+            Tooltip = new EChartsTooltip{Formatter="{a} <br/>{b} : {c}"},
+            Series = [new EChartsSeries{
+                Type="gauge", Name=Name, Data=new[]{new{value=Value,name=Name}},
+                ExtensionData=new Dictionary<string,object?>{
+                    ["min"]=Min,["max"]=Max,
+                    ["pointer"]=new{show=ShowPointer},
+                    ["detail"]=new{valueAnimation=true,formatter=detailFmt},
+                    ["axisLine"]=new{lineStyle=new{width=10}}
+                }
+            }],
+            ExtensionData = OptionOverride
+        };
+    }
+}

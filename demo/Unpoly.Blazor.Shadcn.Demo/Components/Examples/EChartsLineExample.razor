@@ -1,0 +1,8 @@
+@using Unpoly.Blazor.Shadcn.ECharts.Components
+
+<ELineChart Categories="@Categories" Values="@Values" SeriesName="Visits" Smooth Height="280px" AriaLabel="Line chart" />
+
+@code {
+    string[] Categories = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
+    double[] Values = [820, 932, 901, 934, 1290, 1330, 1320];
+}

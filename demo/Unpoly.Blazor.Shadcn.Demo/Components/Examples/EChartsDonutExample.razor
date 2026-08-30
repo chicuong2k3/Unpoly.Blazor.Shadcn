@@ -1,0 +1,15 @@
+@using Unpoly.Blazor.Shadcn.ECharts.Components
+@using Unpoly.Blazor.Shadcn.ECharts.Models
+
+<EDonutChart Data="@Data" Height="300px" AriaLabel="Donut chart" />
+
+@code {
+    IEnumerable<EChartDataPoint> Data =
+    [
+        new("Search", 335),
+        new("Direct", 310),
+        new("Email", 234),
+        new("Union", 135),
+        new("Video", 148),
+    ];
+}

@@ -4,6 +4,8 @@
   </Folder>
   <Folder Name="/src/">
     <Project Path="src/Unpoly.Blazor.Shadcn/Unpoly.Blazor.Shadcn.csproj" />
+    <Project Path="src/Unpoly.Blazor.Shadcn.ECharts/Unpoly.Blazor.Shadcn.ECharts.csproj" />
+    <Project Path="src/Unpoly.Blazor.Shadcn.Maps/Unpoly.Blazor.Shadcn.Maps.csproj" />
   </Folder>
   <Folder Name="/tests/">
     <Project Path="tests/Unpoly.Blazor.Shadcn.Tests/Unpoly.Blazor.Shadcn.Tests.csproj" />

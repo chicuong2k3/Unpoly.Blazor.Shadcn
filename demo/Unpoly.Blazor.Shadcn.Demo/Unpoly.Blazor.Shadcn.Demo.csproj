@@ -18,6 +18,8 @@
   <ItemGroup>
     <PackageReference Include="Unpoly.Blazor" Version="0.1.0" />
     <ProjectReference Include="../../src/Unpoly.Blazor.Shadcn/Unpoly.Blazor.Shadcn.csproj" />
+    <ProjectReference Include="../../src/Unpoly.Blazor.Shadcn.ECharts/Unpoly.Blazor.Shadcn.ECharts.csproj" />
+    <ProjectReference Include="../../src/Unpoly.Blazor.Shadcn.Maps/Unpoly.Blazor.Shadcn.Maps.csproj" />
   </ItemGroup>
 
   <!-- Every example is rendered AND shown as source, from the same file. Copying the .razor

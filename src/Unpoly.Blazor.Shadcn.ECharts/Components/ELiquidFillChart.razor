@@ -1,0 +1,31 @@
+@inherits UiComponentBase
+@using Unpoly.Blazor.Shadcn.ECharts.Models
+@* ECharts liquidFill — requires echarts-liquidfill plugin. Falls back gracefully. *@
+
+@if (IsLoading)
+{ <div data-slot="chart-skeleton" class="@SkeletonClasses" style="@($"height:{Height};width:{(Width ?? "100%")}")" role="status"><div class="h-full w-full animate-pulse rounded-md bg-muted"></div></div> }
+else { <EChart Options="@BuildOptions()" Height="@Height" Width="@Width" Theme="@Theme" AriaLabel="@AriaLabel" Class="@Class" AdditionalAttributes="@AdditionalAttributes" /> }
+
+@code {
+    [Parameter] public double Value { get; set; } // 0..1
+    [Parameter] public string Shape { get; set; } = "circle";
+    [Parameter] public string[]? Colors { get; set; }
+    [Parameter] public string Height { get; set; } = "350px";
+    [Parameter] public string? Width { get; set; }
+    [Parameter] public string Theme { get; set; } = "default";
+    [Parameter] public string? AriaLabel { get; set; }
+    [Parameter] public bool IsLoading { get; set; }
+    [Parameter] public Dictionary<string, object?>? OptionOverride { get; set; }
+    string[] Palette => Colors ?? [];
+    string SkeletonClasses => Cn("block w-full max-w-full rounded-md border p-4", Class);
+    object BuildOptions() => new EChartsOption
+    {
+        Color = Palette.Length>0?Palette:null,
+        Tooltip = new EChartsTooltip{Formatter="{a} {b}: {c}"},
+        Series = [new EChartsSeries{
+            Type="liquidFill", Data=new[]{Value},
+            ExtensionData=new Dictionary<string,object?>{["shape"]=Shape,["outline"]=new{show=true}}
+        }],
+        ExtensionData = OptionOverride
+    };
+}

@@ -1,0 +1,100 @@
+@inherits UiComponentBase
+@using Unpoly.Blazor.Shadcn.ECharts.Models
+
+@* ECharts bar chart — Lumeo parity, shadcn palette, static SSR. *@
+
+@if (IsLoading)
+{
+    <div data-slot="chart-skeleton" class="@SkeletonClasses" style="@($"height:{Height};width:{(Width ?? "100%")}")" role="status" aria-label="Loading chart">
+        <div class="h-full w-full animate-pulse rounded-md bg-muted"></div>
+    </div>
+}
+else
+{
+    <EChart Options="@BuildOptions()" Height="@Height" Width="@Width" Theme="@Theme"
+            AriaLabel="@AriaLabel" Class="@Class" AdditionalAttributes="@AdditionalAttributes" />
+    @if (AccessibilityLayer)
+    {
+        <table class="sr-only"><caption>@(AriaLabel ?? SeriesName)</caption>
+            <thead><tr><th>Category</th><th>@SeriesName</th></tr></thead>
+            <tbody>@foreach (var i in Enumerable.Range(0, Categories.Length)) { <tr><th>@Categories[i]</th><td>@(i < Values.Length ? Values[i] : 0)</td></tr> }</tbody>
+        </table>
+    }
+}
+
+@code {
+    // Data
+    [Parameter] public string[] Categories { get; set; } = [];
+    [Parameter] public double[] Values { get; set; } = [];
+    [Parameter] public IReadOnlyList<ChartSeriesData>? Series { get; set; }
+    [Parameter] public string SeriesName { get; set; } = "Value";
+    [Parameter] public bool Horizontal { get; set; }
+    [Parameter] public string? Stack { get; set; }
+    [Parameter] public bool Stacked { get; set; }
+
+    // Visual toggles — Lumeo parity
+    [Parameter] public bool ShowLegend { get; set; } = true;
+    [Parameter] public bool ShowTooltip { get; set; } = true;
+    [Parameter] public bool ShowDataLabels { get; set; }
+    [Parameter] public string LabelPosition { get; set; } = "top";
+    [Parameter] public string? LabelFormat { get; set; }
+    [Parameter] public string[]? Colors { get; set; }
+    [Parameter] public string[]? Color { get; set; }
+    [Parameter] public bool DataZoom { get; set; }
+    [Parameter] public bool Toolbox { get; set; }
+    [Parameter] public int? AnimationDuration { get; set; }
+    [Parameter] public string? AnimationEasing { get; set; }
+    [Parameter] public string Height { get; set; } = "350px";
+    [Parameter] public string? Width { get; set; }
+    [Parameter] public string Theme { get; set; } = "default";
+    [Parameter] public string? AriaLabel { get; set; }
+    [Parameter] public bool IsLoading { get; set; }
+    [Parameter] public bool AccessibilityLayer { get; set; } = true;
+    [Parameter] public Dictionary<string, object?>? OptionOverride { get; set; }
+    [Parameter] public int LabelRotate { get; set; }
+
+    string[] Palette => Colors ?? Color ?? [];
+    string SkeletonClasses => Cn("block w-full max-w-full rounded-md border p-4", Class);
+
+    object BuildOptions()
+    {
+        var xAxis = Horizontal
+            ? (object)new { type = "value" }
+            : new EChartsAxis { Type = "category", Data = Categories, BoundaryGap = true, AxisLabel = LabelRotate != 0 ? new { rotate = LabelRotate } : null };
+        var yAxis = Horizontal
+            ? (object)new EChartsAxis { Type = "category", Data = Categories, BoundaryGap = true, AxisLabel = LabelRotate != 0 ? new { rotate = LabelRotate } : null }
+            : new { type = "value" };
+
+        EChartsSeries[] series;
+        if (Series is { Count: > 0 })
+        {
+            series = Series.Select(s => new EChartsSeries
+            {
+                Type = "bar", Name = s.Name, Data = s.Values, Stack = Stacked ? (s.Stack ?? "total") : s.Stack,
+                Label = ShowDataLabels ? new { show = true, position = LabelPosition, formatter = LabelFormat } : null
+            }).ToArray();
+        }
+        else
+        {
+            series = [ new EChartsSeries
+            {
+                Type = "bar", Name = SeriesName, Data = Values, Stack = Stacked ? (Stack ?? "total") : Stack,
+                Label = ShowDataLabels ? new { show = true, position = LabelPosition, formatter = LabelFormat } : null
+            }];
+        }
+
+        var opt = new EChartsOption
+        {
+            Color = Palette.Length > 0 ? Palette : null,
+            Tooltip = ShowTooltip ? new EChartsTooltip { Trigger = "axis" } : null,
+            Legend = ShowLegend && series.Length > 1 ? new EChartsLegend { Data = series.Select(s => s.Name!).ToArray(), Bottom = "0" } : null,
+            Grid = new EChartsGrid { Left = "3%", Right = "4%", Bottom = ShowLegend && series.Length > 1 ? "12%" : "3%", ContainLabel = true },
+            XAxis = xAxis, YAxis = yAxis, Series = series,
+            DataZoom = DataZoom ? new[] { new { type = "slider" } } : null,
+            Toolbox = Toolbox ? new { feature = new { saveAsImage = new { }, dataZoom = new { }, restore = new { } } } : null,
+            AnimationDuration = AnimationDuration, AnimationEasing = AnimationEasing,
+            ExtensionData = OptionOverride
+        };
+        return opt;
+    }
+}

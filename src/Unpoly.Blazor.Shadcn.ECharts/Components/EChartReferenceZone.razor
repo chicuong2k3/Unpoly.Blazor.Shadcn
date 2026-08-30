@@ -1,0 +1,10 @@
+@* Declarative reference band — shaded rectangle between two values. Lumeo parity: ChartReferenceZone.
+   Place inside a typed chart; it emits markArea for the underlying option. *@
+<span hidden data-chart-reference-zone data-from="@From" data-to="@To" data-axis="@Axis" data-color="@Color"></span>
+@code {
+    [Parameter] public double From { get; set; }
+    [Parameter] public double To { get; set; }
+    [Parameter] public string Axis { get; set; } = "y";
+    [Parameter] public string? Color { get; set; }
+    [CascadingParameter] public EChart? ParentChart { get; set; }
+}

@@ -1,0 +1,84 @@
+@inherits UiComponentBase
+@using System.Text.Encodings.Web
+@using Unpoly.Blazor.Shadcn.ECharts.Models
+
+@* Apache ECharts for Blazor static SSR + Unpoly.
+
+   The server renders a <div> with data-options JSON. The compiler in wwwroot/echarts.js
+   (up.compiler('[data-echarts]')) reads it, creates an echarts instance, and handles
+   resize + swap teardown. No IJSRuntime, no interactivity — static SSR renders once and
+   Unpoly re-compiles on every fragment swap.
+
+   Wiring (in the head):
+     <script src="_content/Unpoly.Blazor.Shadcn.ECharts/echarts/echarts.min.js" defer></script>
+     <script src="_content/Unpoly.Blazor.Shadcn.ECharts/echarts.js" defer></script>
+     app.css: @source "../../Unpoly.Blazor.Shadcn.ECharts/Components/** /*.razor"
+
+   Colors default to shadcn --chart-1..5 via JS when Color is not set, so a theme change
+   moves both the chart and the legend without re-serializing.
+*@
+
+<div data-slot="echart"
+     data-echarts
+     data-options="@SerializedOptions"
+     data-theme="@Theme"
+     data-auto-resize="@(AutoResize ? "1" : "0")"
+     role="img"
+     aria-label="@AriaLabel"
+     style="@StyleValue"
+     class="@Classes"
+     @attributes="AdditionalAttributes"></div>
+
+@code {
+    /// <summary>Typed ECharts option. Serialized with <see cref="EChartsJson"/>.</summary>
+    [Parameter] public object? Options { get; set; }
+
+    /// <summary>Raw JSON string — takes precedence over <see cref="Options"/> when set.</summary>
+    [Parameter] public string? OptionsJson { get; set; }
+
+    /// <summary>ECharts theme name. "default" uses shadcn colors; custom themes must be registered in JS before this renders.</summary>
+    [Parameter] public string Theme { get; set; } = "default";
+
+    /// <summary>CSS height. ECharts requires an explicit height; defaults to 300px.</summary>
+    [Parameter] public string Height { get; set; } = "300px";
+
+    /// <summary>CSS width. Defaults to 100%.</summary>
+    [Parameter] public string? Width { get; set; }
+
+    /// <summary>Whether the chart should auto-resize with its container (ResizeObserver).</summary>
+    [Parameter] public bool AutoResize { get; set; } = true;
+
+    /// <summary>Accessible name for the chart (role=img).</summary>
+    [Parameter] public string? AriaLabel { get; set; }
+
+    /// <summary>Extra inline style appended after height/width.</summary>
+    [Parameter] public string? Style { get; set; }
+
+    string SerializedOptions
+    {
+        get
+        {
+            if (!string.IsNullOrWhiteSpace(OptionsJson))
+                return EChartsJson.SerializeRaw(OptionsJson);
+            if (Options is string s && !string.IsNullOrWhiteSpace(s))
+                return EChartsJson.SerializeRaw(s);
+            return EChartsJson.Serialize(Options);
+        }
+    }
+
+    string StyleValue
+    {
+        get
+        {
+            var w = string.IsNullOrWhiteSpace(Width) ? "100%" : Width!.Trim();
+            var h = string.IsNullOrWhiteSpace(Height) ? "300px" : Height.Trim();
+            var extra = string.IsNullOrWhiteSpace(Style) ? "" : Style.Trim().TrimEnd(';') + ";";
+            return $"height:{h};width:{w};{extra}";
+        }
+    }
+
+    // ECharts paints tooltip as an absolutely-positioned div inside the container.
+    // overflow-hidden clipped it on hover ("hover thì bị hidden"). Keep the container
+    // clipped only horizontally; tooltip needs overflow-visible.
+    string Classes => Cn("block w-full max-w-full overflow-visible", Class);
+}

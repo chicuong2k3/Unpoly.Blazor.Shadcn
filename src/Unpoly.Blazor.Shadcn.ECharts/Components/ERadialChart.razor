@@ -1,0 +1,31 @@
+@inherits UiComponentBase
+@using Unpoly.Blazor.Shadcn.ECharts.Models
+@* ECharts radial / progress gauge — KPI arc *@
+
+@if (IsLoading)
+{ <div data-slot="chart-skeleton" class="@SkeletonClasses" style="@($"height:{Height};width:{(Width ?? "100%")}")" role="status"><div class="h-full w-full animate-pulse rounded-md bg-muted"></div></div> }
+else { <EChart Options="@BuildOptions()" Height="@Height" Width="@Width" Theme="@Theme" AriaLabel="@AriaLabel" Class="@Class" AdditionalAttributes="@AdditionalAttributes" /> }
+
+@code {
+    [Parameter] public double Value { get; set; }
+    [Parameter] public double Max { get; set; } = 100;
+    [Parameter] public string Name { get; set; } = "Progress";
+    [Parameter] public string[]? Colors { get; set; }
+    [Parameter] public string Height { get; set; } = "350px";
+    [Parameter] public string? Width { get; set; }
+    [Parameter] public string Theme { get; set; } = "default";
+    [Parameter] public string? AriaLabel { get; set; }
+    [Parameter] public bool IsLoading { get; set; }
+    [Parameter] public Dictionary<string, object?>? OptionOverride { get; set; }
+    string[] Palette => Colors ?? [];
+    string SkeletonClasses => Cn("block w-full max-w-full rounded-md border p-4", Class);
+    object BuildOptions() => new EChartsOption
+    {
+        Color = Palette.Length>0?Palette:null,
+        Series = [new EChartsSeries{
+            Type="gauge", Name=Name, Data=new[]{new{value=Value,name=Name}},
+            ExtensionData=new Dictionary<string,object?>{["max"]=Max,["progress"]=new{show=true},["axisLine"]=new{lineStyle=new{width=15}},["detail"]=new{valueAnimation=true,formatter="{value}"}}
+        }],
+        ExtensionData = OptionOverride
+    };
+}

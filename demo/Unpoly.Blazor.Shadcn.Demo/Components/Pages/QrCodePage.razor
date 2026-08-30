@@ -1,0 +1,56 @@
+@page "/components/qr-code"
+
+<PageTitle>QR Code — Unpoly.Blazor.Shadcn</PageTitle>
+
+<h1 class="doc-h1">QR Code</h1>
+<p class="doc-lede">
+    Generate QR codes from any string — URLs, vCards, Wi-Fi — via <a href="https://github.com/davidshimjs/qrcodejs" class="underline">qrcodejs</a>. Static SSR renders an empty <code>div</code>; a <code>up.compiler</code> fills it with <code>new QRCode(el, {...})</code> on every fragment swap.
+</p>
+<p class="doc-note">Interface follows <a href="https://lumeo.nativ.sh/components/qr-code" class="underline">lumeo.nativ.sh/components/qr-code</a>. Rendered as canvas/table (qrcodejs), no SVG dependency, MIT.</p>
+
+<h2 class="doc-h2">Basic</h2>
+<Card><CardContent class="flex justify-center p-6"><QrCode Value="https://lumeo.nativ.sh/" Size="160" /></CardContent></Card>
+<CodeBlock Language="razor" Class="mt-2" Code="@basicCode" />
+
+<h2 class="doc-h2">Dynamic Value</h2>
+<Card><CardContent class="p-6 space-y-3">
+    <Input @bind-Value="dynamicValue" placeholder="https://example.com" />
+    <div class="flex justify-center"><QrCode Value="@dynamicValue" Size="160" /></div>
+</CardContent></Card>
+
+<h2 class="doc-h2">Error Correction Levels</h2>
+<p class="doc-note">Low ~7%, Medium ~15%, Quartile ~25%, High ~30%. Higher is denser but more fault-tolerant.</p>
+<div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+    <Card><CardHeader><CardTitle class="text-sm">Low</CardTitle></CardHeader><CardContent class="flex justify-center p-4"><QrCode Value="https://lumeo.nativ.sh/" Size="120" ErrorCorrectionLevel="QrCodeErrorCorrection.Low" /></CardContent></Card>
+    <Card><CardHeader><CardTitle class="text-sm">Medium</CardTitle></CardHeader><CardContent class="flex justify-center p-4"><QrCode Value="https://lumeo.nativ.sh/" Size="120" ErrorCorrectionLevel="QrCodeErrorCorrection.Medium" /></CardContent></Card>
+    <Card><CardHeader><CardTitle class="text-sm">Quartile</CardTitle></CardHeader><CardContent class="flex justify-center p-4"><QrCode Value="https://lumeo.nativ.sh/" Size="120" ErrorCorrectionLevel="QrCodeErrorCorrection.Quartile" /></CardContent></Card>
+    <Card><CardHeader><CardTitle class="text-sm">High</CardTitle></CardHeader><CardContent class="flex justify-center p-4"><QrCode Value="https://lumeo.nativ.sh/" Size="120" ErrorCorrectionLevel="QrCodeErrorCorrection.High" /></CardContent></Card>
+</div>
+
+<h2 class="doc-h2">Custom Colors</h2>
+<div class="grid md:grid-cols-2 gap-4">
+    <Card><CardHeader><CardTitle class="text-sm">Default (theme-aware)</CardTitle></CardHeader><CardContent class="flex justify-center p-4"><QrCode Value="https://lumeo.nativ.sh/" Size="140" /></CardContent></Card>
+    <Card><CardHeader><CardTitle class="text-sm">White on primary</CardTitle></CardHeader><CardContent class="flex justify-center p-4 bg-primary"><QrCode Value="https://lumeo.nativ.sh/" Size="140" ForegroundColor="#ffffff" BackgroundColor="hsl(var(--primary))" /></CardContent></Card>
+</div>
+
+<h2 class="doc-h2">Without Margin (no quiet zone)</h2>
+<div class="flex gap-4">
+    <Card><CardHeader><CardTitle class="text-sm">With quiet zone</CardTitle></CardHeader><CardContent class="flex justify-center p-4"><QrCode Value="https://lumeo.nativ.sh/" Size="120" /></CardContent></Card>
+    <Card><CardHeader><CardTitle class="text-sm">No margin</CardTitle></CardHeader><CardContent class="flex justify-center p-4"><QrCode Value="https://lumeo.nativ.sh/" Size="120" ShowMargin="false" /></CardContent></Card>
+</div>
+
+<h2 class="doc-h2">Custom Aria Label</h2>
+<Card><CardContent class="flex justify-center p-6"><QrCode Value="https://lumeo.nativ.sh/" Size="140" AriaLabel="QR code for Lumeo homepage" /></CardContent></Card>
+<p class="doc-note">Screen readers announce the friendly label instead of the raw URL.</p>
+
+<h2 class="doc-h2">Different Sizes</h2>
+<div class="flex items-end gap-4">
+    <Card><CardContent class="p-4 flex flex-col items-center gap-2"><QrCode Value="https://lumeo.nativ.sh/" Size="80" /><span class="text-xs text-muted-foreground">80px</span></CardContent></Card>
+    <Card><CardContent class="p-4 flex flex-col items-center gap-2"><QrCode Value="https://lumeo.nativ.sh/" Size="120" /><span class="text-xs text-muted-foreground">120px</span></CardContent></Card>
+    <Card><CardContent class="p-4 flex flex-col items-center gap-2"><QrCode Value="https://lumeo.nativ.sh/" Size="180" /><span class="text-xs text-muted-foreground">180px</span></CardContent></Card>
+</div>
+
+@code {
+    string dynamicValue = "https://lumeo.nativ.sh/";
+    const string basicCode = """<QrCode Value="https://lumeo.nativ.sh/" Size="160" />""";
+}

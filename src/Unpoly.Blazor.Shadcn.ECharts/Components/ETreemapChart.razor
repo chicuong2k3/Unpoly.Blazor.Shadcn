@@ -1,0 +1,28 @@
+@inherits UiComponentBase
+@using Unpoly.Blazor.Shadcn.ECharts.Models
+@* ECharts treemap *@
+
+@if (IsLoading)
+{ <div data-slot="chart-skeleton" class="@SkeletonClasses" style="@($"height:{Height};width:{(Width ?? "100%")}")" role="status"><div class="h-full w-full animate-pulse rounded-md bg-muted"></div></div> }
+else { <EChart Options="@BuildOptions()" Height="@Height" Width="@Width" Theme="@Theme" AriaLabel="@AriaLabel" Class="@Class" AdditionalAttributes="@AdditionalAttributes" /> }
+
+@code {
+    [Parameter] public object? Data { get; set; } // List<TreemapData> or raw hierarchy
+    [Parameter] public string[]? Colors { get; set; }
+    [Parameter] public bool ShowTooltip { get; set; } = true;
+    [Parameter] public string Height { get; set; } = "350px";
+    [Parameter] public string? Width { get; set; }
+    [Parameter] public string Theme { get; set; } = "default";
+    [Parameter] public string? AriaLabel { get; set; }
+    [Parameter] public bool IsLoading { get; set; }
+    [Parameter] public Dictionary<string, object?>? OptionOverride { get; set; }
+    string[] Palette => Colors ?? [];
+    string SkeletonClasses => Cn("block w-full max-w-full rounded-md border p-4", Class);
+    object BuildOptions() => new EChartsOption
+    {
+        Color = Palette.Length>0?Palette:null,
+        Tooltip = ShowTooltip?new EChartsTooltip{Trigger="item"}:null,
+        Series = [new EChartsSeries{Type="treemap",Data=Data}],
+        ExtensionData = OptionOverride
+    };
+}

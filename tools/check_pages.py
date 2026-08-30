@@ -25,7 +25,7 @@ NAV = DEMO / 'Layout' / 'DocNav.razor'
 
 # This port's own pages, which shadcn has no component for. Kept in their own group in the nav
 # and named here, because pretending they are shadcn is the one thing this library must not do.
-OURS = ['icon', 'code-block', 'stepper', 'tags-input', 'file-upload']
+OURS = ['icon', 'code-block', 'stepper', 'file-upload', 'echarts', 'qr-code', 'steps', 'timeline', 'sparkline', 'map', 'image-compare']
 
 # Pages that are not a component at all.
 NOT_A_COMPONENT = {'/', '/theming', '/blocks'}

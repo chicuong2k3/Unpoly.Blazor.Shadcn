@@ -1,0 +1,11 @@
+@* Declarative threshold line — renders markLine on the parent chart. Place inside any typed chart's ChildContent.
+   Lumeo parity: ChartThreshold. In this port it is a standalone descriptor you pass as MarkLine to the wrapper,
+   or as child content collected via cascading — both work; the latter is sugar for OptionOverride. *@
+<span hidden data-chart-threshold data-value="@Value" data-axis="@Axis" data-color="@Color" data-label="@Label"></span>
+@code {
+    [Parameter] public double Value { get; set; }
+    [Parameter] public string Axis { get; set; } = "y"; // x or y
+    [Parameter] public string? Color { get; set; }
+    [Parameter] public string? Label { get; set; }
+    [CascadingParameter] public EChart? ParentChart { get; set; }
+}

@@ -1,0 +1,104 @@
+@inherits UiComponentBase
+
+@* Sparkline — compact inline SVG trend, Lumeo parity. No JS — pure SVG path from Data.
+   Use in Table cells, KPI strips. For axes/tooltips use Chart/EChart instead. *@
+
+<svg data-slot="sparkline"
+     data-type="@Type"
+     width="@Width" height="@Height"
+     viewBox="0 0 @VbWidth @VbHeight"
+     preserveAspectRatio="none"
+     class="@Classes"
+     role="img"
+     aria-label="@AriaLabel"
+     @attributes="AdditionalAttributes">
+    @if (Type == "bars")
+    {
+        @for (int i = 0; i < Data.Length; i++)
+        {
+            var x = (double)i / Math.Max(1, Data.Length - 1) * (VbWidth - BarWidth) + BarWidth / 2;
+            var h = Normalized[i] * (VbHeight - 2);
+            var y = VbHeight - h - 1;
+            <rect x="@x.ToString("F2")" y="@y.ToString("F2")" width="@BarWidth.ToString("F2")" height="@h.ToString("F2")" rx="1" fill="@EffectiveColor" />
+        }
+    }
+    else
+    {
+        <path d="@PathData" fill="@(ShowArea ? EffectiveFill : "none")" stroke="@EffectiveColor" stroke-width="@StrokeWidth" stroke-linecap="round" stroke-linejoin="round" />
+        @if (ShowDots && Data.Length > 0)
+        {
+            var lastX = VbWidth - 1;
+            var lastY = VbHeight - Normalized[^1] * (VbHeight - 2) - 1;
+            <circle cx="@lastX.ToString("F2")" cy="@lastY.ToString("F2")" r="2" fill="@EffectiveColor" />
+        }
+    }
+</svg>
+
+@code {
+    [Parameter] public double[] Data { get; set; } = [];
+
+    /// <summary>line | area | bars</summary>
+    [Parameter] public string Type { get; set; } = "line";
+
+    [Parameter] public bool ShowArea { get; set; }
+
+    [Parameter] public bool ShowDots { get; set; }
+
+    [Parameter] public double StrokeWidth { get; set; } = 1.5;
+
+    [Parameter] public string? Color { get; set; }
+
+    [Parameter] public string? Width { get; set; } = "100px";
+
+    [Parameter] public string? Height { get; set; } = "28px";
+
+    [Parameter] public string? AriaLabel { get; set; }
+
+    int VbWidth => 100;
+    int VbHeight => 28;
+    double BarWidth => Math.Max(2, (VbWidth - 4) / Math.Max(1, Data.Length) * 0.6);
+
+    double[] Normalized
+    {
+        get
+        {
+            if (Data.Length == 0) return [];
+            var min = Data.Min();
+            var max = Data.Max();
+            var range = max - min;
+            if (range < 1e-9) return Data.Select(_ => 0.5).ToArray();
+            return Data.Select(v => (v - min) / range).ToArray();
+        }
+    }
+
+    string EffectiveColor => Color ?? "hsl(var(--primary))";
+    string EffectiveFill => Color is not null ? Color : "hsl(var(--primary) / 0.2)";
+
+    string PathData
+    {
+        get
+        {
+            if (Data.Length == 0) return "";
+            var n = Normalized;
+            var pts = n.Select((v, i) =>
+            {
+                var x = (double)i / Math.Max(1, n.Length - 1) * (VbWidth - 2) + 1;
+                var y = VbHeight - v * (VbHeight - 2) - 1;
+                return (x, y);
+            }).ToArray();
+
+            var d = $"M {pts[0].x:F2} {pts[0].y:F2}";
+            for (int i = 1; i < pts.Length; i++)
+            {
+                d += $" L {pts[i].x:F2} {pts[i].y:F2}";
+            }
+            if (ShowArea)
+            {
+                d += $" L {pts[^1].x:F2} {VbHeight - 1:F2} L {pts[0].x:F2} {VbHeight - 1:F2} Z";
+            }
+            return d;
+        }
+    }
+
+    string Classes => Cn("inline-block overflow-visible", Class);
+}
