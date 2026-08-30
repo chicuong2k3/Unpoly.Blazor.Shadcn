@@ -1,0 +1,101 @@
+/* stylecn:ease-health — Healthcare teal — Ease. Clinical, trustworthy, calm.
+   ==========================================================================================
+   CONVERTED from https://github.com/DaniAkash/stylecn — src/themes/brands.css
+   Preset: ease-health. Brand colors, radius and type from the real ease-health product.
+   Do not edit by hand; re-run convert_all_stylecn.py to refresh.
+
+   Scoped to [data-theme] so several can be loaded at once and switched by an attribute.
+   An app that ships one theme puts data-theme on <html>.
+   TYPEFACES: see --font-sans / --font-heading inside; load them in the app.
+   (Stylecn brands ship their own @fontsource imports — an app must add them.) */
+
+
+[data-theme="ease-health"] {
+    --radius: 0.875rem;
+    --radius-sm: 4px;
+    --radius-md: 7px;
+    --radius-lg: 10px;
+    --radius-xl: 14px;
+    --radius-2xl: 20px;
+    --radius-3xl: 28px;
+    --radius-4xl: 9999px;
+    --font-sans: "Inter Variable", ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    --font-heading: "Newsreader Variable", "Fraunces", Georgia, "Times New Roman", serif;
+    --background: #fffefc;
+    --foreground: #000000;
+    --card: #fffefc;
+    --card-foreground: #000000;
+    --popover: #fffefc;
+    --popover-foreground: #000000;
+    --primary: #0f3e17;
+    --primary-foreground: #fffefc;
+    --secondary: #cfe7d3;
+    --secondary-foreground: #0f3e17;
+    --muted: #e1f4df;
+    --muted-foreground: #333333;
+    --accent: #b6ced5;
+    --accent-foreground: #0f3e17;
+    --destructive: #b7301b;
+    --border: #e5e7eb;
+    --input: #e5e7eb;
+    --ring: #0f3e17;
+    --chart-1: #0f3e17;
+    --chart-2: #2d7a3a;
+    --chart-3: #6ea8b8;
+    --chart-4: #b1dbb8;
+    --chart-5: #333333;
+    --sidebar: #fffefc;
+    --sidebar-foreground: #000000;
+    --sidebar-primary: #0f3e17;
+    --sidebar-primary-foreground: #fffefc;
+    --sidebar-accent: #e1f4df;
+    --sidebar-accent-foreground: #0f3e17;
+    --sidebar-border: #e5e7eb;
+    --sidebar-ring: #0f3e17;
+    --radius-control: calc(0.875rem - 2px);
+    --surface-border: var(--border);
+    --destructive-foreground: oklch(100% 0 0);
+    --font-mono: ui-monospace, SFMono-Regular, Menlo, monospace;
+    --font-serif: Georgia, "Times New Roman", serif;
+    --tracking-normal: 0em;
+    --elevation-1: 0 1px 2px 0 rgb(0 0 0 / 0.04);
+    --elevation-2: 0 1px 3px 0 rgb(0 0 0 / 0.08), 0 1px 2px -1px rgb(0 0 0 / 0.06);
+    --elevation-3: 0 4px 12px -2px rgb(0 0 0 / 0.10);
+    --elevation-4: 0 16px 32px -8px rgb(0 0 0 / 0.14);
+    font-family: var(--font-sans);
+}
+
+[data-theme="ease-health"].dark,
+[data-theme="ease-health"] .dark {
+    --background: #0a1810;
+    --foreground: #fffefc;
+    --card: #142919;
+    --card-foreground: #fffefc;
+    --popover: #142919;
+    --popover-foreground: #fffefc;
+    --primary: #2d7a3a;
+    --primary-foreground: #fffefc;
+    --secondary: #1f3a26;
+    --secondary-foreground: #fffefc;
+    --muted: #1f3a26;
+    --muted-foreground: #a8c4ab;
+    --accent: #1f3a26;
+    --accent-foreground: #fffefc;
+    --destructive: #e34432;
+    --border: rgba(255, 255, 255, 0.08);
+    --input: rgba(255, 255, 255, 0.12);
+    --ring: #2d7a3a;
+    --chart-1: #4a9c56;
+    --chart-2: #b1dbb8;
+    --chart-3: #b6ced5;
+    --chart-4: #cfe7d3;
+    --chart-5: #d4d4d4;
+    --sidebar: #142919;
+    --sidebar-foreground: #fffefc;
+    --sidebar-primary: #2d7a3a;
+    --sidebar-primary-foreground: #fffefc;
+    --sidebar-accent: rgba(255, 255, 255, 0.06);
+    --sidebar-accent-foreground: #fffefc;
+    --sidebar-border: rgba(255, 255, 255, 0.08);
+    --sidebar-ring: #2d7a3a;
+}

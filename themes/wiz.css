@@ -1,0 +1,101 @@
+/* stylecn:wiz — Dark-first wizard — Wiz. Security, obsidian, scan.
+   ==========================================================================================
+   CONVERTED from https://github.com/DaniAkash/stylecn — src/themes/brands.css
+   Preset: wiz. Brand colors, radius and type from the real wiz product.
+   Do not edit by hand; re-run convert_all_stylecn.py to refresh.
+
+   Scoped to [data-theme] so several can be loaded at once and switched by an attribute.
+   An app that ships one theme puts data-theme on <html>.
+   TYPEFACES: see --font-sans / --font-heading inside; load them in the app.
+   (Stylecn brands ship their own @fontsource imports — an app must add them.) */
+
+
+[data-theme="wiz"] {
+    --radius: 0.75rem;
+    --radius-sm: 4px;
+    --radius-md: 6px;
+    --radius-lg: 8px;
+    --radius-xl: 12px;
+    --radius-2xl: 16px;
+    --radius-3xl: 20px;
+    --radius-4xl: 9999px;
+    --font-sans: "Inter Variable", "Söhne", "Neue Haas Grotesk", ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    --font-heading: "Inter Variable", "Söhne", "Neue Haas Grotesk", ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    --background: #ffffff;
+    --foreground: #393f49;
+    --card: #ffffff;
+    --card-foreground: #393f49;
+    --popover: #ffffff;
+    --popover-foreground: #393f49;
+    --primary: #0254ec;
+    --primary-foreground: #ffffff;
+    --secondary: #eaf1ff;
+    --secondary-foreground: #0254ec;
+    --muted: #eaf1ff;
+    --muted-foreground: #717783;
+    --accent: #eaf1ff;
+    --accent-foreground: #0254ec;
+    --destructive: #e11d48;
+    --border: #cbd5e1;
+    --input: #cbd5e1;
+    --ring: #0254ec;
+    --chart-1: #0254ec;
+    --chart-2: #0042ca;
+    --chart-3: #f5b957;
+    --chart-4: #f7cad5;
+    --chart-5: #717783;
+    --sidebar: #ffffff;
+    --sidebar-foreground: #393f49;
+    --sidebar-primary: #0254ec;
+    --sidebar-primary-foreground: #ffffff;
+    --sidebar-accent: #eaf1ff;
+    --sidebar-accent-foreground: #0254ec;
+    --sidebar-border: #cbd5e1;
+    --sidebar-ring: #0254ec;
+    --radius-control: calc(0.75rem - 2px);
+    --surface-border: var(--border);
+    --destructive-foreground: oklch(100% 0 0);
+    --font-mono: ui-monospace, SFMono-Regular, Menlo, monospace;
+    --font-serif: Georgia, "Times New Roman", serif;
+    --tracking-normal: 0em;
+    --elevation-1: 0 1px 2px 0 rgb(0 0 0 / 0.04);
+    --elevation-2: 0 1px 3px 0 rgb(0 0 0 / 0.08), 0 1px 2px -1px rgb(0 0 0 / 0.06);
+    --elevation-3: 0 4px 12px -2px rgb(0 0 0 / 0.10);
+    --elevation-4: 0 16px 32px -8px rgb(0 0 0 / 0.14);
+    font-family: var(--font-sans);
+}
+
+[data-theme="wiz"].dark,
+[data-theme="wiz"] .dark {
+    --background: #0a0f1e;
+    --foreground: #f8f8fa;
+    --card: #151c30;
+    --card-foreground: #f8f8fa;
+    --popover: #151c30;
+    --popover-foreground: #f8f8fa;
+    --primary: #2f7cff;
+    --primary-foreground: #0a0f1e;
+    --secondary: #1e2842;
+    --secondary-foreground: #f8f8fa;
+    --muted: #1e2842;
+    --muted-foreground: #a4acbd;
+    --accent: #1e2842;
+    --accent-foreground: #f8f8fa;
+    --destructive: #ff5a75;
+    --border: rgba(255, 255, 255, 0.10);
+    --input: rgba(255, 255, 255, 0.15);
+    --ring: #2f7cff;
+    --chart-1: #2f7cff;
+    --chart-2: #7ea6ff;
+    --chart-3: #f5b957;
+    --chart-4: #f7cad5;
+    --chart-5: #a4acbd;
+    --sidebar: #151c30;
+    --sidebar-foreground: #f8f8fa;
+    --sidebar-primary: #2f7cff;
+    --sidebar-primary-foreground: #0a0f1e;
+    --sidebar-accent: rgba(255, 255, 255, 0.06);
+    --sidebar-accent-foreground: #f8f8fa;
+    --sidebar-border: rgba(255, 255, 255, 0.10);
+    --sidebar-ring: #2f7cff;
+}

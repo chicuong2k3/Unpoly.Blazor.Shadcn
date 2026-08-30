@@ -1,0 +1,101 @@
+/* stylecn:airbnb — Coral #ff385c on fog #f7f7f7 — Airbnb warmth. Human, welcoming, marketplace.
+   ==========================================================================================
+   CONVERTED from https://github.com/DaniAkash/stylecn — src/themes/brands.css
+   Preset: airbnb. Brand colors, radius and type from the real airbnb product.
+   Do not edit by hand; re-run convert_all_stylecn.py to refresh.
+
+   Scoped to [data-theme] so several can be loaded at once and switched by an attribute.
+   An app that ships one theme puts data-theme on <html>.
+   TYPEFACES: see --font-sans / --font-heading inside; load them in the app.
+   (Stylecn brands ship their own @fontsource imports — an app must add them.) */
+
+
+[data-theme="airbnb"] {
+    --radius: 0.5rem;
+    --radius-sm: 4px;
+    --radius-md: 8px;
+    --radius-lg: 14px;
+    --radius-xl: 20px;
+    --radius-2xl: 24px;
+    --radius-3xl: 32px;
+    --radius-4xl: 9999px;
+    --font-sans: "Inter Variable", ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    --font-heading: "Inter Variable", ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    --background: #f7f7f7;
+    --foreground: #222222;
+    --card: #ffffff;
+    --card-foreground: #222222;
+    --popover: #ffffff;
+    --popover-foreground: #222222;
+    --primary: #ff385c;
+    --primary-foreground: #ffffff;
+    --secondary: #ffffff;
+    --secondary-foreground: #222222;
+    --muted: #ebebeb;
+    --muted-foreground: #6a6a6a;
+    --accent: #ebebeb;
+    --accent-foreground: #222222;
+    --destructive: #e00b41;
+    --border: #ebebeb;
+    --input: #dddddd;
+    --ring: #ff385c;
+    --chart-1: #ff385c;
+    --chart-2: #00a699;
+    --chart-3: #fc642d;
+    --chart-4: #484848;
+    --chart-5: #6a6a6a;
+    --sidebar: #ffffff;
+    --sidebar-foreground: #222222;
+    --sidebar-primary: #ff385c;
+    --sidebar-primary-foreground: #ffffff;
+    --sidebar-accent: #f7f7f7;
+    --sidebar-accent-foreground: #222222;
+    --sidebar-border: #ebebeb;
+    --sidebar-ring: #ff385c;
+    --radius-control: calc(0.5rem - 2px);
+    --surface-border: var(--border);
+    --destructive-foreground: oklch(100% 0 0);
+    --font-mono: ui-monospace, SFMono-Regular, Menlo, monospace;
+    --font-serif: Georgia, "Times New Roman", serif;
+    --tracking-normal: 0em;
+    --elevation-1: 0 1px 2px 0 rgb(0 0 0 / 0.04);
+    --elevation-2: 0 1px 3px 0 rgb(0 0 0 / 0.08), 0 1px 2px -1px rgb(0 0 0 / 0.06);
+    --elevation-3: 0 4px 12px -2px rgb(0 0 0 / 0.10);
+    --elevation-4: 0 16px 32px -8px rgb(0 0 0 / 0.14);
+    font-family: var(--font-sans);
+}
+
+[data-theme="airbnb"].dark,
+[data-theme="airbnb"] .dark {
+    --background: #000000;
+    --foreground: #ffffff;
+    --card: #1a1a1a;
+    --card-foreground: #ffffff;
+    --popover: #1a1a1a;
+    --popover-foreground: #ffffff;
+    --primary: #ff385c;
+    --primary-foreground: #ffffff;
+    --secondary: #2a2a2a;
+    --secondary-foreground: #ffffff;
+    --muted: #2a2a2a;
+    --muted-foreground: #b0b0b0;
+    --accent: #2a2a2a;
+    --accent-foreground: #ffffff;
+    --destructive: #e00b41;
+    --border: rgba(255, 255, 255, 0.10);
+    --input: rgba(255, 255, 255, 0.15);
+    --ring: #ff385c;
+    --chart-1: #ff385c;
+    --chart-2: #00a699;
+    --chart-3: #fc642d;
+    --chart-4: #b0b0b0;
+    --chart-5: #ffffff;
+    --sidebar: #1a1a1a;
+    --sidebar-foreground: #ffffff;
+    --sidebar-primary: #ff385c;
+    --sidebar-primary-foreground: #ffffff;
+    --sidebar-accent: rgba(255, 255, 255, 0.06);
+    --sidebar-accent-foreground: #ffffff;
+    --sidebar-border: rgba(255, 255, 255, 0.10);
+    --sidebar-ring: #ff385c;
+}

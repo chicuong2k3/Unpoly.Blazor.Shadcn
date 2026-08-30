@@ -1,0 +1,102 @@
+/* onesamket:spotify — Spotify green #1db954 — vibrant, music, energetic.
+   ==========================================================================================
+   CONVERTED from https://github.com/onesamket/shadcn-themes — src/constants/themes.ts
+   Preset: spotify. Colors from the real app palette.
+   Do not edit by hand; re-run convert_onesamket.py to refresh.
+   Scoped to [data-theme] so several can be loaded at once.
+   An app that ships one theme puts data-theme on <html>. */
+
+
+[data-theme="spotify"] {
+    --background: oklch(0.12 0 0);
+    --foreground: oklch(0.95 0 0);
+    --card: oklch(0.15 0 0);
+    --card-foreground: oklch(0.95 0 0);
+    --popover: oklch(0.15 0 0);
+    --popover-foreground: oklch(0.95 0 0);
+    --primary: oklch(0.62 0.2 145);
+    --primary-foreground: oklch(0.98 0 0);
+    --secondary: oklch(0.19 0 0);
+    --secondary-foreground: oklch(0.95 0 0);
+    --muted: oklch(0.19 0 0);
+    --muted-foreground: oklch(0.55 0 0);
+    --accent: oklch(0.19 0 0);
+    --accent-foreground: oklch(0.95 0 0);
+    --destructive: oklch(0.55 0.22 25);
+    --destructive-foreground: oklch(0.98 0 0);
+    --border: oklch(0.22 0 0);
+    --input: oklch(0.22 0 0);
+    --ring: oklch(0.62 0.2 145);
+    --sidebar: oklch(0.1 0 0);
+    --sidebar-foreground: oklch(0.75 0 0);
+    --sidebar-primary: oklch(0.62 0.2 145);
+    --sidebar-primary-foreground: oklch(0.98 0 0);
+    --sidebar-accent: oklch(0.17 0 0);
+    --sidebar-accent-foreground: oklch(0.95 0 0);
+    --sidebar-border: oklch(0.17 0 0);
+    --sidebar-ring: oklch(0.62 0.2 145);
+    --radius: 0.625rem;
+    --radius-control: calc(0.625rem - 2px);
+    --surface-border: var(--border);
+    --font-sans: Inter, ui-sans-serif, system-ui, sans-serif;
+    --font-mono: ui-monospace, SFMono-Regular, Menlo, monospace;
+    --font-serif: Georgia, "Times New Roman", serif;
+    --tracking-normal: 0em;
+    --elevation-1: 0 1px 2px 0 rgb(0 0 0 / 0.04);
+    --elevation-2: 0 1px 3px 0 rgb(0 0 0 / 0.08), 0 1px 2px -1px rgb(0 0 0 / 0.06);
+    --elevation-3: 0 4px 12px -2px rgb(0 0 0 / 0.10);
+    --elevation-4: 0 16px 32px -8px rgb(0 0 0 / 0.14);
+    --chart-1: oklch(0.62 0.2 145);
+    --chart-2: oklch(0.62 0.2 145);
+    --chart-3: oklch(0.19 0 0);
+    --chart-4: oklch(0.65 0.15 30);
+    --chart-5: oklch(0.55 0.08 280);
+    font-family: var(--font-sans);
+}
+
+[data-theme="spotify"].dark,
+[data-theme="spotify"] .dark {
+    --background: oklch(0.12 0 0);
+    --foreground: oklch(0.95 0 0);
+    --card: oklch(0.15 0 0);
+    --card-foreground: oklch(0.95 0 0);
+    --popover: oklch(0.15 0 0);
+    --popover-foreground: oklch(0.95 0 0);
+    --primary: oklch(0.62 0.2 145);
+    --primary-foreground: oklch(0.98 0 0);
+    --secondary: oklch(0.19 0 0);
+    --secondary-foreground: oklch(0.95 0 0);
+    --muted: oklch(0.19 0 0);
+    --muted-foreground: oklch(0.55 0 0);
+    --accent: oklch(0.19 0 0);
+    --accent-foreground: oklch(0.95 0 0);
+    --destructive: oklch(0.55 0.22 25);
+    --destructive-foreground: oklch(0.98 0 0);
+    --border: oklch(0.22 0 0);
+    --input: oklch(0.22 0 0);
+    --ring: oklch(0.62 0.2 145);
+    --sidebar: oklch(0.1 0 0);
+    --sidebar-foreground: oklch(0.75 0 0);
+    --sidebar-primary: oklch(0.62 0.2 145);
+    --sidebar-primary-foreground: oklch(0.98 0 0);
+    --sidebar-accent: oklch(0.17 0 0);
+    --sidebar-accent-foreground: oklch(0.95 0 0);
+    --sidebar-border: oklch(0.17 0 0);
+    --sidebar-ring: oklch(0.62 0.2 145);
+    --radius: 0.625rem;
+    --radius-control: calc(0.625rem - 2px);
+    --surface-border: var(--border);
+    --font-sans: Inter, ui-sans-serif, system-ui, sans-serif;
+    --font-mono: ui-monospace, SFMono-Regular, Menlo, monospace;
+    --font-serif: Georgia, "Times New Roman", serif;
+    --tracking-normal: 0em;
+    --elevation-1: 0 1px 2px 0 rgb(0 0 0 / 0.04);
+    --elevation-2: 0 1px 3px 0 rgb(0 0 0 / 0.08), 0 1px 2px -1px rgb(0 0 0 / 0.06);
+    --elevation-3: 0 4px 12px -2px rgb(0 0 0 / 0.10);
+    --elevation-4: 0 16px 32px -8px rgb(0 0 0 / 0.14);
+    --chart-1: oklch(0.62 0.2 145);
+    --chart-2: oklch(0.62 0.2 145);
+    --chart-3: oklch(0.19 0 0);
+    --chart-4: oklch(0.65 0.15 30);
+    --chart-5: oklch(0.55 0.08 280);
+}

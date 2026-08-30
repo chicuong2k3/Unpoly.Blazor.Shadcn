@@ -1,0 +1,102 @@
+/* onesamket:github-dark — GitHub Dark — ink #0d1117, blue #58a6ff. Developer trust, true GitHub.
+   ==========================================================================================
+   CONVERTED from https://github.com/onesamket/shadcn-themes — src/constants/themes.ts
+   Preset: github-dark. Colors from the real app palette.
+   Do not edit by hand; re-run convert_onesamket.py to refresh.
+   Scoped to [data-theme] so several can be loaded at once.
+   An app that ships one theme puts data-theme on <html>. */
+
+
+[data-theme="github-dark"] {
+    --background: oklch(0.13 0.01 240);
+    --foreground: oklch(0.88 0.01 240);
+    --card: oklch(0.16 0.01 240);
+    --card-foreground: oklch(0.88 0.01 240);
+    --popover: oklch(0.16 0.01 240);
+    --popover-foreground: oklch(0.88 0.01 240);
+    --primary: oklch(0.65 0.14 230);
+    --primary-foreground: oklch(0.98 0 0);
+    --secondary: oklch(0.2 0.01 240);
+    --secondary-foreground: oklch(0.88 0.01 240);
+    --muted: oklch(0.2 0.01 240);
+    --muted-foreground: oklch(0.5 0.01 240);
+    --accent: oklch(0.2 0.01 240);
+    --accent-foreground: oklch(0.88 0.01 240);
+    --destructive: oklch(0.55 0.22 25);
+    --destructive-foreground: oklch(0.98 0 0);
+    --border: oklch(0.22 0.01 240);
+    --input: oklch(0.22 0.01 240);
+    --ring: oklch(0.65 0.14 230);
+    --sidebar: oklch(0.11 0.01 240);
+    --sidebar-foreground: oklch(0.7 0.01 240);
+    --sidebar-primary: oklch(0.65 0.14 230);
+    --sidebar-primary-foreground: oklch(0.98 0 0);
+    --sidebar-accent: oklch(0.18 0.01 240);
+    --sidebar-accent-foreground: oklch(0.88 0.01 240);
+    --sidebar-border: oklch(0.18 0.01 240);
+    --sidebar-ring: oklch(0.65 0.14 230);
+    --radius: 0.625rem;
+    --radius-control: calc(0.625rem - 2px);
+    --surface-border: var(--border);
+    --font-sans: Inter, ui-sans-serif, system-ui, sans-serif;
+    --font-mono: ui-monospace, SFMono-Regular, Menlo, monospace;
+    --font-serif: Georgia, "Times New Roman", serif;
+    --tracking-normal: 0em;
+    --elevation-1: 0 1px 2px 0 rgb(0 0 0 / 0.04);
+    --elevation-2: 0 1px 3px 0 rgb(0 0 0 / 0.08), 0 1px 2px -1px rgb(0 0 0 / 0.06);
+    --elevation-3: 0 4px 12px -2px rgb(0 0 0 / 0.10);
+    --elevation-4: 0 16px 32px -8px rgb(0 0 0 / 0.14);
+    --chart-1: oklch(0.65 0.14 230);
+    --chart-2: oklch(0.65 0.14 230);
+    --chart-3: oklch(0.2 0.01 240);
+    --chart-4: oklch(0.65 0.15 30);
+    --chart-5: oklch(0.55 0.08 280);
+    font-family: var(--font-sans);
+}
+
+[data-theme="github-dark"].dark,
+[data-theme="github-dark"] .dark {
+    --background: oklch(0.13 0.01 240);
+    --foreground: oklch(0.88 0.01 240);
+    --card: oklch(0.16 0.01 240);
+    --card-foreground: oklch(0.88 0.01 240);
+    --popover: oklch(0.16 0.01 240);
+    --popover-foreground: oklch(0.88 0.01 240);
+    --primary: oklch(0.65 0.14 230);
+    --primary-foreground: oklch(0.98 0 0);
+    --secondary: oklch(0.2 0.01 240);
+    --secondary-foreground: oklch(0.88 0.01 240);
+    --muted: oklch(0.2 0.01 240);
+    --muted-foreground: oklch(0.5 0.01 240);
+    --accent: oklch(0.2 0.01 240);
+    --accent-foreground: oklch(0.88 0.01 240);
+    --destructive: oklch(0.55 0.22 25);
+    --destructive-foreground: oklch(0.98 0 0);
+    --border: oklch(0.22 0.01 240);
+    --input: oklch(0.22 0.01 240);
+    --ring: oklch(0.65 0.14 230);
+    --sidebar: oklch(0.11 0.01 240);
+    --sidebar-foreground: oklch(0.7 0.01 240);
+    --sidebar-primary: oklch(0.65 0.14 230);
+    --sidebar-primary-foreground: oklch(0.98 0 0);
+    --sidebar-accent: oklch(0.18 0.01 240);
+    --sidebar-accent-foreground: oklch(0.88 0.01 240);
+    --sidebar-border: oklch(0.18 0.01 240);
+    --sidebar-ring: oklch(0.65 0.14 230);
+    --radius: 0.625rem;
+    --radius-control: calc(0.625rem - 2px);
+    --surface-border: var(--border);
+    --font-sans: Inter, ui-sans-serif, system-ui, sans-serif;
+    --font-mono: ui-monospace, SFMono-Regular, Menlo, monospace;
+    --font-serif: Georgia, "Times New Roman", serif;
+    --tracking-normal: 0em;
+    --elevation-1: 0 1px 2px 0 rgb(0 0 0 / 0.04);
+    --elevation-2: 0 1px 3px 0 rgb(0 0 0 / 0.08), 0 1px 2px -1px rgb(0 0 0 / 0.06);
+    --elevation-3: 0 4px 12px -2px rgb(0 0 0 / 0.10);
+    --elevation-4: 0 16px 32px -8px rgb(0 0 0 / 0.14);
+    --chart-1: oklch(0.65 0.14 230);
+    --chart-2: oklch(0.65 0.14 230);
+    --chart-3: oklch(0.2 0.01 240);
+    --chart-4: oklch(0.65 0.15 30);
+    --chart-5: oklch(0.55 0.08 280);
+}

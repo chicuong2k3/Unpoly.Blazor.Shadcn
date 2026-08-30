@@ -1,0 +1,111 @@
+/* stylecn:apple — Azure #0071e3 on fog #f5f5f7 — Apple trust and clarity. Clean, premium.
+   ==========================================================================================
+   CONVERTED from https://github.com/DaniAkash/stylecn — src/themes/brands.css
+   Preset: apple. Brand colors, radius and type from the real apple product.
+   Do not edit by hand; re-run convert_all_stylecn.py to refresh.
+
+   Scoped to [data-theme] so several can be loaded at once and switched by an attribute.
+   An app that ships one theme puts data-theme on <html>.
+   TYPEFACES: see --font-sans / --font-heading inside; load them in the app.
+   (Stylecn brands ship their own @fontsource imports — an app must add them.) */
+
+
+[data-theme="apple"] {
+    --radius-sm: 8px;
+    --radius-md: 10px;
+    --radius-lg: 14px;
+    --radius-xl: 28px;
+    --radius-2xl: 32px;
+    --radius-3xl: 36px;
+    --radius-4xl: 9999px;
+    --font-sans: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display", "Inter", system-ui, sans-serif;
+    --font-heading: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Inter", system-ui, sans-serif;
+    --background: #f5f5f7;
+    --foreground: #1d1d1f;
+    --card: #ffffff;
+    --card-foreground: #1d1d1f;
+    --popover: #ffffff;
+    --popover-foreground: #1d1d1f;
+    --primary: #0071e3;
+    --primary-foreground: #ffffff;
+    --secondary: #e8e8ed;
+    --secondary-foreground: #1d1d1f;
+    --muted: #f5f5f7;
+    --muted-foreground: #707070;
+    --accent: #e8e8ed;
+    --accent-foreground: #1d1d1f;
+    --destructive: #b64400;
+    --border: #e8e8ed;
+    --input: #e8e8ed;
+    --ring: #0071e3;
+    --chart-1: #0071e3;
+    --chart-2: #596680;
+    --chart-3: #5e9c2a;
+    --chart-4: #cc29bc;
+    --chart-5: #b64400;
+    --sidebar: #ffffff;
+    --sidebar-foreground: #1d1d1f;
+    --sidebar-primary: #0071e3;
+    --sidebar-primary-foreground: #ffffff;
+    --sidebar-accent: #f5f5f7;
+    --sidebar-accent-foreground: #1d1d1f;
+    --sidebar-border: #e8e8ed;
+    --sidebar-ring: #0071e3;
+    --radius: 14px;
+    --radius-control: calc(14px - 2px);
+    --surface-border: var(--border);
+    --destructive-foreground: oklch(100% 0 0);
+    --font-mono: ui-monospace, SFMono-Regular, Menlo, monospace;
+    --font-serif: Georgia, "Times New Roman", serif;
+    --tracking-normal: 0em;
+    --elevation-1: 0 1px 2px 0 rgb(0 0 0 / 0.04);
+    --elevation-2: 0 1px 3px 0 rgb(0 0 0 / 0.08), 0 1px 2px -1px rgb(0 0 0 / 0.06);
+    --elevation-3: 0 4px 12px -2px rgb(0 0 0 / 0.10);
+    --elevation-4: 0 16px 32px -8px rgb(0 0 0 / 0.14);
+    font-family: var(--font-sans);
+}
+
+[data-theme="apple"].dark,
+[data-theme="apple"] .dark {
+    --radius: 0.5rem;
+    --radius-sm: 4px;
+    --radius-md: 8px;
+    --radius-lg: 14px;
+    --radius-xl: 20px;
+    --radius-2xl: 24px;
+    --radius-3xl: 32px;
+    --radius-4xl: 9999px;
+    --font-sans: "Inter Variable", ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    --font-heading: "Inter Variable", ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    --background: #f7f7f7;
+    --foreground: #222222;
+    --card: #ffffff;
+    --card-foreground: #222222;
+    --popover: #ffffff;
+    --popover-foreground: #222222;
+    --primary: #ff385c;
+    --primary-foreground: #ffffff;
+    --secondary: #ffffff;
+    --secondary-foreground: #222222;
+    --muted: #ebebeb;
+    --muted-foreground: #6a6a6a;
+    --accent: #ebebeb;
+    --accent-foreground: #222222;
+    --destructive: #e00b41;
+    --border: #ebebeb;
+    --input: #dddddd;
+    --ring: #ff385c;
+    --chart-1: #ff385c;
+    --chart-2: #00a699;
+    --chart-3: #fc642d;
+    --chart-4: #484848;
+    --chart-5: #6a6a6a;
+    --sidebar: #ffffff;
+    --sidebar-foreground: #222222;
+    --sidebar-primary: #ff385c;
+    --sidebar-primary-foreground: #ffffff;
+    --sidebar-accent: #f7f7f7;
+    --sidebar-accent-foreground: #222222;
+    --sidebar-border: #ebebeb;
+    --sidebar-ring: #ff385c;
+}

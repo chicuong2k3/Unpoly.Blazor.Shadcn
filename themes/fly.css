@@ -1,0 +1,101 @@
+/* stylecn:fly — Electric violet #7c3aed on lavender — Fly.io infra. Bold, developer.
+   ==========================================================================================
+   CONVERTED from https://github.com/DaniAkash/stylecn — src/themes/brands.css
+   Preset: fly. Brand colors, radius and type from the real fly product.
+   Do not edit by hand; re-run convert_all_stylecn.py to refresh.
+
+   Scoped to [data-theme] so several can be loaded at once and switched by an attribute.
+   An app that ships one theme puts data-theme on <html>.
+   TYPEFACES: see --font-sans / --font-heading inside; load them in the app.
+   (Stylecn brands ship their own @fontsource imports — an app must add them.) */
+
+
+[data-theme="fly"] {
+    --radius-sm: 4px;
+    --radius-md: 8px;
+    --radius-lg: 10px;
+    --radius-xl: 16px;
+    --radius-2xl: 20px;
+    --radius-3xl: 24px;
+    --radius-4xl: 9999px;
+    --font-sans: "Fricolage Grotesque", "Inter", ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    --font-heading: "Mackinac", "Recoleta", "Source Serif Pro", Georgia, "Times New Roman", serif;
+    --background: #ffffff;
+    --foreground: #281950;
+    --card: #ffffff;
+    --card-foreground: #281950;
+    --popover: #ffffff;
+    --popover-foreground: #281950;
+    --primary: #7c3aed;
+    --primary-foreground: #ffffff;
+    --secondary: #f1f2f9;
+    --secondary-foreground: #281950;
+    --muted: #f1f2f9;
+    --muted-foreground: #5e537c;
+    --accent: #e7e6f4;
+    --accent-foreground: #281950;
+    --destructive: #f59e0b;
+    --border: #e7e6f4;
+    --input: #e7e6f4;
+    --ring: #7c3aed;
+    --chart-1: #7c3aed;
+    --chart-2: #3b82f6;
+    --chart-3: #10b981;
+    --chart-4: #f59e0b;
+    --chart-5: #a39ac1;
+    --sidebar: #f1f2f9;
+    --sidebar-foreground: #281950;
+    --sidebar-primary: #7c3aed;
+    --sidebar-primary-foreground: #ffffff;
+    --sidebar-accent: #e7e6f4;
+    --sidebar-accent-foreground: #281950;
+    --sidebar-border: #e7e6f4;
+    --sidebar-ring: #7c3aed;
+    --radius: 10px;
+    --radius-control: calc(10px - 2px);
+    --surface-border: var(--border);
+    --destructive-foreground: oklch(100% 0 0);
+    --font-mono: ui-monospace, SFMono-Regular, Menlo, monospace;
+    --font-serif: Georgia, "Times New Roman", serif;
+    --tracking-normal: 0em;
+    --elevation-1: 0 1px 2px 0 rgb(0 0 0 / 0.04);
+    --elevation-2: 0 1px 3px 0 rgb(0 0 0 / 0.08), 0 1px 2px -1px rgb(0 0 0 / 0.06);
+    --elevation-3: 0 4px 12px -2px rgb(0 0 0 / 0.10);
+    --elevation-4: 0 16px 32px -8px rgb(0 0 0 / 0.14);
+    font-family: var(--font-sans);
+}
+
+[data-theme="fly"].dark,
+[data-theme="fly"] .dark {
+    --background: #191034;
+    --foreground: #ffffff;
+    --card: #281950;
+    --card-foreground: #ffffff;
+    --popover: #281950;
+    --popover-foreground: #ffffff;
+    --primary: #7c3aed;
+    --primary-foreground: #ffffff;
+    --secondary: #382770;
+    --secondary-foreground: #ffffff;
+    --muted: #382770;
+    --muted-foreground: #a39ac1;
+    --accent: #382770;
+    --accent-foreground: #ffffff;
+    --destructive: #f59e0b;
+    --border: rgba(255, 255, 255, 0.10);
+    --input: rgba(255, 255, 255, 0.15);
+    --ring: #7c3aed;
+    --chart-1: #a78bfa;
+    --chart-2: #60a5fa;
+    --chart-3: #34d399;
+    --chart-4: #fbbf24;
+    --chart-5: #c4b5fd;
+    --sidebar: #281950;
+    --sidebar-foreground: #ffffff;
+    --sidebar-primary: #7c3aed;
+    --sidebar-primary-foreground: #ffffff;
+    --sidebar-accent: rgba(255, 255, 255, 0.06);
+    --sidebar-accent-foreground: #ffffff;
+    --sidebar-border: rgba(255, 255, 255, 0.10);
+    --sidebar-ring: #7c3aed;
+}

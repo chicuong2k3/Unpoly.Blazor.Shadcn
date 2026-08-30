@@ -23,10 +23,41 @@ REGISTRY = 'https://tweakcn.com/r/themes/{name}.json'
 # Chosen for how well each sits with shadcn's own shapes rather than for novelty. The note is
 # printed into the file so a reader knows what they are looking at without opening the site.
 THEMES = {
+    # --- Core 4 ---
     'vercel': 'Black and white, sharp. The house style shadcn itself grew out of.',
     'supabase': 'Neon green on near-white. High contrast, unmistakably a developer tool.',
     'modern-minimal': 'Clean blue on pure white. The closest to shadcn default with a colour.',
     'notebook': 'Heavy borders on paper. The opposite of this library default, on purpose.',
+    # --- Additional tweakcn presets (visually distinct from the core 4) ---
+    'catppuccin': 'Warm mocha pastels. Soft, inviting, community feel.',
+    'claymorphism': 'Soft 3D, inflated surfaces. Friendly, tactile, approachable.',
+    'amethyst-haze': 'Muted purple elegance. Trustworthy, calm, premium.',
+    'ocean-breeze': 'Cool blue trust. Clean, fintech-safe, calm.',
+    'tangerine': 'Warm orange energy. Optimistic, human, donation-friendly.',
+    'bubblegum': 'Playful pink candy. Light, cheerful, stands out.',
+    'perpetuity': 'Deep teal / petrol. Serious, grounded, editorial.',
+    't3-chat': 'Neutral modern with a dark accent. Minimal, chat-clean.',
+    # --- Full tweakcn catalogue (20 remaining) ---
+    'amber-minimal': 'Warm amber minimal. Earthy, calm, focused.',
+    'bold-tech': 'Bold tech — saturated primary, sharp, developer.',
+    'clean-slate': 'Clean slate — near-white canvas, minimal chrome.',
+    'cosmic-night': 'Cosmic night — deep space, starfield, moody.',
+    'elegant-luxury': 'Elegant luxury — refined, serif, high-contrast.',
+    'kodama-grove': 'Kodama grove — forest greens, natural, grounded.',
+    'midnight-bloom': 'Midnight bloom — dark floral, moody, premium.',
+    'mocha-mousse': 'Mocha mousse — warm brown, cozy, Pantone 2025.',
+    'neo-brutalism': 'Neo-brutalism — heavy borders, flat, bold.',
+    'northern-lights': 'Northern lights — aurora greens and purples.',
+    'pastel-dreams': 'Pastel dreams — soft pastels, dreamy, light.',
+    'quantum-rose': 'Quantum rose — rose + teal, vibrant, modern.',
+    'retro-arcade': 'Retro arcade — neon, pixel, nostalgic.',
+    'sage-garden': 'Sage garden — muted greens, natural, calm.',
+    'solar-dusk': 'Solar dusk — warm sunset, amber glow.',
+    'starry-night': 'Starry night — Van Gogh blues, swirling.',
+    'sunset-horizon': 'Sunset horizon — warm gradient dusk.',
+    'vintage-paper': 'Vintage paper — aged parchment, editorial.',
+    'violet-bloom': 'Violet bloom — purple floral, soft, elegant.',
+    'soft-pop': 'Soft pop — gentle brights, friendly.',
 }
 
 # The inputs tweakcn keeps so its own editor can recompute a shadow — the colour, the opacity,

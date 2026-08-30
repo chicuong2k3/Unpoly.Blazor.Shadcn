@@ -1,0 +1,101 @@
+/* stylecn:superhuman — Violet #714cb6 on cream — Superhuman speed. Premium, fast.
+   ==========================================================================================
+   CONVERTED from https://github.com/DaniAkash/stylecn — src/themes/brands.css
+   Preset: superhuman. Brand colors, radius and type from the real superhuman product.
+   Do not edit by hand; re-run convert_all_stylecn.py to refresh.
+
+   Scoped to [data-theme] so several can be loaded at once and switched by an attribute.
+   An app that ships one theme puts data-theme on <html>.
+   TYPEFACES: see --font-sans / --font-heading inside; load them in the app.
+   (Stylecn brands ship their own @fontsource imports — an app must add them.) */
+
+
+[data-theme="superhuman"] {
+    --radius: 0.75rem;
+    --radius-sm: 6px;
+    --radius-md: 10px;
+    --radius-lg: 12px;
+    --radius-xl: 16px;
+    --radius-2xl: 20px;
+    --radius-3xl: 24px;
+    --radius-4xl: 9999px;
+    --font-sans: "Inter Variable", ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    --font-heading: "Inter Variable", ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    --background: #f2f0eb;
+    --foreground: #1a1a1a;
+    --card: #ffffff;
+    --card-foreground: #1a1a1a;
+    --popover: #ffffff;
+    --popover-foreground: #1a1a1a;
+    --primary: #714cb6;
+    --primary-foreground: #ffffff;
+    --secondary: #e8e5dd;
+    --secondary-foreground: #1a1a1a;
+    --muted: #e8e5dd;
+    --muted-foreground: #6b6b6b;
+    --accent: #e8e5dd;
+    --accent-foreground: #1a1a1a;
+    --destructive: #d94545;
+    --border: #d8d5cc;
+    --input: #d8d5cc;
+    --ring: #714cb6;
+    --chart-1: #714cb6;
+    --chart-2: #9b7ed6;
+    --chart-3: #d4a96c;
+    --chart-4: #5b8caf;
+    --chart-5: #6b6b6b;
+    --sidebar: #ffffff;
+    --sidebar-foreground: #1a1a1a;
+    --sidebar-primary: #714cb6;
+    --sidebar-primary-foreground: #ffffff;
+    --sidebar-accent: #e8e5dd;
+    --sidebar-accent-foreground: #1a1a1a;
+    --sidebar-border: #d8d5cc;
+    --sidebar-ring: #714cb6;
+    --radius-control: calc(0.75rem - 2px);
+    --surface-border: var(--border);
+    --destructive-foreground: oklch(100% 0 0);
+    --font-mono: ui-monospace, SFMono-Regular, Menlo, monospace;
+    --font-serif: Georgia, "Times New Roman", serif;
+    --tracking-normal: 0em;
+    --elevation-1: 0 1px 2px 0 rgb(0 0 0 / 0.04);
+    --elevation-2: 0 1px 3px 0 rgb(0 0 0 / 0.08), 0 1px 2px -1px rgb(0 0 0 / 0.06);
+    --elevation-3: 0 4px 12px -2px rgb(0 0 0 / 0.10);
+    --elevation-4: 0 16px 32px -8px rgb(0 0 0 / 0.14);
+    font-family: var(--font-sans);
+}
+
+[data-theme="superhuman"].dark,
+[data-theme="superhuman"] .dark {
+    --background: #14131a;
+    --foreground: #f2f0eb;
+    --card: #1f1d28;
+    --card-foreground: #f2f0eb;
+    --popover: #1f1d28;
+    --popover-foreground: #f2f0eb;
+    --primary: #9b7ed6;
+    --primary-foreground: #14131a;
+    --secondary: #2e2b3a;
+    --secondary-foreground: #f2f0eb;
+    --muted: #2e2b3a;
+    --muted-foreground: #a09cb0;
+    --accent: #2e2b3a;
+    --accent-foreground: #f2f0eb;
+    --destructive: #e36060;
+    --border: rgba(255, 255, 255, 0.10);
+    --input: rgba(255, 255, 255, 0.15);
+    --ring: #9b7ed6;
+    --chart-1: #9b7ed6;
+    --chart-2: #c0a8e8;
+    --chart-3: #e0bf85;
+    --chart-4: #7fb0d1;
+    --chart-5: #a09cb0;
+    --sidebar: #1f1d28;
+    --sidebar-foreground: #f2f0eb;
+    --sidebar-primary: #9b7ed6;
+    --sidebar-primary-foreground: #14131a;
+    --sidebar-accent: rgba(255, 255, 255, 0.06);
+    --sidebar-accent-foreground: #f2f0eb;
+    --sidebar-border: rgba(255, 255, 255, 0.10);
+    --sidebar-ring: #9b7ed6;
+}

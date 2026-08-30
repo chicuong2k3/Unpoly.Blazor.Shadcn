@@ -18,6 +18,16 @@ Four generated from [tweakcn](https://tweakcn.com) — `vercel`, `supabase`,
 language: `cupertino` and `fluent`. The generated four are the ones to start from; they
 were built for shadcn and sit on its shapes without argument.
 
+Eight more generated from tweakcn — `catppuccin`, `claymorphism`, `amethyst-haze`,
+`ocean-breeze`, `tangerine`, `bubblegum`, `perpetuity`, `t3-chat` — covering the
+rest of tweakcn's catalogue that is visually distinct from the first four.
+
+Six converted from [stylecn](https://github.com/DaniAkash/stylecn) brand presets —
+`stripe`, `apple`, `airbnb`, `claude`, `wise`, `linear` — each mimics the real
+brand's palette, radius and type. They are scoped to `[data-theme]` the same as the
+rest; the source is `src/themes/brands.css` in stylecn. Run
+`python C:/Users/DELL/AppData/Local/Temp/convert_stylecn.py` to refresh them.
+
 `md3` used to be here and was removed. Material fights shadcn rather than dressing it:
 pill buttons beside 12dp cards, a state-layer model shadcn does not have, and a ripple
 that cannot be faked. What it produced read as neither one thing nor the other.

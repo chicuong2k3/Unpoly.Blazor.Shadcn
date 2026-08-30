@@ -60,6 +60,22 @@
        Windows theme, and on a Mac it correctly reads as system-ui. */
     --font-sans: "Segoe UI Variable Text", "Segoe UI", system-ui, sans-serif;
     --font-mono: "Cascadia Mono", Consolas, ui-monospace, monospace;
+    --font-serif: Georgia, "Times New Roman", serif;
+    --tracking-normal: 0em;
+    --font-numeric: "Cascadia Mono", ui-monospace, monospace;
+    --chart-1: oklch(51% 0.156 258);
+    --chart-2: oklch(60% 0.12 220);
+    --chart-3: oklch(68% 0.10 180);
+    --chart-4: oklch(72% 0.10 30);
+    --chart-5: oklch(55% 0.08 280);
+    --sidebar: oklch(99% 0 0);
+    --sidebar-foreground: oklch(24.5% 0 0);
+    --sidebar-primary: oklch(51% 0.156 258);
+    --sidebar-primary-foreground: oklch(100% 0 0);
+    --sidebar-accent: oklch(94% 0 0);
+    --sidebar-accent-foreground: oklch(24.5% 0 0);
+    --sidebar-border: oklch(86% 0 0);
+    --sidebar-ring: oklch(51% 0.156 258);
 
     font-family: var(--font-sans);
 
@@ -90,6 +106,21 @@
     --border: oklch(35% 0 0);
     --input: oklch(35% 0 0);
     --ring: oklch(70% 0.13 254);
+    --font-serif: Georgia, "Times New Roman", serif;
+    --tracking-normal: 0em;
+    --chart-1: oklch(70% 0.13 254);
+    --chart-2: oklch(68% 0.12 220);
+    --chart-3: oklch(65% 0.10 180);
+    --chart-4: oklch(60% 0.10 30);
+    --chart-5: oklch(55% 0.08 280);
+    --sidebar: oklch(23% 0 0);
+    --sidebar-foreground: oklch(96% 0 0);
+    --sidebar-primary: oklch(70% 0.13 254);
+    --sidebar-primary-foreground: oklch(19.5% 0 0);
+    --sidebar-accent: oklch(31% 0 0);
+    --sidebar-accent-foreground: oklch(96% 0 0);
+    --sidebar-border: oklch(35% 0 0);
+    --sidebar-ring: oklch(70% 0.13 254);
 }
 
 @layer components {

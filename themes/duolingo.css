@@ -1,0 +1,101 @@
+/* stylecn:duolingo — Vivid green #58cc02 Nunito — Duolingo play. Rounded, friendly, gamified.
+   ==========================================================================================
+   CONVERTED from https://github.com/DaniAkash/stylecn — src/themes/brands.css
+   Preset: duolingo. Brand colors, radius and type from the real duolingo product.
+   Do not edit by hand; re-run convert_all_stylecn.py to refresh.
+
+   Scoped to [data-theme] so several can be loaded at once and switched by an attribute.
+   An app that ships one theme puts data-theme on <html>.
+   TYPEFACES: see --font-sans / --font-heading inside; load them in the app.
+   (Stylecn brands ship their own @fontsource imports — an app must add them.) */
+
+
+[data-theme="duolingo"] {
+    --radius: 0.75rem;
+    --radius-sm: 8px;
+    --radius-md: 10px;
+    --radius-lg: 12px;
+    --radius-xl: 12px;
+    --radius-2xl: 16px;
+    --radius-3xl: 20px;
+    --radius-4xl: 9999px;
+    --font-sans: "Nunito Variable", "Inter Variable", ui-sans-serif, system-ui, sans-serif;
+    --font-heading: "Nunito Variable", "Inter Variable", ui-sans-serif, system-ui, sans-serif;
+    --background: #ffffff;
+    --foreground: #3c3c3c;
+    --card: #ffffff;
+    --card-foreground: #3c3c3c;
+    --popover: #ffffff;
+    --popover-foreground: #3c3c3c;
+    --primary: #58cc02;
+    --primary-foreground: #ffffff;
+    --secondary: #f7f7f7;
+    --secondary-foreground: #3c3c3c;
+    --muted: #f7f7f7;
+    --muted-foreground: #777777;
+    --accent: #f0fae0;
+    --accent-foreground: #4f8a17;
+    --destructive: #ff4b4b;
+    --border: #e5e5e5;
+    --input: #e5e5e5;
+    --ring: #58cc02;
+    --chart-1: #58cc02;
+    --chart-2: #1cb0f6;
+    --chart-3: #ffc800;
+    --chart-4: #ce82ff;
+    --chart-5: #ff9600;
+    --sidebar: #ffffff;
+    --sidebar-foreground: #3c3c3c;
+    --sidebar-primary: #58cc02;
+    --sidebar-primary-foreground: #ffffff;
+    --sidebar-accent: #f0fae0;
+    --sidebar-accent-foreground: #4f8a17;
+    --sidebar-border: #e5e5e5;
+    --sidebar-ring: #58cc02;
+    --radius-control: calc(0.75rem - 2px);
+    --surface-border: var(--border);
+    --destructive-foreground: oklch(100% 0 0);
+    --font-mono: ui-monospace, SFMono-Regular, Menlo, monospace;
+    --font-serif: Georgia, "Times New Roman", serif;
+    --tracking-normal: 0em;
+    --elevation-1: 0 1px 2px 0 rgb(0 0 0 / 0.04);
+    --elevation-2: 0 1px 3px 0 rgb(0 0 0 / 0.08), 0 1px 2px -1px rgb(0 0 0 / 0.06);
+    --elevation-3: 0 4px 12px -2px rgb(0 0 0 / 0.10);
+    --elevation-4: 0 16px 32px -8px rgb(0 0 0 / 0.14);
+    font-family: var(--font-sans);
+}
+
+[data-theme="duolingo"].dark,
+[data-theme="duolingo"] .dark {
+    --background: #1c1c1c;
+    --foreground: #ffffff;
+    --card: #2a2a2a;
+    --card-foreground: #ffffff;
+    --popover: #2a2a2a;
+    --popover-foreground: #ffffff;
+    --primary: #58cc02;
+    --primary-foreground: #ffffff;
+    --secondary: #3a3a3a;
+    --secondary-foreground: #ffffff;
+    --muted: #3a3a3a;
+    --muted-foreground: #b0b0b0;
+    --accent: #3a3a3a;
+    --accent-foreground: #ffffff;
+    --destructive: #ff4b4b;
+    --border: rgba(255, 255, 255, 0.10);
+    --input: rgba(255, 255, 255, 0.15);
+    --ring: #58cc02;
+    --chart-1: #58cc02;
+    --chart-2: #1cb0f6;
+    --chart-3: #ffc800;
+    --chart-4: #ce82ff;
+    --chart-5: #ff9600;
+    --sidebar: #2a2a2a;
+    --sidebar-foreground: #ffffff;
+    --sidebar-primary: #58cc02;
+    --sidebar-primary-foreground: #ffffff;
+    --sidebar-accent: rgba(255, 255, 255, 0.06);
+    --sidebar-accent-foreground: #ffffff;
+    --sidebar-border: rgba(255, 255, 255, 0.10);
+    --sidebar-ring: #58cc02;
+}

@@ -1,0 +1,101 @@
+/* stylecn:wise — Lime #9fe870 dark text — Wise money. Fresh, direct, fintech.
+   ==========================================================================================
+   CONVERTED from https://github.com/DaniAkash/stylecn — src/themes/brands.css
+   Preset: wise. Brand colors, radius and type from the real wise product.
+   Do not edit by hand; re-run convert_all_stylecn.py to refresh.
+
+   Scoped to [data-theme] so several can be loaded at once and switched by an attribute.
+   An app that ships one theme puts data-theme on <html>.
+   TYPEFACES: see --font-sans / --font-heading inside; load them in the app.
+   (Stylecn brands ship their own @fontsource imports — an app must add them.) */
+
+
+[data-theme="wise"] {
+    --radius: 0.625rem;
+    --radius-sm: 6px;
+    --radius-md: 8px;
+    --radius-lg: 10px;
+    --radius-xl: 10px;
+    --radius-2xl: 14px;
+    --radius-3xl: 18px;
+    --radius-4xl: 9999px;
+    --font-sans: "Inter Variable", ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    --font-heading: "Inter Variable", ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    --background: #ffffff;
+    --foreground: #163300;
+    --card: #ffffff;
+    --card-foreground: #163300;
+    --popover: #ffffff;
+    --popover-foreground: #163300;
+    --primary: #9fe870;
+    --primary-foreground: #163300;
+    --secondary: #f4f4f4;
+    --secondary-foreground: #163300;
+    --muted: #f4f4f4;
+    --muted-foreground: #5a6967;
+    --accent: #e3f5d1;
+    --accent-foreground: #163300;
+    --destructive: #d4264f;
+    --border: #dcdcdc;
+    --input: #dcdcdc;
+    --ring: #9fe870;
+    --chart-1: #9fe870;
+    --chart-2: #163300;
+    --chart-3: #3a7a3a;
+    --chart-4: #d4b450;
+    --chart-5: #5a6967;
+    --sidebar: #ffffff;
+    --sidebar-foreground: #163300;
+    --sidebar-primary: #9fe870;
+    --sidebar-primary-foreground: #163300;
+    --sidebar-accent: #e3f5d1;
+    --sidebar-accent-foreground: #163300;
+    --sidebar-border: #dcdcdc;
+    --sidebar-ring: #9fe870;
+    --radius-control: calc(0.625rem - 2px);
+    --surface-border: var(--border);
+    --destructive-foreground: oklch(100% 0 0);
+    --font-mono: ui-monospace, SFMono-Regular, Menlo, monospace;
+    --font-serif: Georgia, "Times New Roman", serif;
+    --tracking-normal: 0em;
+    --elevation-1: 0 1px 2px 0 rgb(0 0 0 / 0.04);
+    --elevation-2: 0 1px 3px 0 rgb(0 0 0 / 0.08), 0 1px 2px -1px rgb(0 0 0 / 0.06);
+    --elevation-3: 0 4px 12px -2px rgb(0 0 0 / 0.10);
+    --elevation-4: 0 16px 32px -8px rgb(0 0 0 / 0.14);
+    font-family: var(--font-sans);
+}
+
+[data-theme="wise"].dark,
+[data-theme="wise"] .dark {
+    --background: #0a1e08;
+    --foreground: #f4f4f4;
+    --card: #14310f;
+    --card-foreground: #f4f4f4;
+    --popover: #14310f;
+    --popover-foreground: #f4f4f4;
+    --primary: #9fe870;
+    --primary-foreground: #163300;
+    --secondary: #1f4218;
+    --secondary-foreground: #f4f4f4;
+    --muted: #1f4218;
+    --muted-foreground: #a8b8a0;
+    --accent: #1f4218;
+    --accent-foreground: #f4f4f4;
+    --destructive: #ff5b80;
+    --border: rgba(255, 255, 255, 0.10);
+    --input: rgba(255, 255, 255, 0.15);
+    --ring: #9fe870;
+    --chart-1: #9fe870;
+    --chart-2: #6abe4a;
+    --chart-3: #d4b450;
+    --chart-4: #87a87f;
+    --chart-5: #a8b8a0;
+    --sidebar: #14310f;
+    --sidebar-foreground: #f4f4f4;
+    --sidebar-primary: #9fe870;
+    --sidebar-primary-foreground: #163300;
+    --sidebar-accent: rgba(255, 255, 255, 0.06);
+    --sidebar-accent-foreground: #f4f4f4;
+    --sidebar-border: rgba(255, 255, 255, 0.10);
+    --sidebar-ring: #9fe870;
+}

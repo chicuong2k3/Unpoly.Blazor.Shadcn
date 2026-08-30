@@ -74,6 +74,21 @@
     letter-spacing: var(--tracking-normal);
 
 
+    --font-serif: "New York", Georgia, serif;
+    --chart-1: oklch(56.5% 0.212 258);
+    --chart-2: oklch(58% 0.14 280);
+    --chart-3: oklch(48% 0.12 200);
+    --chart-4: oklch(55% 0.15 30);
+    --chart-5: oklch(45% 0.06 250);
+    --sidebar: oklch(100% 0 0);
+    --sidebar-foreground: oklch(14% 0 0);
+    --sidebar-primary: oklch(56.5% 0.212 258);
+    --sidebar-primary-foreground: oklch(100% 0 0);
+    --sidebar-accent: oklch(94% 0.002 250);
+    --sidebar-accent-foreground: oklch(14% 0 0);
+    --sidebar-border: oklch(89.5% 0.002 250);
+    --sidebar-ring: oklch(56.5% 0.212 258);
+
     /* Hairlines, not ground: iOS separates a card from the page with a line. */
     --surface-border: var(--border);
 
@@ -100,6 +115,21 @@
     --border: oklch(28% 0.003 250);
     --input: oklch(28% 0.003 250);
     --ring: oklch(63.5% 0.196 256);
+    --font-serif: "New York", Georgia, serif;
+    --tracking-normal: -0.01em;
+    --chart-1: oklch(63.5% 0.196 256);
+    --chart-2: oklch(58% 0.14 280);
+    --chart-3: oklch(48% 0.12 200);
+    --chart-4: oklch(55% 0.15 30);
+    --chart-5: oklch(45% 0.06 250);
+    --sidebar: oklch(17.5% 0.002 250);
+    --sidebar-foreground: oklch(98% 0 0);
+    --sidebar-primary: oklch(63.5% 0.196 256);
+    --sidebar-primary-foreground: oklch(100% 0 0);
+    --sidebar-accent: oklch(24% 0.003 250);
+    --sidebar-accent-foreground: oklch(98% 0 0);
+    --sidebar-border: oklch(28% 0.003 250);
+    --sidebar-ring: oklch(63.5% 0.196 256);
 }
 
 @layer components {

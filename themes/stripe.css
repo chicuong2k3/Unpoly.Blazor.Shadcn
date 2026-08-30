@@ -1,0 +1,101 @@
+/* stylecn:stripe — Violet #533afd on powder-blue — Stripe fintech. Trustworthy, editorial.
+   ==========================================================================================
+   CONVERTED from https://github.com/DaniAkash/stylecn — src/themes/brands.css
+   Preset: stripe. Brand colors, radius and type from the real stripe product.
+   Do not edit by hand; re-run convert_all_stylecn.py to refresh.
+
+   Scoped to [data-theme] so several can be loaded at once and switched by an attribute.
+   An app that ships one theme puts data-theme on <html>.
+   TYPEFACES: see --font-sans / --font-heading inside; load them in the app.
+   (Stylecn brands ship their own @fontsource imports — an app must add them.) */
+
+
+[data-theme="stripe"] {
+    --radius-sm: 2px;
+    --radius-md: 4px;
+    --radius-lg: 4px;
+    --radius-xl: 6px;
+    --radius-2xl: 8px;
+    --radius-3xl: 10px;
+    --radius-4xl: 12px;
+    --font-sans: "sohne-var", "Söhne", "Inter", ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    --font-heading: "sohne-var", "Söhne", "Inter", ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    --background: #ffffff;
+    --foreground: #061b31;
+    --card: #e5edf5;
+    --card-foreground: #061b31;
+    --popover: #ffffff;
+    --popover-foreground: #061b31;
+    --primary: #533afd;
+    --primary-foreground: #ffffff;
+    --secondary: #f8fafd;
+    --secondary-foreground: #061b31;
+    --muted: #f8fafd;
+    --muted-foreground: #50617a;
+    --accent: #e5edf5;
+    --accent-foreground: #061b31;
+    --destructive: #ff6118;
+    --border: #d8d6df;
+    --input: #d8d6df;
+    --ring: #533afd;
+    --chart-1: #533afd;
+    --chart-2: #8087ff;
+    --chart-3: #81b81a;
+    --chart-4: #ff6118;
+    --chart-5: #50617a;
+    --sidebar: #f8fafd;
+    --sidebar-foreground: #061b31;
+    --sidebar-primary: #533afd;
+    --sidebar-primary-foreground: #ffffff;
+    --sidebar-accent: #e5edf5;
+    --sidebar-accent-foreground: #061b31;
+    --sidebar-border: #d8d6df;
+    --sidebar-ring: #533afd;
+    --radius: 4px;
+    --radius-control: calc(4px - 2px);
+    --surface-border: var(--border);
+    --destructive-foreground: oklch(100% 0 0);
+    --font-mono: ui-monospace, SFMono-Regular, Menlo, monospace;
+    --font-serif: Georgia, "Times New Roman", serif;
+    --tracking-normal: 0em;
+    --elevation-1: 0 1px 2px 0 rgb(0 0 0 / 0.04);
+    --elevation-2: 0 1px 3px 0 rgb(0 0 0 / 0.08), 0 1px 2px -1px rgb(0 0 0 / 0.06);
+    --elevation-3: 0 4px 12px -2px rgb(0 0 0 / 0.10);
+    --elevation-4: 0 16px 32px -8px rgb(0 0 0 / 0.14);
+    font-family: var(--font-sans);
+}
+
+[data-theme="stripe"].dark,
+[data-theme="stripe"] .dark {
+    --background: #061b31;
+    --foreground: #ffffff;
+    --card: #0a2541;
+    --card-foreground: #ffffff;
+    --popover: #0a2541;
+    --popover-foreground: #ffffff;
+    --primary: #8087ff;
+    --primary-foreground: #061b31;
+    --secondary: #143659;
+    --secondary-foreground: #ffffff;
+    --muted: #143659;
+    --muted-foreground: #a5b4cb;
+    --accent: #143659;
+    --accent-foreground: #ffffff;
+    --destructive: #ff6118;
+    --border: rgba(255, 255, 255, 0.10);
+    --input: rgba(255, 255, 255, 0.15);
+    --ring: #8087ff;
+    --chart-1: #8087ff;
+    --chart-2: #b9b9f9;
+    --chart-3: #81b81a;
+    --chart-4: #ff6118;
+    --chart-5: #a5b4cb;
+    --sidebar: #0a2541;
+    --sidebar-foreground: #ffffff;
+    --sidebar-primary: #8087ff;
+    --sidebar-primary-foreground: #061b31;
+    --sidebar-accent: rgba(255, 255, 255, 0.06);
+    --sidebar-accent-foreground: #ffffff;
+    --sidebar-border: rgba(255, 255, 255, 0.10);
+    --sidebar-ring: #8087ff;
+}
