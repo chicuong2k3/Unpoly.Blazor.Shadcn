@@ -43,7 +43,9 @@ app.Use(async (ctx, next) =>
     // Anything a sample posts. The reply is a `.preview` fragment, which is what the samples
     // target and what <Example> renders a slot for — the point is not the answer, it is that a
     // reader can press the thing and watch it really submit, with no JavaScript taking part.
-    if (HttpMethods.IsPost(ctx.Request.Method) && !path.StartsWith("/_"))
+    // /uploads is excluded because it is a REAL endpoint below, not a sample's target: this
+    // echo runs before routing and would otherwise answer the file upload with a fragment.
+    if (HttpMethods.IsPost(ctx.Request.Method) && !path.StartsWith("/_") && path != "/uploads")
     {
         var form = ctx.Request.HasFormContentType ? await ctx.Request.ReadFormAsync() : null;
         var fields = form is null || form.Count == 0
@@ -72,6 +74,20 @@ app.Use(async (ctx, next) =>
 });
 
 app.MapRazorComponents<App>();
+
+// The FileUpload page needs somewhere to post to. It keeps nothing: the file is read and
+// thrown away, and the answer is a data: URL of what was sent — so the demo shows a real
+// round trip, with a real preview, and stores nothing at all.
+app.MapPost("/uploads", async (HttpRequest request) =>
+{
+    var file = request.Form.Files["file"];
+    if (file is null || file.Length == 0) return Results.BadRequest(new { error = "no file" });
+
+    using var memory = new MemoryStream();
+    await file.CopyToAsync(memory);
+    var url = $"data:{file.ContentType};base64,{Convert.ToBase64String(memory.ToArray())}";
+    return Results.Ok(new { url });
+}).DisableAntiforgery();
 
 app.Run();
 

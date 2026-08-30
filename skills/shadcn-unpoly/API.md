@@ -1059,6 +1059,23 @@ renders `<div>` · `data-slot="field-label"`
 
 _No parameters of its own._
 
+## `<FileUpload>`
+renders `<div>` · `data-slot="file-upload"`
+
+| Parameter | Type | Default | |
+|---|---|---|---|
+| `Name` | `string` | `default!` |  |
+| `Value` | `string?` | — | **required** |
+| `Action` | `string` | `default!` | **required** |
+| `Accept` | `string` | `"image/*"` | **required** |
+| `MaxBytes` | `int` | `8 * 1024 * 1024` |  |
+| `Ratio` | `string` | `"aspect-video"` |  |
+| `Prompt` | `string` | `"Drop a file here, or click to choose"` |  |
+| `Hint` | `string?` | — |  |
+| `PreviewBase` | `string?` | — |  |
+| `ClearLabel` | `string` | `"Remove"` |  |
+| `Disabled` | `bool` | — |  |
+
 ## `<FormDescription>`
 renders `<p>` · `data-slot="form-description"`
 

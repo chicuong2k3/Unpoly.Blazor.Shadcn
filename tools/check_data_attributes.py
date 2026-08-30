@@ -30,6 +30,12 @@ EMITS = re.compile(r'\bdata-([a-z-]+)=')
 # Attributes ui.js writes at runtime, with the compiler that writes each one. An entry here is a
 # promise that the JavaScript keeps it in step; anything not here belongs in the markup.
 BY_COMPILER = {
+    # The three states a drop zone passes through, all of them written by the compiler because
+    # all three are answers to something the user did: a file over the zone, a request in
+    # flight, a value in the field.
+    "FileUpload.data-dragging": 'up.compiler(\'[data-slot="file-upload"]\')',
+    "FileUpload.data-uploading": 'up.compiler(\'[data-slot="file-upload"]\')',
+    "FileUpload.data-filled": 'up.compiler(\'[data-slot="file-upload"]\')',
     'Sheet.data-state': "up.compiler('dialog[data-slot]')",
     'Dialog.data-state': "up.compiler('dialog[data-slot]')",
     # A sidebar row can BE the trigger for a menu or a collapsible section, which is where

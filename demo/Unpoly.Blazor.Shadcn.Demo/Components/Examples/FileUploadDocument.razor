@@ -1,0 +1,14 @@
+@* Not every upload is a picture. ChildContent replaces the preview and the prompt, and the
+   behaviour underneath is unchanged — drop, choose, post, keep the URL. *@
+<div class="w-full max-w-sm">
+    <FileUpload Name="contract" Action="/uploads" Accept=".pdf,application/pdf"
+                Ratio="aspect-auto" ClearLabel="Remove the document">
+        <div class="flex w-full items-center gap-3 px-4 py-6">
+            <Icon Name="file" Class="size-8 shrink-0 text-muted-foreground" />
+            <div class="min-w-0 text-start">
+                <p class="text-sm font-medium">Signed contract</p>
+                <p class="text-xs text-muted-foreground">PDF only · drop it here</p>
+            </div>
+        </div>
+    </FileUpload>
+</div>

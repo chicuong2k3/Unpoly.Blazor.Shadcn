@@ -2794,6 +2794,158 @@
   })
 
   // =============================================================================================
+  // FileUpload — a drop zone that posts the file and keeps the URL
+  // =============================================================================================
+  // The file goes up on its own, as soon as it is chosen, and what stays behind in the form is a
+  // hidden input holding the URL that came back. That is the whole design, and it buys three
+  // things a plain <input type="file"> cannot: the surrounding form stays an ordinary form
+  // rather than multipart, a chosen image survives a validation failure that re-renders the
+  // page, and a field can sit inside a form that is already doing something else.
+  //
+  // The antiforgery token is read from the surrounding form, because the upload is a POST to the
+  // same application and ASP.NET will refuse it otherwise — and the failure is a 400 with no
+  // body, which reads like a broken endpoint rather than a missing token.
+
+  up.compiler('[data-slot="file-upload"]', (root) => {
+    const zone = root.querySelector('[data-slot="file-upload-zone"]')
+    const picker = root.querySelector('[data-slot="file-upload-input"]')
+    const value = root.querySelector('[data-slot="file-upload-value"]')
+    const preview = root.querySelector('[data-slot="file-upload-preview"]')
+    const empty = root.querySelector('[data-slot="file-upload-empty"]')
+    const clear = root.querySelector('[data-slot="file-upload-clear"]')
+    const status = root.querySelector('[data-slot="file-upload-status"]')
+    if (!zone || !picker || !value) return
+
+    const text = () => ({
+      uploading: 'Uploading…',
+      failed: 'Upload failed.',
+      refused: 'That file is not accepted here.',
+      tooBig: 'That file is too large.',
+      ...(config().fileUploadText || {}),
+    })
+
+    const say = (message, tone) => {
+      if (!status) return
+      status.textContent = message || ''
+      status.dataset.tone = tone || ''
+    }
+
+    // What the field holds decides what the zone shows. One function, called after every change,
+    // rather than each path remembering to update three elements.
+    const paint = () => {
+      const url = value.value
+      zone.dataset.filled = url ? 'true' : 'false'
+      if (preview) {
+        // Removed rather than emptied: src="" is a request for the CURRENT PAGE, which the
+        // browser fetches, fails to decode as an image, and reports in the console.
+        //
+        // A stored PATH may belong to another origin, so it is resolved against
+        // data-preview-base for display only — what the field posts is never rewritten.
+        const base = (root.dataset.previewBase || '').replace(/\/$/, '')
+        if (url) preview.src = base && url.startsWith('/') ? base + url : url
+        else preview.removeAttribute('src')
+        preview.hidden = !url
+      }
+      if (empty) empty.hidden = !!url
+      if (clear) clear.hidden = !url
+    }
+
+    const accepts = (file) => {
+      const accept = root.dataset.accept
+      if (!accept || accept === '*/*') return true
+      return accept.split(',').map((rule) => rule.trim()).some((rule) =>
+        rule.endsWith('/*') ? file.type.startsWith(rule.slice(0, -1))
+          : rule.startsWith('.') ? file.name.toLowerCase().endsWith(rule.toLowerCase())
+          : file.type === rule)
+    }
+
+    const send = async (file) => {
+      if (!file) return
+      // Checked here as well as in the picker: `accept` is advice the picker gives, and a file
+      // dragged onto the zone never went near it.
+      if (!accepts(file)) return say(text().refused, 'error')
+      const max = Number(root.dataset.maxBytes || 0)
+      if (max > 0 && file.size > max) return say(text().tooBig, 'error')
+
+      zone.dataset.uploading = 'true'
+      say(text().uploading)
+
+      const body = new FormData()
+      body.append('file', file)
+      const token = root.closest('form')?.querySelector('input[name="__RequestVerificationToken"]')
+      if (token) body.append(token.name, token.value)
+
+      try {
+        const response = await fetch(root.dataset.action, {
+          method: 'POST', body, headers: { Accept: 'application/json' },
+        })
+        if (!response.ok) throw new Error(String(response.status))
+        const answer = await response.json()
+        if (!answer?.url) throw new Error('no url')
+
+        value.value = answer.url
+        // An input written by script raises nothing, and a form that is watching its own fields
+        // — up-validate, up-autosubmit — would never hear about the one field that changed.
+        value.dispatchEvent(new Event('input', { bubbles: true }))
+        value.dispatchEvent(new Event('change', { bubbles: true }))
+        paint()
+        say('')
+      } catch {
+        say(text().failed, 'error')
+      } finally {
+        delete zone.dataset.uploading
+      }
+    }
+
+    const onPick = () => send(picker.files[0])
+    const onClick = (event) => { if (!event.target.closest('[data-slot="file-upload-clear"]')) picker.click() }
+    const onKey = (event) => {
+      if (event.key !== 'Enter' && event.key !== ' ') return
+      if (event.target.closest('[data-slot="file-upload-clear"]')) return
+      event.preventDefault()
+      picker.click()
+    }
+
+    const onOver = (event) => { event.preventDefault(); zone.dataset.dragging = 'true' }
+    const onLeave = (event) => { if (!zone.contains(event.relatedTarget)) delete zone.dataset.dragging }
+    const onDrop = (event) => {
+      event.preventDefault()
+      delete zone.dataset.dragging
+      send(event.dataTransfer?.files?.[0])
+    }
+
+    const onClear = (event) => {
+      event.preventDefault()
+      event.stopPropagation()
+      value.value = ''
+      value.dispatchEvent(new Event('input', { bubbles: true }))
+      value.dispatchEvent(new Event('change', { bubbles: true }))
+      picker.value = ''
+      paint()
+      say('')
+    }
+
+    picker.addEventListener('change', onPick)
+    zone.addEventListener('click', onClick)
+    zone.addEventListener('keydown', onKey)
+    zone.addEventListener('dragover', onOver)
+    zone.addEventListener('dragleave', onLeave)
+    zone.addEventListener('drop', onDrop)
+    clear?.addEventListener('click', onClear)
+    paint()
+
+    return () => {
+      picker.removeEventListener('change', onPick)
+      zone.removeEventListener('click', onClick)
+      zone.removeEventListener('keydown', onKey)
+      zone.removeEventListener('dragover', onOver)
+      zone.removeEventListener('dragleave', onLeave)
+      zone.removeEventListener('drop', onDrop)
+      clear?.removeEventListener('click', onClear)
+    }
+  })
+
+  // =============================================================================================
   // Carousel — the two arrows, and only the two arrows
   // =============================================================================================
   // Scroll-snap is the carousel. These buttons scroll it by one slide and disable themselves at

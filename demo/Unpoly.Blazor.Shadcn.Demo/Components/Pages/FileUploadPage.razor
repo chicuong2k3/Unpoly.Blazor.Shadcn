@@ -1,0 +1,61 @@
+@page "/components/file-upload"
+
+<PageTitle>File Upload — Unpoly.Blazor.Shadcn</PageTitle>
+
+<h1 class="doc-h1">File Upload</h1>
+<p class="doc-lede">
+    A drop zone that posts the file on its own and keeps the URL. shadcn has no file field, and a bare <code>&lt;input type="file"&gt;</code> is not one: it renders as a button whose label the page cannot write, it shows a filename and never a picture, and it posts the bytes — which forces the whole surrounding form to be multipart and to handle the upload itself.
+</p>
+
+<p class="doc-note">
+    What the form carries is a hidden input holding the URL that came back. That buys three things:
+    the surrounding form stays an ordinary form, a chosen image survives a validation failure that
+    re-renders the page, and the field can sit inside a form that is already doing something else.
+</p>
+<Example Source="FileUploadExample.razor"><FileUploadExample /></Example>
+
+<h2 class="doc-h2">With a value</h2>
+<p class="doc-note">
+    The picture is the control. The only thing drawn on top of it is the way to remove it, and it
+    appears with the pointer — as a word underneath, that button is a permanent offer to delete
+    something that is usually not there.
+</p>
+<Example Source="FileUploadFilled.razor"><FileUploadFilled /></Example>
+
+<h2 class="doc-h2">Not a picture</h2>
+<p class="doc-note">
+    <code>ChildContent</code> replaces the preview and the prompt. Everything underneath is
+    unchanged — drop, choose, post, keep the URL — so a document, an avatar or a list of names
+    are all the same component wearing different clothes.
+</p>
+<Example Source="FileUploadDocument.razor"><FileUploadDocument /></Example>
+
+<h2 class="doc-h2">The endpoint</h2>
+<p class="doc-note">
+    Anything that accepts a multipart <code>file</code> and answers with a JSON object carrying a
+    <code>url</code>. Everything else in the answer is ignored, so an endpoint may say more. The
+    antiforgery token is read from the surrounding form and sent with the file, because ASP.NET
+    refuses the POST otherwise — and it refuses with a bodyless 400, which reads like a broken
+    endpoint rather than a missing token.
+</p>
+<CodeBlock Language="csharp" Title="Program.cs" Class="mt-4 max-w-2xl" Code="@Endpoint" />
+
+<h2 class="doc-h2">Refusing a file</h2>
+<p class="doc-note">
+    <code>Accept</code> is given to the picker AND checked before the upload, because a picker's
+    accept is advice: a file dragged onto the zone never went through it. <code>MaxBytes</code> is
+    checked in the same place, so a file that is too large is refused without being sent.
+</p>
+
+<h2 class="doc-h2">RTL</h2>
+<Example Source="FileUploadRtl.razor"><FileUploadRtl /></Example>
+
+@code {
+    const string Endpoint = """
+        app.MapPost("/uploads", async (IFormFile file, IStorage storage) =>
+        {
+            var url = await storage.SaveAsync(file);
+            return Results.Ok(new { url });
+        }).DisableAntiforgery();   // or keep it, and the field sends the token
+        """;
+}
