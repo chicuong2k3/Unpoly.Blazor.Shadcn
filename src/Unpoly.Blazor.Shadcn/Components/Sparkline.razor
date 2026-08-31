@@ -71,8 +71,12 @@
         }
     }
 
-    string EffectiveColor => Color ?? "hsl(var(--primary))";
-    string EffectiveFill => Color is not null ? Color : "hsl(var(--primary) / 0.2)";
+    // var() resolves inside SVG presentation attributes, and the themes write --primary in
+    // oklch — so the legacy hsl(var(--primary)) wrapper produced an invalid colour and the
+    // computed stroke was 'none': the sparkline drew nothing at all. Alpha comes from
+    // color-mix, the same construct Tailwind generates for bg-primary/20.
+    string EffectiveColor => Color ?? "var(--primary)";
+    string EffectiveFill => Color is not null ? Color : "color-mix(in oklab, var(--primary) 20%, transparent)";
 
     string PathData
     {

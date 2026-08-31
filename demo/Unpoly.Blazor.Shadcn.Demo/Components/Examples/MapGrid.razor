@@ -1,6 +1,9 @@
 @* Two maps beside each other — each one gets its own compiler instance and its own lazy-loaded
-   MapLibre. Draggable puts a grab handle on the Hanoi marker. *@
-<div class="grid gap-4 md:grid-cols-2">
+   MapLibre. Draggable puts a grab handle on the Hanoi marker.
+   w-full: the Example preview wraps samples in a flex row, and a flex item sized by its
+   content collapses — a grid of maps has no intrinsic width, so the tracks (and both maps)
+   caved to zero. EChartsPage keeps its grids OUTSIDE any Example for the same reason. *@
+<div class="grid w-full gap-4 md:grid-cols-2">
     <Map CenterLat="21.028511" CenterLng="105.804817" Zoom="11" Height="300px">
         <MapMarker Lat="21.028511" Lng="105.804817" Popup="Hanoi" Draggable />
     </Map>

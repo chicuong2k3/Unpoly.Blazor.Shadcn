@@ -89,13 +89,18 @@
 
   let selectSeq = 0
 
-  // The page must not scroll behind anything that has taken over the pointer — a modal, a drawer,
-  // an open list. The platform makes a modal's background inert to clicks and to the keyboard,
-  // but the wheel still reaches it, so the panel sits pinned while the page slides past behind it.
+  // The page must not scroll behind a MODAL — a dialog, alert dialog, sheet or modal drawer.
+  // The platform makes a modal's background inert to clicks and to the keyboard, but the wheel
+  // still reaches it, so the dialog sits pinned while the page slides past behind it.
   //
-  // Counted rather than toggled, and ONE counter for all of them: drawers nest, a select opens
-  // inside a dialog, and the first thing to close must not unlock the page while another is still
-  // holding it.
+  // Non-modal popovers — a select's list, a combobox, a menu — must NOT touch this: locking hid
+  // the page scrollbar for as long as the panel was open, and on a machine with classic
+  // scrollbars that 17px gutter vanish re-laid out the whole page under the popup. A select's
+  // list is light-dismiss, not a takeover.
+  //
+  // Counted rather than toggled: dialogs nest (a select inside a dialog is fine either way — the
+  // list never locks), and the first one to close must not unlock the page while another is
+  // still holding it.
   let locks = 0
   const lockScroll = (on) => {
     locks = Math.max(0, locks + (on ? 1 : -1))
@@ -2628,7 +2633,10 @@
       place(panel, trigger, 'start', 'bottom', 4)
       active(items.findIndex((entry) => entry.option.value === select.value))
       alignItem()
-      lockScroll(true)
+      // No scroll lock: the list is a light-dismiss popover, not a modal. Locking hid the page
+      // scrollbar for the lifetime of the list — and on a machine with classic scrollbars the
+      // 17px gutter vanish re-laid out the whole page under it, which read as "the popup moved
+      // the page". A wheel over the page scrolls the page, exactly as a native <select> does.
       document.addEventListener('keydown', onKey, true)
     }
 
@@ -2688,7 +2696,6 @@
     const onToggle = (event) => {
       if (event.newState !== 'closed') return
       trigger.setAttribute('aria-expanded', 'false')
-      lockScroll(false)
       document.removeEventListener('keydown', onKey, true)
     }
 
@@ -2707,7 +2714,6 @@
     select.tabIndex = -1
 
     return () => {
-      if (isOpen()) lockScroll(false)
       panel.remove()
       select.removeEventListener('change', sync)
       select.classList.remove('sr-only')

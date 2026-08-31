@@ -37,7 +37,10 @@
             Smooth = true,
             LineStyle = new { width = StrokeWidth },
             AreaStyle = isArea ? new { opacity = 0.2 } : null,
-            ItemStyle = new { color = Color ?? "hsl(var(--primary))" },
+            // var(--primary) rather than hsl(var(--primary)): ECharts' own colour parser cannot
+            // read the hsl-wrapped var (and would strip the var in emphasis maths anyway); the
+            // compiler normalises the bare var to concrete sRGB before setOption.
+            ItemStyle = new { color = Color ?? "var(--primary)" },
             SymbolSize = ShowDots ? 4 : 0
         };
 

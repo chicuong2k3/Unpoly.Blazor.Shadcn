@@ -47,5 +47,11 @@
 
     string StyleValue => $"height:{Height};width:{(Width ?? "100%")};";
 
-    string Classes => Cn("relative w-full overflow-hidden rounded-lg border bg-muted", Class);
+    // w-full min-w-0: the host layout may place the map inside a flex row or a grid whose
+    // tracks are minmax(0, 1fr). There the map is sized by its container, and the container by
+    // its content — a circularity that collapses both to zero and the map renders 0px wide.
+    // Table has the same story and carries w-full for the same reason. min-w-0 lets the
+    // shrink-to-fit floor at zero rather than at MapLibre's 400px default canvas.
+    string Classes => Cn("relative w-full min-w-0 overflow-hidden rounded-lg border bg-muted", Class);
+
 }

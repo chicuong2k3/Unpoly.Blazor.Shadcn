@@ -31,7 +31,7 @@ public static class EChartsTheme
     {
         color = ChartVariables,
         backgroundColor = "transparent",
-        textStyle = new { color = "hsl(var(--foreground))", fontFamily = "var(--font-sans, ui-sans-serif)" },
+        textStyle = new { color = "var(--foreground)", fontFamily = "var(--font-sans, ui-sans-serif)" },
         animationDuration = 300
     };
 }
