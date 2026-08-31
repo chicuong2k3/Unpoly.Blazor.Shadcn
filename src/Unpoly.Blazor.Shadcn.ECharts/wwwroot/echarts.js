@@ -37,11 +37,10 @@
     return cssVar('--border', 'rgba(0,0,0,0.08)')
   }
 
-  // ECharts wants real colours, not `var(--chart-1)`. Those vars resolve to
-  // hsl() strings already, so reading with getComputedStyle gives the value
-  // rather than the var() expression in most browsers. Where it still comes
-  // back as `var(--chart-1)`, the canvas still paints — it just ignores the
-  // fallback — so resolving here is best-effort, not required.
+  // ECharts wants real colours, not `var(--chart-1)`. Reading a custom
+  // property with getComputedStyle returns its raw value — in the shipped
+  // themes that is `oklch(...)` — so resolving here gives the colour, not
+  // the var() expression.
   function resolveVars(arr) {
     return arr.map(function (c) {
       if (typeof c === 'string' && c.indexOf('var(') === 0) {
@@ -50,6 +49,38 @@
       }
       return c
     })
+  }
+
+  // ECharts 5.x's own colour parser only understands legacy CSS syntax
+  // (hex, rgb, hsl, named). The theme palette is modern — oklch() in the
+  // shipped themes — and the browser's canvas accepts that on the first
+  // paint, but ECharts re-parses the colour on the hover/emphasis pass,
+  // fails, and the series drops its stroke and fill: the chart vanishes
+  // under the pointer. So every colour that reaches setOption is run
+  // through the browser once and comes back as the concrete sRGB form
+  // ECharts can read. The 1x1 canvas round-trip covers oklch, oklab, lch,
+  // hwb and color() alike; a colour the browser itself rejects (bad
+  // syntax, unresolved var()) is left unchanged.
+  var colorProbe = null
+  function normalizeColor(c) {
+    if (typeof c !== 'string' || c === '') return c
+    if (/^#([0-9a-fA-F]{3,8})$/.test(c) || /^rgba?\(/i.test(c) || /^hsla?\(/i.test(c)) return c
+    if (!colorProbe) {
+      colorProbe = document.createElement('canvas')
+      colorProbe.width = 1
+      colorProbe.height = 1
+    }
+    var ctx = colorProbe.getContext('2d')
+    var sentinel = 'rgba(1, 2, 3)'
+    ctx.fillStyle = sentinel
+    ctx.fillStyle = c
+    if (ctx.fillStyle === sentinel) return c
+    ctx.clearRect(0, 0, 1, 1)
+    ctx.fillRect(0, 0, 1, 1)
+    var d = ctx.getImageData(0, 0, 1, 1).data
+    if (d[0] === 1 && d[1] === 2 && d[2] === 3 && d[3] === 0) return c
+    var a = Math.round((d[3] / 255) * 1000) / 1000
+    return 'rgba(' + d[0] + ', ' + d[1] + ', ' + d[2] + (a < 1 ? ', ' + a : '') + ')'
   }
 
   var echartsLoading = null
@@ -196,6 +227,12 @@
       if (!opts.color) opts.color = resolveVars(shadcnColors())
       if (!opts.backgroundColor) opts.backgroundColor = 'transparent'
       if (!opts.textStyle) opts.textStyle = { color: shadcnTextColor(), fontFamily: 'var(--font-sans, ui-sans-serif)' }
+      // Normalise the palette and text colour to concrete sRGB — see
+      // normalizeColor. ECharts parses these on every hover, and its
+      // parser cannot read the theme's modern CSS colour syntax.
+      if (Array.isArray(opts.color)) opts.color = opts.color.map(normalizeColor)
+      else if (typeof opts.color === 'string') opts.color = normalizeColor(opts.color)
+      if (opts.textStyle && typeof opts.textStyle.color === 'string') opts.textStyle.color = normalizeColor(opts.textStyle.color)
       try {
         chart.setOption(opts, { notMerge: true, lazyUpdate: false })
       } catch (e) {
