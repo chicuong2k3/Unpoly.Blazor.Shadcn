@@ -18,9 +18,17 @@
     /// hardcoded 8 because there was no parameter to read instead.</summary>
     [Parameter] public int SideOffset { get; set; } = 4;
 
+    // The Base deliberately carries no display utility, and the compound below re-hides a
+    // closed popover. The UA sheet hides [popover] with display:none, but any author display
+    // class on the panel — HoverCardBasic passes flex w-64 — wins over the UA rule and leaves
+    // the closed card fully rendered on screen (fixed, centered, opaque). It then covers
+    // neighbouring triggers, breaks hit-testing for every card under it, and reads as "the
+    // popup never closes". Same guard shadcn needs for any popover panel carrying a display
+    // class: closed means hidden, no matter what the utility says.
     const string Base =
         "z-50 w-64 origin-(--radix-hover-card-content-transform-origin) rounded-md border " +
         "bg-popover p-4 text-popover-foreground shadow-md outline-hidden " +
+        "[&:not(:popover-open)]:hidden " +
         "data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 " +
         "data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 " +
         "data-[state=closed]:animate-out data-[state=closed]:fade-out-0 " +

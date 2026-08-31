@@ -2348,14 +2348,19 @@
   // per-trigger net cannot cover that, because the thing that would have closed it is the thing
   // that went away.
   //
-  // So: twice a second, any open card whose trigger and panel are both un-hovered and unfocused
-  // gets closed, whoever opened it. :hover is the browser's own answer and needs no coordinates.
+  // Every compiler registers its pointer check (below) against its panel; this interval calls
+  // whichever ones it finds. The check is geometric — elementFromPoint at the pointer's last
+  // known position — and the sweep must use THAT, not its own :hover test: Chromium does not
+  // refresh the hover chain until the pointer moves, so after a wheel scroll under a stationary
+  // pointer the old :hover stays true over nothing, the sweep skipped the card, and the card
+  // sat on screen for as long as the reader cared to wait. Orphaned panels whose trigger is
+  // gone close unconditionally; nobody can be hovering them.
+  const hoverCardChecks = new WeakMap()
   setInterval(() => {
     for (const panel of document.querySelectorAll('[data-slot="hover-card-content"]')) {
       if (!panel.matches(':popover-open')) continue
-      const trigger = document.querySelector(`[data-slot="hover-card-trigger"][data-target="${CSS.escape(panel.id)}"]`)
-      if (trigger?.matches(':hover, :focus-visible') || panel.matches(':hover, :focus-within')) continue
-      panel.hidePopover()
+      const checker = hoverCardChecks.get(panel)
+      if (checker ? checker() : true) panel.hidePopover()
     }
   }, 500)
 
@@ -2392,10 +2397,15 @@
     let at = null
     const elsewhere = () => {
       if (!panel.matches(':popover-open')) return false
-      // :hover decides, and no coordinates are involved. The browser maintains the hover chain
-      // itself and keeps it right through a top-layer boundary, a swapped element and a pointer
-      // that has stopped reporting — all three of which broke the coordinate bookkeeping this
-      // used to depend on, and each of which leaves a card open with the pointer nowhere near it.
+      //
+      // Decided by GEOMETRY, not by :hover. Chromium does not refresh the hover chain until
+      // the pointer itself moves — so after a wheel scroll under a stationary pointer, the
+      // page content moves away and the trigger keeps :hover=true over nothing. A sweep built
+      // on :hover then keeps the card open forever, which is the report this closes. A hit
+      // test against the trigger and panel boxes cannot go stale: it asks where the pointer
+      // IS, not where the browser last thought it was. The top-layer panel is included by
+      // elementFromPoint like any other element, and a box test survives the boundary the
+      // way the old coordinate bookkeeping never did.
       //
       // Focus deliberately does NOT keep the card open. It used to: anything holding focus
       // (trigger :focus-visible, panel :focus-within) was exempt from the sweep — and a real
@@ -2404,12 +2414,12 @@
       // Radix's behaviour is the pointer's: leave both elements and the card closes, focused or
       // not. Focus still OPENS it for the keyboard — and if the reader is mid-Tab and the card
       // folds, Tab or Shift-Tab reopens it from the still-focused trigger.
-      if (trigger.matches(':hover') || panel.matches(':hover')) return false
-      if (!at) return true
+      if (!at) return false // pointer never seen on this page: keep out of the way entirely
 
       const over = document.elementFromPoint(at.x, at.y)
       return !over || !(trigger.contains(over) || panel.contains(over))
     }
+    hoverCardChecks.set(panel, elsewhere)
 
     const onMove = (event) => {
       at = { x: event.clientX, y: event.clientY }
@@ -2417,8 +2427,10 @@
     }
 
     // A heartbeat, because the check above needs an event to run and a pointer can stop
-    // producing them: parked outside the window, resting over browser chrome, moved by a gesture
-    // the page never sees. Once a second, from wherever the pointer was last known to be.
+    // producing them: parked outside the window, resting over browser chrome, or — the one
+    // that hid this bug — a wheel scroll under a stationary pointer, which moves the page
+    // without a single pointer event. Every 400ms the last known pointer position is hit
+    // tested again; scroll, resize and layout shifts are all caught by the same tick.
     const beat = setInterval(() => { if (elsewhere()) close() }, 400)
 
     // And leaving the window is leaving the card.
@@ -2443,8 +2455,8 @@
     document.addEventListener('keydown', onKey)
 
     return () => {
+      hoverCardChecks.delete(panel)
       clearTimeout(openTimer)
-      clearTimeout(closeTimer)
       trigger.removeEventListener('pointerenter', open)
       trigger.removeEventListener('pointerleave', close)
       trigger.removeEventListener('focus', onFocus)
