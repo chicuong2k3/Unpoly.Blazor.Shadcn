@@ -70,17 +70,57 @@
       colorProbe.width = 1
       colorProbe.height = 1
     }
+    // A var() reference must become its computed value first — the canvas rejects var() as
+    // a fillStyle, and an unresolved reference would otherwise fall through unchanged. The
+    // live theme decides what it computes to, so a theme switch re-resolves on the next apply.
+    var m = /^var\((--[^,)]+)[^)]*\)$/.exec(c)
+    if (m) {
+      var resolved = getComputedStyle(document.documentElement).getPropertyValue(m[1]).trim()
+      if (!resolved) return c
+      c = resolved
+    }
     var ctx = colorProbe.getContext('2d')
-    var sentinel = 'rgba(1, 2, 3)'
-    ctx.fillStyle = sentinel
+    // The rejection marker must be read BACK, not compared against the string set: Chromium
+    // normalizes 'rgba(1, 2, 3)' to '#010203', so a rejected assignment (fillStyle unchanged)
+    // never matched the literal and the probe then 'succeeded', painting the sentinel and
+    // returning rgba(1, 2, 3) as the resolved colour.
+    ctx.fillStyle = 'rgba(1, 2, 3)'
+    var marker = ctx.fillStyle
     ctx.fillStyle = c
-    if (ctx.fillStyle === sentinel) return c
+    if (ctx.fillStyle === marker) return c
     ctx.clearRect(0, 0, 1, 1)
     ctx.fillRect(0, 0, 1, 1)
     var d = ctx.getImageData(0, 0, 1, 1).data
-    if (d[0] === 1 && d[1] === 2 && d[2] === 3 && d[3] === 0) return c
     var a = Math.round((d[3] / 255) * 1000) / 1000
     return 'rgba(' + d[0] + ', ' + d[1] + ', ' + d[2] + (a < 1 ? ', ' + a : '') + ')'
+  }
+
+  // The palette and textStyle do not cover colours the caller embeds deeper —
+  // itemStyle, lineStyle, areaStyle, their emphasis/blur variants, markLine,
+  // rich text. Those re-parse on the hover/emphasis pass exactly like the
+  // palette does, so a `var(--primary)` inside a series style vanishes the
+  // series the moment it is highlighted. Walk the option tree and normalise
+  // every value of a colour-bearing key. Values elsewhere — names, labels,
+  // formatters — are never touched.
+  var COLOR_KEYS = /^(color|backgroundColor|borderColor|shadowColor|fill|stroke)$/i
+  function normalizeColorTree(node, depth) {
+    if (!node || typeof node !== 'object' || depth > 12) return node
+    if (Array.isArray(node)) {
+      // Arrays hold series lists, gradient color stops, markLine data. Strings inside them
+      // are names and formatters as often as colours, so only objects are descended into —
+      // their colour keys are handled by the branch below.
+      for (var i = 0; i < node.length; i++) {
+        if (node[i] && typeof node[i] === 'object') normalizeColorTree(node[i], depth + 1)
+      }
+      return node
+    }
+    for (var k in node) {
+      if (!Object.prototype.hasOwnProperty.call(node, k)) continue
+      var v = node[k]
+      if (COLOR_KEYS.test(k) && typeof v === 'string') node[k] = normalizeColor(v)
+      else if (v && typeof v === 'object') normalizeColorTree(v, depth + 1)
+    }
+    return node
   }
 
   var echartsLoading = null
@@ -233,6 +273,8 @@
       if (Array.isArray(opts.color)) opts.color = opts.color.map(normalizeColor)
       else if (typeof opts.color === 'string') opts.color = normalizeColor(opts.color)
       if (opts.textStyle && typeof opts.textStyle.color === 'string') opts.textStyle.color = normalizeColor(opts.textStyle.color)
+      if (opts.series) normalizeColorTree(opts.series, 0)
+      if (opts.visualMap) normalizeColorTree(opts.visualMap, 0)
       try {
         chart.setOption(opts, { notMerge: true, lazyUpdate: false })
       } catch (e) {

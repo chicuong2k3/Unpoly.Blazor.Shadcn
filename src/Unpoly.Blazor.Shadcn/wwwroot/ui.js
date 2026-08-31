@@ -89,18 +89,20 @@
 
   let selectSeq = 0
 
-  // The page must not scroll behind a MODAL — a dialog, alert dialog, sheet or modal drawer.
+  // The page must not scroll behind a takeover — a dialog, alert dialog, sheet, modal drawer,
+  // or an open select list (the list is the takeover: the reader is choosing, not browsing).
   // The platform makes a modal's background inert to clicks and to the keyboard, but the wheel
-  // still reaches it, so the dialog sits pinned while the page slides past behind it.
+  // still reaches it, so the panel sits pinned while the page slides past behind it.
   //
-  // Non-modal popovers — a select's list, a combobox, a menu — must NOT touch this: locking hid
-  // the page scrollbar for as long as the panel was open, and on a machine with classic
-  // scrollbars that 17px gutter vanish re-laid out the whole page under the popup. A select's
-  // list is light-dismiss, not a takeover.
+  // Locking sets overflow:hidden on the root, which retires the page scrollbar — and on a
+  // machine with classic scrollbars that 17px gutter vanish re-lays out the whole page under
+  // the panel, one visible jump every open. scrollbar-gutter:stable reserves the strip ahead
+  // of time, so flipping overflow only stops the scrolling; the layout does not move. On
+  // overlay-scrollbar platforms (macOS, mobile) the gutter is empty and nothing shows.
   //
-  // Counted rather than toggled: dialogs nest (a select inside a dialog is fine either way — the
-  // list never locks), and the first one to close must not unlock the page while another is
-  // still holding it.
+  // Counted rather than toggled: dialogs nest, a select opens inside a dialog, and the first
+  // one to close must not unlock the page while another is still holding it.
+  document.documentElement.style.scrollbarGutter = 'stable'
   let locks = 0
   const lockScroll = (on) => {
     locks = Math.max(0, locks + (on ? 1 : -1))
@@ -2631,12 +2633,10 @@
       // object opening rather than a menu appearing near one.
       panel.style.minWidth = Math.round(trigger.getBoundingClientRect().width) + 'px'
       place(panel, trigger, 'start', 'bottom', 4)
-      active(items.findIndex((entry) => entry.option.value === select.value))
-      alignItem()
-      // No scroll lock: the list is a light-dismiss popover, not a modal. Locking hid the page
-      // scrollbar for the lifetime of the list — and on a machine with classic scrollbars the
-      // 17px gutter vanish re-laid out the whole page under it, which read as "the popup moved
-      // the page". A wheel over the page scrolls the page, exactly as a native <select> does.
+      // Lock until the reader chooses — the list is the takeover, and the page must not run
+      // off behind it. The lock is gutter-stable (see lockScroll), so hiding the scrollbar
+      // does not shift the layout underneath.
+      lockScroll(true)
       document.addEventListener('keydown', onKey, true)
     }
 
@@ -2696,6 +2696,7 @@
     const onToggle = (event) => {
       if (event.newState !== 'closed') return
       trigger.setAttribute('aria-expanded', 'false')
+      lockScroll(false)
       document.removeEventListener('keydown', onKey, true)
     }
 
@@ -2712,8 +2713,8 @@
     wrap.append(select, trigger, panel)
     select.classList.add('sr-only')
     select.tabIndex = -1
-
     return () => {
+      if (isOpen()) lockScroll(false)
       panel.remove()
       select.removeEventListener('change', sync)
       select.classList.remove('sr-only')
