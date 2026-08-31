@@ -20,7 +20,7 @@
         </SheetDescription>
     </SheetHeader>
 
-    <ScrollArea Class="flex-1 px-4">
+    <ScrollArea Class="flex-1 min-h-0 px-4">
         <FieldGroup data-customizer>
             @* Base colour — the grays everything else sits on. Five near-identical ramps until
                you look at a page: one is warm, one is cold, one has a green floor. *@
@@ -116,18 +116,17 @@
                 <FieldDescription>Density is half of what people mean by “feels like X”.</FieldDescription>
             </Field>
         </FieldGroup>
-    </ScrollArea>
 
-    <SheetFooter Class="flex-col gap-3">
-        <div class="w-full space-y-2">
+        <div class="mt-6 space-y-2 pb-6">
             <Label>What you have made</Label>
             <CodeBlock data-customizer-output Code="@Placeholder" Language="css"
                        Title="paste into your theme" Class="text-[11.5px]" />
         </div>
-        <div class="flex w-full gap-2">
-            <Button Variant="outline" Type="button" data-customizer-reset class="flex-1">Reset</Button>
-            <SheetClose Variant="default" class="flex-1">Done</SheetClose>
-        </div>
+    </ScrollArea>
+
+    <SheetFooter Class="flex-row gap-2">
+        <Button Variant="outline" Type="button" data-customizer-reset class="flex-1">Reset</Button>
+        <SheetClose Variant="default" class="flex-1">Done</SheetClose>
     </SheetFooter>
 </Sheet>
 
