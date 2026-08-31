@@ -2392,18 +2392,18 @@
     let at = null
     const elsewhere = () => {
       if (!panel.matches(':popover-open')) return false
-      // Keyboard focus is exempt, mouse focus is not. A CLICK focuses the trigger too, and a
-      // card that opens over its own trigger then produces no leave event either — so the two
-      // exemptions met and the card stayed open with the pointer long gone. :focus-visible is
-      // the browser's own answer to "did this focus come from the keyboard", which is the same
-      // question that decides whether focus opens it at all.
-      const held = trigger.contains(document.activeElement) || panel.contains(document.activeElement)
-      if (held && (trigger.matches(':focus-visible') || panel.matches(':focus-within'))) return false
-
-      // :hover first, and no coordinates involved. The browser maintains the hover chain itself
-      // and keeps it right through a top-layer boundary, a swapped element and a pointer that
-      // has stopped reporting — all three of which broke the coordinate bookkeeping this used to
-      // depend on, and each of which leaves a card open with the pointer nowhere near it.
+      // :hover decides, and no coordinates are involved. The browser maintains the hover chain
+      // itself and keeps it right through a top-layer boundary, a swapped element and a pointer
+      // that has stopped reporting — all three of which broke the coordinate bookkeeping this
+      // used to depend on, and each of which leaves a card open with the pointer nowhere near it.
+      //
+      // Focus deliberately does NOT keep the card open. It used to: anything holding focus
+      // (trigger :focus-visible, panel :focus-within) was exempt from the sweep — and a real
+      // click inside the card (selecting the handle text, following a link) leaves :focus-within
+      // set long after the pointer has gone, which held the card open on screen indefinitely.
+      // Radix's behaviour is the pointer's: leave both elements and the card closes, focused or
+      // not. Focus still OPENS it for the keyboard — and if the reader is mid-Tab and the card
+      // folds, Tab or Shift-Tab reopens it from the still-focused trigger.
       if (trigger.matches(':hover') || panel.matches(':hover')) return false
       if (!at) return true
 
