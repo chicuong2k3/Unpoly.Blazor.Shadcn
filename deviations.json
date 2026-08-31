@@ -366,17 +366,37 @@
       ],
       "why": "Same as carousel-next."
     },
+    "navigation-menu-link": {
+      "classes": [
+        "[&.up-current]:bg-accent/50",
+        "[&.up-current]:text-accent-foreground",
+        "[&.up-current]:hover:bg-accent",
+        "[&.up-current]:focus:bg-accent"
+      ],
+      "why": "With [up-nav] on the list, Unpoly marks the current link with a class, and the link's own comment promises that the marking is styled. The four mirror the data-[active=true] set: the Active parameter is the server-known path, .up-current is the address-bar path, and the two must look the same or the highlight depends on which of the two the page happens to use."
+    },
+
     "sidebar-menu-sub": {
       "classes": [
         "rtl:-translate-x-px"
       ],
       "why": "The hairline nudge that sits the list against its own border. The border is border-s now, so it is on the other edge under RTL and the nudge follows it. Tailwind has no logical translate, so this is the rtl: variant rather than a different utility."
     },
+    "sidebar-menu-button": {
+      "classes": [
+        "[&.up-current]:bg-sidebar-accent",
+        "[&.up-current]:font-medium",
+        "[&.up-current]:text-sidebar-accent-foreground"
+      ],
+      "why": "The Active parameter covers the server-known case, but with [up-nav] on an ancestor Unpoly marks the current row with a CLASS, and a class tells CSS nothing unless someone styles it. The row's own comment promises the highlight; this is its second source. Mirrors the data-[active=true] trio exactly, so the two paths agree."
+    },
     "sidebar-menu-sub-button": {
       "classes": [
-        "rtl:translate-x-px"
+        "rtl:translate-x-px",
+        "[&.up-current]:bg-sidebar-accent",
+        "[&.up-current]:text-sidebar-accent-foreground"
       ],
-      "why": "Same as sidebar-menu-sub, other way."
+      "why": "Same as sidebar-menu-sub, other way. The up-current pair mirrors the data-[active=true] pair: Unpoly marks the current row with a class and a class is only as good as the rule that styles it."
     },
     "bubble-reactions": {
       "classes": [
@@ -765,8 +785,7 @@
         "md:absolute"
       ],
       "why": "Upstream's panel sits inside a NavigationMenuViewport, where md:absolute places it. Here the panel IS a [popover] positioned by script against its trigger — and a top-layer element that is not position:fixed is treated as absolute, so it scrolls away from the trigger it belongs to. The same class demoted the tooltip and moved it three hundred pixels up its own page."
-    },
-    "drawer-content": {
+    },    "drawer-content": {
       "classes": [
         "data-[vaul-drawer-direction=top]:inset-x-0",
         "data-[vaul-drawer-direction=top]:top-0",

@@ -18,9 +18,11 @@
     </div>
 
     <TabsContent Value="preview">
-        <Card Class="border border-dashed">
-            <CardContent Class="flex flex-wrap items-start justify-center gap-4 px-6">@ChildContent</CardContent>
-        </Card>
+        @* A plain dashed frame, not a Card: samples that need a Card render their own, and a
+           nested Card is the most common visible defect in component documentation. *@
+        <div class="flex min-h-[80px] flex-wrap items-start justify-center gap-4 rounded-xl border border-dashed bg-card/30 px-6 py-8">
+            @ChildContent
+        </div>
 
         @* Where a sample's own request lands, and it has an ID.
 

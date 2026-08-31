@@ -30,6 +30,8 @@
     internal void Unregister(TimelineItem i) => Items.Remove(i);
     internal int IndexOf(TimelineItem i) => Items.IndexOf(i);
 
+    internal bool IsHorizontal => Orientation.Equals("Horizontal", StringComparison.OrdinalIgnoreCase);
+
     internal async Task SelectAsync(int idx)
     {
         if (idx < 0 || idx >= Items.Count) return;
@@ -42,7 +44,7 @@
     const string BaseHorizontal = "relative flex flex-row gap-4 overflow-x-auto";
 
     string Classes => Cn(
-        Orientation.Equals("Horizontal", StringComparison.OrdinalIgnoreCase) ? BaseHorizontal : BaseVertical,
+        IsHorizontal ? BaseHorizontal : BaseVertical,
         Alternate ? "data-[alternate=true]:[&>[data-slot=timeline-item]:nth-child(even)]:flex-row-reverse" : null,
         Class);
 }

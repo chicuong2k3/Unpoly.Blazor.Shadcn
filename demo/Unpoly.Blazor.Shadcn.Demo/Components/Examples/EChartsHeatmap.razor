@@ -1,0 +1,9 @@
+@using Unpoly.Blazor.Shadcn.ECharts.Components
+@* Heatmap: value per (x, y) cell. *@
+<EHeatmapChart Height="280px" XCategories="@x" YCategories="@y" Data="@data" />
+
+@code {
+    string[] x = ["Mon", "Tue", "Wed"];
+    string[] y = ["A", "B"];
+    double[][] data = [[0, 0, 5], [0, 1, 7], [1, 0, 3], [1, 1, 8], [2, 0, 2], [2, 1, 9]];
+}

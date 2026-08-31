@@ -1,0 +1,7 @@
+@* A line is the default: Data mapped across the width, stroke following the theme's primary.
+   The SVG is pure Razor — no charting script, no canvas. *@
+<Sparkline Data="@data" Type="line" Width="120px" Height="28px" />
+
+@code {
+    double[] data = [12, 18, 9, 22, 8, 19, 13, 14, 23, 18, 46, 52];
+}

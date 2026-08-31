@@ -6,16 +6,12 @@
 <p class="doc-lede">Interactive MapLibre GL map, lazy-loaded. Separate package <code>Unpoly.Blazor.Shadcn.Maps</code> so apps without maps never fetch 150KB MapLibre.</p>
 <p class="doc-note">Style <code>Auto</code> follows site theme. Override via <code>window.lumeoCdn.mapLibreJs/Css</code> for self-host.</p>
 
-<Map CenterLat="10.8231" CenterLng="106.6297" Zoom="12" Height="400px">
-    <MapMarker Lat="10.8231" Lng="106.6297" Popup="Ho Chi Minh City" />
-    <MapMarker Lat="10.762622" Lng="106.660172" Popup="District 1" />
-</Map>
+<h2 class="doc-h2">Basic</h2>
+<Example Source="MapVietnam.razor"><MapVietnam /></Example>
 
-<div class="mt-6 grid gap-4 md:grid-cols-2">
-    <Map CenterLat="21.028511" CenterLng="105.804817" Zoom="11" Height="300px">
-        <MapMarker Lat="21.028511" Lng="105.804817" Popup="Hanoi" Draggable />
-    </Map>
-    <Map CenterLat="16.054407" CenterLng="108.202167" Zoom="10" Height="300px">
-        <MapMarker Lat="16.054407" Lng="108.202167" Popup="Da Nang" />
-    </Map>
-</div>
+<h2 class="doc-h2">Grid</h2>
+<p class="doc-note">
+    Each map gets its own compiler instance and its own lazy-loaded MapLibre.
+    <code>Draggable</code> puts a grab handle on the Hanoi marker.
+</p>
+<Example Source="MapGrid.razor"><MapGrid /></Example>

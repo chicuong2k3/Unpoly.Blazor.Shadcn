@@ -1,0 +1,9 @@
+@using Unpoly.Blazor.Shadcn.ECharts.Components
+@* Mixed: a bar series and a line series on the same axes, with a shared legend. *@
+<EMixedChart Height="280px" Categories="@categories" BarValues="@bars" LineValues="@lines" />
+
+@code {
+    string[] categories = ["Mon", "Tue", "Wed", "Thu", "Fri"];
+    double[] bars = [120, 200, 150, 80, 70];
+    double[] lines = [80, 120, 100, 140, 110];
+}

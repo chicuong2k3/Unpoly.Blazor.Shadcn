@@ -120,6 +120,17 @@ public class DemoFixture : IAsyncLifetime
 
         _app = Process.Start(start) ?? throw new InvalidOperationException("dotnet would not start");
 
+        // Drain the child's console, reading into nothing. The app logs every request at
+        // Information level, and a redirected stdout is a pipe with a bounded buffer. Once
+        // enough tests have logged into it - somewhere around the fortieth, depending on how
+        // much each page says - the app's own Console.WriteLine blocks in WriteFile, and every
+        // thread that logs next, i.e. every request thread, waits on the logger behind it.
+        // From then on the demo accepts connections and answers nothing, and every remaining
+        // test fails with an identical networkidle timeout. Reading the stream keeps the pipe
+        // from filling; the text itself is not needed.
+        _app.BeginOutputReadLine();
+        _app.BeginErrorReadLine();
+
         for (var i = 0; i < 120; i++)
         {
             if (_app.HasExited) throw new InvalidOperationException("the demo exited while starting");

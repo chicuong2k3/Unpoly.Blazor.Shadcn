@@ -1,0 +1,10 @@
+@* Two maps beside each other — each one gets its own compiler instance and its own lazy-loaded
+   MapLibre. Draggable puts a grab handle on the Hanoi marker. *@
+<div class="grid gap-4 md:grid-cols-2">
+    <Map CenterLat="21.028511" CenterLng="105.804817" Zoom="11" Height="300px">
+        <MapMarker Lat="21.028511" Lng="105.804817" Popup="Hanoi" Draggable />
+    </Map>
+    <Map CenterLat="16.054407" CenterLng="108.202167" Zoom="10" Height="300px">
+        <MapMarker Lat="16.054407" Lng="108.202167" Popup="Da Nang" />
+    </Map>
+</div>

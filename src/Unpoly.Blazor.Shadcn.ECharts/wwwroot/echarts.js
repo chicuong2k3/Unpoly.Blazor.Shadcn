@@ -67,61 +67,158 @@
     return echartsLoading
   }
 
+  // Series types this package ships as vendor plugins under wwwroot/echarts/.
+  // UMD builds that require('echarts') and register their series type on the
+  // global — loaded AFTER echarts.min.js, only when a chart actually uses the
+  // type, so a page with plain bar charts pays nothing for them.
+  var PLUGIN_SOURCES = {
+    liquidFill: '_content/Unpoly.Blazor.Shadcn.ECharts/echarts/echarts-liquidfill.min.js',
+    wordCloud: '_content/Unpoly.Blazor.Shadcn.ECharts/echarts/echarts-wordcloud.min.js'
+  }
+  var pluginLoaded = {}
+  function loadScript(src) {
+    if (pluginLoaded[src]) return pluginLoaded[src]
+    pluginLoaded[src] = new Promise(function (resolve, reject) {
+      var s = document.createElement('script')
+      s.src = src
+      s.defer = true
+      s.onload = resolve
+      s.onerror = function () { console.warn('[echarts] failed to load plugin', src); reject() }
+      document.head.appendChild(s)
+    })
+    return pluginLoaded[src]
+  }
+
+  function optsSeries(opts) {
+    if (!opts) return []
+    if (Array.isArray(opts.series)) return opts.series
+    if (opts.series && Array.isArray(opts.series.data)) return opts.series.data
+    return []
+  }
+
+  function detectPlugins(opts) {
+    var need = []
+    var series = optsSeries(opts)
+    for (var i = 0; i < series.length; i++) {
+      var t = series[i] && series[i].type
+      if (PLUGIN_SOURCES[t] && need.indexOf(t) < 0) need.push(t)
+    }
+    return need
+  }
+
+  function ensurePlugins(opts) {
+    var needed = detectPlugins(opts)
+    var pending = needed.map(function (t) { return PLUGIN_SOURCES[t] }).filter(function (src, idx, arr) { return arr.indexOf(src) === idx && !pluginLoaded[src] })
+    return pending.reduce(function (chain, src) { return chain.then(function () { return loadScript(src) }) }, Promise.resolve())
+  }
+
+  // The package bundles a world outline; register it for map/geo charts that
+  // ask for "world". Any other unregistered map is an app-level concern — the
+  // compiler warns instead of failing silently on a blank canvas.
+  var worldMap = null
+  function ensureMap(opts) {
+    var names = []
+    var series = optsSeries(opts)
+    for (var i = 0; i < series.length; i++) {
+      var s = series[i]
+      if (s && s.type === 'map' && s.map) names.push(s.map)
+    }
+    if (opts && opts.geo && typeof opts.geo === 'object' && !Array.isArray(opts.geo)) {
+      if (typeof opts.geo.map === 'string') names.push(opts.geo.map)
+      else if (Array.isArray(opts.geo.map)) for (var j = 0; j < opts.geo.map.length; j++) names.push(opts.geo.map[j])
+    } else if (opts && opts.geo && typeof opts.geo === 'string') {
+      names.push(opts.geo)
+    }
+    for (var k = 0; k < names.length; k++) {
+      var name = names[k]
+      if (typeof echarts === 'undefined' || !echarts.getMap) continue
+      if (name !== 'world' || echarts.getMap('world')) continue
+      if (!worldMap) {
+        worldMap = new Promise(function (resolve) {
+          fetch('_content/Unpoly.Blazor.Shadcn.ECharts/geo/world.geo.json')
+            .then(function (r) { return r.ok ? r.json() : Promise.reject(new Error('HTTP ' + r.status)) })
+            .then(function (geo) { echarts.registerMap('world', geo); resolve(geo) })
+            .catch(function (e) { console.warn('[echarts] could not load the bundled world map', e); resolve(null) })
+        })
+      }
+      worldMap.then(function () {
+        if (!echarts.getMap('world')) console.warn('[echarts] no map registered for "world" — the chart will be empty')
+      })
+      return worldMap
+    }
+    return Promise.resolve()
+  }
+
+  function parsedOptions(el) {
+    var raw = el.getAttribute('data-options')
+    if (!raw) return null
+    try { return JSON.parse(raw) }
+    catch (e) {
+      console.error('[echarts] failed to parse data-options', e, raw.slice(0, 500))
+      return null
+    }
+  }
+
   up.compiler('[data-echarts]', function (el) {
     var theme = el.dataset.theme && el.dataset.theme !== 'default' ? el.dataset.theme : null
     var autoResize = el.dataset.autoResize !== '0'
     var chart = null
-    var pending = true
 
     function ensureChart() {
       if (chart || typeof echarts === 'undefined') return
-      pending = false
       chart = echarts.init(el, theme, { renderer: 'canvas', useDirtyRect: false })
       apply()
     }
 
     if (typeof echarts === 'undefined') {
-      loadEcharts().then(ensureChart).catch(function(){})
+      // init must wait for the vendor plugins (series types) and any map the
+      // options reference to be registered — a setOption against an unknown
+      // type or unregistered map throws before the first frame.
+      loadEcharts()
+        .then(function () { return ensurePlugins(parsedOptions(el)) })
+        .then(function () { return ensureMap(parsedOptions(el)) })
+        .then(ensureChart)
+        .catch(function(){})
     } else {
-      chart = echarts.init(el, theme, { renderer: 'canvas', useDirtyRect: false })
+      ensurePlugins(parsedOptions(el))
+        .then(function () { return ensureMap(parsedOptions(el)) })
+        .then(ensureChart)
+        .catch(function(){})
     }
 
     function apply() {
       if (!chart) return
-      var raw = el.getAttribute('data-options')
-      if (!raw) return
+      var opts = parsedOptions(el)
+      if (!opts) return
+      // shadcn defaults — only when the caller did not set them. A caller
+      // that sets `color` explicitly keeps it; a caller that does not gets
+      // the theme palette so a chart without configuration still looks right.
+      if (!opts.color) opts.color = resolveVars(shadcnColors())
+      if (!opts.backgroundColor) opts.backgroundColor = 'transparent'
+      if (!opts.textStyle) opts.textStyle = { color: shadcnTextColor(), fontFamily: 'var(--font-sans, ui-sans-serif)' }
       try {
-        var opts = JSON.parse(raw)
-
-        // shadcn defaults — only when the caller did not set them. A caller
-        // that sets `color` explicitly keeps it; a caller that does not gets
-        // the theme palette so a chart without configuration still looks right.
-        if (!opts.color) opts.color = resolveVars(shadcnColors())
-        if (!opts.backgroundColor) opts.backgroundColor = 'transparent'
-        if (!opts.textStyle) opts.textStyle = { color: shadcnTextColor(), fontFamily: 'var(--font-sans, ui-sans-serif)' }
-
-        // Make axis and grid border subtle on shadcn backgrounds
-        // (only if the caller left them default)
-        if (opts.xAxis && !opts.xAxis.axisLine) {
-          // leave alone — caller opted in
-        }
-        if (opts.yAxis && !opts.yAxis.splitLine) {
-          // leave alone
-        }
-
         chart.setOption(opts, { notMerge: true, lazyUpdate: false })
       } catch (e) {
-        console.error('[echarts] failed to parse data-options', e, raw && raw.slice(0, 500))
+        console.error('[echarts] setOption failed', e)
       }
     }
-
-    apply()
 
     // When the host does an Unpoly fragment swap that replaces data-options,
     // the mutation observer re-applies without tearing down the instance.
     var mo = new MutationObserver(function (muts) {
       for (var i = 0; i < muts.length; i++) {
-        if (muts[i].attributeName === 'data-options') { apply(); break }
+        if (muts[i].attributeName === 'data-options') {
+          // a swap may change the series type; make sure any needed plugin is
+          // loaded before setOption, else the type is unknown and it throws.
+          var mopts = parsedOptions(el)
+          var missing = detectPlugins(mopts).map(function (t) { return PLUGIN_SOURCES[t] }).filter(function (src) { return !pluginLoaded[src] })
+          if (missing.length) {
+            missing.reduce(function (chain, src) { return chain.then(function () { return loadScript(src) }) }, Promise.resolve()).then(apply)
+          } else {
+            apply()
+          }
+          break
+        }
       }
     })
     mo.observe(el, { attributes: true, attributeFilter: ['data-options'] })

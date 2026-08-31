@@ -1,6 +1,6 @@
 @inherits UiComponentBase
 @using Unpoly.Blazor.Shadcn.ECharts.Models
-@* ECharts geo map — requires GeoJSON registerMap in JS *@
+@* ECharts geo map — "world" is registered from the package's bundled GeoJSON; other maps need echarts.registerMap *@
 
 @if (IsLoading)
 { <div data-slot="chart-skeleton" class="@SkeletonClasses" style="@($"height:{Height};width:{(Width ?? "100%")}")" role="status"><div class="h-full w-full animate-pulse rounded-md bg-muted"></div></div> }

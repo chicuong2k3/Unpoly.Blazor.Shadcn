@@ -87,7 +87,8 @@ else
         "data-[active=true]:font-medium data-[active=true]:text-sidebar-accent-foreground " +
         "data-[state=open]:hover:bg-sidebar-accent " +
         "data-[state=open]:hover:text-sidebar-accent-foreground [&>span:last-child]:truncate " +
-        "[&>svg]:size-4 [&>svg]:shrink-0";
+        "[&>svg]:size-4 [&>svg]:shrink-0 [&.up-current]:bg-sidebar-accent " +
+        "[&.up-current]:font-medium [&.up-current]:text-sidebar-accent-foreground";
 
     string VariantClass => Variant switch
     {

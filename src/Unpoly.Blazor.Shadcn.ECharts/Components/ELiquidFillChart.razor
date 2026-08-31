@@ -1,6 +1,6 @@
 @inherits UiComponentBase
 @using Unpoly.Blazor.Shadcn.ECharts.Models
-@* ECharts liquidFill — requires echarts-liquidfill plugin. Falls back gracefully. *@
+@* ECharts liquidFill — uses the echarts-liquidfill plugin, lazy-loaded by the compiler *@
 
 @if (IsLoading)
 { <div data-slot="chart-skeleton" class="@SkeletonClasses" style="@($"height:{Height};width:{(Width ?? "100%")}")" role="status"><div class="h-full w-full animate-pulse rounded-md bg-muted"></div></div> }

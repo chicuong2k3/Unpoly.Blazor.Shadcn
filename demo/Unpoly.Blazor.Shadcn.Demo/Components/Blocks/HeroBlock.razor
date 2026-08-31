@@ -1,15 +1,16 @@
-@* A landing hero. One primary action and one secondary; two primaries is a decision the
-   visitor has to make before they know anything.
-
-   The social proof is beside the buttons rather than below the fold, because it is what makes
-   the button worth pressing. *@
+@* A marketing hero: announcement badge, headline, one primary action, and social proof.
+   One primary action only — two primaries is a decision the visitor has to make before they
+   know anything. The proof sits beside the buttons, not below the fold, because it is what
+   makes the button worth pressing. *@
 
 <section class="mx-auto max-w-3xl py-16 text-center">
-    <Badge Variant="secondary" Class="mb-6">
-        <Icon Name="check" />shadcn/ui, for Blazor static SSR
-    </Badge>
+    <a href="/changelog" class="inline-flex items-center gap-2 rounded-full border px-3 py-1 text-xs text-muted-foreground hover:text-foreground">
+        <Badge Variant="secondary">New</Badge>
+        Announcing v2.0 — faster than ever
+        <Icon Name="arrow-right" Class="size-3" />
+    </a>
 
-    <h1 class="text-4xl font-semibold tracking-tight text-balance sm:text-5xl">
+    <h1 class="mt-6 text-4xl font-semibold tracking-tight text-balance sm:text-5xl">
         The components you already know, without the JavaScript you do not need
     </h1>
 
@@ -20,9 +21,7 @@
 
     <div class="mt-8 flex flex-wrap justify-center gap-3">
         <Button Size="lg" Href="/components/button">Browse components</Button>
-        <Button Size="lg" Variant="outline" Href="/blocks">
-            See the blocks<Icon Name="arrow-right" />
-        </Button>
+        <Button Size="lg" Variant="outline" Href="/blocks">See the blocks<Icon Name="arrow-right" /></Button>
     </div>
 
     <div class="mt-10 flex items-center justify-center gap-3">

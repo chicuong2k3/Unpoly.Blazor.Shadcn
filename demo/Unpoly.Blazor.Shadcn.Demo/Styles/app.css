@@ -95,8 +95,13 @@
     .doc-note code, .doc-lede code {
         @apply rounded bg-muted px-1 py-0.5 font-mono text-[0.85em];
     }
+}
 
-    /* [up-nav] adds .up-current to whichever nav row matches the address bar. */
+@layer utilities {
+    /* [up-nav] adds .up-current to whichever nav row matches the address bar. Utilities on
+       purpose: the row is an Item, and Item's own bg-transparent sits in this same layer -
+       a rule in @layer components lost that one property to the layer order while the other
+       two won on specificity, which is a highlight with a missing background. */
     .doc-nav-item.up-current {
         @apply bg-accent font-medium text-accent-foreground;
     }

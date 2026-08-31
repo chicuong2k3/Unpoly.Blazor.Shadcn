@@ -41,18 +41,25 @@
   // calls `loadScript` on first use and caches the promise, so a request that never renders the
   // component never fetches the file — and a request that renders ten blocks fetches it once.
   const loaded = new Set()
+  const loading = new Map()
   const loadScript = (src) => {
-    if (loaded.has(src) || document.querySelector(`script[src="${CSS.escape(src)}"]`)) {
-      loaded.add(src); return Promise.resolve()
-    }
-    return new Promise((resolve, reject) => {
+    if (loaded.has(src)) return Promise.resolve()
+    // The SAME in-flight promise for every caller: the previous version returned an
+    // already-resolved Promise to the second caller (the script element already exists),
+    // so its .then ran on the next microtask — BEFORE the script had executed. Every
+    // compiler that touched a lazy library raced the load and lost: with 14 QRs on a
+    // page, 13 rendered nothing. A cached promise makes all callers wait for onload.
+    if (loading.has(src)) return loading.get(src)
+    const promise = new Promise((resolve, reject) => {
       const s = document.createElement('script')
       s.src = src
       s.defer = true
-      s.onload = () => { loaded.add(src); resolve() }
-      s.onerror = reject
+      s.onload = () => { loaded.add(src); loading.delete(src); resolve() }
+      s.onerror = () => { loading.delete(src); reject() }
       document.head.appendChild(s)
     })
+    loading.set(src, promise)
+    return promise
   }
   const ensurePrism = () => {
     if (typeof Prism !== 'undefined' && Prism.highlightElement) return Promise.resolve()
@@ -2938,6 +2945,45 @@
     paint()
 
     return () => slider.removeEventListener('input', paint)
+  })
+
+  // =============================================================================================
+  // Stepper — the two buttons beside a number field
+  // =============================================================================================
+  // shadcn has no number stepper, and a bare <input type=number> is not one: its spinners are a
+  // different shape in every engine and invisible until hovered. The component is pure styling
+  // around a plain <button>/<input>/<button>; this is the behaviour that makes it a stepper —
+  // the buttons step the input by its own step, clamp to min/max, and dispatch a change event so
+  // the rest of the page (a form, a control bound to it) sees the new value. Nothing here holds
+  // state; the input is the state, and with scripting off it is still a working number field.
+
+  up.compiler('[data-slot="stepper"]', (root) => {
+    const input = root.querySelector('input[type="number"]')
+    if (!input) return
+
+    const step = (dir) => {
+      const min = input.min === '' ? null : Number(input.min)
+      const max = input.max === '' ? null : Number(input.max)
+      const size = Number(input.step) || 1
+      const now = Number(input.value) || 0
+      let next = now + dir * size
+      if (min !== null) next = Math.max(min, next)
+      if (max !== null) next = Math.min(max, next)
+      if (next === now) return
+      input.value = String(next)
+      input.dispatchEvent(new Event('input', { bubbles: true }))
+      input.dispatchEvent(new Event('change', { bubbles: true }))
+    }
+
+    const onButton = (event) => {
+      const button = event.target.closest('button')
+      if (!button || button.disabled) return
+      if (button.hasAttribute('data-qty-plus')) step(1)
+      else if (button.hasAttribute('data-qty-minus')) step(-1)
+    }
+
+    root.addEventListener('click', onButton)
+    return () => root.removeEventListener('click', onButton)
   })
 
   // =============================================================================================

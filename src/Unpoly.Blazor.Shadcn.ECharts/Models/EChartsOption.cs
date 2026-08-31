@@ -34,6 +34,7 @@ public sealed class EChartsOption
     [JsonPropertyName("calendar")] public object? Calendar { get; set; }
     [JsonPropertyName("geo")] public object? Geo { get; set; }
     [JsonPropertyName("parallelAxis")] public object? ParallelAxis { get; set; }
+    [JsonPropertyName("singleAxis")] public object? SingleAxis { get; set; }
 
     [JsonExtensionData] public Dictionary<string, object?>? ExtensionData { get; set; }
 }

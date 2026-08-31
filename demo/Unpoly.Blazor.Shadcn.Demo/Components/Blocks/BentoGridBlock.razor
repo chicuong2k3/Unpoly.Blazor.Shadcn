@@ -1,0 +1,52 @@
+@* Bento grid — six differently-sized cards. The grid does the work; the cards do not need a
+   variant to span two columns. *@
+
+<section class="mx-auto max-w-6xl py-16">
+    <div class="text-center">
+        <h2 class="text-3xl font-semibold tracking-tight text-balance">Every surface, in one library</h2>
+        <p class="mt-4 text-muted-foreground">A grid that makes the menu look deliberate without being heavy.</p>
+    </div>
+
+    <div class="mt-10 grid auto-rows-[180px] grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        <Card Class="lg:col-span-2 lg:row-span-2">
+            <CardHeader>
+                <CardTitle>Native first</CardTitle>
+                <CardDescription>
+                    Dialogs, popovers, the select panel — all real platform primitives, so focus
+                    traps, escape-to-close, and the keyboard come from the browser.
+                </CardDescription>
+            </CardHeader>
+            <CardContent Class="flex h-full items-end">
+                <code class="rounded bg-muted px-2 py-1 text-xs">&lt;dialog&gt; · [popover] · &lt;select&gt;</code>
+            </CardContent>
+        </Card>
+
+        <Card>
+            <CardHeader>
+                <CardTitle>Token themes</CardTitle>
+                <CardDescription>Seventy themes, runtime switchable.</CardDescription>
+            </CardHeader>
+        </Card>
+
+        <Card>
+            <CardHeader>
+                <CardTitle>Accessible</CardTitle>
+                <CardDescription>ARIA reproduced from shadcn's own markup.</CardDescription>
+            </CardHeader>
+        </Card>
+
+        <Card>
+            <CardHeader>
+                <CardTitle>Fast</CardTitle>
+                <CardDescription>One CSS file, one JS file. Nothing else ships.</CardDescription>
+            </CardHeader>
+        </Card>
+
+        <Card>
+            <CardHeader>
+                <CardTitle>Server-first</CardTitle>
+                <CardDescription>No hydration, no client state to lose.</CardDescription>
+            </CardHeader>
+        </Card>
+    </div>
+</section>

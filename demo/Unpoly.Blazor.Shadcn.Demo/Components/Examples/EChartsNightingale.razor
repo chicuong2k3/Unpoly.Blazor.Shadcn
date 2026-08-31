@@ -1,0 +1,9 @@
+@using Unpoly.Blazor.Shadcn.ECharts.Components
+@using Unpoly.Blazor.Shadcn.ECharts.Models
+@* Nightingale rose: a pie whose slices have variable radii, so a small share still gets a
+   visible wedge. *@
+<ENightingaleChart Height="280px" Data="@data" />
+
+@code {
+    IEnumerable<EChartDataPoint> data = [new("A", 335), new("B", 310), new("C", 234)];
+}

@@ -1,0 +1,24 @@
+@* The reason to make it a component: it drops into a table cell without asking. Color follows
+   each row's meaning — chart-2 for a positive ticker, destructive for one in the red. *@
+<Table>
+    <TableHeader>
+        <TableRow><TableHead>Ticker</TableHead><TableHead>Price</TableHead><TableHead>Trend</TableHead></TableRow>
+    </TableHeader>
+    <TableBody>
+        <TableRow>
+            <TableCell>AAPL</TableCell>
+            <TableCell>$189.42</TableCell>
+            <TableCell><Sparkline Data="@aapl" Width="80px" Height="20px" Color="hsl(var(--chart-2))" /></TableCell>
+        </TableRow>
+        <TableRow>
+            <TableCell>TSLA</TableCell>
+            <TableCell>$243.11</TableCell>
+            <TableCell><Sparkline Data="@tsla" Width="80px" Height="20px" Color="hsl(var(--destructive))" /></TableCell>
+        </TableRow>
+    </TableBody>
+</Table>
+
+@code {
+    double[] aapl = [5, 8, 6, 10, 7, 9, 12, 11, 13, 10];
+    double[] tsla = [13, 11, 12, 8, 9, 6, 7, 5, 4, 6];
+}

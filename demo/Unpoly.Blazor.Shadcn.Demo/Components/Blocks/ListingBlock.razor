@@ -1,0 +1,50 @@
+@* Listings — a three-column directory of mixed results. Filters are a GET form (see FiltersBlock);
+   the card is a link to the detail page. *@
+
+<section class="mx-auto max-w-6xl py-16">
+    <form method="get" up-target="[data-list]" class="flex flex-wrap items-center gap-2">
+        <Input name="q" type="search" placeholder="Search…" Class="max-w-[280px]"
+               up-autosubmit up-watch-event="input" up-watch-delay="300" aria-label="Search" />
+        <Select name="category" aria-label="Category" Class="w-[180px]" up-autosubmit>
+            <SelectItem Value="">All categories</SelectItem>
+            <SelectItem Value="design">Design</SelectItem>
+            <SelectItem Value="engineering">Engineering</SelectItem>
+            <SelectItem Value="marketing">Marketing</SelectItem>
+        </Select>
+    </form>
+
+    <div data-list class="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        @foreach (var i in Items)
+        {
+            <a href="@($"/listings/{i.Slug}")" class="group block">
+                <Card Class="h-full transition-colors group-hover:bg-muted/40">
+                    <CardContent Class="flex flex-col gap-2 p-5">
+                        <Badge Variant="secondary">@i.Category</Badge>
+                        <h3 class="text-lg font-semibold tracking-tight group-hover:underline">@i.Name</h3>
+                        <p class="text-sm text-muted-foreground">@i.Description</p>
+                        <div class="mt-auto flex items-center gap-2 pt-3 text-xs text-muted-foreground">
+                            <Icon Name="circle" Class="size-2 fill-emerald-500 text-emerald-500" />
+                            <span>Open now</span>
+                            <span>·</span>
+                            <span class="num">@i.Rating ★</span>
+                        </div>
+                    </CardContent>
+                </Card>
+            </a>
+        }
+    </div>
+</section>
+
+@code {
+    record Item(string Slug, string Name, string Category, string Description, decimal Rating);
+
+    static readonly Item[] Items =
+    [
+        new("northwind-bakery", "Northwind Bakery", "Engineering", "Sourdough, weekly subscriptions, pickup or local delivery.", 4.7m),
+        new("meridian-photography", "Meridian Photography", "Design", "Studio and on-location shoots for product and editorial.", 4.9m),
+        new("vela-strategy", "Vela Strategy", "Marketing", "Brand and content strategy for early-stage B2B companies.", 4.8m),
+        new("atlas-outdoor", "ATLAS Outdoor", "Engineering", "Trail maps, route plans, and offline guides for hikers.", 4.6m),
+        new("koda-print", "koda. Print", "Design", "Small-run riso and offset, two-week turnaround.", 4.9m),
+        new("lighthouse-gear", "⌘ Lighthouse Gear", "Marketing", "Made-to-last workwear and field tools.", 4.5m),
+    ];
+}

@@ -18,8 +18,8 @@
 
 <div class="mt-4 rounded-md border bg-muted/30 p-4 text-sm">
     <p class="font-medium">Wiring a head</p>
-    <pre class="mt-2 overflow-x-auto text-xs"><code>@@* App.razor *@@
-&lt;script src="_content/Unpoly.Blazor.Shadcn.ECharts/echarts/echarts.min.js" defer&gt;&lt;/script&gt;
+    <pre class="mt-2 overflow-x-auto text-xs"><code>@@* App.razor — one script; echarts.min.js, the plugins and
+the world map are lazy-loaded by the compiler, only when a chart needs them *@@
 &lt;script src="_content/Unpoly.Blazor.Shadcn.ECharts/echarts.js" defer&gt;&lt;/script&gt;
 
 @@* app.css *@@
@@ -45,56 +45,56 @@
 
 <h2 class="doc-h2">Cartesian — Extended</h2>
 <div class="grid gap-6 md:grid-cols-2">
-    <div><h3 class="font-medium mb-2">Effect Scatter</h3><Card><CardContent class="pt-6"><EEffectScatterChart Height="280px" Data="@effectData" /></CardContent></Card></div>
-    <div><h3 class="font-medium mb-2">Waterfall</h3><Card><CardContent class="pt-6"><EWaterfallChart Height="280px" Categories="@wfCats" Values="@wfVals" /></CardContent></Card></div>
-    <div><h3 class="font-medium mb-2">Pictorial Bar</h3><Card><CardContent class="pt-6"><EPictorialBarChart Height="280px" Categories="@cats" Values="@vals" Symbol="diamond" /></CardContent></Card></div>
-    <div><h3 class="font-medium mb-2">Mixed (Bar + Line)</h3><Card><CardContent class="pt-6"><EMixedChart Height="280px" Categories="@cats" BarValues="@vals" LineValues="@lineVals" /></CardContent></Card></div>
+    <div><h3 class="font-medium mb-2">Effect Scatter</h3><Example Source="EChartsEffectScatter.razor"><EChartsEffectScatter /></Example></div>
+    <div><h3 class="font-medium mb-2">Waterfall</h3><Example Source="EChartsWaterfall.razor"><EChartsWaterfall /></Example></div>
+    <div><h3 class="font-medium mb-2">Pictorial Bar</h3><Example Source="EChartsPictorialBar.razor"><EChartsPictorialBar /></Example></div>
+    <div><h3 class="font-medium mb-2">Mixed (Bar + Line)</h3><Example Source="EChartsMixed.razor"><EChartsMixed /></Example></div>
 </div>
 
 <h2 class="doc-h2">Financial</h2>
 <div class="grid gap-6 md:grid-cols-2">
-    <div><h3 class="font-medium mb-2">Candlestick</h3><Card><CardContent class="pt-6"><ECandlestickChart Height="280px" Categories="@candleCats" Data="@candleData" /></CardContent></Card></div>
-    <div><h3 class="font-medium mb-2">BoxPlot</h3><Card><CardContent class="pt-6"><EBoxPlotChart Height="280px" Categories="@boxCats" Data="@boxData" /></CardContent></Card></div>
+    <div><h3 class="font-medium mb-2">Candlestick</h3><Example Source="EChartsCandlestick.razor"><EChartsCandlestick /></Example></div>
+    <div><h3 class="font-medium mb-2">BoxPlot</h3><Example Source="EChartsBoxPlot.razor"><EChartsBoxPlot /></Example></div>
 </div>
 
 <h2 class="doc-h2">Proportional</h2>
 <div class="grid gap-6 md:grid-cols-2">
     <div><h3 class="font-medium mb-2">Pie</h3><Example Source="EChartsPieExample.razor"><EChartsPieExample /></Example></div>
     <div><h3 class="font-medium mb-2">Donut</h3><Example Source="EChartsDonutExample.razor"><EChartsDonutExample /></Example></div>
-    <div><h3 class="font-medium mb-2">Nightingale (Rose)</h3><Card><CardContent class="pt-6"><ENightingaleChart Height="280px" Data="@pieData" /></CardContent></Card></div>
-    <div><h3 class="font-medium mb-2">Funnel</h3><Card><CardContent class="pt-6"><EFunnelChart Height="280px" Data="@funnelData" /></CardContent></Card></div>
+    <div><h3 class="font-medium mb-2">Nightingale (Rose)</h3><Example Source="EChartsNightingale.razor"><EChartsNightingale /></Example></div>
+    <div><h3 class="font-medium mb-2">Funnel</h3><Example Source="EChartsFunnel.razor"><EChartsFunnel /></Example></div>
 </div>
 
 <h2 class="doc-h2">Radial & Polar</h2>
 <div class="grid gap-6 md:grid-cols-2">
     <div><h3 class="font-medium mb-2">Radar</h3><Example Source="EChartsRadarExample.razor"><EChartsRadarExample /></Example></div>
-    <div><h3 class="font-medium mb-2">Gauge</h3><Card><CardContent class="pt-6"><EGaugeChart Height="280px" Value="68" Name="Speed" /></CardContent></Card></div>
-    <div><h3 class="font-medium mb-2">Radial (Progress)</h3><Card><CardContent class="pt-6"><ERadialChart Height="280px" Value="72" /></CardContent></Card></div>
-    <div><h3 class="font-medium mb-2">Polar Bar</h3><Card><CardContent class="pt-6"><EPolarBarChart Height="280px" Categories="@cats" Values="@vals" /></CardContent></Card></div>
-    <div><h3 class="font-medium mb-2">Liquid Fill</h3><Card><CardContent class="pt-6"><ELiquidFillChart Height="280px" Value="0.6" /></CardContent></Card><p class="text-xs text-muted-foreground mt-1">Requires echarts-liquidfill plugin — fallback is plain circle.</p></div>
+    <div><h3 class="font-medium mb-2">Gauge</h3><Example Source="EChartsGauge.razor"><EChartsGauge /></Example></div>
+    <div><h3 class="font-medium mb-2">Radial (Progress)</h3><Example Source="EChartsRadial.razor"><EChartsRadial /></Example></div>
+    <div><h3 class="font-medium mb-2">Polar Bar</h3><Example Source="EChartsPolarBar.razor"><EChartsPolarBar /></Example></div>
+    <div><h3 class="font-medium mb-2">Liquid Fill</h3><Example Source="EChartsLiquidFill.razor"><EChartsLiquidFill /></Example></div>
 </div>
 
 <h2 class="doc-h2">Hierarchical</h2>
 <div class="grid gap-6 md:grid-cols-2">
-    <div><h3 class="font-medium mb-2">Treemap</h3><Card><CardContent class="pt-6"><ETreemapChart Height="280px" Data="@treemapData" /></CardContent></Card></div>
-    <div><h3 class="font-medium mb-2">Sunburst</h3><Card><CardContent class="pt-6"><ESunburstChart Height="280px" Data="@sunburstData" /></CardContent></Card></div>
-    <div><h3 class="font-medium mb-2">Tree</h3><Card><CardContent class="pt-6"><ETreeChart Height="280px" Data="@treeData" /></CardContent></Card></div>
+    <div><h3 class="font-medium mb-2">Treemap</h3><Example Source="EChartsTreemap.razor"><EChartsTreemap /></Example></div>
+    <div><h3 class="font-medium mb-2">Sunburst</h3><Example Source="EChartsSunburst.razor"><EChartsSunburst /></Example></div>
+    <div><h3 class="font-medium mb-2">Tree</h3><Example Source="EChartsTree.razor"><EChartsTree /></Example></div>
 </div>
 
 <h2 class="doc-h2">Relationship & Flow</h2>
 <div class="grid gap-6 md:grid-cols-2">
-    <div><h3 class="font-medium mb-2">Graph</h3><Card><CardContent class="pt-6"><EGraphChart Height="280px" Nodes="@graphNodes" Links="@graphLinks" /></CardContent></Card></div>
-    <div><h3 class="font-medium mb-2">Sankey</h3><Card><CardContent class="pt-6"><ESankeyChart Height="280px" Nodes="@sankeyNodes" Links="@sankeyLinks" /></CardContent></Card></div>
-    <div><h3 class="font-medium mb-2">Parallel</h3><Card><CardContent class="pt-6"><EParallelChart Height="280px" Data="@parallelData" ParallelAxis="@parallelAxis" /></CardContent></Card></div>
+    <div><h3 class="font-medium mb-2">Graph</h3><Example Source="EChartsGraph.razor"><EChartsGraph /></Example></div>
+    <div><h3 class="font-medium mb-2">Sankey</h3><Example Source="EChartsSankey.razor"><EChartsSankey /></Example></div>
+    <div><h3 class="font-medium mb-2">Parallel</h3><Example Source="EChartsParallel.razor"><EChartsParallel /></Example></div>
 </div>
 
 <h2 class="doc-h2">Specialized</h2>
 <div class="grid gap-6 md:grid-cols-2">
-    <div><h3 class="font-medium mb-2">Heatmap</h3><Card><CardContent class="pt-6"><EHeatmapChart Height="280px" XCategories="@heatX" YCategories="@heatY" Data="@heatData" /></CardContent></Card></div>
-    <div><h3 class="font-medium mb-2">Calendar Heatmap</h3><Card><CardContent class="pt-6"><ECalendarHeatmapChart Height="200px" Range="2024" Data="@calendarData" /></CardContent></Card></div>
-    <div><h3 class="font-medium mb-2">Theme River</h3><Card><CardContent class="pt-6"><EThemeRiverChart Height="280px" Data="@themeRiverData" /></CardContent></Card></div>
-    <div><h3 class="font-medium mb-2">Word Cloud</h3><Card><CardContent class="pt-6"><EWordCloudChart Height="280px" Words="@wordData" /></CardContent></Card><p class="text-xs text-muted-foreground mt-1">Requires echarts-wordcloud plugin.</p></div>
-    <div class="md:col-span-2"><h3 class="font-medium mb-2">Geo Map</h3><Card><CardContent class="pt-6"><EGeoMapChart Height="380px" Data="@geoData" Map="world" /></CardContent></Card><p class="text-xs text-muted-foreground mt-1">Register GeoJSON via <code>echarts.registerMap</code> before use.</p></div>
+    <div><h3 class="font-medium mb-2">Heatmap</h3><Example Source="EChartsHeatmap.razor"><EChartsHeatmap /></Example></div>
+    <div><h3 class="font-medium mb-2">Calendar Heatmap</h3><Example Source="EChartsCalendarHeatmap.razor"><EChartsCalendarHeatmap /></Example></div>
+    <div><h3 class="font-medium mb-2">Theme River</h3><Example Source="EChartsThemeRiver.razor"><EChartsThemeRiver /></Example></div>
+    <div><h3 class="font-medium mb-2">Word Cloud</h3><Example Source="EChartsWordCloud.razor"><EChartsWordCloud /></Example></div>
+    <div class="md:col-span-2"><h3 class="font-medium mb-2">Geo Map</h3><Example Source="EChartsGeoMap.razor"><EChartsGeoMap /></Example></div>
 </div>
 
 <h2 class="doc-h2">API — Common props (Lumeo parity)</h2>
@@ -106,36 +106,3 @@
     The core library is copy-in source with no charting dependency. <code>echarts.min.js</code> is ~1MB minified.
     Keeping it in <code>Unpoly.Blazor.Shadcn.ECharts</code> means apps that use only the table fallback never download it.
 </p>
-
-@code {
-    string[] cats = ["Mon","Tue","Wed","Thu","Fri"];
-    double[] vals = [120,200,150,80,70];
-    double[] lineVals = [80,120,100,140,110];
-    double[][] effectData = [[10,8],[14,9.2],[18,8.8],[24,9.7],[30,9.9]];
-    string[] wfCats = ["Start","Q1","Q2","Q3","End"];
-    double[] wfVals = [100,20,-10,30,140];
-    string[] candleCats = ["Mon","Tue","Wed","Thu","Fri"];
-    double[][] candleData = [[20,34,10,38],[40,35,30,50],[31,38,33,44],[38,15,5,42],[15,30,10,35]];
-    string[] boxCats = ["Exp A","Exp B","Exp C"];
-    double[][] boxData = [[850,880,900,930,950,1100],[750,800,850,900,950],[650,700,750,800,850]];
-    IEnumerable<EChartDataPoint> pieData = [new("A",335),new("B",310),new("C",234)];
-    IEnumerable<EChartDataPoint> funnelData = [new("Visit",100),new("Inquiry",80),new("Order",60),new("Pay",40)];
-    object treemapData = new object[]{ new{ name="A", value=580, children=new object[]{ new{ name="A1", value=300 }, new{ name="A2", value=280 } } }, new{ name="B", value=320 } };
-    object sunburstData = new object[]{ new{ name="A", value=10, children=new object[]{ new{ name="A1", value=5 }, new{ name="A2", value=5 } } } };
-    object treeData = new{ name="Root", children=new object[]{ new{ name="Child1", children=new object[]{ new{ name="Leaf", value=10 } } }, new{ name="Child2", value=20 } } };
-    object graphNodes = new[]{ new{ name="A", value=10 }, new{ name="B", value=20 }, new{ name="C", value=15 } };
-    object graphLinks = new[]{ new{ source="A", target="B" }, new{ source="B", target="C" } };
-    object sankeyNodes = new[]{ new{ name="A" }, new{ name="B" }, new{ name="C" } };
-    object sankeyLinks = new[]{ new{ source="A", target="B", value=5 }, new{ source="B", target="C", value=3 } };
-    object parallelAxis = new[]{ new{ dim=0, name="Price" }, new{ dim=1, name="Weight" }, new{ dim=2, name="Rating" } };
-    object parallelData = new[]{ new[]{1, 10, 3}, new[]{2, 20, 4}, new[]{3, 15, 2} };
-    string[] heatX = ["Mon","Tue","Wed"];
-    string[] heatY = ["A","B"];
-    double[][] heatData = [[0,0,5],[0,1,7],[1,0,3],[1,1,8],[2,0,2],[2,1,9]];
-    object calendarData = new[]{ new object[]{ "2024-01-01", 5 }, new object[]{ "2024-01-02", 8 } };
-    object themeRiverData = new[]{ new object[]{ "2024/01/01", 10, "A" }, new object[]{ "2024/01/02", 20, "A" } };
-    object wordData = new[]{ new{ name="Blazor", value=100 }, new{ name="ECharts", value=80 }, new{ name="Lumeo", value=60 } };
-    object geoData = new[]{ new{ name="China", value=100 }, new{ name="Brazil", value=80 } };
-}
-
-

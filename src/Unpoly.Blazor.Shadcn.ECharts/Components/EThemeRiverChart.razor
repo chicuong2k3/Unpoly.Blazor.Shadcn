@@ -21,6 +21,13 @@ else { <EChart Options="@BuildOptions()" Height="@Height" Width="@Width" Theme="
     {
         Color = Palette.Length>0?Palette:null,
         Tooltip = new EChartsTooltip{Trigger="axis",AxisPointer=new{type="line"}},
+        // themeRiver has no xAxis/yAxis — the singleAxis IS the time axis. Without it
+        // ECharts 5.x throws "Cannot read properties of undefined (reading 'get')"
+        // inside getInitialData. A singleAxis passed via OptionOverride wins (the
+        // property stays null then, so the two never serialize the same key twice).
+        SingleAxis = OptionOverride?.ContainsKey("singleAxis") == true
+            ? null
+            : new { type = "time" },
         Series = [new EChartsSeries{Type="themeRiver",Data=Data}],
         ExtensionData = OptionOverride
     };

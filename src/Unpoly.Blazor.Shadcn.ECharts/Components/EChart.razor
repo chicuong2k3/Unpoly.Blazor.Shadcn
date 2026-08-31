@@ -9,8 +9,8 @@
    resize + swap teardown. No IJSRuntime, no interactivity — static SSR renders once and
    Unpoly re-compiles on every fragment swap.
 
-   Wiring (in the head):
-     <script src="_content/Unpoly.Blazor.Shadcn.ECharts/echarts/echarts.min.js" defer></script>
+   Wiring (in the head) — one script; echarts.min.js, the chart-type plugins and
+   the world map are lazy-loaded by the compiler, only when a chart needs them:
      <script src="_content/Unpoly.Blazor.Shadcn.ECharts/echarts.js" defer></script>
      app.css: @source "../../Unpoly.Blazor.Shadcn.ECharts/Components/** /*.razor"
 

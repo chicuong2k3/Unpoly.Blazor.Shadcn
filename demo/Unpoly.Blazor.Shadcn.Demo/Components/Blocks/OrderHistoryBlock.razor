@@ -1,0 +1,61 @@
+@* Order history — a list of past orders. Each row opens its own detail page; the status
+   badge tells the story. *@
+
+<div class="mx-auto max-w-4xl py-8">
+    <div class="mb-6 flex flex-wrap items-end justify-between gap-4">
+        <div>
+            <h1 class="text-2xl font-semibold tracking-tight">Orders</h1>
+            <p class="mt-1 text-sm text-muted-foreground">Your last 5 orders.</p>
+        </div>
+        <Select name="range" aria-label="Range" Class="w-[160px]">
+            <SelectItem Value="30" Selected>Last 30 days</SelectItem>
+            <SelectItem Value="90">Last 90 days</SelectItem>
+            <SelectItem Value="365">Last year</SelectItem>
+        </Select>
+    </div>
+
+    <Card>
+        <Table>
+            <TableHeader>
+                <TableRow>
+                    <TableHead>Order</TableHead>
+                    <TableHead>Date</TableHead>
+                    <TableHead>Status</TableHead>
+                    <TableHead>Items</TableHead>
+                    <TableHead Class="num text-right">Total</TableHead>
+                    <TableHead Class="w-10"></TableHead>
+                </TableRow>
+            </TableHeader>
+            <TableBody>
+                @foreach (var o in Orders)
+                {
+                    <TableRow>
+                        <TableCell Class="font-medium">@o.Code</TableCell>
+                        <TableCell Class="text-muted-foreground">@o.Date</TableCell>
+                        <TableCell><Badge Variant="@(o.Status == "Delivered" ? "secondary" : "outline")">@o.Status</Badge></TableCell>
+                        <TableCell>@o.Items items</TableCell>
+                        <TableCell Class="num text-right">@o.Total</TableCell>
+                        <TableCell>
+                            <a href="@($"/orders/{o.Code}")" class="text-muted-foreground hover:text-foreground" aria-label="@($"View {o.Code}")">
+                                <Icon Name="arrow-right" Class="size-4" />
+                            </a>
+                        </TableCell>
+                    </TableRow>
+                }
+            </TableBody>
+        </Table>
+    </Card>
+</div>
+
+@code {
+    record OrderRow(string Code, string Date, string Status, int Items, string Total);
+
+    static readonly OrderRow[] Orders =
+    [
+        new("#ORD-3421", "Apr 20, 2026", "Delivered", 2, "$1,299"),
+        new("#ORD-3420", "Apr 20, 2026", "Delivered", 1, "$449"),
+        new("#ORD-3419", "Apr 19, 2026", "Processing", 3, "$89"),
+        new("#ORD-3418", "Apr 19, 2026", "Delivered", 1, "$2,450"),
+        new("#ORD-3417", "Apr 18, 2026", "Refunded", 1, "$199"),
+    ];
+}

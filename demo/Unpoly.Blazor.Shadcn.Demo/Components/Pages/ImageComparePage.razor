@@ -6,13 +6,25 @@
 <p class="doc-lede">Before/after slider via <code>img-comparison-slider</code> WC (3KB), lazy-loaded.</p>
 
 <h2 class="doc-h2">Horizontal</h2>
-<ImageCompare BeforeSrc="https://images.unsplash.com/photo-1531297484001-80022131f5a1?w=800&q=60&grayscale" AfterSrc="https://images.unsplash.com/photo-1531297484001-80022131f5a1?w=800&q=60" BeforeLabel="Before" AfterLabel="After" />
+<Example Source="ImageCompareBasic.razor"><ImageCompareBasic /></Example>
 
 <h2 class="doc-h2">Vertical</h2>
-<ImageCompare BeforeSrc="https://images.unsplash.com/photo-1500534314209-a25ddb2bd429?w=800&q=60" AfterSrc="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800&q=60" Orientation="Vertical" BeforeLabel="Mountain" AfterLabel="Forest" />
+<p class="doc-note">
+    <code>Orientation="Vertical"</code> slides up and down — the compiler passes the WC's own
+    <code>direction</code> attribute, so the drag axis follows the label.
+</p>
+<Example Source="ImageCompareVertical.razor"><ImageCompareVertical /></Example>
 
 <h2 class="doc-h2">Custom Position</h2>
-<ImageCompare BeforeSrc="https://images.unsplash.com/photo-1531297484001-80022131f5a1?w=800&q=60&grayscale" AfterSrc="https://images.unsplash.com/photo-1531297484001-80022131f5a1?w=800&q=60" InitialPosition="30" />
+<p class="doc-note">
+    <code>InitialPosition</code> is the 0-100 starting point — 30 shows most of the after image,
+    50 is a centred split.
+</p>
+<Example Source="ImageComparePosition.razor"><ImageComparePosition /></Example>
 
 <h2 class="doc-h2">No Labels</h2>
-<ImageCompare BeforeSrc="https://images.unsplash.com/photo-1531297484001-80022131f5a1?w=800&q=60&grayscale" AfterSrc="https://images.unsplash.com/photo-1531297484001-80022131f5a1?w=800&q=60" ShowLabels="false" />
+<p class="doc-note">
+    <code>ShowLabels="false"</code> drops the Before/After chips — useful when the two sides are
+    obvious, like a grayscale/colour pair.
+</p>
+<Example Source="ImageCompareNoLabels.razor"><ImageCompareNoLabels /></Example>

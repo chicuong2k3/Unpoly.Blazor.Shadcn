@@ -11,9 +11,8 @@ The core `Unpoly.Blazor.Shadcn` is copy-in source with zero charting dependency.
 ## Wiring
 
 ```razor
-@* App.razor *@
-<script src="_content/Unpoly.Blazor.Shadcn.ECharts/echarts/echarts.min.js" defer></script>
-<script src="_content/Unpoly.Blazor.Shadcn/ui.js" defer></script>
+@* App.razor — one script. echarts.min.js, the chart-type plugins and the world
+   map are lazy-loaded by the compiler, only when a chart actually needs them. *@
 <script src="_content/Unpoly.Blazor.Shadcn.ECharts/echarts.js" defer></script>
 ```
 
@@ -79,3 +78,5 @@ The compiler is an `up.compiler('[data-echarts]')` wrapped in an IIFE and return
 - `Models/EChartsOption.cs`, `EChartsJson.cs`, `EChartsTheme.cs`
 - `wwwroot/echarts.js` — compiler
 - `wwwroot/echarts/echarts.min.js` — vendored ECharts 5.x
+- `wwwroot/echarts/echarts-liquidfill.min.js`, `echarts-wordcloud.min.js` — vendored plugins, lazy-loaded when a `liquidFill`/`wordCloud` series appears
+- `wwwroot/geo/world.geo.json` — bundled world outline, registered as `world` for `EGeoMapChart`

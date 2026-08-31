@@ -9,48 +9,39 @@
 <p class="doc-note">Interface follows <a href="https://lumeo.nativ.sh/components/qr-code" class="underline">lumeo.nativ.sh/components/qr-code</a>. Rendered as canvas/table (qrcodejs), no SVG dependency, MIT.</p>
 
 <h2 class="doc-h2">Basic</h2>
-<Card><CardContent class="flex justify-center p-6"><QrCode Value="https://lumeo.nativ.sh/" Size="160" /></CardContent></Card>
-<CodeBlock Language="razor" Class="mt-2" Code="@basicCode" />
+<Example Source="QrCodeBasic.razor"><QrCodeBasic /></Example>
 
 <h2 class="doc-h2">Dynamic Value</h2>
-<Card><CardContent class="p-6 space-y-3">
-    <Input @bind-Value="dynamicValue" placeholder="https://example.com" />
-    <div class="flex justify-center"><QrCode Value="@dynamicValue" Size="160" /></div>
-</CardContent></Card>
+<p class="doc-note">
+    The QR follows the text box. There is no client state, so the field is real and
+    <code>up-autosubmit</code> does the wiring — typing submits, the server re-renders with the
+    value in the query string, and the QR is born with it.
+</p>
+<Example Source="QrCodeDynamic.razor"><QrCodeDynamic /></Example>
 
 <h2 class="doc-h2">Error Correction Levels</h2>
 <p class="doc-note">Low ~7%, Medium ~15%, Quartile ~25%, High ~30%. Higher is denser but more fault-tolerant.</p>
-<div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-    <Card><CardHeader><CardTitle class="text-sm">Low</CardTitle></CardHeader><CardContent class="flex justify-center p-4"><QrCode Value="https://lumeo.nativ.sh/" Size="120" ErrorCorrectionLevel="QrCodeErrorCorrection.Low" /></CardContent></Card>
-    <Card><CardHeader><CardTitle class="text-sm">Medium</CardTitle></CardHeader><CardContent class="flex justify-center p-4"><QrCode Value="https://lumeo.nativ.sh/" Size="120" ErrorCorrectionLevel="QrCodeErrorCorrection.Medium" /></CardContent></Card>
-    <Card><CardHeader><CardTitle class="text-sm">Quartile</CardTitle></CardHeader><CardContent class="flex justify-center p-4"><QrCode Value="https://lumeo.nativ.sh/" Size="120" ErrorCorrectionLevel="QrCodeErrorCorrection.Quartile" /></CardContent></Card>
-    <Card><CardHeader><CardTitle class="text-sm">High</CardTitle></CardHeader><CardContent class="flex justify-center p-4"><QrCode Value="https://lumeo.nativ.sh/" Size="120" ErrorCorrectionLevel="QrCodeErrorCorrection.High" /></CardContent></Card>
-</div>
+<Example Source="QrCodeLevels.razor"><QrCodeLevels /></Example>
 
 <h2 class="doc-h2">Custom Colors</h2>
-<div class="grid md:grid-cols-2 gap-4">
-    <Card><CardHeader><CardTitle class="text-sm">Default (theme-aware)</CardTitle></CardHeader><CardContent class="flex justify-center p-4"><QrCode Value="https://lumeo.nativ.sh/" Size="140" /></CardContent></Card>
-    <Card><CardHeader><CardTitle class="text-sm">White on primary</CardTitle></CardHeader><CardContent class="flex justify-center p-4 bg-primary"><QrCode Value="https://lumeo.nativ.sh/" Size="140" ForegroundColor="#ffffff" BackgroundColor="hsl(var(--primary))" /></CardContent></Card>
-</div>
+<p class="doc-note">
+    Colors default to the theme — foreground modules on a card background — and re-resolve when
+    the theme changes. Explicit colors win; <code>ForegroundColor="#ffffff"</code> on a
+    <code>bg-primary</code> card is white on the primary surface.
+</p>
+<Example Source="QrCodeColors.razor"><QrCodeColors /></Example>
 
 <h2 class="doc-h2">Without Margin (no quiet zone)</h2>
-<div class="flex gap-4">
-    <Card><CardHeader><CardTitle class="text-sm">With quiet zone</CardTitle></CardHeader><CardContent class="flex justify-center p-4"><QrCode Value="https://lumeo.nativ.sh/" Size="120" /></CardContent></Card>
-    <Card><CardHeader><CardTitle class="text-sm">No margin</CardTitle></CardHeader><CardContent class="flex justify-center p-4"><QrCode Value="https://lumeo.nativ.sh/" Size="120" ShowMargin="false" /></CardContent></Card>
-</div>
+<p class="doc-note">
+    The quiet zone is the empty border scanners need around the modules. <code>ShowMargin="false"</code>
+    drops it, for a QR that sits flush — trade the quiet zone for space when the code is
+    decorative, not scanned.
+</p>
+<Example Source="QrCodeMargin.razor"><QrCodeMargin /></Example>
 
 <h2 class="doc-h2">Custom Aria Label</h2>
-<Card><CardContent class="flex justify-center p-6"><QrCode Value="https://lumeo.nativ.sh/" Size="140" AriaLabel="QR code for Lumeo homepage" /></CardContent></Card>
 <p class="doc-note">Screen readers announce the friendly label instead of the raw URL.</p>
+<Example Source="QrCodeAriaLabel.razor"><QrCodeAriaLabel /></Example>
 
 <h2 class="doc-h2">Different Sizes</h2>
-<div class="flex items-end gap-4">
-    <Card><CardContent class="p-4 flex flex-col items-center gap-2"><QrCode Value="https://lumeo.nativ.sh/" Size="80" /><span class="text-xs text-muted-foreground">80px</span></CardContent></Card>
-    <Card><CardContent class="p-4 flex flex-col items-center gap-2"><QrCode Value="https://lumeo.nativ.sh/" Size="120" /><span class="text-xs text-muted-foreground">120px</span></CardContent></Card>
-    <Card><CardContent class="p-4 flex flex-col items-center gap-2"><QrCode Value="https://lumeo.nativ.sh/" Size="180" /><span class="text-xs text-muted-foreground">180px</span></CardContent></Card>
-</div>
-
-@code {
-    string dynamicValue = "https://lumeo.nativ.sh/";
-    const string basicCode = """<QrCode Value="https://lumeo.nativ.sh/" Size="160" />""";
-}
+<Example Source="QrCodeSizes.razor"><QrCodeSizes /></Example>

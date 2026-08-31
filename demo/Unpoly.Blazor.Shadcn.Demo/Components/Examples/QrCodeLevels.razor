@@ -1,0 +1,20 @@
+@* Low ~7%, Medium ~15%, Quartile ~25%, High ~30%. Higher is denser but more fault-tolerant —
+   a logo stamped over the centre needs more of it to keep scanning. *@
+<div class="grid grid-cols-2 gap-4 md:grid-cols-4">
+    <Card>
+        <CardHeader><CardTitle Class="text-sm">Low</CardTitle></CardHeader>
+        <CardContent Class="flex justify-center p-4"><QrCode Value="https://lumeo.nativ.sh/" Size="120" ErrorCorrectionLevel="QrCodeErrorCorrection.Low" /></CardContent>
+    </Card>
+    <Card>
+        <CardHeader><CardTitle Class="text-sm">Medium</CardTitle></CardHeader>
+        <CardContent Class="flex justify-center p-4"><QrCode Value="https://lumeo.nativ.sh/" Size="120" ErrorCorrectionLevel="QrCodeErrorCorrection.Medium" /></CardContent>
+    </Card>
+    <Card>
+        <CardHeader><CardTitle Class="text-sm">Quartile</CardTitle></CardHeader>
+        <CardContent Class="flex justify-center p-4"><QrCode Value="https://lumeo.nativ.sh/" Size="120" ErrorCorrectionLevel="QrCodeErrorCorrection.Quartile" /></CardContent>
+    </Card>
+    <Card>
+        <CardHeader><CardTitle Class="text-sm">High</CardTitle></CardHeader>
+        <CardContent Class="flex justify-center p-4"><QrCode Value="https://lumeo.nativ.sh/" Size="120" ErrorCorrectionLevel="QrCodeErrorCorrection.High" /></CardContent>
+    </Card>
+</div>

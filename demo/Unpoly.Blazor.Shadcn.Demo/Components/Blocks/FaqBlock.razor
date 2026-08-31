@@ -1,0 +1,35 @@
+@* FAQ — an Accordion. Each item is a <details>, so the fold is the browser's: it works with no
+   script, it is in the page for a crawler, and the chevron turns on [open].
+
+   Same Name on each AccordionItem = type="single": opening one closes the others. Leave the
+   Name off for independent toggles. *@
+
+<section class="mx-auto max-w-3xl py-16">
+    <div class="text-center">
+        <h2 class="text-3xl font-semibold tracking-tight">Frequently asked questions</h2>
+        <p class="mt-4 text-muted-foreground">Everything else lives in the docs.</p>
+    </div>
+
+    <Accordion Class="mt-10">
+        @foreach (var f in Faqs)
+        {
+            <AccordionItem Name="faq" Open="@(f.Open)">
+                <AccordionTrigger>@f.Question</AccordionTrigger>
+                <AccordionContent>@f.Answer</AccordionContent>
+            </AccordionItem>
+        }
+    </Accordion>
+</section>
+
+@code {
+    record Faq(string Question, string Answer, bool Open = false);
+
+    static readonly Faq[] Faqs =
+    [
+        new("Is this actually shadcn/ui?", "Yes. Same tokens, same class strings, same data-slot on every root, same ARIA. The classes are generated from shadcn's own source and checked against it by a test.", true),
+        new("Does it need JavaScript?", "The library ships one file that wires the few things a native element cannot do — popovers, the select panel, tab switching. With it disabled, every form still posts and every link still navigates."),
+        new("How is it different from the React version?", "Static SSR renders once; Unpoly swaps fragments. There is no client state, so state lives in native elements, the URL, or a cookie — whichever the platform already has."),
+        new("Can I use it with an existing Blazor app?", "Yes. Add the package, put the script tags in the head, and start writing components. It does not require an interactive render mode."),
+        new("How do themes work?", "A theme is a [data-theme] block of custom properties. The demo ships seventy of them, from Vercel to Cupertino, and a live Customizer that prints the block to paste."),
+    ];
+}

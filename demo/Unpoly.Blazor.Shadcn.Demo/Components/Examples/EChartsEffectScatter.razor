@@ -1,0 +1,7 @@
+@using Unpoly.Blazor.Shadcn.ECharts.Components
+@* Effect scatter: a ripple animates out from each point. Data is [x, y] pairs. *@
+<EEffectScatterChart Height="280px" Data="@data" />
+
+@code {
+    double[][] data = [[10, 8], [14, 9.2], [18, 8.8], [24, 9.7], [30, 9.9]];
+}

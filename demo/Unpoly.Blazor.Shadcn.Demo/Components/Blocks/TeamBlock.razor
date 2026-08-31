@@ -1,0 +1,39 @@
+@* Team — member cards with avatar, role and social links. The grid collapses to one column on a
+   phone; a team that scrolls sideways hides the people after the second card. *@
+
+<section class="mx-auto max-w-5xl py-16">
+    <div class="mx-auto max-w-2xl text-center">
+        <h2 class="text-3xl font-semibold tracking-tight">The team</h2>
+        <p class="mt-4 text-muted-foreground">The people behind the library.</p>
+    </div>
+
+    <div class="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        @foreach (var m in Members)
+        {
+            <Card>
+                <CardContent Class="flex flex-col items-center gap-3 text-center">
+                    <Avatar Size="lg"><AvatarFallback>@m.Initials</AvatarFallback></Avatar>
+                    <div>
+                        <p class="font-medium">@m.Name</p>
+                        <p class="text-sm text-muted-foreground">@m.Role</p>
+                    </div>
+                    <div class="flex gap-1">
+                        <Button Variant="ghost" Size="icon" Type="button" aria-label="@($"@{m.Handle} on X")"><Icon Name="globe" /></Button>
+                        <Button Variant="ghost" Size="icon" Type="button" aria-label="@($"@{m.Handle} on GitHub")"><Icon Name="git-branch" /></Button>
+                    </div>
+                </CardContent>
+            </Card>
+        }
+    </div>
+</section>
+
+@code {
+    record Member(string Initials, string Name, string Role, string Handle);
+
+    static readonly Member[] Members =
+    [
+        new("CN", "Chi Nguyen", "Maintainer", "chi"),
+        new("AK", "Amara Kade", "Design", "amara"),
+        new("JD", "Jonas Dahl", "Docs", "jonas"),
+    ];
+}

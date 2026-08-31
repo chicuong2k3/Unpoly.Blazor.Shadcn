@@ -86,4 +86,19 @@ public class EChartsTests : TestContext
         var cut = Render<EChart>(p => p.Add(c => c.Options, new { }).Add(c => c.Height, $"{h}px"));
         Assert.Contains($"height:{h}px", cut.Find("[data-slot=\"echart\"]").GetAttribute("style"));
     }
+
+    [Fact]
+    public void EThemeRiverChart_emits_single_axis_or_init_throws()
+    {
+        // themeRiver has no xAxis/yAxis; ECharts 5.x throws in getInitialData
+        // ("reading 'get'" on undefined) when the singleAxis component is absent.
+        var cut = Render<EThemeRiverChart>(p => p.Add(c => c.Data,
+            new object[] { new object[] { "2024/01/01", 10.0, "A" } }));
+        Assert.Contains("\"singleAxis\"", cut.Find("[data-slot=\"echart\"]").GetAttribute("data-options"));
+
+        // a caller-provided singleAxis wins — the default { type = "time" } must not be emitted
+        var ov = new Dictionary<string, object?> { ["singleAxis"] = new { type = "time", min = "2024/01/01" } };
+        var cut2 = Render<EThemeRiverChart>(p => p.Add(c => c.Data, new object[0]).Add(c => c.OptionOverride, ov));
+        Assert.Contains("2024/01/01", cut2.Find("[data-slot=\"echart\"]").GetAttribute("data-options"));
+    }
 }

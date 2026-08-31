@@ -1,0 +1,10 @@
+@using Unpoly.Blazor.Shadcn.ECharts.Components
+@* Sunburst: a radial hierarchy from the centre outward. *@
+<ESunburstChart Height="280px" Data="@data" />
+
+@code {
+    object data = new object[]
+    {
+        new { name = "A", value = 10, children = new object[] { new { name = "A1", value = 5 }, new { name = "A2", value = 5 } } },
+    };
+}

@@ -1,0 +1,77 @@
+@* Product reviews — a summary header (average score, distribution) followed by a feed of
+   review cards. The "Write a review" button is a real <a> to the review form. *@
+
+<div class="mx-auto grid max-w-5xl gap-10 py-10 lg:grid-cols-[320px_1fr]">
+    <div>
+        <Card>
+            <CardContent Class="space-y-3 p-6 text-center">
+                <div class="num text-5xl font-semibold">4.7</div>
+                <div class="flex justify-center gap-0.5 text-amber-500" aria-label="4.7 out of 5">★★★★★</div>
+                <p class="text-sm text-muted-foreground">Based on 412 reviews</p>
+                <Separator />
+                <dl class="space-y-1.5 text-sm">
+                    @foreach (var d in Distribution)
+                    {
+                        <div class="flex items-center gap-3">
+                            <dt class="num w-6 text-right text-muted-foreground">@d.Stars</dt>
+                            <dd class="num w-8 text-right">@d.Percent%</dd>
+                            <dd class="h-2 flex-1 overflow-hidden rounded-full bg-muted">
+                                <div class="h-full bg-primary" style="@($"width:{d.Percent}%")"></div>
+                            </dd>
+                        </div>
+                    }
+                </dl>
+                <Button Class="w-full" Href="/products/the-weekender/review">Write a review</Button>
+            </CardContent>
+        </Card>
+    </div>
+
+    <div class="space-y-4">
+        @foreach (var r in Reviews)
+        {
+            <Card>
+                <CardContent Class="space-y-3 p-5">
+                    <div class="flex items-center justify-between gap-3">
+                        <div class="flex items-center gap-3">
+                            <Avatar Size="sm"><AvatarFallback>@r.Initials</AvatarFallback></Avatar>
+                            <div>
+                                <p class="text-sm font-medium">@r.Name</p>
+                                <p class="text-xs text-muted-foreground">@r.Date</p>
+                            </div>
+                        </div>
+                        <div class="flex text-amber-500" aria-label="@($"{r.Stars} out of 5")">@Stars(r.Stars)</div>
+                    </div>
+                    <p class="text-sm leading-relaxed">@r.Text</p>
+                </CardContent>
+            </Card>
+        }
+    </div>
+</div>
+
+@code {
+    record Review(string Initials, string Name, string Date, int Stars, string Text);
+    record Dist(int Stars, int Percent);
+
+    static string Stars(int n)
+    {
+        var s = "";
+        for (var i = 0; i < 5; i++) s += i < n ? "★" : "☆";
+        return s;
+    }
+
+    static readonly Dist[] Distribution =
+    [
+        new(5, 72),
+        new(4, 18),
+        new(3, 6),
+        new(2, 2),
+        new(1, 2),
+    ];
+
+    static readonly Review[] Reviews =
+    [
+        new("PD", "Priya Diallo", "Apr 12, 2026", 5, "Six months in and the patina is exactly what they promised. The handle broke free in three weeks — they fixed it in a week, no questions."),
+        new("ML", "Marcus Lee", "Mar 28, 2026", 5, "Fits a weekend's worth of clothing and a laptop, and the strap has not dug in once. Five years in, still the bag I reach for."),
+        new("RT", "Riley Tanaka", "Mar 10, 2026", 4, "Gorgeous bag, smaller than I expected from the photos. I would go up a size next time, but the leather is unreal."),
+    ];
+}

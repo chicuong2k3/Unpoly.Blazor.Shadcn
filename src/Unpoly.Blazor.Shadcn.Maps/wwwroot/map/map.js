@@ -57,13 +57,14 @@
         var marker = new maplibregl.Marker({ draggable: m.dataset.draggable === 'true' })
           .setLngLat([mLng, mLat])
           .addTo(map)
-        if (m.dataset.popup) {
-          new maplibregl.Popup({ offset: 25 }).setText(m.dataset.popup).setLngLat([mLng, mLat]).addTo(map)
-        }
+
+        // One popup per marker, attached to the marker so it opens and closes with it. Rich
+        // ChildContent wins over the plain Popup string; the two were both added before, which
+        // left a second, orphaned popup sitting open on the map.
         if (m.innerHTML.trim()) {
-          // Rich popup from ChildContent (hidden div content)
-          var popup = new maplibregl.Popup({ offset: 25 }).setHTML(m.innerHTML)
-          marker.setPopup(popup)
+          marker.setPopup(new maplibregl.Popup({ offset: 25 }).setHTML(m.innerHTML))
+        } else if (m.dataset.popup) {
+          marker.setPopup(new maplibregl.Popup({ offset: 25 }).setText(m.dataset.popup))
         }
       })
     }

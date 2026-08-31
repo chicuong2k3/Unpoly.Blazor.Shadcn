@@ -1,0 +1,13 @@
+@* The quiet zone is the empty border scanners need around the modules. Margin is drawn as CSS
+   padding by the compiler; ShowMargin=false drops it, for a QR that sits flush against its
+   surface — trade the quiet zone for space when the code is decorative, not scanned. *@
+<div class="flex gap-4">
+    <Card>
+        <CardHeader><CardTitle Class="text-sm">With quiet zone</CardTitle></CardHeader>
+        <CardContent Class="flex justify-center p-4"><QrCode Value="https://lumeo.nativ.sh/" Size="120" /></CardContent>
+    </Card>
+    <Card>
+        <CardHeader><CardTitle Class="text-sm">No margin</CardTitle></CardHeader>
+        <CardContent Class="flex justify-center p-4"><QrCode Value="https://lumeo.nativ.sh/" Size="120" ShowMargin="false" /></CardContent>
+    </Card>
+</div>

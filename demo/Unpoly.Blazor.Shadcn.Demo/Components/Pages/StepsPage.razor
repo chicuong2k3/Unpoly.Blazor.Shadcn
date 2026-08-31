@@ -6,30 +6,19 @@
 <p class="doc-lede">Multi-step workflow tracker, Lumeo parity. Pure CSS + Blazor state, no JS library.</p>
 
 <h2 class="doc-h2">Basic</h2>
-<Steps CurrentStep="1">
-    <StepsItem Title="Account" Description="Create your account" />
-    <StepsItem Title="Profile" Description="Set up your profile" />
-    <StepsItem Title="Complete" Description="All done" />
-</Steps>
+<Example Source="StepsBasic.razor"><StepsBasic /></Example>
 
 <h2 class="doc-h2">Clickable</h2>
-<Steps CurrentStep="@step" CurrentStepChanged="v => step = v" Clickable>
-    <StepsItem Title="Details" />
-    <StepsItem Title="Payment" />
-    <StepsItem Title="Review" />
-    <StepsItem Title="Confirm" />
-</Steps>
-<div class="mt-2 flex gap-2">
-    <Button Variant="outline" Size="sm" @onclick="() => step = Math.Max(0, step-1)">Previous</Button>
-    <Button Variant="outline" Size="sm" @onclick="() => step = Math.Min(3, step+1)">Next</Button>
-    <span class="text-sm text-muted-foreground">Current: @step</span>
-</div>
+<p class="doc-note">
+    <code>Clickable</code> makes each step selectable; <code>CurrentStepChanged</code> is where the
+    parent learns about it. In this static host the state lives in the URL — the buttons are links
+    that change <code>?step</code> and swap this card.
+</p>
+<Example Source="StepsClickable.razor"><StepsClickable /></Example>
 
 <h2 class="doc-h2">Vertical + Error</h2>
-<Steps Orientation="Vertical" CurrentStep="1">
-    <StepsItem Title="Sign Up" Description="Create an account" />
-    <StepsItem Title="Verify Email" Description="Confirm your email" Status="StepsItemStatus.Error" />
-    <StepsItem Title="Set Password" Description="Choose a secure password" />
-</Steps>
-
-@code { int step = 0; }
+<p class="doc-note">
+    <code>Status="StepsItemStatus.Error"</code> paints the step's indicator with the destructive
+    palette while it is the active one.
+</p>
+<Example Source="StepsVertical.razor"><StepsVertical /></Example>

@@ -1,0 +1,8 @@
+@using Unpoly.Blazor.Shadcn.ECharts.Components
+@* Geo map: a choropleth. The package bundles a world outline and registers it for
+   Map="world"; other maps still need your own echarts.registerMap call. *@
+<EGeoMapChart Height="380px" Data="@data" Map="world" />
+
+@code {
+    object data = new[] { new { name = "China", value = 100 }, new { name = "Brazil", value = 80 } };
+}

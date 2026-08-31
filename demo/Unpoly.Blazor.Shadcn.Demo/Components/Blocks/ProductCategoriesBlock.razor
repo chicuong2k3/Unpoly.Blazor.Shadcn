@@ -1,0 +1,55 @@
+@* Product categories — a sectioned grid: each section is a category, with a title and a row of
+   cards. Clicking a card opens the product detail; the heading is a link to the category
+   landing page. *@
+
+<section class="mx-auto max-w-6xl space-y-12 py-12">
+    @foreach (var cat in Categories)
+    {
+        <div>
+            <div class="flex flex-wrap items-end justify-between gap-4">
+                <div>
+                    <h2 class="text-2xl font-semibold tracking-tight">@cat.Name</h2>
+                    <p class="mt-1 text-sm text-muted-foreground">@cat.Description</p>
+                </div>
+                <Button Variant="outline" Href="@($"/categories/{cat.Slug}")">See all<Icon Name="arrow-right" /></Button>
+            </div>
+            <div class="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+                @foreach (var p in cat.Items)
+                {
+                    <a href="@($"/products/{p.Slug}")" class="group block">
+                        <Card Class="overflow-hidden p-0 transition-colors group-hover:bg-muted/40">
+                            <AspectRatio Ratio="1" Class="bg-muted">
+                                <img src="@p.Image" alt="@p.Name" class="size-full object-cover" width="400" height="400" loading="lazy" />
+                            </AspectRatio>
+                            <div class="p-4">
+                                <p class="text-sm font-medium group-hover:underline">@p.Name</p>
+                                <p class="num text-sm text-muted-foreground">@p.Price.ToString("C0")</p>
+                            </div>
+                        </Card>
+                    </a>
+                }
+            </div>
+        </div>
+    }
+</section>
+
+@code {
+    record Product(string Slug, string Name, decimal Price, string Image);
+    record Category(string Slug, string Name, string Description, Product[] Items);
+
+    static readonly Category[] Categories =
+    [
+        new("bags", "Bags", "Leather, canvas, and the occasional waxed cotton.", new Product[]
+        {
+            new("weekender", "Weekender", 189m, "https://placehold.co/400"),
+            new("day-tote", "Day tote", 129m, "https://placehold.co/400"),
+            new("sling", "Sling", 79m, "https://placehold.co/400"),
+            new("backpack", "Backpack", 149m, "https://placehold.co/400"),
+        }),
+        new("small-leather", "Small leather", "Things that fit in a pocket.", new Product[]
+        {
+            new("wallet", "Wallet", 59m, "https://placehold.co/400"),
+            new("cardholder", "Cardholder", 39m, "https://placehold.co/400"),
+        }),
+    ];
+}

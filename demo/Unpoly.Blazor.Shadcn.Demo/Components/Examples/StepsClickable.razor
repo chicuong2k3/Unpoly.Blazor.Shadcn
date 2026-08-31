@@ -1,0 +1,31 @@
+@inject NavigationManager Nav
+@* Clickable steps with Previous/Next. There is no client state, so the current step lives in the
+   URL: the buttons are links that change ?step and swap this card, and the trail renders with the
+   value already in it. Clicking a step itself is the same CurrentStepChanged handler — in a static
+   host the state travels in the query string instead of a field. *@
+<div class="flex flex-col gap-3" id="steps-clickable">
+    <Steps CurrentStep="@Step" Clickable>
+        <StepsItem Title="Details" />
+        <StepsItem Title="Payment" />
+        <StepsItem Title="Review" />
+        <StepsItem Title="Confirm" />
+    </Steps>
+    <div class="flex items-center gap-2">
+        <Button Variant="outline" Size="sm" Href="@($"{Page}?step={Step - 1}")" up-target="#steps-clickable" disabled="@(Step == 0)">Previous</Button>
+        <Button Variant="outline" Size="sm" Href="@($"{Page}?step={Step + 1}")" up-target="#steps-clickable" disabled="@(Step == 3)">Next</Button>
+        <span class="text-sm text-muted-foreground">Current: @Step</span>
+    </div>
+</div>
+
+@code {
+    const string Page = "/components/steps";
+
+    int Step
+    {
+        get
+        {
+            var raw = System.Web.HttpUtility.ParseQueryString(new Uri(Nav.Uri).Query)["step"];
+            return int.TryParse(raw, out var n) ? Math.Clamp(n, 0, 3) : 0;
+        }
+    }
+}

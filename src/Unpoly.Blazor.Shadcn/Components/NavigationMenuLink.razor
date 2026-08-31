@@ -21,7 +21,9 @@
         "focus-visible:outline-1 data-[active=true]:bg-accent/50 " +
         "data-[active=true]:text-accent-foreground data-[active=true]:hover:bg-accent " +
         "data-[active=true]:focus:bg-accent [&_svg:not([class*='size-'])]:size-4 " +
-        "[&_svg:not([class*='text-'])]:text-muted-foreground";
+        "[&_svg:not([class*='text-'])]:text-muted-foreground [&.up-current]:bg-accent/50 " +
+        "[&.up-current]:text-accent-foreground [&.up-current]:hover:bg-accent " +
+        "[&.up-current]:focus:bg-accent";
 
     string Classes => Cn(Base, Class);
 }

@@ -1,0 +1,21 @@
+<!doctype html>
+<html><head><meta charset="utf-8">
+<script src="/_content/Unpoly.Blazor.Shadcn.ECharts/echarts/echarts.min.js"></script>
+<style>body{margin:0}#c1,#c2{width:800px;height:300px;margin:20px;border:1px solid #ccc}</style>
+</head><body>
+<div id="c1"></div>
+<div id="c2"></div>
+<script>
+var opts = {
+  tooltip: {trigger: 'axis'},
+  grid: {left: '3%', right: '4%', bottom: '3%', containLabel: true},
+  xAxis: {type: 'category', data: ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'], boundaryGap: false},
+  yAxis: {type: 'value'},
+  series: [{type: 'line', name: 'Orders', data: [120,132,101,134,90,230,210], smooth: true, areaStyle: {}, showSymbol: false}]
+};
+var a = echarts.init(document.getElementById('c1'), null, {renderer: 'canvas', useDirtyRect: false});
+a.setOption(opts);
+var b = echarts.init(document.getElementById('c2'), null, {renderer: 'canvas', useDirtyRect: true});
+b.setOption(opts);
+</script>
+</body></html>

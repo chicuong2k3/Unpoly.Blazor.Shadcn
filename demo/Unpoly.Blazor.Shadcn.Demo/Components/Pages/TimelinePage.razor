@@ -6,32 +6,24 @@
 <p class="doc-lede">Chronological events with dots, connectors, and optional icons.</p>
 
 <h2 class="doc-h2">Vertical</h2>
-<Timeline>
-    <TimelineItem Title="Order placed" Description="Your order has been placed." Time="Jan 1, 2025" />
-    <TimelineItem Title="Processing" Description="Your order is being processed." Time="Jan 2, 2025" />
-    <TimelineItem Title="Shipped" Description="Shipped via express." Time="Jan 3, 2025" />
-    <TimelineItem Title="Delivered" Description="Has been delivered." Time="Jan 5, 2025" />
-</Timeline>
+<Example Source="TimelineBasic.razor"><TimelineBasic /></Example>
 
 <h2 class="doc-h2">With Icons</h2>
-<Timeline>
-    <TimelineItem Title="Account created" Time="9:00 AM"><IconContent><Icon Name="user" /></IconContent></TimelineItem>
-    <TimelineItem Title="Profile updated" Time="10:30 AM"><IconContent><Icon Name="pencil" /></IconContent></TimelineItem>
-    <TimelineItem Title="First post" Time="2:00 PM"><IconContent><Icon Name="pen-line" /></IconContent></TimelineItem>
-</Timeline>
+<p class="doc-note">
+    <code>IconContent</code> takes the dot's place — a Lucide Icon, an Avatar, anything.
+</p>
+<Example Source="TimelineIcons.razor"><TimelineIcons /></Example>
 
 <h2 class="doc-h2">Animated + ActiveIndex</h2>
-<Timeline ActiveIndex="@idx" ActiveIndexChanged="v => idx = v" Animated>
-    <TimelineItem Title="Requirements" Time="Week 1" />
-    <TimelineItem Title="Design" Time="Week 2" />
-    <TimelineItem Title="Development" Time="Week 3" />
-    <TimelineItem Title="QA" Time="Week 4" />
-    <TimelineItem Title="Release" Time="Week 5" />
-</Timeline>
-<div class="mt-2 flex gap-2">
-    <Button Variant="outline" Size="sm" @onclick="() => idx = Math.Max(0, idx-1)">Previous</Button>
-    <Button Variant="outline" Size="sm" @onclick="() => idx = Math.Min(4, idx+1)">Next</Button>
-    <span class="text-sm text-muted-foreground">Active: @idx</span>
-</div>
+<p class="doc-note">
+    <code>ActiveIndex</code> drives the dots: the active one is filled, everything before it is
+    completed. <code>Animated</code> pulses the active dot and retracts the connectors as they
+    fill. In this static host the index lives in the URL.
+</p>
+<Example Source="TimelineActive.razor"><TimelineActive /></Example>
 
-@code { int idx = 2; }
+<h2 class="doc-h2">Alternate</h2>
+<Example Source="TimelineAlternate.razor"><TimelineAlternate /></Example>
+
+<h2 class="doc-h2">Horizontal</h2>
+<Example Source="TimelineHorizontal.razor"><TimelineHorizontal /></Example>

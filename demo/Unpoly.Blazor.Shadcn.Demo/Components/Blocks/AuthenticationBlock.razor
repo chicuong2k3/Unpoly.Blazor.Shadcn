@@ -1,0 +1,80 @@
+@* Authentication — sign in and create account in one card, with social providers.
+
+   The whole card is a Tabs strip: sign in and create account are two real forms, and the
+   forgotten-password link is a route. Nothing here needs state — the open tab is a compiler
+   reading the checked radio, and both forms post to their own actions.
+
+   up-target="body" on both forms: signing in crosses the auth boundary, so the whole shell has
+   to be replaced. up-fail-target on the FORM — [up-disable] disables every field while the
+   request is out, including the antiforgery token, and a failure render that does not replace
+   the form leaves those disabled for the next submit. *@
+
+<div class="mx-auto flex min-h-[60vh] w-full max-w-md items-center justify-center px-4">
+    <Card Class="w-full">
+        <CardHeader Class="text-center">
+            <CardTitle>Welcome back</CardTitle>
+            <CardDescription>Sign in to your account, or create one.</CardDescription>
+        </CardHeader>
+
+        <CardContent Class="space-y-4">
+            <div class="grid grid-cols-2 gap-2">
+                <Button Variant="outline" Type="button">Continue with GitHub</Button>
+                <Button Variant="outline" Type="button">Continue with Google</Button>
+            </div>
+
+            <div class="relative">
+                <Separator />
+                <span class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 bg-card px-2 text-xs text-muted-foreground">
+                    or continue with email
+                </span>
+            </div>
+
+            <Tabs Value="signin">
+                <TabsList Class="w-full">
+                    <TabsTrigger Value="signin" Class="flex-1">Sign in</TabsTrigger>
+                    <TabsTrigger Value="signup" Class="flex-1">Create account</TabsTrigger>
+                </TabsList>
+
+                <TabsContent Value="signin">
+                    <form method="post" class="auth-form space-y-4" up-target="body" up-fail-target=".auth-form">
+                        <Field>
+                            <FieldLabel For="auth-email">Email</FieldLabel>
+                            <Input id="auth-email" name="email" type="email" required autocomplete="username" />
+                        </Field>
+                        <Field>
+                            <FieldLabel For="auth-password">Password</FieldLabel>
+                            <Input id="auth-password" name="password" type="password" required autocomplete="current-password" />
+                        </Field>
+                        <div class="flex items-center justify-between">
+                            <Label Class="flex items-center gap-2 text-sm">
+                                <Checkbox name="remember" value="true" /><span>Remember me</span>
+                            </Label>
+                            <a href="/forgot" class="text-sm text-muted-foreground hover:text-foreground">Forgot password?</a>
+                        </div>
+                        <Button Class="w-full" up-disable>Sign in</Button>
+                    </form>
+                </TabsContent>
+
+                <TabsContent Value="signup">
+                    <form method="post" class="auth-signup space-y-4" up-target="body" up-fail-target=".auth-signup">
+                        <Field>
+                            <FieldLabel For="auth-name">Name</FieldLabel>
+                            <Input id="auth-name" name="name" required autocomplete="name" />
+                        </Field>
+                        <Field>
+                            <FieldLabel For="auth-new-email">Email</FieldLabel>
+                            <Input id="auth-new-email" name="email" type="email" required autocomplete="username" />
+                        </Field>
+                        <Field>
+                            <FieldLabel For="auth-new-password">Password</FieldLabel>
+                            <Input id="auth-new-password" name="password" type="password" required
+                                   autocomplete="new-password" minlength="8" />
+                            <FieldDescription>At least 8 characters.</FieldDescription>
+                        </Field>
+                        <Button Class="w-full" up-disable>Create account</Button>
+                    </form>
+                </TabsContent>
+            </Tabs>
+        </CardContent>
+    </Card>
+</div>
