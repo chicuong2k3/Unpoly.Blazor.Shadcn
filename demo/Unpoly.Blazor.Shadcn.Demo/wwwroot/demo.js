@@ -181,27 +181,23 @@ up.compiler('[data-customizer]', (panel) => {
 
   // The swatch groups are plain buttons — a click flips a whole attribute and re-presses the
   // group. The mode buttons mirror the header's dark toggle so neither can say two things.
-  const pressSwatches = () => syncPressed()
-
   const onClick = (event) => {
+    const radius = event.target.closest('[data-cz-radius]')
+    if (radius) {
+      setRadius(radius.dataset.czRadius)
+      return
+    }
     const base = event.target.closest('[data-cz-preset]')
     if (base && base.closest('[data-cz-group="base"]')) {
       presetState.base = base.dataset.czPreset
-      pressSwatches('preset', presetState.base)
+      syncPressed()
       applyPresetState()
       return
     }
     const primary = event.target.closest('[data-cz-preset]')
     if (primary && primary.closest('[data-cz-group="primary"]')) {
       presetState.primary = primary.dataset.czPreset
-      pressSwatches('preset', presetState.primary)
-      applyPresetState()
-      return
-    }
-    const radius = event.target.closest('[data-cz-radius]')
-    if (radius) {
-      presetState.radius = radius.dataset.czRadius
-      pressSwatches('radius', presetState.radius)
+      syncPressed()
       applyPresetState()
       return
     }
@@ -210,11 +206,25 @@ up.compiler('[data-customizer]', (panel) => {
       const dark = mode.dataset.czMode === 'dark'
       document.documentElement.classList.toggle('dark', dark)
       localStorage.setItem('demo-dark', dark ? '1' : '0')
-      pressSwatches('mode', mode.dataset.czMode)
-      for (const b of panel.querySelectorAll('[data-cz-mode]')) {
-        b.setAttribute('aria-pressed', String(b.dataset.czMode === mode.dataset.czMode))
-      }
+      syncPressed()
     }
+  }
+
+  // The slider and the buttons are two views of one number. The buttons snap; the slider sweeps.
+  const setRadius = (rem) => {
+    presetState.radius = String(rem)
+    const slider = panel.querySelector('[data-cz-radius-slider]')
+    if (slider) slider.value = String(rem)
+    const readout = panel.querySelector('[data-cz-radius-value]')
+    if (readout) readout.textContent = rem
+    syncPressed()
+    applyPresetState()
+  }
+
+  const onRadiusInput = (event) => {
+    const el = event.target
+    if (!el.matches('[data-cz-radius-slider]')) return
+    setRadius(el.value)
   }
 
   const syncPressed = () => {
@@ -226,14 +236,25 @@ up.compiler('[data-customizer]', (panel) => {
     for (const b of panel.querySelectorAll('[data-cz-radius]')) {
       b.setAttribute('aria-pressed', String(b.dataset.czRadius === presetState.radius))
     }
+    // The slider and its readout follow whatever set the radius — buttons included.
+    const slider = panel.querySelector('[data-cz-radius-slider]')
+    if (slider) slider.value = presetState.radius
+    const readout = panel.querySelector('[data-cz-radius-value]')
+    if (readout) readout.textContent = presetState.radius
     const dark = document.documentElement.classList.contains('dark')
     for (const b of panel.querySelectorAll('[data-cz-mode]')) {
       b.setAttribute('aria-pressed', String((b.dataset.czMode === 'dark') === dark))
     }
   }
 
+  const slider = panel.querySelector('[data-cz-radius-slider]')
+  if (slider) slider.value = presetState.radius
+  const readout = panel.querySelector('[data-cz-radius-value]')
+  if (readout) readout.textContent = presetState.radius
+
   panel.querySelectorAll('[data-token], [data-token-text]').forEach(seed)
   panel.addEventListener('input', onInput)
+  panel.addEventListener('input', onRadiusInput)
   panel.addEventListener('change', onChange)
   panel.addEventListener('click', onClick)
   syncPressed()
@@ -242,6 +263,7 @@ up.compiler('[data-customizer]', (panel) => {
 
   return () => {
     panel.removeEventListener('input', onInput)
+    panel.removeEventListener('input', onRadiusInput)
     panel.removeEventListener('change', onChange)
     panel.removeEventListener('click', onClick)
     panel.removeEventListener('cz-sync', syncPressed)

@@ -59,7 +59,16 @@
             <FieldSeparator><FieldSeparatorContent>shape</FieldSeparatorContent></FieldSeparator>
 
             <Field>
-                <FieldLabel>Radius</FieldLabel>
+                <FieldLabel For="cz-radius-slider">Radius</FieldLabel>
+                <div class="flex items-center gap-3">
+                    @* A range, not five buttons: 0→1.5rem in twips covers square, slightly-soft,
+                       shadcn's default, Tailwind's xl and full pill, and everything between. The
+                       quick buttons below snap to the values people actually mean. *@
+                    <input type="range" id="cz-radius-slider" min="0" max="1.5" step="0.05" value="0.625"
+                           data-cz-radius-slider class="h-1.5 flex-1 cursor-pointer appearance-none rounded-full bg-muted accent-primary"
+                           aria-label="Corner radius in rem" />
+                    <span class="w-12 text-right font-mono text-xs text-muted-foreground" data-cz-radius-value>0.625</span>
+                </div>
                 <div class="flex gap-1.5" data-cz-group="radius">
                     @foreach (var r in Radii)
                     {
@@ -89,16 +98,16 @@
             @foreach (var t in Colours)
             {
                 <Field>
-                    <FieldLabel For="@($"cz-{t.Token}")">@t.Label</FieldLabel>
+                    <FieldLabel For="@($"cz-{t.Name}")">@t.Label</FieldLabel>
                     <InputGroup>
                         @* type=color is the platform's own picker — no library, no popover, and
                            it is the control people already know from every other site. *@
                         <InputGroupAddon>
-                            <input type="color" id="@($"cz-{t.Token}")" data-token="@t.Token"
+                            <input type="color" id="@($"cz-{t.Name}")" data-token="@t.Name"
                                    class="size-6 cursor-pointer rounded border-0 bg-transparent p-0"
                                    aria-label="@t.Label" />
                         </InputGroupAddon>
-                        <InputGroupControl data-token-text="@t.Token" placeholder="@t.Hint" />
+                        <InputGroupControl data-token-text="@t.Name" placeholder="@t.Hint" />
                     </InputGroup>
                     <FieldDescription>@t.Why</FieldDescription>
                 </Field>
@@ -187,18 +196,26 @@
         new("Comfortable", "2.75rem", false),
     ];
 
-    record Swatch2(string Token, string Label, string Hint, string Why);
+    record Token(string Name, string Label, string Hint, string Why);
 
-    // Six tokens, not twenty. These are the ones that decide how a theme reads; the rest follow
-    // from them, and a panel with every variable in it is a panel nobody finishes.
-    static readonly Swatch2[] Colours =
+    // The tokens that decide how a theme reads, grouped the way a designer reaches for them.
+    // Everything else follows from these; a panel with every variable in it is a panel nobody
+    // finishes. Each grid is one row of the Grouped panel below.
+    static readonly Token[] Colours =
     [
         new("primary", "Primary", "#a02742", "Buttons, links, the focus ring."),
+        new("secondary", "Secondary", "#f4f4f5", "The quieter action beside a primary."),
         new("background", "Page", "#fafafa", "The ground a card sits on."),
         new("card", "Surface", "#ffffff", "Cards, dialogs, menus."),
+        new("muted", "Muted", "#f4f4f5", "Skeletons, captions, code backgrounds."),
+        new("muted-foreground", "Muted text", "#71717b", "Secondary text — the one that betrays a theme most."),
         new("accent", "Hover", "#f4f4f5", "Ghost buttons, menu rows, table rows — easy to forget."),
         new("border", "Border", "#e4e4e7", "A hairline reads very differently from a full-contrast line."),
+        new("ring", "Focus ring", "#18181b", "Visible for one keystroke, wrong for every user after."),
         new("destructive", "Destructive", "#89231c", "Delete, refund, anything with no undo."),
+        new("chart-1", "Chart 1", "#f59e0b", "First series colour — the primary swatch sets it too."),
+        new("chart-2", "Chart 2", "#0ea5e9", "Second series colour."),
+        new("chart-3", "Chart 3", "#10b981", "Third series colour."),
     ];
 
     const string Placeholder = "[data-theme=\"mine\"] {\n  /* change something to see it here */\n}";
