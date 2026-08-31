@@ -64,6 +64,7 @@
 @import "../../../themes/notion.css";
 @import "../../../themes/cupertino.css";
 @import "../../../themes/fluent.css";
+@import "../../../themes/customizer.css";
 
 /* The CLI does not pick up .razor on its own — without these every utility written in markup is
     silently dropped. ui.js is here because it builds the Select panel, the dropdown and the

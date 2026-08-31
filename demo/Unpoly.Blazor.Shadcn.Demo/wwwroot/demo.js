@@ -59,12 +59,41 @@ up.compiler('[data-dark-toggle]', (button) => {
 
 const overrides = new Map()
 
+// The swatch presets are attributes, not inline tokens: [data-cz-base] / [data-cz-primary]
+// flip whole ramps from themes/customizer.css, which is why a swatch recolors sixty variables
+// with one gesture. They are saved separately from the fine-tune tokens, so Reset returns to
+// the last preset rather than to nothing.
+const presetState = { base: 'zinc', primary: 'default', radius: '0.625' }
+
+function applyPresetState() {
+  const root = document.documentElement
+  if (presetState.base && presetState.base !== 'zinc') root.dataset.czBase = presetState.base
+  else delete root.dataset.czBase
+  if (presetState.primary && presetState.primary !== 'default') root.dataset.czPrimary = presetState.primary
+  else delete root.dataset.czPrimary
+  if (presetState.radius) root.style.setProperty('--radius', presetState.radius + 'rem')
+  localStorage.setItem('demo-presets', JSON.stringify(presetState))
+  paintCustomizerOutput()
+}
+
+function restorePresetState() {
+  try {
+    const saved = JSON.parse(localStorage.getItem('demo-presets') || 'null')
+    if (saved) Object.assign(presetState, saved)
+  } catch { /* a corrupt entry is not worth a broken panel */ }
+  applyPresetState()
+}
+
 function resetCustomizer() {
   for (const token of overrides.keys()) {
     document.documentElement.style.removeProperty(`--${token}`)
   }
   overrides.clear()
   localStorage.removeItem('demo-tokens')
+  presetState.base = 'zinc'
+  presetState.primary = 'default'
+  presetState.radius = '0.625'
+  applyPresetState()
   paintCustomizerOutput()
 }
 
@@ -84,22 +113,34 @@ function paintCustomizerOutput() {
   const out = document.querySelector('[data-customizer-output] [data-slot="code-block-code"]')
   if (!out) return
 
-  if (overrides.size === 0) {
-    out.textContent = '[data-theme="mine"] {\n  /* change something to see it here */\n}'
-    return
-  }
+  const lines = []
+  // A preset is an attribute, not a token list: the printed block mirrors what an app needs
+  // to write, and what an app writes for a gray ramp is the attribute too (customizer.css is
+  // copy-in source, like the components).
+  if (presetState.base !== 'zinc') lines.push(`  /* base: [data-cz-base="${presetState.base}"] */`)
+  if (presetState.primary !== 'default') lines.push(`  /* primary: [data-cz-primary="${presetState.primary}"] */`)
 
-  const lines = [...overrides].map(([t, v]) => `  --${t}: ${v};`)
+  for (const [t, v] of overrides) lines.push(`  --${t}: ${v};`)
   // --radius-control is derived rather than typed, so it is printed rather than left to be
   // discovered: a pill button beside a 12px card is the thing one number cannot say.
+  if (presetState.radius && presetState.radius !== '0.625' && !overrides.has('radius')) {
+    lines.push(`  --radius: ${presetState.radius}rem;`)
+    lines.push(`  --radius-control: calc(${presetState.radius}rem - 2px);`)
+  }
   if (overrides.has('radius') && !overrides.has('radius-control')) {
     lines.push(`  --radius-control: calc(${overrides.get('radius')} - 2px);`)
+  }
+  if (lines.length === 0) {
+    out.textContent = '[data-theme="mine"] {\n  /* change something to see it here */\n}'
+    return
   }
   out.textContent = `[data-theme="mine"] {\n${lines.join('\n')}\n}`
 }
 
 up.compiler('[data-customizer]', (panel) => {
-  // Restore what was tuned last time, so the panel and the page agree on first paint.
+  // Restore what was tuned last time, so the panel and the page agree on first paint. The
+  // presets are attributes on <html>; the fine-tune tokens are inline properties.
+  restorePresetState()
   try {
     for (const [t, v] of JSON.parse(localStorage.getItem('demo-tokens') || '[]')) {
       overrides.set(t, v)
@@ -130,7 +171,6 @@ up.compiler('[data-customizer]', (panel) => {
       if (twin !== el && twin.type !== 'radio' && twin.type !== 'checkbox') twin.value = el.value
     }
   }
-
   // The radius and height groups are radios, so the change event carries the chosen one.
   const onChange = (event) => {
     const el = event.target
@@ -139,21 +179,83 @@ up.compiler('[data-customizer]', (panel) => {
     if (holder) applyToken(holder.dataset.token, el.value)
   }
 
+  // The swatch groups are plain buttons — a click flips a whole attribute and re-presses the
+  // group. The mode buttons mirror the header's dark toggle so neither can say two things.
+  const pressSwatches = () => syncPressed()
+
+  const onClick = (event) => {
+    const base = event.target.closest('[data-cz-preset]')
+    if (base && base.closest('[data-cz-group="base"]')) {
+      presetState.base = base.dataset.czPreset
+      pressSwatches('preset', presetState.base)
+      applyPresetState()
+      return
+    }
+    const primary = event.target.closest('[data-cz-preset]')
+    if (primary && primary.closest('[data-cz-group="primary"]')) {
+      presetState.primary = primary.dataset.czPreset
+      pressSwatches('preset', presetState.primary)
+      applyPresetState()
+      return
+    }
+    const radius = event.target.closest('[data-cz-radius]')
+    if (radius) {
+      presetState.radius = radius.dataset.czRadius
+      pressSwatches('radius', presetState.radius)
+      applyPresetState()
+      return
+    }
+    const mode = event.target.closest('[data-cz-mode]')
+    if (mode) {
+      const dark = mode.dataset.czMode === 'dark'
+      document.documentElement.classList.toggle('dark', dark)
+      localStorage.setItem('demo-dark', dark ? '1' : '0')
+      pressSwatches('mode', mode.dataset.czMode)
+      for (const b of panel.querySelectorAll('[data-cz-mode]')) {
+        b.setAttribute('aria-pressed', String(b.dataset.czMode === mode.dataset.czMode))
+      }
+    }
+  }
+
+  const syncPressed = () => {
+    for (const b of panel.querySelectorAll('[data-cz-preset]')) {
+      const inBase = !!b.closest('[data-cz-group="base"]')
+      const value = inBase ? presetState.base : presetState.primary
+      b.setAttribute('aria-pressed', String(b.dataset.czPreset === value))
+    }
+    for (const b of panel.querySelectorAll('[data-cz-radius]')) {
+      b.setAttribute('aria-pressed', String(b.dataset.czRadius === presetState.radius))
+    }
+    const dark = document.documentElement.classList.contains('dark')
+    for (const b of panel.querySelectorAll('[data-cz-mode]')) {
+      b.setAttribute('aria-pressed', String((b.dataset.czMode === 'dark') === dark))
+    }
+  }
+
   panel.querySelectorAll('[data-token], [data-token-text]').forEach(seed)
   panel.addEventListener('input', onInput)
   panel.addEventListener('change', onChange)
+  panel.addEventListener('click', onClick)
+  syncPressed()
   paintCustomizerOutput()
+  panel.addEventListener('cz-sync', syncPressed)
 
   return () => {
     panel.removeEventListener('input', onInput)
     panel.removeEventListener('change', onChange)
+    panel.removeEventListener('click', onClick)
+    panel.removeEventListener('cz-sync', syncPressed)
   }
 })
+
 
 up.compiler('[data-customizer-reset]', (button) => {
   const onClick = () => {
     resetCustomizer()
     for (const el of document.querySelectorAll('[data-token-text]')) el.value = ''
+    // ResetCustomizer re-applied the presets; syncPressed lives in the panel compiler, and a
+    // plain event is the one thing both compilers can agree on without reaching into state.
+    document.querySelector('[data-customizer]')?.dispatchEvent(new CustomEvent('cz-sync'))
   }
   button.addEventListener('click', onClick)
   return () => button.removeEventListener('click', onClick)

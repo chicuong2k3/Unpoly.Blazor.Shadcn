@@ -16,27 +16,75 @@
     <SheetHeader>
         <SheetTitle>Customise</SheetTitle>
         <SheetDescription>
-            Everything here is a custom property. Nothing rebuilds.
+            Pick a palette and a radius for your components.
         </SheetDescription>
     </SheetHeader>
 
     <ScrollArea Class="flex-1 px-4">
         <FieldGroup data-customizer>
+            @* Base colour — the grays everything else sits on. Five near-identical ramps until
+               you look at a page: one is warm, one is cold, one has a green floor. *@
             <Field>
-                <FieldLabel For="cz-preset">Preset</FieldLabel>
-                <Select id="cz-preset" data-theme-picker>
-                    <SelectItem Value="shadcn">shadcn</SelectItem>
-                    <SelectItem Value="vercel">Vercel</SelectItem>
-                    <SelectItem Value="supabase">Supabase</SelectItem>
-                    <SelectItem Value="modern-minimal">Modern Minimal</SelectItem>
-                    <SelectItem Value="notebook">Notebook</SelectItem>
-                    <SelectItem Value="cupertino">Cupertino</SelectItem>
-                    <SelectItem Value="fluent">Fluent 2</SelectItem>
-                </Select>
-                <FieldDescription>Starts you somewhere. Everything below overrides it.</FieldDescription>
+                <FieldLabel>Base color</FieldLabel>
+                <div class="grid grid-cols-3 gap-1.5" data-cz-group="base">
+                    @foreach (var b in Bases)
+                    {
+                        <button type="button" class="@BaseSwatchClass" data-cz-preset="@b.Value"
+                                aria-pressed="@(b.Value == "zinc")" title="@b.Label">
+                            <span class="size-4 shrink-0 rounded-full border border-border"
+                                  style="background-color:@b.Color" aria-hidden="true"></span>
+                            @b.Label
+                        </button>
+                    }
+                </div>
+                <FieldDescription>The gray ramp every surface and border reads through.</FieldDescription>
             </Field>
 
-            <FieldSeparator><FieldSeparatorContent>then adjust</FieldSeparatorContent></FieldSeparator>
+            <Field>
+                <FieldLabel>Primary color</FieldLabel>
+                <div class="grid grid-cols-3 gap-1.5" data-cz-group="primary">
+                    @foreach (var p in Primaries)
+                    {
+                        <button type="button" class="@BaseSwatchClass" data-cz-preset="@p.Value"
+                                aria-pressed="@(p.Value == "default")" title="@p.Label">
+                            <span class="size-4 shrink-0 rounded-full border border-border"
+                                  style="background-color:@p.Color" aria-hidden="true"></span>
+                            @p.Label
+                        </button>
+                    }
+                </div>
+                <FieldDescription>Rewrites primary, ring and chart-1 as one gesture.</FieldDescription>
+            </Field>
+
+            <FieldSeparator><FieldSeparatorContent>shape</FieldSeparatorContent></FieldSeparator>
+
+            <Field>
+                <FieldLabel>Radius</FieldLabel>
+                <div class="flex gap-1.5" data-cz-group="radius">
+                    @foreach (var r in Radii)
+                    {
+                        <button type="button" class="@RadiusSwatchClass flex-1" data-cz-radius="@r"
+                                aria-pressed="@(r == "0.625")">@r</button>
+                    }
+                </div>
+                <FieldDescription>
+                    Nothing changes a theme's character faster. Controls round from
+                    <code>--radius-control</code>, containers from this.
+                </FieldDescription>
+            </Field>
+
+            <Field>
+                <FieldLabel>Mode</FieldLabel>
+                <div class="grid grid-cols-2 gap-1.5" data-cz-group="mode">
+                    <button type="button" class="@BaseSwatchClass" data-cz-mode="light" aria-pressed="true">Light</button>
+                    <button type="button" class="@BaseSwatchClass" data-cz-mode="dark" aria-pressed="false">Dark</button>
+                </div>
+                <FieldDescription>
+                    Switches <code>.dark</code> on the root — the same toggle the header has.
+                </FieldDescription>
+            </Field>
+
+            <FieldSeparator><FieldSeparatorContent>fine tune</FieldSeparatorContent></FieldSeparator>
 
             @foreach (var t in Colours)
             {
@@ -56,23 +104,6 @@
                 </Field>
             }
 
-            <FieldSeparator><FieldSeparatorContent>shape and density</FieldSeparatorContent></FieldSeparator>
-
-            <Field>
-                <FieldLabel>Corner radius</FieldLabel>
-                <ToggleGroup aria-label="Corner radius">
-                    @foreach (var r in Radii)
-                    {
-                        <ToggleGroupItem Name="cz-radius" Value="@r" Checked="@(r == "0.625rem")"
-                                         data-token="radius">@r.Replace("rem", "")</ToggleGroupItem>
-                    }
-                </ToggleGroup>
-                <FieldDescription>
-                    Nothing changes a theme's character faster. Controls round from
-                    <code>--radius-control</code>, containers from this.
-                </FieldDescription>
-            </Field>
-
             <Field>
                 <FieldLabel>Control height</FieldLabel>
                 <ToggleGroup aria-label="Control height">
@@ -85,36 +116,68 @@
                 <FieldDescription>Density is half of what people mean by “feels like X”.</FieldDescription>
             </Field>
         </FieldGroup>
+    </ScrollArea>
 
-        <div class="mt-6 space-y-2 pb-6">
+    <SheetFooter Class="flex-col gap-3">
+        <div class="w-full space-y-2">
             <Label>What you have made</Label>
             <CodeBlock data-customizer-output Code="@Placeholder" Language="css"
                        Title="paste into your theme" Class="text-[11.5px]" />
         </div>
-    </ScrollArea>
-
-    <SheetFooter>
-        <Button Variant="outline" Type="button" data-customizer-reset>Reset</Button>
-        <SheetClose Variant="default">Done</SheetClose>
+        <div class="flex w-full gap-2">
+            <Button Variant="outline" Type="button" data-customizer-reset class="flex-1">Reset</Button>
+            <SheetClose Variant="default" class="flex-1">Done</SheetClose>
+        </div>
     </SheetFooter>
 </Sheet>
 
 @code {
-    record Swatch(string Token, string Label, string Hint, string Why);
+    const string BaseSwatchClass =
+        "inline-flex items-center gap-1.5 rounded-md border px-2 py-1.5 text-xs transition-colors " +
+        "border-input hover:bg-accent/50 aria-pressed:border-foreground aria-pressed:bg-accent";
 
-    // Six tokens, not twenty. These are the ones that decide how a theme reads; the rest follow
-    // from them, and a panel with every variable in it is a panel nobody finishes.
-    static readonly Swatch[] Colours =
+    const string RadiusSwatchClass =
+        "rounded-md border px-2 py-1.5 text-xs text-center transition-colors " +
+        "border-input hover:bg-accent/50 aria-pressed:border-foreground aria-pressed:bg-accent";
+
+    record Swatch(string Value, string Label, string Color);
+
+    // Base ramps — the neutral each palette's grays are cut from. Same five shadcn themes use,
+    // same order as tweakcn, so an exported block reads like what people already know.
+    static readonly Swatch[] Bases =
     [
-        new("primary", "Primary", "#a02742", "Buttons, links, the focus ring."),
-        new("background", "Page", "#fafafa", "The ground a card sits on."),
-        new("card", "Surface", "#ffffff", "Cards, dialogs, menus."),
-        new("accent", "Hover", "#f4f4f5", "Ghost buttons, menu rows, table rows — easy to forget."),
-        new("border", "Border", "#e4e4e7", "A hairline reads very differently from a full-contrast line."),
-        new("destructive", "Destructive", "#89231c", "Delete, refund, anything with no undo."),
+        new("zinc", "Zinc", "oklch(0.552 0.016 285.94)"),
+        new("slate", "Slate", "oklch(0.554 0.046 257.42)"),
+        new("stone", "Stone", "oklch(0.553 0.013 58.62)"),
+        new("gray", "Gray", "oklch(0.551 0.027 264.36)"),
+        new("neutral", "Neutral", "oklch(0.556 0 0)"),
     ];
 
-    static readonly string[] Radii = ["0rem", "0.375rem", "0.625rem", "1rem"];
+    // Primary rewrites — one per shadcn doc colour. Each is a full primary/ring/chart-1 ramp in
+    // themes.css, so a swatch click re-colours every button, link and chart at once.
+    static readonly Swatch[] Primaries =
+    [
+        new("default", "Default", "oklch(0.205 0 0)"),
+        new("red", "Red", "oklch(0.577 0.245 27.33)"),
+        new("rose", "Rose", "oklch(0.585 0.22 3.96)"),
+        new("orange", "Orange", "oklch(0.646 0.196 41.11)"),
+        new("amber", "Amber", "oklch(0.666 0.179 58.32)"),
+        new("yellow", "Yellow", "oklch(0.795 0.184 86.05)"),
+        new("lime", "Lime", "oklch(0.648 0.2 131.68)"),
+        new("green", "Green", "oklch(0.527 0.154 150.07)"),
+        new("emerald", "Emerald", "oklch(0.596 0.145 163.23)"),
+        new("teal", "Teal", "oklch(0.6 0.118 184.7)"),
+        new("cyan", "Cyan", "oklch(0.609 0.126 221.72)"),
+        new("sky", "Sky", "oklch(0.588 0.158 241.97)"),
+        new("blue", "Blue", "oklch(0.546 0.245 262.88)"),
+        new("indigo", "Indigo", "oklch(0.511 0.262 276.97)"),
+        new("violet", "Violet", "oklch(0.541 0.281 293.01)"),
+        new("purple", "Purple", "oklch(0.558 0.288 302.32)"),
+        new("fuchsia", "Fuchsia", "oklch(0.591 0.293 322.9)"),
+        new("pink", "Pink", "oklch(0.592 0.249 0.73)"),
+    ];
+
+    static readonly string[] Radii = ["0", "0.3", "0.5", "0.625", "1"];
 
     record Height(string Label, string Value, bool Default);
 
@@ -123,6 +186,20 @@
         new("Compact", "2rem", false),
         new("Default", "2.25rem", true),
         new("Comfortable", "2.75rem", false),
+    ];
+
+    record Swatch2(string Token, string Label, string Hint, string Why);
+
+    // Six tokens, not twenty. These are the ones that decide how a theme reads; the rest follow
+    // from them, and a panel with every variable in it is a panel nobody finishes.
+    static readonly Swatch2[] Colours =
+    [
+        new("primary", "Primary", "#a02742", "Buttons, links, the focus ring."),
+        new("background", "Page", "#fafafa", "The ground a card sits on."),
+        new("card", "Surface", "#ffffff", "Cards, dialogs, menus."),
+        new("accent", "Hover", "#f4f4f5", "Ghost buttons, menu rows, table rows — easy to forget."),
+        new("border", "Border", "#e4e4e7", "A hairline reads very differently from a full-contrast line."),
+        new("destructive", "Destructive", "#89231c", "Delete, refund, anything with no undo."),
     ];
 
     const string Placeholder = "[data-theme=\"mine\"] {\n  /* change something to see it here */\n}";
