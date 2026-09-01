@@ -58,16 +58,36 @@
 </ScrollArea>
 
 @code {
-    /// <summary>NavigationManager is registered by the WebView; this fires on every route change.</summary>
+    /// <summary>
+    /// The row whose href matches the current URI exactly — a prefix match would light every
+    /// item under a shared root ("/components/button" and "/components/button-group" both
+    /// contain "/components/button"), and nothing would read as "this is the one you are on".
+    /// The URI is the state, read on every LocationChanged so the highlight moves with the
+    /// router.
+    /// </summary>
     bool IsActive(string href)
     {
         var current = Nav.Uri;
-        if (href == "/") return current.EndsWith("/") || !current.Contains("/components/");
-        return current.Contains(href);
+        // Strip the host + query so "/components/button-group?x=1" matches "/components/button-group".
+        var path = new Uri(current).AbsolutePath;
+        if (href == "/") return path == "/" || path == "";
+        return path.Equals(href, StringComparison.OrdinalIgnoreCase);
     }
 
     string NavClass(string href) =>
         "doc-nav-item rounded-md px-3 py-1.5" + (IsActive(href) ? " up-current" : "");
+
+    protected override void OnInitialized()
+    {
+        // A layout is rendered once. Without re-rendering on navigation the highlight stays on
+        // whatever the first URL matched.
+        Nav.LocationChanged += OnLocationChanged;
+    }
+
+    void OnLocationChanged(object? sender, Microsoft.AspNetCore.Components.Routing.LocationChangedEventArgs e) =>
+        InvokeAsync(StateHasChanged);
+
+    public void Dispose() => Nav.LocationChanged -= OnLocationChanged;
 
     static readonly (string Label, string Href)[] Start =
     [
