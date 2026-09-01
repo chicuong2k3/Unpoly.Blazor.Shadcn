@@ -4,3 +4,7 @@ node_modules/
 __pycache__/
 *.user
 .vs/
+# Generated at build time: the MAUI demo copies its example/block sources here so <Example>
+# can fetch them in the WebView. Duplicates Components/Examples + Components/Blocks, so it is
+# never committed.
+**/wwwroot/samples/

@@ -1,0 +1,8 @@
+@* Vertical trail with an error step. Status=Error paints the active step's indicator with the
+   destructive palette; the error only shows on the ACTIVE step, so a later step that already
+   failed keeps its error mark. *@
+<Steps Orientation="Vertical" CurrentStep="1">
+    <StepsItem Title="Sign Up" Description="Create an account" />
+    <StepsItem Title="Verify Email" Description="Confirm your email" Status="StepsItemStatus.Error" />
+    <StepsItem Title="Set Password" Description="Choose a secure password" />
+</Steps>

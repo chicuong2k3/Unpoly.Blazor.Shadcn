@@ -1,0 +1,40 @@
+@page "/components/spinner"
+
+<PageTitle>Spinner — Unpoly.Blazor.Shadcn</PageTitle>
+
+<h1 class="doc-h1">Spinner</h1>
+<p class="doc-lede">
+    The Lucide <code>loader-circle</code> with <code>role="status"</code>, which is what makes it
+    announce rather than merely turn. It is for the places nothing was clicked — a region
+    refreshing itself, a poll, a deferred fragment.
+</p>
+
+<h2 class="doc-h2">Basic</h2>
+<Example Source="SpinnerExample.razor"><SpinnerExample /></Example>
+
+<h2 class="doc-h2">Size</h2>
+<Example Source="SpinnerSize.razor"><SpinnerSize /></Example>
+
+<h2 class="doc-h2">Button</h2>
+<p class="doc-note">
+    Reach for this only when the work is not a request. A button that starts an Unpoly request
+    already grows its own spinner from <code>.up-active</code>, with no parameter and nothing to
+    clear afterwards.
+</p>
+<Example Source="SpinnerButton.razor"><SpinnerButton /></Example>
+
+<h2 class="doc-h2">Badge</h2>
+<Example Source="SpinnerBadge.razor"><SpinnerBadge /></Example>
+
+<h2 class="doc-h2">Input Group</h2>
+<Example Source="SpinnerInputGroup.razor"><SpinnerInputGroup /></Example>
+
+<h2 class="doc-h2">Empty</h2>
+<p class="doc-note">
+    "Nothing here" and "not arrived yet" are different messages, and showing the first while the
+    second is true is how a reader concludes there is nothing and leaves.
+</p>
+<Example Source="SpinnerEmpty.razor"><SpinnerEmpty /></Example>
+
+<h2 class="doc-h2">RTL</h2>
+<Example Source="SpinnerRtl.razor"><SpinnerRtl /></Example>

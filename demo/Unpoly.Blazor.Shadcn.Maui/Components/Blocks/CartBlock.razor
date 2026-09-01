@@ -1,0 +1,53 @@
+@* Shopping cart — a sheet-style drawer that lists the items in the cart, with quantity
+   controls and the totals. The "Update" button is a POST; "Checkout" is a link to the checkout
+   page. *@
+
+<div class="grid h-[560px] w-full max-w-3xl grid-rows-[1fr_auto] overflow-hidden rounded-lg border bg-background">
+    <div class="overflow-y-auto p-4">
+        <ItemGroup>
+            @foreach (var i in Items)
+            {
+                <Item>
+                    <ItemMedia>
+                        <AspectRatio Ratio="1" Class="w-16 overflow-hidden rounded-md bg-muted" />
+                    </ItemMedia>
+                    <ItemContent>
+                        <ItemTitle>@i.Name</ItemTitle>
+                        <ItemDescription>Size M · <span class="num">@i.Price.ToString("C0")</span></ItemDescription>
+                    </ItemContent>
+                    <ItemActions Class="flex items-center gap-2">
+                        <form method="post" up-target=":origin" class="flex items-center gap-1">
+                            <AntiforgeryToken />
+                            <Input name="qty" type="number" min="1" Value="@i.Qty" Class="num w-14" aria-label="@($"Quantity for {i.Name}")" />
+                            <input type="hidden" name="code" value="@i.Code" />
+                            <Button Size="icon" Variant="ghost" Type="submit" aria-label="Update quantity"><Icon Name="refresh-cw" /></Button>
+                        </form>
+                    </ItemActions>
+                </Item>
+            }
+        </ItemGroup>
+    </div>
+
+    <div class="space-y-3 border-t bg-muted/30 p-4">
+        <dl class="space-y-1.5 text-sm">
+            <div class="flex justify-between"><dt class="text-muted-foreground">Subtotal</dt><dd class="num">$338.00</dd></div>
+            <div class="flex justify-between"><dt class="text-muted-foreground">Shipping</dt><dd class="num">$4.00</dd></div>
+            <div class="flex justify-between font-medium"><span>Total</span><span class="num">$342.00</span></div>
+        </dl>
+        <div class="flex gap-2">
+            <Button Variant="outline" Class="flex-1" Href="/cart">View cart</Button>
+            <Button Class="flex-1" Href="/checkout">Checkout</Button>
+        </div>
+    </div>
+</div>
+
+@code {
+    record ItemRow(string Code, string Name, decimal Price, int Qty);
+
+    static readonly ItemRow[] Items =
+    [
+        new("weekender", "Weekender", 189m, 1),
+        new("day-tote", "Day tote", 129m, 1),
+        new("sling", "Sling", 79m, 1),
+    ];
+}

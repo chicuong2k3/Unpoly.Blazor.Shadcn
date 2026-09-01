@@ -1,0 +1,24 @@
+@page "/components/label"
+
+<PageTitle>Label — Unpoly.Blazor.Shadcn</PageTitle>
+
+<h1 class="doc-h1">Label</h1>
+<p class="doc-lede">
+    Points at the control it names. Without <code>for</code>, clicking the words does nothing and a
+    screen reader announces an unnamed field — which is the same bug twice, and the most common
+    one in any form.
+</p>
+
+<h2 class="doc-h2">Basic</h2>
+<Example Source="FormPrimitivesExample.razor"><FormPrimitivesExample /></Example>
+
+<h2 class="doc-h2">Label in Field</h2>
+<p class="doc-note">
+    <code>&lt;FieldLabel&gt;</code> is this with the field's state wired in: it dims with a
+    disabled control and turns destructive with an invalid one, because it reads them rather than
+    being told. Reach for plain <code>&lt;Label&gt;</code> only outside a Field.
+</p>
+<Example Source="LabelInField.razor"><LabelInField /></Example>
+
+<h2 class="doc-h2">RTL</h2>
+<Example Source="LabelRtl.razor"><LabelRtl /></Example>

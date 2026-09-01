@@ -1,0 +1,15 @@
+@using Unpoly.Blazor.Shadcn.ECharts.Components
+@using Unpoly.Blazor.Shadcn.ECharts.Models
+
+<EPieChart Data="@Data" Height="300px" AriaLabel="Pie chart" />
+
+@code {
+    IEnumerable<EChartDataPoint> Data =
+    [
+        new("Search Engine", 1048),
+        new("Direct", 735),
+        new("Email", 580),
+        new("Union Ads", 484),
+        new("Video Ads", 300),
+    ];
+}

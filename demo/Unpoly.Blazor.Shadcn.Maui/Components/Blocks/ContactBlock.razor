@@ -1,0 +1,48 @@
+@* Contact — a two-column layout: the form on the left, contact details on the right. The form
+   posts; the details are real mailto / tel links. *@
+
+<section class="mx-auto max-w-5xl py-16">
+    <div class="grid gap-10 lg:grid-cols-[1fr_360px]">
+        <div>
+            <h2 class="text-3xl font-semibold tracking-tight">Get in touch</h2>
+            <p class="mt-2 text-muted-foreground">We usually reply within a working day.</p>
+
+            <form method="post" class="contact-form mt-8 space-y-4" up-target="body" up-fail-target=".contact-form">
+                <div class="grid gap-4 sm:grid-cols-2">
+                    <Field>
+                        <FieldLabel For="c-name">Name</FieldLabel>
+                        <Input id="c-name" name="name" required autocomplete="name" />
+                    </Field>
+                    <Field>
+                        <FieldLabel For="c-email">Email</FieldLabel>
+                        <Input id="c-email" name="email" type="email" required autocomplete="email" />
+                    </Field>
+                </div>
+                <Field>
+                    <FieldLabel For="c-msg">Message</FieldLabel>
+                    <Textarea id="c-msg" name="message" rows="5" required placeholder="Tell us what you are building" />
+                </Field>
+                <Button Type="submit" up-disable>Send message</Button>
+            </form>
+        </div>
+
+        <div class="space-y-6 text-sm">
+            <div>
+                <p class="font-medium">Email</p>
+                <a href="mailto:hello@example.com" class="text-muted-foreground hover:text-foreground">hello@example.com</a>
+            </div>
+            <div>
+                <p class="font-medium">Phone</p>
+                <a href="tel:+15551234567" class="text-muted-foreground hover:text-foreground">+1 (555) 123-4567</a>
+            </div>
+            <div>
+                <p class="font-medium">Office</p>
+                <p class="text-muted-foreground">10 Quay Street<br />Hanoi, Vietnam</p>
+            </div>
+            <div>
+                <p class="font-medium">Office hours</p>
+                <p class="text-muted-foreground">Monday to Friday · 9:00 to 18:00 GMT+7</p>
+            </div>
+        </div>
+    </div>
+</section>

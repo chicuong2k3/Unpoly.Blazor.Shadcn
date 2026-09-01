@@ -1,0 +1,11 @@
+@using Unpoly.Blazor.Shadcn.ECharts.Components
+@* Treemap: nested rectangles sized by value. *@
+<ETreemapChart Height="280px" Data="@data" />
+
+@code {
+    object data = new object[]
+    {
+        new { name = "A", value = 580, children = new object[] { new { name = "A1", value = 300 }, new { name = "A2", value = 280 } } },
+        new { name = "B", value = 320 },
+    };
+}

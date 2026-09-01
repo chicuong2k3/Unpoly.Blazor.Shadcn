@@ -1,0 +1,35 @@
+@page "/components/toast"
+
+<PageTitle>Toast — Unpoly.Blazor.Shadcn</PageTitle>
+
+<h1 class="doc-h1">Toast</h1>
+<p class="doc-lede">
+    shadcn's own toast is deprecated in favour of Sonner, and its docs page says so. This is
+    Sonner's API over Toastify: <code>toast(...)</code>, <code>toast.error(...)</code> — the same
+    shape at the call site, so a model that knows sonner writes it correctly first time.
+</p>
+
+<h2 class="doc-h2">Basic</h2>
+<Example Source="SonnerExample.razor"><SonnerExample /></Example>
+
+<h2 class="doc-h2">Types</h2>
+<Example Source="ToastTypes.razor"><ToastTypes /></Example>
+
+<h2 class="doc-h2">Action</h2>
+<p class="doc-note">
+    Keep it to an undo or a link. A toast disappears, so anything that <i>has</i> to be done
+    cannot live only in one.
+</p>
+<Example Source="ToastAction.razor"><ToastAction /></Example>
+
+<h2 class="doc-h2">Promise</h2>
+<p class="doc-note">
+    Sonner's <code>toast.promise</code> follows a pending fetch. There is no fetch to follow here:
+    a form posts and the server answers, and the honest equivalent is for the handler that did the
+    work to raise the toast — one header, no client state, and no way for the two to disagree
+    about whether it succeeded.
+</p>
+<Example Source="ToastFromServer.razor"><ToastFromServer /></Example>
+
+<h2 class="doc-h2">RTL</h2>
+<Example Source="ToastRtl.razor"><ToastRtl /></Example>

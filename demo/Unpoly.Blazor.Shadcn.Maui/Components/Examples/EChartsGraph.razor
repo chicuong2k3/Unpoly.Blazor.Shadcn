@@ -1,0 +1,8 @@
+@using Unpoly.Blazor.Shadcn.ECharts.Components
+@* Graph: a force-directed network of nodes and links. *@
+<EGraphChart Height="280px" Nodes="@nodes" Links="@links" />
+
+@code {
+    object nodes = new[] { new { name = "A", value = 10 }, new { name = "B", value = 20 }, new { name = "C", value = 15 } };
+    object links = new[] { new { source = "A", target = "B" }, new { source = "B", target = "C" } };
+}

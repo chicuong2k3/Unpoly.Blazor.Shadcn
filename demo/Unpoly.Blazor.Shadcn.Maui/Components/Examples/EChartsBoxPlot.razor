@@ -1,0 +1,8 @@
+@using Unpoly.Blazor.Shadcn.ECharts.Components
+@* Box plot: each series is [min, Q1, median, Q3, max]. *@
+<EBoxPlotChart Height="280px" Categories="@categories" Data="@data" />
+
+@code {
+    string[] categories = ["Exp A", "Exp B", "Exp C"];
+    double[][] data = [[850, 880, 900, 930, 950, 1100], [750, 800, 850, 900, 950], [650, 700, 750, 800, 850]];
+}

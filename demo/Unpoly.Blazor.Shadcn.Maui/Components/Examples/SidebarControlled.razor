@@ -1,0 +1,52 @@
+@inject NavigationManager Nav
+@* The links carry the page's own path, not a bare "?query". Blazor renders <base href="/">,
+   and a bare query string resolves against the BASE — so "?older=4" is /?older=4, the site root,
+   and the example vanished the moment you used it. Every link that only changes the query has to
+   say where it is. *@
+
+@* shadcn's controlled sidebar holds `open` in the parent and passes it down. Here the state is
+   already outside the component — it is a cookie the server reads — so "controlled" means passing
+   Open yourself instead of reading that cookie, which is exactly what this does with a query
+   parameter.
+
+   Both the provider and the panel take it, because Razor has no context for one to read from the
+   other. *@
+<div class="flex flex-col gap-3" id="sb-controlled">
+    <div class="flex items-center gap-2">
+        <Button Variant="outline" Size="sm" up-target="#sb-controlled"
+                Href="@($"{Page}?sb={(Open ? "closed" : "open")}")">
+            @(Open ? "Close the sidebar" : "Open the sidebar")
+        </Button>
+        <span class="num text-xs text-muted-foreground">Open = @Open.ToString().ToLowerInvariant()</span>
+    </div>
+
+    <SidebarFrame Open="@Open" Height="300px">
+        <Sidebar Collapsible="offcanvas" Open="@Open">
+            <SidebarContent>
+                <SidebarGroup>
+                    <SidebarGroupLabel>Platform</SidebarGroupLabel>
+                    <SidebarGroupContent>
+                        <SidebarMenu>
+                            <SidebarMenuItem>
+                                <SidebarMenuButton Href="/components/card"><Icon Name="folder" /><span>Projects</span></SidebarMenuButton>
+                            </SidebarMenuItem>
+                            <SidebarMenuItem>
+                                <SidebarMenuButton Href="/components/avatar"><Icon Name="eye" /><span>Team</span></SidebarMenuButton>
+                            </SidebarMenuItem>
+                        </SidebarMenu>
+                    </SidebarGroupContent>
+                </SidebarGroup>
+            </SidebarContent>
+        </Sidebar>
+        <SidebarInset Class="p-4 text-sm text-muted-foreground">
+            The button above owns the state. Nothing reads the cookie here.
+        </SidebarInset>
+    </SidebarFrame>
+</div>
+
+@code {
+    const string Page = "/components/sidebar";
+
+    bool Open =>
+        System.Web.HttpUtility.ParseQueryString(new Uri(Nav.Uri).Query)["sb"] != "closed";
+}

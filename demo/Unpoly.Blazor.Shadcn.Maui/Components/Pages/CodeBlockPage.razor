@@ -1,0 +1,86 @@
+@page "/components/code-block"
+
+<PageTitle>Code Block — Unpoly.Blazor.Shadcn</PageTitle>
+
+<h1 class="doc-h1">Code Block</h1>
+<p class="doc-lede">
+    Not shadcn''s — its docs draw code with a bespoke MDX pipeline and export nothing. Every <b>Code</b> tab on this site is this component, now with <a href="https://prismjs.com" class="underline">Prism.js</a> highlighting.
+</p>
+<p class="doc-note">
+    Server renders <code>Code</code> as escaped text. A <code>up.compiler</code> highlights via <code>Prism.highlightElement</code> on every Unpoly fragment swap (<code>data-manual</code>), so it survives fragment updates. Theme is shadcn-aware (<code>prism-shadcn.css</code> + <code>.dark</code>).
+</p>
+
+<Example Source="CodeBlockExample.razor">
+    <CodeBlockExample />
+</Example>
+
+<h2 class="doc-h2">Languages</h2>
+<p class="doc-note">Prism core + <code>prism-csharp</code>, <code>cshtml</code>, <code>javascript</code>, <code>typescript</code>, <code>css</code>, <code>json</code>, <code>bash</code>, <code>yaml</code>, <code>sql</code> are vendored; others autoload from CDN.</p>
+
+<CodeBlock Language="csharp" Title="csharp" Code="@csharpSample" />
+<CodeBlock Language="razor" Title="cshtml / razor" Code="@razorSample" Class="mt-4" />
+<CodeBlock Language="javascript" Title="javascript" Code="@jsSample" Class="mt-4" />
+<CodeBlock Language="bash" Title="bash" Code="@bashSample" Class="mt-4" />
+
+<h2 class="doc-h2">Line numbers</h2>
+<CodeBlock Language="csharp" Title="With ShowLineNumbers" ShowLineNumbers Code="@csharpSample" />
+
+<h2 class="doc-h2">Long block (scrollable)</h2>
+<CodeBlock Language="yaml" Title="yaml — scroll" Code="@yamlSample" />
+
+@code {
+    const string csharpSample = """
+        // Prism manual + Unpoly — highlight per fragment
+        up.compiler(''[data-slot="code-block"]'', root => {
+            var code = root.querySelector(''[data-slot="code-block-code"]'');
+            if (window.Prism) Prism.highlightElement(code);
+        });
+
+        public sealed class CodeBlock : UiComponentBase
+        {
+            [Parameter, EditorRequired] public string Code { get; set; } = "";
+            [Parameter] public string? Language { get; set; }
+        }
+        """;
+
+    const string razorSample = """
+        @* Code is a string, not ChildContent — Razor would parse <Button> as a component *@
+        <CodeBlock Title="Program.cs" Language="csharp" Code="@Sample" />
+
+        @code {
+            const string Sample = "builder.Services.AddUnpoly(o => o.MainTargets = [\".content\"]);";
+        }
+        """;
+
+    const string jsSample = """
+        // ECharts — static SSR, Unpoly-safe
+        up.compiler(''[data-echarts]'', el => {
+          if (typeof echarts === ''undefined'') return;
+          const chart = echarts.init(el);
+          chart.setOption(JSON.parse(el.dataset.options));
+          return () => chart.dispose();
+        });
+        """;
+
+    const string bashSample = """
+        dotnet add package Unpoly.Blazor.Shadcn
+        dotnet add package Unpoly.Blazor.Shadcn.ECharts
+        """;
+
+    const string yamlSample = """
+        languages:
+          - csharp: 6.2kb
+          - cshtml: 2.6kb
+          - javascript: 4.6kb
+          - typescript: 1.3kb
+          - css: 1.2kb
+          - json: 0.4kb
+          - bash: 6.1kb
+          - yaml: 1.9kb
+          - sql: 3.2kb
+        plugins:
+          - autoloader
+          - line-numbers
+          - normalize-whitespace
+        """;
+}

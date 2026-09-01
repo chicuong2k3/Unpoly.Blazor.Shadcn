@@ -1,0 +1,37 @@
+@* The header is where the thing you are inside goes — a workspace, a team, a project. Upstream
+   puts a dropdown there so it can be switched, and the button is Size="lg" because it holds two
+   lines rather than one. *@
+<SidebarFrame Height="280px">
+    <Sidebar Collapsible="icon">
+        <SidebarHeader>
+            <SidebarMenu>
+                <SidebarMenuItem>
+                    <SidebarMenuButton Size="lg" Target="sb-workspaces">
+                        <div class="flex aspect-square size-8 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground">
+                            <Icon Name="circle" Class="size-4" />
+                        </div>
+                        <div class="grid flex-1 text-start text-sm leading-tight">
+                            <span class="truncate font-medium">Acme Inc</span>
+                            <span class="truncate text-xs">Enterprise</span>
+                        </div>
+                        <Icon Name="chevron-down" Class="ms-auto" />
+                    </SidebarMenuButton>
+                    <DropdownMenuContent Id="sb-workspaces" Align="start" Class="w-56">
+                        <DropdownMenuLabel>Workspaces</DropdownMenuLabel>
+                        <DropdownMenuItem>Acme Inc</DropdownMenuItem>
+                        <DropdownMenuItem>Acme Corp.</DropdownMenuItem>
+                        <DropdownMenuSeparator />
+                        <DropdownMenuItem><Icon Name="plus" />Add workspace</DropdownMenuItem>
+                    </DropdownMenuContent>
+                </SidebarMenuItem>
+            </SidebarMenu>
+
+            @* A search box belongs to the header, and it has to go when the rail narrows: at 48px
+               there is nothing to type into. Upstream's blocks hide theirs the same way. *@
+            <SidebarInput placeholder="Search…" aria-label="Search the sidebar"
+                          Class="group-data-[collapsible=icon]:hidden" />
+        </SidebarHeader>
+        <SidebarContent />
+    </Sidebar>
+    <SidebarInset Class="p-4 text-sm text-muted-foreground">The header holds what you are inside.</SidebarInset>
+</SidebarFrame>

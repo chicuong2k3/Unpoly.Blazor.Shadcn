@@ -1,0 +1,27 @@
+@* Three calendar SYSTEMS, not three translations: a Hijri month is not a Gregorian month with
+   Arabic numerals — it begins on a different day and runs 29 or 30 days — and a Persian year
+   starts at the spring equinox. .NET ships all of them, so the component counts months through
+   the system it is given and every date it hands back is still an ordinary DateOnly. *@
+<div class="flex flex-wrap items-start justify-center gap-4">
+    @foreach (var (label, system, dir, first) in Systems)
+    {
+        <div dir="@dir" class="flex flex-col gap-2">
+            <p class="text-sm font-medium">@label</p>
+            <Calendar Name="@($"day-{label}")" Month="@Month" Today="@Today" FirstDay="@first"
+                      CalendarSystem="@system"
+                      Class="w-fit rounded-lg border p-3 [--cell-size:--spacing(9)]" />
+        </div>
+    }
+</div>
+
+@code {
+    static readonly DateOnly Today = DateOnly.FromDateTime(DateTime.Today);
+    static readonly DateOnly Month = new(Today.Year, Today.Month, 1);
+
+    static readonly (string Label, System.Globalization.Calendar System, string Dir, DayOfWeek First)[] Systems =
+    [
+        ("Gregorian", new System.Globalization.GregorianCalendar(), "ltr", DayOfWeek.Monday),
+        ("Hijri", new System.Globalization.UmAlQuraCalendar(), "rtl", DayOfWeek.Saturday),
+        ("Persian", new System.Globalization.PersianCalendar(), "rtl", DayOfWeek.Saturday),
+    ];
+}

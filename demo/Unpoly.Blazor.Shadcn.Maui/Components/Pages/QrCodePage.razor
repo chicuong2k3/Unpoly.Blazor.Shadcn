@@ -1,0 +1,47 @@
+@page "/components/qr-code"
+
+<PageTitle>QR Code — Unpoly.Blazor.Shadcn</PageTitle>
+
+<h1 class="doc-h1">QR Code</h1>
+<p class="doc-lede">
+    Generate QR codes from any string — URLs, vCards, Wi-Fi — via <a href="https://github.com/davidshimjs/qrcodejs" class="underline">qrcodejs</a>. Static SSR renders an empty <code>div</code>; a <code>up.compiler</code> fills it with <code>new QRCode(el, {...})</code> on every fragment swap.
+</p>
+<p class="doc-note">Interface follows <a href="https://lumeo.nativ.sh/components/qr-code" class="underline">lumeo.nativ.sh/components/qr-code</a>. Rendered as canvas/table (qrcodejs), no SVG dependency, MIT.</p>
+
+<h2 class="doc-h2">Basic</h2>
+<Example Source="QrCodeBasic.razor"><QrCodeBasic /></Example>
+
+<h2 class="doc-h2">Dynamic Value</h2>
+<p class="doc-note">
+    The QR follows the text box. There is no client state, so the field is real and
+    <code>up-autosubmit</code> does the wiring — typing submits, the server re-renders with the
+    value in the query string, and the QR is born with it.
+</p>
+<Example Source="QrCodeDynamic.razor"><QrCodeDynamic /></Example>
+
+<h2 class="doc-h2">Error Correction Levels</h2>
+<p class="doc-note">Low ~7%, Medium ~15%, Quartile ~25%, High ~30%. Higher is denser but more fault-tolerant.</p>
+<Example Source="QrCodeLevels.razor"><QrCodeLevels /></Example>
+
+<h2 class="doc-h2">Custom Colors</h2>
+<p class="doc-note">
+    Colors default to the theme — foreground modules on a card background — and re-resolve when
+    the theme changes. Explicit colors win; <code>ForegroundColor="#ffffff"</code> on a
+    <code>bg-primary</code> card is white on the primary surface.
+</p>
+<Example Source="QrCodeColors.razor"><QrCodeColors /></Example>
+
+<h2 class="doc-h2">Without Margin (no quiet zone)</h2>
+<p class="doc-note">
+    The quiet zone is the empty border scanners need around the modules. <code>ShowMargin="false"</code>
+    drops it, for a QR that sits flush — trade the quiet zone for space when the code is
+    decorative, not scanned.
+</p>
+<Example Source="QrCodeMargin.razor"><QrCodeMargin /></Example>
+
+<h2 class="doc-h2">Custom Aria Label</h2>
+<p class="doc-note">Screen readers announce the friendly label instead of the raw URL.</p>
+<Example Source="QrCodeAriaLabel.razor"><QrCodeAriaLabel /></Example>
+
+<h2 class="doc-h2">Different Sizes</h2>
+<Example Source="QrCodeSizes.razor"><QrCodeSizes /></Example>

@@ -1,0 +1,23 @@
+@page "/components/sparkline"
+
+<PageTitle>Sparkline — Unpoly.Blazor.Shadcn</PageTitle>
+
+<h1 class="doc-h1">Sparkline</h1>
+<p class="doc-lede">Compact inline SVG trend — drop in table cells, KPI strips. No JS, pure Razor SVG.</p>
+
+<h2 class="doc-h2">Line</h2>
+<Example Source="SparklineLine.razor"><SparklineLine /></Example>
+
+<h2 class="doc-h2">Area + Bars</h2>
+<Example Source="SparklineAreaBars.razor"><SparklineAreaBars /></Example>
+
+<h2 class="doc-h2">In Table</h2>
+<p class="doc-note">
+    The reason to make it a component: it drops into a table cell without asking. <code>Color</code>
+    follows each row's meaning — chart-2 for a positive ticker, destructive for one in the red.
+</p>
+<Example Source="SparklineTable.razor"><SparklineTable /></Example>
+
+<h2 class="doc-h2">ECharts Sparkline (optional)</h2>
+<p class="doc-note">When ECharts is available, use <code>ESparkline</code> for area/bars with lazy-load.</p>
+<Example Source="SparklineECharts.razor"><SparklineECharts /></Example>

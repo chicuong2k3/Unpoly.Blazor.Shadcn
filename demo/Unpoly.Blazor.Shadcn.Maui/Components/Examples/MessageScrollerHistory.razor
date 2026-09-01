@@ -1,0 +1,81 @@
+@inject NavigationManager Nav
+@* The links carry the page's own path, not a bare "?query". Blazor renders <base href="/">,
+   and a bare query string resolves against the BASE — so "?older=4" is /?older=4, the site root,
+   and the example vanished the moment you used it. Every link that only changes the query has to
+   say where it is. *@
+
+@* Older messages arrive at the TOP, and the reader does not move. Following new content is only
+   right when the content is new: a prepend grows the scroll height above the reader, and
+   following that is how "load older" throws away the place they were reading.
+
+   The scroller measures what the prepend added and shifts the scroll position by exactly that
+   much, so the page under their eyes does not move at all. The button is a GET link, so the
+   restored range is in the URL and the whole thing works with scripting off. *@
+<div class="mx-auto flex w-full max-w-sm flex-col gap-4" id="ms-history">
+    <Card Class="h-140 w-full gap-0">
+        <CardHeader Class="gap-1 border-b">
+            <CardTitle>Load History</CardTitle>
+            <CardDescription>Prepended messages keep your place.</CardDescription>
+        </CardHeader>
+
+        <CardContent Class="flex-1 overflow-hidden p-0">
+            <MessageScroller OpenAt="end">
+                <MessageScrollerViewport>
+                    <MessageScrollerContent Class="p-(--card-spacing)">
+                        <ChatTranscript Turns="Shown" />
+                    </MessageScrollerContent>
+                </MessageScrollerViewport>
+                <MessageScrollerButton Direction="start" />
+                <MessageScrollerButton />
+            </MessageScroller>
+        </CardContent>
+
+        <CardFooter Class="flex flex-col items-center gap-2 border-t">
+            @if (Older > 0)
+            {
+                <Button Variant="outline" Size="sm" up-target="#ms-history"
+                        Href="@($"{Page}?older={Older - 2}")">
+                    <Icon Name="arrow-up" />Load earlier messages
+                </Button>
+            }
+            else
+            {
+                <Button Variant="outline" Size="sm" disabled>You are at the beginning</Button>
+            }
+            <p class="text-xs text-muted-foreground">Restore earlier messages while keeping your place.</p>
+        </CardFooter>
+    </Card>
+
+    <div class="mx-auto max-w-sm px-0.5 text-center text-xs text-balance text-muted-foreground">
+        Load earlier messages and watch the turn you were reading stay exactly where it was.
+    </div>
+</div>
+
+@code {
+    const string Page = "/components/message-scroller";
+
+    // How many of the oldest turns are still hidden. The link counts it down by two, which is one
+    // exchange — and the URL is the whole of the state.
+    int Older
+    {
+        get
+        {
+            var raw = System.Web.HttpUtility.ParseQueryString(new Uri(Nav.Uri).Query)["older"];
+            return int.TryParse(raw, out var n) ? Math.Clamp(n, 0, Thread.Length - 2) : 6;
+        }
+    }
+
+    IReadOnlyList<ChatTranscript.Turn> Shown => Thread[Older..];
+
+    static readonly ChatTranscript.Turn[] Thread =
+    [
+        new("his-1", "user", "This is the oldest message in the thread."),
+        new("his-2", "assistant", "And this is the reply to it. Everything above the fold was loaded after you scrolled up."),
+        new("his-3", "user", "Why does loading older messages usually lose my place?"),
+        new("his-4", "assistant", "Because the container follows its own scroll height. Content added above the reader pushes everything down, and a scroller that keeps its scrollTop shows a different message than it did a moment ago.\n\nThe fix is arithmetic, not animation: measure what was added and add the same number to scrollTop."),
+        new("his-5", "user", "So nothing moves on screen?"),
+        new("his-6", "assistant", "Nothing. The scrollbar gets shorter and the thumb moves, because the document got taller — but the pixels under your eyes are the same pixels."),
+        new("his-7", "user", "What about new messages at the bottom?"),
+        new("his-8", "assistant", "Those follow, but only while you are already at the bottom. The two cases are told apart by where the content arrived, not by how much of it there was."),
+    ];
+}

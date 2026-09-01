@@ -1,0 +1,24 @@
+@page "/components/steps"
+
+<PageTitle>Steps — Unpoly.Blazor.Shadcn</PageTitle>
+
+<h1 class="doc-h1">Steps</h1>
+<p class="doc-lede">Multi-step workflow tracker, Lumeo parity. Pure CSS + Blazor state, no JS library.</p>
+
+<h2 class="doc-h2">Basic</h2>
+<Example Source="StepsBasic.razor"><StepsBasic /></Example>
+
+<h2 class="doc-h2">Clickable</h2>
+<p class="doc-note">
+    <code>Clickable</code> makes each step selectable; <code>CurrentStepChanged</code> is where the
+    parent learns about it. In this static host the state lives in the URL — the buttons are links
+    that change <code>?step</code> and swap this card.
+</p>
+<Example Source="StepsClickable.razor"><StepsClickable /></Example>
+
+<h2 class="doc-h2">Vertical + Error</h2>
+<p class="doc-note">
+    <code>Status="StepsItemStatus.Error"</code> paints the step's indicator with the destructive
+    palette while it is the active one.
+</p>
+<Example Source="StepsVertical.razor"><StepsVertical /></Example>

@@ -1,0 +1,8 @@
+@using Unpoly.Blazor.Shadcn.ECharts.Components
+@* Sankey: flow between named nodes with weighted links. *@
+<ESankeyChart Height="280px" Nodes="@nodes" Links="@links" />
+
+@code {
+    object nodes = new[] { new { name = "A" }, new { name = "B" }, new { name = "C" } };
+    object links = new[] { new { source = "A", target = "B", value = 5 }, new { source = "B", target = "C", value = 3 } };
+}

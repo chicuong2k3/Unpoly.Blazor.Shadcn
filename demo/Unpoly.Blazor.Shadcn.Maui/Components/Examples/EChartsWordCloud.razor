@@ -1,0 +1,8 @@
+@using Unpoly.Blazor.Shadcn.ECharts.Components
+@* Word cloud: words sized by value. The echarts-wordcloud plugin is bundled with the
+   package and loaded when a wordCloud chart appears. *@
+<EWordCloudChart Height="280px" Words="@data" />
+
+@code {
+    object data = new[] { new { name = "Blazor", value = 100 }, new { name = "ECharts", value = 80 }, new { name = "Lumeo", value = 60 } };
+}

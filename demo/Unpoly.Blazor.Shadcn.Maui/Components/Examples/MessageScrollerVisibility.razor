@@ -1,0 +1,73 @@
+@* Which anchored turn you are currently on, and an outline to jump between them. shadcn reads
+   the current anchor from useMessageScrollerVisibility and highlights the matching row; here the
+   compiler writes data-current-anchor on the root as the viewport moves, and the rows highlight
+   themselves off it in CSS.
+
+   The outline hangs off the side of the card in a hover card, which is upstream's arrangement:
+   four small dashes that expand into the questions when you reach for them. *@
+<div class="relative mx-auto flex w-full max-w-sm flex-col gap-4">
+    <div class="relative w-full">
+        <Card Class="h-140 w-full gap-0">
+            <CardHeader Class="gap-1 border-b">
+                <CardTitle>Transcript Outline</CardTitle>
+                <CardDescription>Track the current anchored turn.</CardDescription>
+            </CardHeader>
+
+            <CardContent Class="flex-1 overflow-hidden p-0">
+                <MessageScroller id="ms-visibility" ScrollMargin="12">
+                    <MessageScrollerViewport>
+                        <MessageScrollerContent Class="p-(--card-spacing)">
+                            <ChatTranscript Turns="Thread" />
+                        </MessageScrollerContent>
+                    </MessageScrollerViewport>
+                    <MessageScrollerButton />
+                </MessageScroller>
+            </CardContent>
+        </Card>
+
+        @* The dashes are the trigger, and each one carries the id of the turn it stands for, so
+           the highlight is a CSS match between two attributes and not a comparison in script. *@
+        <div class="absolute top-1/2 -end-12 -translate-y-1/2">
+            <HoverCardTrigger Target="ms-outline" OpenDelay="80" CloseDelay="200"
+                              Class="flex size-9 flex-col items-center justify-center gap-1 rounded-md outline-none focus-visible:ring-3 focus-visible:ring-ring/50"
+                              aria-label="Open transcript outline">
+                @foreach (var turn in Questions)
+                {
+                    <span data-anchor-mark="@turn.Id"
+                          class="h-0.5 w-4 rounded-full bg-muted-foreground/40 transition-colors data-[current=true]:bg-foreground"></span>
+                }
+            </HoverCardTrigger>
+            <HoverCardContent Id="ms-outline" Side="inline-start" Align="center" SideOffset="-28"
+                              Class="flex w-64 flex-col gap-1 rounded-2xl p-1">
+                @foreach (var turn in Questions)
+                {
+                    <button type="button" data-scroll-to-message="@turn.Id"
+                            data-anchor-mark="@turn.Id"
+                            class="flex min-h-7 items-center rounded-xl px-2 py-1.5 text-start text-sm transition-colors outline-none hover:bg-accent hover:text-accent-foreground focus-visible:bg-accent focus-visible:text-accent-foreground data-[current=true]:bg-accent data-[current=true]:text-accent-foreground">
+                        <span class="line-clamp-1 min-w-0">@turn.Text</span>
+                    </button>
+                }
+            </HoverCardContent>
+        </div>
+    </div>
+
+    <div class="mx-auto max-w-sm px-0.5 text-center text-xs text-muted-foreground">
+        Open the outline to jump between anchored turns as you read.
+    </div>
+</div>
+
+@code {
+    IEnumerable<ChatTranscript.Turn> Questions => Thread.Where(t => t.Role == "user");
+
+    static readonly ChatTranscript.Turn[] Thread =
+    [
+        new("vis-brief", "user", "Review the incident handoff and tell me what to read first."),
+        new("vis-brief-a", "assistant", "Start with the summary and the impact section. The regression affected the upload queue, but the recovery path completed for every queued job."),
+        new("vis-impact", "user", "What was the customer impact?"),
+        new("vis-impact-a", "assistant", "Impact was limited to delayed processing.\n\nNo records were dropped, and the reconciliation worker confirmed each retry batch. Support saw confusion from two customers, but there were no checkout or billing errors."),
+        new("vis-actions", "user", "What actions are open?"),
+        new("vis-actions-a", "assistant", "Keep the retry window enabled until the next deploy, then add a queue-depth alert as the long-term fix.\n\nThe alert should fire on sustained queue growth, not a single short spike."),
+        new("vis-checklist", "user", "Give me the follow-up checklist."),
+        new("vis-checklist-a", "assistant", "Compare the queue recovery graph with the deploy timeline, so the handoff shows exactly when processing returned to baseline.\n\nAdd a short owner note beside each follow-up item. The checklist is small, but ownership keeps the retry window, the alert tuning and the support macro from drifting into three separate conversations."),
+    ];
+}

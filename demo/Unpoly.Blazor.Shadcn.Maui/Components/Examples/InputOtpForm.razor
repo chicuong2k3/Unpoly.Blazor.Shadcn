@@ -1,6 +1,8 @@
 @* The whole thing. The server sees one field, not six — the compiler keeps a hidden input in
-   step, because six named fields would push the joining into every handler that reads it. *@
-<form id="input-otp-form" method="post" action="/verify" up-target="#preview-input-otp-form" up-disable class="flex flex-col gap-4">
+   step, because six named fields would push the joining into every handler that reads it.
+   In the MAUI head the submit is intercepted by the global form handler in demo.js, which writes
+   the reply into the #preview-... slot — same id, same contract, no server round trip. *@
+<form id="input-otp-form" method="post" up-target="#preview-input-otp-form" class="flex flex-col gap-4">
     <AntiforgeryToken />
     <Field Class="w-fit">
         <FieldLabel>Verification code</FieldLabel>

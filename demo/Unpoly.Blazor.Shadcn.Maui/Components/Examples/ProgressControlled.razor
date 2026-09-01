@@ -1,0 +1,9 @@
+@* The bar follows the slider. shadcn holds both in one state variable; here the slider IS the
+   input — it posts, it has the arrow keys and the announcement for nothing — and ui.js copies
+   its value across. With scripting off you get a working slider and a bar showing the value the
+   server rendered, which is the honest half of the same thing. *@
+<div class="flex w-full max-w-sm flex-col gap-4">
+    <Progress id="progress-controlled" Value="50" Class="w-full" />
+    <Slider Min="0" Max="100" Step="1" Value="50" name="amount"
+            aria-label="Progress" data-controls="progress-controlled" />
+</div>

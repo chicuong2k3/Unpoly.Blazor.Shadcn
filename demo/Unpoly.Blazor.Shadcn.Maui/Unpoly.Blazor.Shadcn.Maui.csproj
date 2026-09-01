@@ -75,6 +75,8 @@
         <!-- Only the component layer is used here — Unpoly.Blazor itself is deliberately
              absent, see wwwroot/index.html. -->
         <ProjectReference Include="../../src/Unpoly.Blazor.Shadcn/Unpoly.Blazor.Shadcn.csproj" />
+        <ProjectReference Include="../../src/Unpoly.Blazor.Shadcn.ECharts/Unpoly.Blazor.Shadcn.ECharts.csproj" />
+        <ProjectReference Include="../../src/Unpoly.Blazor.Shadcn.Maps/Unpoly.Blazor.Shadcn.Maps.csproj" />
         <!-- Referenced ONLY for the static asset _content/Unpoly.Blazor/unpoly.min.js, which is
              where `up.compiler` comes from. Its C# half — AddUnpoly, UpChrome, UnpolyHead, the
              middleware — is unused and unusable here, and calling any of it is the mistake this
@@ -96,6 +98,32 @@
     <!-- Tailwind v4 through its npm CLI. `dotnet build` stays the only command you run. -->
     <Target Name="NpmInstall" BeforeTargets="Tailwind" Condition="!Exists('node_modules')">
         <Exec Command="npm install" />
+    </Target>
+
+    <!-- Every example is rendered AND shown as source, from the same file. In the web head the
+         .razor files are copied to `samples/` in the output and <Example> reads them. In MAUI the
+         output path is not knowable before the build, so they are copied to `wwwroot/samples` — a
+         reliably-bundled static path — and fetched by URL. Same files, same guarantee the two
+         cannot drift. Excluded from Razor compilation: they are source, not components here. -->
+    <!-- wwwroot/samples holds source .razor copies served to <Example>. The Razor SDK globs
+         **/*.razor and would compile them as components (and fail — they are not standalone
+         components, and 'Command'/'Calendar' resolve wrong in that context). Exclude them from
+         every default item glob so they are served, not compiled. DefaultItemExcludes is a
+         PROPERTY, so it must sit in a PropertyGroup. -->
+    <PropertyGroup>
+        <DefaultItemExcludes>$(DefaultItemExcludes);wwwroot/samples/**</DefaultItemExcludes>
+    </PropertyGroup>
+    <Target Name="CopySamples" BeforeTargets="ResolveStaticWebAssetsInputs">
+        <ItemGroup>
+            <SampleFile Include="Components/Examples/**/*.razor;Components/Blocks/**/*.razor" />
+        </ItemGroup>
+        <Copy SourceFiles="@(SampleFile)"
+              DestinationFolder="wwwroot/samples"
+              SkipUnchangedFiles="true" />
+        <!-- The copied .razor files are served as static assets, not compiled. -->
+        <ItemGroup Condition="Exists('wwwroot/samples')">
+            <Content Include="wwwroot/samples/**/*.razor" />
+        </ItemGroup>
     </Target>
 
     <!-- Inputs/Outputs are not premature here: four target frameworks would otherwise run the

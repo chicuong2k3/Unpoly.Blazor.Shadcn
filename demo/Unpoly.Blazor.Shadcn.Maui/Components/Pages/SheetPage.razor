@@ -1,0 +1,31 @@
+@page "/components/sheet"
+
+<PageTitle>Sheet — Unpoly.Blazor.Shadcn</PageTitle>
+
+<h1 class="doc-h1">Sheet</h1>
+<p class="doc-lede">
+    A panel from an edge. Structurally identical to <a href="/components/dialog">Dialog</a> — a
+    native <code>&lt;dialog&gt;</code> with the shadcn panel inside — and the only difference is
+    which edge it is pinned to.
+</p>
+
+<h2 class="doc-h2">Basic</h2>
+<Example Source="SheetExample.razor"><SheetExample /></Example>
+
+<h2 class="doc-h2">Side</h2>
+<Example Source="SheetSide.razor"><SheetSide /></Example>
+
+<h2 class="doc-h2">No Close Button</h2>
+<p class="doc-note">
+    Escape and the backdrop still close it — both belong to the <code>&lt;dialog&gt;</code>, not to
+    the button. But a panel with no visible way out is one people learn to distrust, so leave it
+    off only when the footer carries one.
+</p>
+<Example Source="SheetNoClose.razor"><SheetNoClose /></Example>
+
+<h2 class="doc-h2">RTL</h2>
+<p class="doc-note">
+    <code>Side="right"</code> still means the right of the screen: a drawer is a physical place,
+    not a reading edge. What mirrors is the content inside it.
+</p>
+<Example Source="SheetRtl.razor"><SheetRtl /></Example>

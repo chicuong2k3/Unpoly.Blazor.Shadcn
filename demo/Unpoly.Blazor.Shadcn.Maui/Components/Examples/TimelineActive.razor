@@ -1,0 +1,31 @@
+@inject NavigationManager Nav
+@* ActiveIndex drives the dots: the active dot is filled, everything before it is completed, and
+   Animated pulses the active one and retracts the connectors as they fill. There is no client
+   state, so the active index lives in the URL and Previous/Next are links that swap this card. *@
+<div class="flex flex-col gap-3" id="timeline-active">
+    <Timeline ActiveIndex="@Index" Animated>
+        <TimelineItem Title="Requirements" Time="Week 1" />
+        <TimelineItem Title="Design" Time="Week 2" />
+        <TimelineItem Title="Development" Time="Week 3" />
+        <TimelineItem Title="QA" Time="Week 4" />
+        <TimelineItem Title="Release" Time="Week 5" />
+    </Timeline>
+    <div class="flex items-center gap-2">
+        <Button Variant="outline" Size="sm" Href="@($"{Page}?index={Index - 1}")" up-target="#timeline-active" disabled="@(Index == 0)">Previous</Button>
+        <Button Variant="outline" Size="sm" Href="@($"{Page}?index={Index + 1}")" up-target="#timeline-active" disabled="@(Index == 4)">Next</Button>
+        <span class="text-sm text-muted-foreground">Active: @Index</span>
+    </div>
+</div>
+
+@code {
+    const string Page = "/components/timeline";
+
+    int Index
+    {
+        get
+        {
+            var raw = System.Web.HttpUtility.ParseQueryString(new Uri(Nav.Uri).Query)["index"];
+            return int.TryParse(raw, out var n) ? Math.Clamp(n, 0, 4) : 2;
+        }
+    }
+}

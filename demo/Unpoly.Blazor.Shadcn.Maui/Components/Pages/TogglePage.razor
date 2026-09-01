@@ -1,0 +1,33 @@
+@page "/components/toggle"
+
+<PageTitle>Toggle — Unpoly.Blazor.Shadcn</PageTitle>
+
+<h1 class="doc-h1">Toggle</h1>
+<p class="doc-lede">
+    A button that stays pressed — a real <code>&lt;input type="checkbox"&gt;</code>, so it posts
+    with the form and survives a fragment swap, announced with <code>aria-pressed</code> because a
+    bare checkbox that looks like a button would say the wrong thing.
+</p>
+<p class="doc-note">
+    The pressed appearance comes from <code>has-[:checked]</code> on the label rather than from
+    Radix's <code>data-state="on"</code>, which nothing here would set. That substitution is
+    declared in <code>deviations.json</code>, where the parity tests read it.
+</p>
+
+<h2 class="doc-h2">Basic</h2>
+<Example Source="ToggleExample.razor"><ToggleExample /></Example>
+
+<h2 class="doc-h2">Outline</h2>
+<Example Source="ToggleOutline.razor"><ToggleOutline /></Example>
+
+<h2 class="doc-h2">With Text</h2>
+<Example Source="ToggleWithText.razor"><ToggleWithText /></Example>
+
+<h2 class="doc-h2">Size</h2>
+<Example Source="ToggleSize.razor"><ToggleSize /></Example>
+
+<h2 class="doc-h2">Disabled</h2>
+<Example Source="ToggleDisabled.razor"><ToggleDisabled /></Example>
+
+<h2 class="doc-h2">RTL</h2>
+<Example Source="ToggleRtl.razor"><ToggleRtl /></Example>

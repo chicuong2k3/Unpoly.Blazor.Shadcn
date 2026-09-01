@@ -1,0 +1,35 @@
+@page "/components/table"
+
+<PageTitle>Table — Unpoly.Blazor.Shadcn</PageTitle>
+
+<h1 class="doc-h1">Table</h1>
+<p class="doc-lede">
+    A real <code>&lt;table&gt;</code> in a scroll container, with the caption where a caption
+    belongs. The element is the accessibility: row and column headers, the announced dimensions,
+    and navigation by cell all come from it and from nothing else.
+</p>
+
+<h2 class="doc-h2">Basic</h2>
+<Example Source="TableBasic.razor"><TableBasic /></Example>
+
+<h2 class="doc-h2">Footer</h2>
+<Example Source="TableFooterExample.razor"><TableFooterExample /></Example>
+
+<h2 class="doc-h2">Actions</h2>
+<p class="doc-note">
+    The trigger needs a name that says which row. "Actions" fifteen times is fifteen buttons a
+    screen reader cannot tell apart.
+</p>
+<Example Source="TableActions.razor"><TableActions /></Example>
+
+<h2 class="doc-h2">Data Table</h2>
+<p class="doc-note">
+    shadcn's is TanStack Table wired to this. On static SSR there is no client-side table state to
+    manage: the toolbar is a GET form, the URL is the state, and the server answers — so the view
+    is bookmarkable and the back button works. The full version is on the
+    <a href="/blocks">Blocks</a> page.
+</p>
+<Example Source="TableDataTable.razor"><TableDataTable /></Example>
+
+<h2 class="doc-h2">RTL</h2>
+<Example Source="TableRtl.razor"><TableRtl /></Example>

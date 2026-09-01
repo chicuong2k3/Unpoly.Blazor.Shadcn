@@ -1,0 +1,57 @@
+@* Footer — the full-width close of a marketing page: product/company/resources columns of real
+   links, a newsletter form, and the legal strip. *@
+
+<footer class="border-t bg-muted/30">
+    <div class="mx-auto max-w-6xl px-6 py-14">
+        <div class="grid gap-10 lg:grid-cols-[1.4fr_1fr_1fr_1fr]">
+            <div class="space-y-4">
+                <a href="/" class="font-semibold tracking-tight">Unpoly.Blazor.Shadcn</a>
+                <p class="max-w-xs text-sm text-muted-foreground">
+                    shadcn/ui for Blazor static SSR. Native controls, fragment swaps, tokens that
+                    theme at runtime.
+                </p>
+                <div class="flex gap-2">
+                    <Button Variant="outline" Size="icon" Type="button" aria-label="GitHub"><Icon Name="git-branch" /></Button>
+                    <Button Variant="outline" Size="icon" Type="button" aria-label="X"><Icon Name="globe" /></Button>
+                </div>
+            </div>
+
+            <nav aria-label="Product">
+                <p class="text-sm font-medium">Product</p>
+                <ul class="mt-4 space-y-2 text-sm text-muted-foreground">
+                    <li><a href="/blocks" class="hover:text-foreground">Blocks</a></li>
+                    <li><a href="/components/button" class="hover:text-foreground">Components</a></li>
+                    <li><a href="/theming" class="hover:text-foreground">Themes</a></li>
+                    <li><a href="/" class="hover:text-foreground">Changelog</a></li>
+                </ul>
+            </nav>
+
+            <nav aria-label="Company">
+                <p class="text-sm font-medium">Company</p>
+                <ul class="mt-4 space-y-2 text-sm text-muted-foreground">
+                    <li><a href="/" class="hover:text-foreground">About</a></li>
+                    <li><a href="/" class="hover:text-foreground">Blog</a></li>
+                    <li><a href="/" class="hover:text-foreground">Careers</a></li>
+                    <li><a href="/" class="hover:text-foreground">Contact</a></li>
+                </ul>
+            </nav>
+
+            <div class="space-y-4">
+                <p class="text-sm font-medium">Stay in the loop</p>
+                <form method="post" class="newsletter flex gap-2" up-target="body" up-fail-target=".newsletter">
+                    <Input name="email" type="email" required placeholder="you@example.com" aria-label="Email" />
+                    <Button Type="submit" up-disable>Subscribe</Button>
+                </form>
+                <p class="text-xs text-muted-foreground">One email a month. No spam, ever.</p>
+            </div>
+        </div>
+
+        <div class="mt-12 flex flex-wrap items-center justify-between gap-4 border-t pt-6 text-xs text-muted-foreground">
+            <p>© 2026 Unpoly.Blazor.Shadcn. MIT licensed.</p>
+            <div class="flex gap-4">
+                <a href="/" class="hover:text-foreground">Privacy</a>
+                <a href="/" class="hover:text-foreground">Terms</a>
+            </div>
+        </div>
+    </div>
+</footer>

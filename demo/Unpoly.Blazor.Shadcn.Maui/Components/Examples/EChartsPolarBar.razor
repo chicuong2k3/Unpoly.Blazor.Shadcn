@@ -1,0 +1,8 @@
+@using Unpoly.Blazor.Shadcn.ECharts.Components
+@* Polar bar: bars in polar coordinates instead of a cartesian grid. *@
+<EPolarBarChart Height="280px" Categories="@categories" Values="@values" />
+
+@code {
+    string[] categories = ["Mon", "Tue", "Wed", "Thu", "Fri"];
+    double[] values = [120, 200, 150, 80, 70];
+}

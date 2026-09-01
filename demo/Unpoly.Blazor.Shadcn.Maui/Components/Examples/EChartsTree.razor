@@ -1,0 +1,7 @@
+@using Unpoly.Blazor.Shadcn.ECharts.Components
+@* Tree: a hierarchy drawn left-to-right, collapsible at each node. *@
+<ETreeChart Height="280px" Data="@data" />
+
+@code {
+    object data = new { name = "Root", children = new object[] { new { name = "Child1", children = new object[] { new { name = "Leaf", value = 10 } } }, new { name = "Child2", value = 20 } } };
+}

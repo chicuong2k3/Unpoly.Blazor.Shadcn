@@ -1,0 +1,122 @@
+@* Search, as a command palette. ⌘K on a Mac and Ctrl+K everywhere else — ui.js knows the
+   difference, which is the part most implementations get wrong in one direction or the other.
+
+   Every entry is a real link to a real page, so the palette is a list of links with scripting off
+   and a filter with it. The filtering is in the browser because this list is forty items the
+   server already rendered; a catalogue of ten thousand would put `up-autosubmit` on the input and
+   let the server answer instead, swapping <CommandList>. Both shapes are the same markup. *@
+
+<Button Variant="outline" Size="sm" Type="button" data-command-open="doc-search"
+        Class="w-56 justify-between text-muted-foreground">
+    <span class="flex items-center gap-2"><Icon Name="search" />Search…</span>
+    <KbdGroup><Kbd>⌘</Kbd><Kbd>K</Kbd></KbdGroup>
+</Button>
+
+<CommandDialog Id="doc-search" Key="mod+k" Title="Search the documentation"
+               Description="Jump to a component, a block or a page.">
+    <CommandInput Placeholder="Search components, blocks, pages…" />
+    <CommandList>
+        <CommandEmpty Class="py-8 text-center text-sm text-muted-foreground">
+            Nothing matches that.
+        </CommandEmpty>
+
+        @foreach (var (heading, entries) in Groups)
+        {
+            <CommandGroup Heading="@heading">
+                @foreach (var (label, href, keywords) in entries)
+                {
+                    <CommandItem Href="@href" Keywords="@keywords">
+                        <span>@label</span>
+                    </CommandItem>
+                }
+            </CommandGroup>
+        }
+    </CommandList>
+</CommandDialog>
+
+@code {
+    // Keywords are what someone types when they do not know what the thing is called: "modal"
+    // for Dialog, "rtl" for Direction, "sonner" for Toast. Matching only the visible label is why
+    // most site searches feel broken.
+    static readonly (string Heading, (string Label, string Href, string Keywords)[] Entries)[] Groups =
+    [
+        ("Getting started",
+        [
+            ("Overview", "/", "home start install setup"),
+            ("Theming", "/theming", "theme colours tokens dark mode customizer fonts"),
+            ("Blocks", "/blocks", "templates patterns login dashboard checkout"),
+        ]),
+        ("Components",
+        [
+            ("Accordion", "/components/accordion", "faq collapse expand details"),
+            ("Alert", "/components/alert", "banner notice warning callout"),
+            ("Alert Dialog", "/components/alert-dialog", "confirm are you sure destructive modal"),
+            ("Aspect Ratio", "/components/aspect-ratio", "ratio 16 9 square image box"),
+            ("Attachment", "/components/attachment", "file upload paperclip document"),
+            ("Avatar", "/components/avatar", "profile picture user initials"),
+            ("Badge", "/components/badge", "chip tag pill status label"),
+            ("Breadcrumb", "/components/breadcrumb", "trail crumbs path back up"),
+            ("Bubble", "/components/bubble", "chat message speech turn"),
+            ("Button", "/components/button", "cta action submit variant"),
+            ("Button Group", "/components/button-group", "segmented joined toolbar"),
+            ("Calendar", "/components/calendar", "month date days picker"),
+            ("Card", "/components/card", "panel surface container box"),
+            ("Carousel", "/components/carousel", "slider slideshow gallery swipe"),
+            ("Chart", "/components/chart", "graph bars analytics data viz"),
+            ("Checkbox", "/components/checkbox", "tick check box multiple"),
+            ("Collapsible", "/components/collapsible", "details expand show more"),
+            ("Combobox", "/components/combobox", "autocomplete typeahead multi select chips"),
+            ("Command", "/components/command", "palette search cmdk quick open"),
+            ("Context Menu", "/components/context-menu", "right click menu"),
+            ("Data Table", "/components/data-table", "grid rows sorting filtering paging"),
+            ("Date Picker", "/components/date-picker", "calendar day input date"),
+            ("Dialog", "/components/dialog", "modal popup overlay window"),
+            ("Direction", "/components/direction", "rtl right to left arabic hebrew"),
+            ("Drawer", "/components/drawer", "bottom sheet vaul drag"),
+            ("Dropdown Menu", "/components/dropdown-menu", "menu kebab actions submenu"),
+            ("Empty", "/components/empty", "no results nothing here placeholder"),
+            ("Field", "/components/field", "form label description error group"),
+            ("Hover Card", "/components/hover-card", "preview peek profile"),
+            ("Input", "/components/input", "text field form control"),
+            ("Input Group", "/components/input-group", "prefix suffix addon unit icon"),
+            ("Input OTP", "/components/input-otp", "one time code pin verify sms"),
+            ("Item", "/components/item", "row list media actions"),
+            ("Kbd", "/components/kbd", "key shortcut keyboard"),
+            ("Label", "/components/label", "form caption for"),
+            ("Marker", "/components/marker", "citation source annotation"),
+            ("Menubar", "/components/menubar", "file edit view application bar"),
+            ("Message", "/components/message", "chat thread conversation"),
+            ("Message Scroller", "/components/message-scroller", "chat scroll bottom follow"),
+            ("Native Select", "/components/native-select", "dropdown option os picker"),
+            ("Navigation Menu", "/components/navigation-menu", "nav header site links mega"),
+            ("Pagination", "/components/pagination", "pages next previous paging"),
+            ("Popover", "/components/popover", "panel anchor floating"),
+            ("Progress", "/components/progress", "bar percent loading"),
+            ("Radio Group", "/components/radio-group", "options single choice"),
+            ("Resizable", "/components/resizable", "split panes divider drag"),
+            ("Scroll Area", "/components/scroll-area", "scrollbar overflow"),
+            ("Select", "/components/select", "dropdown option picker"),
+            ("Separator", "/components/separator", "divider line rule hr"),
+            ("Sheet", "/components/sheet", "side panel drawer slide"),
+            ("Sidebar", "/components/sidebar", "nav rail collapsible app shell"),
+            ("Skeleton", "/components/skeleton", "placeholder loading shimmer"),
+            ("Slider", "/components/slider", "range volume value drag"),
+            ("Spinner", "/components/spinner", "loading busy wait"),
+            ("Switch", "/components/switch", "toggle on off setting"),
+            ("Table", "/components/table", "grid rows data list"),
+            ("Tabs", "/components/tabs", "tab panel switcher"),
+            ("Textarea", "/components/textarea", "multiline text notes"),
+            ("Toast", "/components/toast", "sonner notification snackbar"),
+            ("Toggle", "/components/toggle", "pressed button on"),
+            ("Toggle Group", "/components/toggle-group", "segmented pressed row"),
+            ("Tooltip", "/components/tooltip", "hint hover title"),
+            ("Typography", "/components/typography", "prose text headings type"),
+        ]),
+        ("Beyond shadcn",
+        [
+            ("Icon", "/components/icon", "lucide svg glyph"),
+            ("Code Block", "/components/code-block", "pre snippet copy syntax"),
+            ("Stepper", "/components/stepper", "number quantity plus minus"),
+        ]),
+    ];
+}

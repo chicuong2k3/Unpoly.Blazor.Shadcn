@@ -1,0 +1,80 @@
+@page "/components/calendar"
+
+<PageTitle>Calendar — Unpoly.Blazor.Shadcn</PageTitle>
+
+<h1 class="doc-h1">Calendar</h1>
+<p class="doc-lede">
+    A month, as a table — because a calendar is one, and every screen reader already knows how to
+    read one. Each day is a real radio input, so choosing one posts and the browser supplies the
+    arrow keys, Home and End within the group. No roving tabindex, no key handlers, no state.
+</p>
+<p class="doc-note">
+    react-day-picker builds it from divs and then reimplements that, mostly correctly. What it
+    also brings, and this does not, is the calendar systems — Hijri, Jalali — which are a data
+    problem rather than a markup one.
+</p>
+
+<h2 class="doc-h2">Basic</h2>
+<Example Source="CalendarBasic.razor"><CalendarBasic /></Example>
+
+<h2 class="doc-h2">Date Picker</h2>
+<p class="doc-note">
+    You can use the <code>&lt;Calendar&gt;</code> component to build a date picker: put it in a
+    <a href="/components/popover">Popover</a> and let the trigger show the chosen day. For an
+    ordinary form field, <a href="/components/date-picker">DatePicker</a> around
+    <code>&lt;input type="date"&gt;</code> is smaller and brings the OS picker on a phone; reach
+    for the calendar when the shape of the month is part of the choice.
+</p>
+<Example Source="CalendarDatePickerExample.razor"><CalendarDatePickerExample /></Example>
+
+<h2 class="doc-h2">Range Calendar</h2>
+<p class="doc-note">
+    One calendar, <code>Months="2"</code>, <code>Mode="range"</code>. With scripting off the days
+    are checkboxes: tick the first and the last, and the server takes the min and the max — a
+    working range picker before any JavaScript runs. The compiler only adds what a range picker
+    should do beyond that: a third click starts again, and the band between the ends fills in.
+</p>
+<Example Source="CalendarRange.razor"><CalendarRange /></Example>
+
+<h2 class="doc-h2">Month and Year Selector</h2>
+<Example Source="CalendarMonthYear.razor"><CalendarMonthYear /></Example>
+
+<h2 class="doc-h2">Presets</h2>
+<p class="doc-note">
+    Links, so each preset is a URL: "last 30 days" can be sent to a colleague and reached by the
+    back button, which a click handler that mutates state cannot offer.
+</p>
+<Example Source="CalendarPresets.razor"><CalendarPresets /></Example>
+
+<h2 class="doc-h2">Date and Time Picker</h2>
+<Example Source="CalendarDateTime.razor"><CalendarDateTime /></Example>
+
+<h2 class="doc-h2">Booked dates</h2>
+<Example Source="CalendarBookedDates.razor"><CalendarBookedDates /></Example>
+
+<h2 class="doc-h2">Custom Cell Size</h2>
+<p class="doc-note">
+    44px is the smallest touch target most guidance accepts, and a calendar is a grid of
+    thirty-one of them.
+</p>
+<Example Source="CalendarCellSize.razor"><CalendarCellSize /></Example>
+
+<h2 class="doc-h2">Week Numbers</h2>
+<p class="doc-note">
+    Use <code>ShowWeekNumber</code> to show week numbers. They are ISO 8601, and each one is a
+    <code>&lt;th scope="row"&gt;</code>, so a screen reader announces it as the heading of its
+    row rather than as another day.
+</p>
+<Example Source="CalendarWeekNumbers.razor"><CalendarWeekNumbers /></Example>
+
+<h2 class="doc-h2">Persian / Hijri / Jalali Calendar</h2>
+<p class="doc-note">
+    A calendar SYSTEM rather than a translation: a Hijri month begins on a different day from the
+    Gregorian one and runs 29 or 30 days, and a Persian year starts at the spring equinox. This
+    page used to say the section could not exist here because react-day-picker ships the systems —
+    .NET ships them too, and the component counts months through whichever one it is given.
+</p>
+<Example Source="CalendarHijri.razor"><CalendarHijri /></Example>
+
+<h2 class="doc-h2">RTL</h2>
+<Example Source="CalendarRtl.razor"><CalendarRtl /></Example>

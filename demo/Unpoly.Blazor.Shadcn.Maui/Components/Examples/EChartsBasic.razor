@@ -1,0 +1,27 @@
+@* Free-form EChart — the homepage example at https://echarts.apache.org/en/index.html,
+   ported to Blazor static SSR. The option is the same JSON; it arrives as
+   data-options and the up.compiler renders it. *@
+@using Unpoly.Blazor.Shadcn.ECharts.Components
+
+<EChart Height="350px" AriaLabel="Sample ECharts line and bar" Options="@Options" />
+
+@code {
+    // Mirrors the echarts.org homepage demo structure, trimmed to a shape that
+    // reads without its surrounding site chrome.
+    object Options => new
+    {
+        tooltip = new { trigger = "axis" },
+        legend = new { data = new[] { "Email", "Union Ads", "Video Ads", "Direct", "Search Engine" } },
+        grid = new { left = "3%", right = "4%", bottom = "3%", containLabel = true },
+        xAxis = new { type = "category", boundaryGap = false, data = new[] { "Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun" } },
+        yAxis = new { type = "value" },
+        series = new[]
+        {
+            new { name = "Email", type = "line", stack = "Total", data = new[] { 120, 132, 101, 134, 90, 230, 210 } },
+            new { name = "Union Ads", type = "line", stack = "Total", data = new[] { 220, 182, 191, 234, 290, 330, 310 } },
+            new { name = "Video Ads", type = "line", stack = "Total", data = new[] { 150, 232, 201, 154, 190, 330, 410 } },
+            new { name = "Direct", type = "line", stack = "Total", data = new[] { 320, 332, 301, 334, 390, 330, 320 } },
+            new { name = "Search Engine", type = "line", stack = "Total", data = new[] { 820, 932, 901, 934, 1290, 1330, 1320 } },
+        }
+    };
+}

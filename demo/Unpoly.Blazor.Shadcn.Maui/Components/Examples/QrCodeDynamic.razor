@@ -1,0 +1,17 @@
+@inject NavigationManager Nav
+@* The QR follows the text box. There is no client state, so the text box is a real field and the
+   form is [up-autosubmit]: typing submits a GET, the server re-renders the page with the new
+   value in the query string, and Unpoly swaps .doc-main — the QR is born with the value already
+   inside it. With scripting off the form still works, just on submit. *@
+<div class="flex flex-col items-center gap-4">
+    <form method="get" up-autosubmit up-target=".doc-main" class="w-full max-w-sm">
+        <Input name="value" Value="@Value" placeholder="https://example.com" aria-label="QR content" />
+    </form>
+    <QrCode Value="@Value" Size="160" />
+</div>
+
+@code {
+    string Value =>
+        System.Web.HttpUtility.ParseQueryString(new Uri(Nav.Uri).Query)["value"]
+        ?? "https://lumeo.nativ.sh/";
+}

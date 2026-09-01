@@ -1,0 +1,28 @@
+@page "/components/navigation-menu"
+
+<PageTitle>Navigation Menu — Unpoly.Blazor.Shadcn</PageTitle>
+
+<h1 class="doc-h1">Navigation Menu</h1>
+<p class="doc-lede">
+    A <code>&lt;nav&gt;</code> around a real <code>&lt;ul&gt;</code>, so the landmark and the item count are announced. Each panel is its own popover in the top layer rather than a slot in one shared viewport.
+</p>
+
+<p class="doc-note">
+    A <code>&lt;nav&gt;</code> around a real <code>&lt;ul&gt;</code>. Radix animates every panel
+    through one shared viewport so they cross-fade; each panel here is its own popover in the top
+    layer instead — no cross-fade, and in exchange nothing clips it and there is no z-index to
+    lose. Put <code>[up-nav]</code> on it and Unpoly marks the current link.
+</p>
+<Example Source="NavigationMenuExample.razor"><NavigationMenuExample /></Example>
+
+<h2 class="doc-h2">Link Component</h2>
+<p class="doc-note">
+    shadcn writes <code>asChild</code> here so the link can be a router <code>Link</code>. There is
+    no router: it is an <code>&lt;a href&gt;</code>, and <code>[up-nav]</code> on the list marks the
+    current one — Unpoly compares each href with the address bar, which keeps working after a
+    fragment swap because the swap is what changed the address bar.
+</p>
+<Example Source="NavigationMenuLinkComponent.razor"><NavigationMenuLinkComponent /></Example>
+
+<h2 class="doc-h2">RTL</h2>
+<Example Source="NavigationMenuRtl.razor"><NavigationMenuRtl /></Example>

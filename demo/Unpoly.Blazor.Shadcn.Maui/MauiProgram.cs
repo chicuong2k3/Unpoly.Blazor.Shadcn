@@ -15,6 +15,7 @@ public static class MauiProgram
 			});
 
 		builder.Services.AddMauiBlazorWebView();
+		builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri("http://localhost/") });
 
 #if DEBUG
 		builder.Services.AddBlazorWebViewDeveloperTools();

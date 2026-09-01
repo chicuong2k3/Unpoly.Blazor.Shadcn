@@ -1,0 +1,35 @@
+@page "/components/textarea"
+
+<PageTitle>Textarea — Unpoly.Blazor.Shadcn</PageTitle>
+
+<h1 class="doc-h1">Textarea</h1>
+<p class="doc-lede">
+    The same frame as Input, with rows instead of a height — and the same reason
+    <code>--control-text</code> exists, because shadcn writes the size literally.
+</p>
+
+<h2 class="doc-h2">Basic</h2>
+<Example Source="TextareaBasic.razor"><TextareaBasic /></Example>
+
+<h2 class="doc-h2">Field</h2>
+<Example Source="TextareaField.razor"><TextareaField /></Example>
+
+<h2 class="doc-h2">Disabled</h2>
+<Example Source="TextareaDisabled.razor"><TextareaDisabled /></Example>
+
+<h2 class="doc-h2">Invalid</h2>
+<Example Source="TextareaInvalid.razor"><TextareaInvalid /></Example>
+
+<h2 class="doc-h2">Button</h2>
+<p class="doc-note">
+    The composer shape. The frame carries the focus ring rather than the textarea, because
+    <code>:focus-within</code> is what makes a composite control look focused.
+</p>
+<Example Source="TextareaButton.razor"><TextareaButton /></Example>
+
+<h2 class="doc-h2">RTL</h2>
+<p class="doc-note">
+    Nothing to set. A textarea takes its direction from the document, and the resize handle moves
+    to the other corner on its own.
+</p>
+<Example Source="TextareaRtl.razor"><TextareaRtl /></Example>

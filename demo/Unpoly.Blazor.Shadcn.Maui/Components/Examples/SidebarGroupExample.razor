@@ -1,0 +1,40 @@
+@* A group is a labelled section of the sidebar, and the label is a real heading rather than a
+   styled span — so the sidebar reads as an outline to anything that navigates by headings.
+
+   SidebarGroupAction is the button that belongs to the group rather than to a row in it: "add a
+   project", not "act on this project". It sits on the label line, which is why it is not a menu
+   action. *@
+<SidebarFrame Height="320px">
+    <Sidebar Collapsible="icon">
+        <SidebarContent>
+            <SidebarGroup>
+                <SidebarGroupLabel>Platform</SidebarGroupLabel>
+                <SidebarGroupAction AriaLabel="Add a project"><Icon Name="plus" /></SidebarGroupAction>
+                <SidebarGroupContent>
+                    <SidebarMenu>
+                        <SidebarMenuItem>
+                            <SidebarMenuButton Href="/components/card"><Icon Name="folder" /><span>Projects</span></SidebarMenuButton>
+                        </SidebarMenuItem>
+                        <SidebarMenuItem>
+                            <SidebarMenuButton Href="/components/avatar"><Icon Name="eye" /><span>Team</span></SidebarMenuButton>
+                        </SidebarMenuItem>
+                    </SidebarMenu>
+                </SidebarGroupContent>
+            </SidebarGroup>
+
+            <SidebarSeparator />
+
+            <SidebarGroup>
+                <SidebarGroupLabel>Support</SidebarGroupLabel>
+                <SidebarGroupContent>
+                    <SidebarMenu>
+                        <SidebarMenuItem>
+                            <SidebarMenuButton Href="/components/dialog"><Icon Name="info" /><span>Help</span></SidebarMenuButton>
+                        </SidebarMenuItem>
+                    </SidebarMenu>
+                </SidebarGroupContent>
+            </SidebarGroup>
+        </SidebarContent>
+    </Sidebar>
+    <SidebarInset Class="p-4 text-sm text-muted-foreground">Two groups, one separator.</SidebarInset>
+</SidebarFrame>

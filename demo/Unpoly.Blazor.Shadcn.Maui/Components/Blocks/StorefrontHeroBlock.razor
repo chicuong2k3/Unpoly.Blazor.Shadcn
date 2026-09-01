@@ -1,0 +1,28 @@
+@* Storefront hero — a product-led hero with a showcase image on the right, a tagline on the
+   left, and a primary action that adds the product to the cart. *@
+
+<section class="mx-auto grid max-w-6xl items-center gap-10 px-4 py-16 lg:grid-cols-2">
+    <div>
+        <Badge Variant="secondary" Class="mb-4">New collection</Badge>
+        <h1 class="text-4xl font-semibold tracking-tight text-balance sm:text-5xl">
+            The weekender you have been waiting for
+        </h1>
+        <p class="mt-6 max-w-md text-lg text-muted-foreground">
+            Vegetable-tanned leather, sewn in a small workshop outside Milan. Twelve colours, three
+            sizes, made to last a decade.
+        </p>
+        <div class="mt-8 flex flex-wrap items-center gap-4">
+            <form method="post" up-target=".cart-badge" up-disable>
+                <AntiforgeryToken />
+                <Button Size="lg" Type="submit">Add to cart — $189</Button>
+            </form>
+            <span class="text-sm text-muted-foreground">Free shipping over $80</span>
+        </div>
+    </div>
+    <div class="rounded-2xl bg-muted p-8">
+        <AspectRatio Ratio="4/3">
+            <img src="https://placehold.co/800x600" alt="The weekender bag, natural vegetable-tanned leather"
+                 class="size-full rounded-xl object-cover" width="800" height="600" />
+        </AspectRatio>
+    </div>
+</section>

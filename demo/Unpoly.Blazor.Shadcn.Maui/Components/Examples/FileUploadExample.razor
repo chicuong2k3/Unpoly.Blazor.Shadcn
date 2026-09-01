@@ -1,0 +1,15 @@
+@* The field posts a URL, not bytes. The file goes to Action by fetch the moment it is chosen,
+   and what the form carries is the hidden input holding what came back — so this form is an
+   ordinary form rather than a multipart one, and a picture survives a validation failure that
+   re-renders the page. *@
+<form method="post" action="/products" class="w-full max-w-sm">
+    <AntiforgeryToken />
+    <FieldGroup>
+        <Field>
+            <FieldLabel For="cover">Cover image</FieldLabel>
+            <FileUpload id="cover" Name="cover" Action="/uploads"
+                        Hint="JPEG, PNG or WebP · up to 8MB" />
+            <FieldDescription>Dropped, chosen, or pasted from a file manager.</FieldDescription>
+        </Field>
+    </FieldGroup>
+</form>

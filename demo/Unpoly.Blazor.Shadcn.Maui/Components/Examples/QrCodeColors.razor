@@ -1,0 +1,14 @@
+@* Colors default to the theme (foreground modules on a card background) and re-resolve when the
+   theme changes. Give explicit colors and they win — here, white modules on the primary surface. *@
+<div class="grid gap-4 md:grid-cols-2">
+    <Card>
+        <CardHeader><CardTitle Class="text-sm">Default (theme-aware)</CardTitle></CardHeader>
+        <CardContent Class="flex justify-center p-4"><QrCode Value="https://lumeo.nativ.sh/" Size="140" /></CardContent>
+    </Card>
+    <Card>
+        <CardHeader><CardTitle Class="text-sm">White on primary</CardTitle></CardHeader>
+        <CardContent Class="flex justify-center bg-primary p-4">
+            <QrCode Value="https://lumeo.nativ.sh/" Size="140" ForegroundColor="#ffffff" BackgroundColor="hsl(var(--primary))" />
+        </CardContent>
+    </Card>
+</div>

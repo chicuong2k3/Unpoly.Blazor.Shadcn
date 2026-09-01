@@ -6,10 +6,23 @@
     <title>Unpoly.Blazor.Shadcn.Maui</title>
     <base href="/" />
     <link rel="stylesheet" href="app.css" />
-    <link rel="stylesheet" href="Unpoly.Blazor.Shadcn.Maui.styles.css" />
     <link rel="stylesheet" href="_content/Unpoly.Blazor.Shadcn/toastify/toastify.css" />
     <link rel="stylesheet" href="_content/Unpoly.Blazor.Shadcn/airdatepicker/air-datepicker.css" />
+    <link rel="stylesheet" href="_content/Unpoly.Blazor.Shadcn/prism/prism.css" />
+    <link rel="stylesheet" href="_content/Unpoly.Blazor.Shadcn/prism/prism-line-numbers.css" />
+    <link rel="stylesheet" href="_content/Unpoly.Blazor.Shadcn/prism/prism-shadcn.css" />
     <link rel="icon" href="data:,">
+
+    <script>
+        // Theme + dark mode, read from localStorage BEFORE the body paints — the same guarantee
+        // the web head makes in its App.razor. A theme applied after first paint is a flash of
+        // the wrong one.
+        (function () {
+            var t = localStorage.getItem('demo-theme');
+            if (t && t !== 'shadcn') document.documentElement.dataset.theme = t;
+            if (localStorage.getItem('demo-dark') === '1') document.documentElement.classList.add('dark');
+        })();
+    </script>
 
     <!-- Unpoly is here for exactly one thing: `up.compiler`, which is the whole API surface
          ui.js uses (29 registrations plus two `up.on`). Its navigation is NOT wanted — Blazor's
@@ -43,6 +56,9 @@
     <script src="_content/Unpoly.Blazor.Shadcn/toastify/toastify.js" defer></script>
     <script src="_content/Unpoly.Blazor.Shadcn/airdatepicker/air-datepicker.js" defer></script>
     <script src="_content/Unpoly.Blazor.Shadcn/ui.js" defer></script>
+    <script src="_content/Unpoly.Blazor.Shadcn.ECharts/echarts.js" defer></script>
+    <script src="_content/Unpoly.Blazor.Shadcn.Maps/map/map.js" defer></script>
+    <script src="demo.js" defer></script>
 </head>
 
 <body>

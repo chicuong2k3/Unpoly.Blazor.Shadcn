@@ -1,0 +1,67 @@
+@page "/components/drawer"
+
+<PageTitle>Drawer — Unpoly.Blazor.Shadcn</PageTitle>
+
+<h1 class="doc-h1">Drawer</h1>
+<p class="doc-lede">
+    Structurally a <a href="/components/sheet">Sheet</a>. What vaul adds — and the only reason it
+    exists — is that you can drag it shut, which on a phone is the gesture people try before they
+    look for a close button. Past a third of the panel it closes; short of that it springs back.
+</p>
+<p class="doc-note">
+    Snap points, non-modal mode and nesting were all written off here as things the platform
+    could not do. Two of the three reasons were wrong. The top layer is a <em>stack</em>, so
+    drawers nest; <code>show()</code> opens a dialog that is not modal. Only the drag itself
+    needed building, and it is below.
+</p>
+
+<h2 class="doc-h2">Basic</h2>
+<Example Source="DrawerExample.razor"><DrawerExample /></Example>
+
+<h2 class="doc-h2">Position</h2>
+<Example Source="DrawerPosition.razor"><DrawerPosition /></Example>
+
+<h2 class="doc-h2">Custom Sizes</h2>
+<p class="doc-note">
+    Past about 85vh a bottom drawer stops reading as a drawer and starts reading as a page that
+    failed to load properly.
+</p>
+<Example Source="DrawerCustomSizes.razor"><DrawerCustomSizes /></Example>
+
+<h2 class="doc-h2">Swipe Handle</h2>
+<Example Source="DrawerSwipeHandle.razor"><DrawerSwipeHandle /></Example>
+
+<h2 class="doc-h2">Snap Points</h2>
+<p class="doc-note">
+    The drag rests rather than only closing. The heights are ordinary CSS lengths, resolved by
+    asking the browser what they mean, so <code>31rem 1</code> is a real size and a fraction of
+    the viewport.
+</p>
+<Example Source="DrawerSnapPoints.razor"><DrawerSnapPoints /></Example>
+
+<h2 class="doc-h2">Non Modal</h2>
+<p class="doc-note">
+    <code>show()</code> instead of <code>showModal()</code>: no backdrop, no focus trap, the page
+    behind stays usable. This page said it was impossible because a modal dialog is modal by
+    definition — which is true, and is exactly why this calls the other method.
+</p>
+<Example Source="DrawerNonModal.razor"><DrawerNonModal /></Example>
+
+<h2 class="doc-h2">Nested</h2>
+<p class="doc-note">
+    The top layer is a stack, not a single slot, so a drawer opened from inside another sits on
+    top of it and the first stays put. This needed no code at all — only the check that the note
+    claiming otherwise was wrong.
+</p>
+<Example Source="DrawerNested.razor"><DrawerNested /></Example>
+
+<h2 class="doc-h2">Responsive</h2>
+<p class="doc-note">
+    shadcn's version renders a Dialog on a desktop and a Drawer on a phone, chosen in React from a
+    media query. Static SSR has no such hook and needs none: both are the same
+    <code>&lt;dialog&gt;</code>, so one element with a media query on its frame is the whole thing.
+</p>
+<Example Source="DrawerResponsive.razor"><DrawerResponsive /></Example>
+
+<h2 class="doc-h2">RTL</h2>
+<Example Source="DrawerRtl.razor"><DrawerRtl /></Example>

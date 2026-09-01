@@ -1,0 +1,43 @@
+@page "/components/accordion"
+
+<PageTitle>Accordion — Unpoly.Blazor.Shadcn</PageTitle>
+
+<h1 class="doc-h1">Accordion</h1>
+<p class="doc-lede">
+    One <code>&lt;details&gt;</code> per item, so it opens and closes with no JavaScript at all and
+    survives a fragment swap without a compiler. Give every item the same <code>Name</code> and the
+    browser closes the others for you — that is shadcn's <code>type="single"</code>, written as an
+    attribute.
+</p>
+
+<h2 class="doc-h2">Basic</h2>
+<Example Source="AccordionBasic.razor"><AccordionBasic /></Example>
+
+<h2 class="doc-h2">Multiple</h2>
+<p class="doc-note">
+    Leave <code>Name</code> off. The browser only closes siblings that share a name, so
+    <code>type="multiple"</code> here is the absence of an attribute rather than the presence of
+    one.
+</p>
+<Example Source="AccordionMultiple.razor"><AccordionMultiple /></Example>
+
+<h2 class="doc-h2">Disabled</h2>
+<p class="doc-note">
+    A <code>&lt;summary&gt;</code> has no disabled state — the element does not define one. Take
+    it out of the tab order, stop the pointer, and say so with <code>aria-disabled</code>, which
+    is the part a screen reader reads.
+</p>
+<Example Source="AccordionDisabled.razor"><AccordionDisabled /></Example>
+
+<h2 class="doc-h2">Borders</h2>
+<Example Source="AccordionBorders.razor"><AccordionBorders /></Example>
+
+<h2 class="doc-h2">Card</h2>
+<Example Source="AccordionCard.razor"><AccordionCard /></Example>
+
+<h2 class="doc-h2">RTL</h2>
+<p class="doc-note">
+    The chevron moves to the other end on its own: it is placed with <code>ms-auto</code>, a
+    logical property, not with <code>ml-auto</code>.
+</p>
+<Example Source="AccordionRtl.razor"><AccordionRtl /></Example>

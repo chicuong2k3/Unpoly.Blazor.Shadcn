@@ -1,0 +1,44 @@
+@* Testimonials — a three-column wall of quotes with avatar, name and role. Cards, no quotes
+   needed: the attribution is the credibility. *@
+
+<section class="mx-auto max-w-6xl py-16">
+    <div class="mx-auto max-w-2xl text-center">
+        <h2 class="text-3xl font-semibold tracking-tight text-balance">Loved by teams that ship</h2>
+        <p class="mt-4 text-muted-foreground">From solo builders to product teams — what they say after moving to static SSR.</p>
+    </div>
+
+    <div class="mt-12 grid gap-4 md:grid-cols-3">
+        @foreach (var t in Quotes)
+        {
+            <Card>
+                <CardContent Class="flex h-full flex-col gap-4">
+                    <div class="flex gap-0.5 text-amber-500" aria-label="5 out of 5 stars">
+                        @for (var i = 0; i < 5; i++)
+                        {
+                            <span class="text-sm">★</span>
+                        }
+                    </div>
+                    <p class="flex-1 text-sm leading-relaxed">“@t.Text”</p>
+                    <div class="flex items-center gap-3">
+                        <Avatar Size="sm"><AvatarFallback>@t.Initials</AvatarFallback></Avatar>
+                        <div>
+                            <p class="text-sm font-medium">@t.Name</p>
+                            <p class="text-xs text-muted-foreground">@t.Role</p>
+                        </div>
+                    </div>
+                </CardContent>
+            </Card>
+        }
+    </div>
+</section>
+
+@code {
+    record Quote(string Initials, string Name, string Role, string Text);
+
+    static readonly Quote[] Quotes =
+    [
+        new("AK", "Amara Kade", "CTO, Northwind", "We cut our bundle by two thirds and lost nothing. The dialogs, the menus, the tabs — all of it works exactly like the React version, minus the re-renders."),
+        new("JD", "Jonas Dahl", "Founder, Vela", "The blocks are the reason we adopted it. Sign in, dashboard, checkout — each one carries the Unpoly wiring I would have gotten wrong on my own."),
+        new("SR", "Sofia Reyes", "Lead engineer, Meridian", "Finally a shadcn port that renders on the server and still feels like an app. The docs are the library itself, which tells you it is enough to build with."),
+    ];
+}

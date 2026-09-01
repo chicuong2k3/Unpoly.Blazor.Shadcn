@@ -1,0 +1,8 @@
+@using Unpoly.Blazor.Shadcn.ECharts.Components
+@* Candlestick: OHLC data as [open, close, low, high]. *@
+<ECandlestickChart Height="280px" Categories="@categories" Data="@data" />
+
+@code {
+    string[] categories = ["Mon", "Tue", "Wed", "Thu", "Fri"];
+    double[][] data = [[20, 34, 10, 38], [40, 35, 30, 50], [31, 38, 33, 44], [38, 15, 5, 42], [15, 30, 10, 35]];
+}

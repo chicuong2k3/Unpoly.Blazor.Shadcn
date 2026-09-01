@@ -1,0 +1,7 @@
+@using Unpoly.Blazor.Shadcn.ECharts.Components
+@* Theme river: stacked ribbons over time. *@
+<EThemeRiverChart Height="280px" Data="@data" />
+
+@code {
+    object data = new object[] { new object[] { "2024/01/01", 10, "A" }, new object[] { "2024/01/02", 20, "A" } };
+}

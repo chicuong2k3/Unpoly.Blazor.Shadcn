@@ -1,0 +1,10 @@
+@* ShowArea fills beneath the line; Type="bars" switches to a column strip. Both are the same
+   SVG component wearing different recipes. *@
+<div class="flex gap-6">
+    <Sparkline Data="@data" Type="area" ShowArea Width="120px" Height="28px" />
+    <Sparkline Data="@data" Type="bars" Width="120px" Height="28px" />
+</div>
+
+@code {
+    double[] data = [12, 18, 9, 22, 8, 19, 13, 14, 23, 18, 46, 52];
+}

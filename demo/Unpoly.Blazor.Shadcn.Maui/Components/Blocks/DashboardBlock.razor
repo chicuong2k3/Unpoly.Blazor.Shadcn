@@ -1,0 +1,180 @@
+@* A dashboard: KPI cards across the top, a revenue chart + activity beside it, and a recent
+   orders grid. The chart is a <table> (see AnalyticsBlock) so the numbers are in the DOM; the
+   activity list is a set of <Item>s; the orders grid is a real table with badges.
+
+   Nothing here is interactive by itself — the Export/New report buttons are links, the view-all
+   links are routes, and any live data replaces the static rows behind a GET endpoint. *@
+
+<div class="space-y-6">
+    <div class="flex flex-wrap items-center justify-between gap-4">
+        <div>
+            <h2 class="text-2xl font-semibold tracking-tight">Dashboard</h2>
+            <p class="mt-1 text-sm text-muted-foreground">Welcome back — here's what's happening today.</p>
+        </div>
+        <div class="flex items-center gap-2">
+            <Button Variant="outline"><Icon Name="download" />Export</Button>
+            <Button><Icon Name="plus" />New report</Button>
+        </div>
+    </div>
+
+    <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        <Card>
+            <CardHeader Class="gap-1"><CardTitle Class="text-sm font-medium">Revenue</CardTitle></CardHeader>
+            <CardContent>
+                <div class="num text-2xl font-semibold">$284,729</div>
+                <p class="mt-1 flex items-center gap-1 text-xs text-emerald-600">
+                    <Icon Name="trending-up" Class="size-3" />+18.3% from last month
+                </p>
+            </CardContent>
+        </Card>
+        <Card>
+            <CardHeader Class="gap-1"><CardTitle Class="text-sm font-medium">Users</CardTitle></CardHeader>
+            <CardContent>
+                <div class="num text-2xl font-semibold">12,438</div>
+                <p class="mt-1 flex items-center gap-1 text-xs text-emerald-600">
+                    <Icon Name="trending-up" Class="size-3" />+9.7% from last month
+                </p>
+            </CardContent>
+        </Card>
+        <Card>
+            <CardHeader Class="gap-1"><CardTitle Class="text-sm font-medium">Orders</CardTitle></CardHeader>
+            <CardContent>
+                <div class="num text-2xl font-semibold">1,812</div>
+                <p class="mt-1 flex items-center gap-1 text-xs text-emerald-600">
+                    <Icon Name="trending-up" Class="size-3" />+4.2% from last month
+                </p>
+            </CardContent>
+        </Card>
+        <Card>
+            <CardHeader Class="gap-1"><CardTitle Class="text-sm font-medium">Churn</CardTitle></CardHeader>
+            <CardContent>
+                <div class="num text-2xl font-semibold">1.8%</div>
+                <p class="mt-1 flex items-center gap-1 text-xs text-destructive">
+                    <Icon Name="trending-up" Class="size-3 rotate-180" />-0.4% from last month
+                </p>
+            </CardContent>
+        </Card>
+    </div>
+
+    <div class="grid gap-4 lg:grid-cols-[1fr_320px]">
+        <Card>
+            <CardHeader>
+                <CardTitle>Revenue</CardTitle>
+                <CardDescription>Last 12 months vs. prior year</CardDescription>
+            </CardHeader>
+            <CardContent>
+                <Table>
+                    <TableHeader>
+                        <TableRow>
+                            <TableHead>Month</TableHead>
+                            <TableHead Class="num text-right">2025</TableHead>
+                            <TableHead Class="num text-right">2024</TableHead>
+                        </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                        @foreach (var m in Months)
+                        {
+                            <TableRow>
+                                <TableCell>@m.Name</TableCell>
+                                <TableCell Class="num text-right">@m.Now.ToString("N0")</TableCell>
+                                <TableCell Class="num text-right">@m.Before.ToString("N0")</TableCell>
+                            </TableRow>
+                        }
+                    </TableBody>
+                </Table>
+            </CardContent>
+        </Card>
+
+        <Card>
+            <CardHeader>
+                <CardTitle>Recent activity</CardTitle>
+                <CardDescription><span class="flex items-center gap-1.5"><span class="size-1.5 rounded-full bg-emerald-500"></span>Live</span></CardDescription>
+            </CardHeader>
+            <CardContent Class="p-0">
+                <ItemGroup>
+                    @foreach (var a in Activity)
+                    {
+                        <Item>
+                            <ItemMedia><Avatar Size="sm"><AvatarFallback>@a.Initials</AvatarFallback></Avatar></ItemMedia>
+                            <ItemContent>
+                                <ItemDescription>@a.Text</ItemDescription>
+                            </ItemContent>
+                            <ItemActions><time class="num text-xs text-muted-foreground">@a.When</time></ItemActions>
+                        </Item>
+                    }
+                </ItemGroup>
+                <div class="border-t p-3">
+                    <Button Variant="ghost" Size="sm" Class="w-full">View all activity</Button>
+                </div>
+            </CardContent>
+        </Card>
+    </div>
+
+    <Card>
+        <CardHeader Class="flex-row items-center justify-between">
+            <div>
+                <CardTitle>Recent orders</CardTitle>
+                <CardDescription>The last 6 orders placed today.</CardDescription>
+            </div>
+            <Button Variant="outline" Size="sm">View all</Button>
+        </CardHeader>
+        <CardContent Class="p-0">
+            <Table>
+                <TableHeader>
+                    <TableRow>
+                        <TableHead>Order</TableHead>
+                        <TableHead>Customer</TableHead>
+                        <TableHead>Status</TableHead>
+                        <TableHead Class="num text-right">Amount</TableHead>
+                        <TableHead Class="num text-right">Date</TableHead>
+                    </TableRow>
+                </TableHeader>
+                <TableBody>
+                    @foreach (var o in Orders)
+                    {
+                        <TableRow>
+                            <TableCell Class="font-medium">@o.Code</TableCell>
+                            <TableCell>@o.Customer</TableCell>
+                            <TableCell><Badge Variant="@(o.Status == "Paid" ? "secondary" : "outline")">@o.Status</Badge></TableCell>
+                            <TableCell Class="num text-right">@o.Amount</TableCell>
+                            <TableCell Class="num text-right text-muted-foreground">@o.Date</TableCell>
+                        </TableRow>
+                    }
+                </TableBody>
+            </Table>
+        </CardContent>
+    </Card>
+</div>
+
+@code {
+    record Month(string Name, decimal Now, decimal Before);
+    record ActivityRow(string Initials, string Text, string When);
+    record Order(string Code, string Customer, string Status, string Amount, string Date);
+
+    static readonly Month[] Months =
+    [
+        new("Jan", 21400, 14200), new("Feb", 26800, 16500), new("Mar", 23700, 15100),
+        new("Apr", 34200, 19800), new("May", 39100, 21600), new("Jun", 47800, 25300),
+        new("Jul", 43500, 22700), new("Aug", 51200, 26400), new("Sep", 56400, 28900),
+        new("Oct", 61900, 31200), new("Nov", 58300, 29100), new("Dec", 72100, 34700),
+    ];
+
+    static readonly ActivityRow[] Activity =
+    [
+        new("AO", "Aisha upgraded to Enterprise plan", "just now"),
+        new("SP", "Stripe payment of $4,299 cleared", "4m ago"),
+        new("MF", "Mateus submitted refund request #8841", "22m ago"),
+        new("YT", "Yuki invited 3 team members", "1h ago"),
+        new("SD", "Weekly digest report generated", "yesterday"),
+    ];
+
+    static readonly Order[] Orders =
+    [
+        new("#ORD-3421", "Priya Kapoor", "Paid", "$1,299", "Apr 20"),
+        new("#ORD-3420", "Marcus Lee", "Paid", "$449", "Apr 20"),
+        new("#ORD-3419", "Riley Tanaka", "Pending", "$89", "Apr 19"),
+        new("#ORD-3418", "Sofia Navarro", "Paid", "$2,450", "Apr 19"),
+        new("#ORD-3417", "Jordan Rivera", "Refunded", "$199", "Apr 18"),
+        new("#ORD-3416", "Mateus Ferreira", "Paid", "$675", "Apr 18"),
+    ];
+}

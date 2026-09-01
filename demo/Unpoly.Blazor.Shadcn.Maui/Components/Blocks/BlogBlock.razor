@@ -1,0 +1,46 @@
+@* Blog — a row of three article cards, each an <a> with a real permalink. Featured image, a
+   tag, a title, an excerpt, and a byline. No optimistic counters: the round trip is the truth
+   here. *@
+
+<section class="mx-auto max-w-6xl py-16">
+    <div class="flex flex-wrap items-end justify-between gap-4">
+        <div>
+            <h2 class="text-3xl font-semibold tracking-tight">From the blog</h2>
+            <p class="mt-2 text-muted-foreground">What we have learned shipping static SSR.</p>
+        </div>
+        <Button Variant="outline" Href="/blog">All posts<Icon Name="arrow-right" /></Button>
+    </div>
+
+    <div class="mt-10 grid gap-4 md:grid-cols-3">
+        @foreach (var p in Posts)
+        {
+            <a href="@($"/blog/{p.Slug}")" class="group block">
+                <Card Class="overflow-hidden p-0 transition-colors group-hover:bg-muted/40">
+                    <AspectRatio Ratio="16/9" Class="bg-muted">
+                        <img src="@p.Cover" alt="" class="size-full object-cover" width="640" height="360" loading="lazy" />
+                    </AspectRatio>
+                    <div class="space-y-2 p-5">
+                        <Badge Variant="secondary">@p.Tag</Badge>
+                        <h3 class="text-lg font-semibold tracking-tight group-hover:underline">@p.Title</h3>
+                        <p class="line-clamp-2 text-sm text-muted-foreground">@p.Excerpt</p>
+                        <p class="text-xs text-muted-foreground">@p.Author · @p.Date</p>
+                    </div>
+                </Card>
+            </a>
+        }
+    </div>
+</section>
+
+@code {
+    record Post(string Slug, string Tag, string Title, string Excerpt, string Author, string Date, string Cover);
+
+    static readonly Post[] Posts =
+    [
+        new("from-react-to-ssr", "Engineering", "From React to static SSR: what we kept and what we cut",
+            "Six months in, here is the list of state we had to admit was already on the page.", "Amara Kade", "Apr 12, 2026", "https://placehold.co/640x360"),
+        new("theming-tokens", "Design", "Theming without forking: tokens that run at runtime",
+            "Why every block is a [data-theme] and not a separate npm package.", "Jonas Dahl", "Mar 28, 2026", "https://placehold.co/640x360"),
+        new("unpoly-wiring", "Architecture", "The Unpoly wiring in every block, and why you would have got it wrong",
+            "Three attributes, one rule, and a save bar that survives a refresh.", "Sofia Reyes", "Mar 10, 2026", "https://placehold.co/640x360"),
+    ];
+}

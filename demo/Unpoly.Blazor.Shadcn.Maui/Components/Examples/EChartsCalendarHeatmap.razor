@@ -1,0 +1,7 @@
+@using Unpoly.Blazor.Shadcn.ECharts.Components
+@* Calendar heatmap: a GitHub-style contributions grid for a year. *@
+<ECalendarHeatmapChart Height="200px" Range="2024" Data="@data" />
+
+@code {
+    object data = new object[] { new object[] { "2024-01-01", 5 }, new object[] { "2024-01-02", 8 } };
+}

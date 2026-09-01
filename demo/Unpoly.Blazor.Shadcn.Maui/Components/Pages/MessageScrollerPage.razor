@@ -1,0 +1,97 @@
+@page "/components/message-scroller"
+
+<PageTitle>Message Scroller — Unpoly.Blazor.Shadcn</PageTitle>
+
+<h1 class="doc-h1">Message Scroller</h1>
+<p class="doc-lede">
+    Follows the newest message only while you are already at the bottom — scroll up to read something and it stops. <code>overflow-anchor</code> does that half in CSS; the browser has had it since 2018.
+</p>
+
+<p class="doc-note">
+    Message, Bubble, Attachment, Marker and the scroller. The scroller follows the newest message
+    only while you are already at the bottom — scroll up to read something and it stops, which is
+    the behaviour every chat needs and most get wrong in one direction or the other.
+    <code>overflow-anchor</code> does that half in CSS; the browser has had it since 2018.
+</p>
+<Example Source="ConversationExample.razor"><ConversationExample /></Example>
+
+<h2 class="doc-h2">Anchoring</h2>
+<p class="doc-note">
+    <code>ScrollAnchor</code> on an item settles that turn at the TOP of the viewport with a peek
+    of the exchange above it, rather than the thread snapping to its own bottom. It is the
+    difference between this component and a box with <code>overflow: auto</code>: when a long
+    answer arrives you are left looking at the question that caused it.
+</p>
+<Example Source="MessageScrollerAnchoring.razor"><MessageScrollerAnchoring /></Example>
+
+<h2 class="doc-h2">Opening Position</h2>
+<p class="doc-note">
+    <code>OpenAt</code> is <code>end</code> for a live chat, <code>start</code> for a transcript
+    someone reads from the top, and <code>anchor</code> for a reader coming back to a thread they
+    were part of.
+</p>
+<Example Source="MessageScrollerOpening.razor"><MessageScrollerOpening /></Example>
+
+<h2 class="doc-h2">Streaming</h2>
+<p class="doc-note">
+    Auto-scroll follows the live edge of the conversation, and only while the reader is at it.
+    shadcn streams tokens from a fake transport; there is no client state here, so the server
+    sends one more turn per press — the scroller's own half of the behaviour is identical either
+    way.
+</p>
+<Example Source="MessageScrollerStreaming.razor"><MessageScrollerStreaming /></Example>
+
+<h2 class="doc-h2">Keeping Context Visible</h2>
+<p class="doc-note">
+    <code>ScrollMargin</code> is how much of the previous reply stays above an anchored turn — the
+    difference between "a new question appeared" and "here is the answer to the thing you just
+    read".
+</p>
+<Example Source="MessageScrollerPreviousContext.razor"><MessageScrollerPreviousContext /></Example>
+
+<h2 class="doc-h2">Commands</h2>
+<p class="doc-note">
+    Any element carrying <code>data-scroll-to-message</code> jumps to the turn with that
+    <code>MessageId</code> — a menu, an outline, a plain link. This is the markup half of shadcn's
+    <code>scrollToMessage</code>, and it needs no state to do its job.
+</p>
+<Example Source="MessageScrollerCommands.razor"><MessageScrollerCommands /></Example>
+
+<h2 class="doc-h2">Visibility</h2>
+<p class="doc-note">
+    The root publishes <code>data-current-anchor</code> as the viewport moves, and anything
+    carrying <code>data-anchor-mark</code> for the same turn gets <code>data-current</code>. That
+    is shadcn's <code>useMessageScrollerVisibility</code>, written where CSS can reach it.
+</p>
+<Example Source="MessageScrollerVisibility.razor"><MessageScrollerVisibility /></Example>
+
+<h2 class="doc-h2">Scrollable</h2>
+<p class="doc-note">
+    The root publishes <code>data-can-scroll-start</code> and <code>data-can-scroll-end</code>, so
+    a footer can say where you are with no script of its own. shadcn reads the same two booleans
+    through a hook.
+</p>
+<Example Source="MessageScrollerScrollable.razor"><MessageScrollerScrollable /></Example>
+
+<h2 class="doc-h2">Group Chat</h2>
+<p class="doc-note">
+    Several participants and an assistant, with a <a href="/components/marker">Marker</a> as a turn
+    of its own — a thing that happened rather than a thing someone said. It anchors like any other
+    turn, so a thread can settle on an event.
+</p>
+<Example Source="MessageScrollerGroupChat.razor"><MessageScrollerGroupChat /></Example>
+
+<h2 class="doc-h2">Load History</h2>
+<p class="doc-note">
+    Older messages arrive at the top and the reader does not move: the scroller measures what the
+    prepend added and shifts the scroll position by exactly that much. Following new content is
+    only right when the content is new.
+</p>
+<Example Source="MessageScrollerHistory.razor"><MessageScrollerHistory /></Example>
+
+<h2 class="doc-h2">Unstyled</h2>
+<p class="doc-note">
+    The scroller is behaviour rather than appearance — <code>overflow-anchor</code> and a button —
+    so stripping the frame leaves it working.
+</p>
+<Example Source="MessageScrollerUnstyled.razor"><MessageScrollerUnstyled /></Example>

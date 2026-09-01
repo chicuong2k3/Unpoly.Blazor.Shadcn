@@ -1,0 +1,109 @@
+@* An example is the rendered component and the source that produced it, on two tabs.
+
+   The source is READ FROM THE FILE that was just rendered, not retyped beside it. Docs that carry
+   a copy of their own code start lying the first time someone edits one half, and this library
+   exists partly to make that impossible — it would be a poor showing to reintroduce it here.
+
+   Every part of this is a component from the library: Tabs, Card and CodeBlock. That is not
+   decoration. A component library whose own documentation is built out of hand-rolled markup has
+   not shown that the components are enough to build anything — it has shown the opposite. *@
+
+<Tabs Value="preview" Class="mt-4">
+    <div class="flex items-center justify-between gap-4">
+        <TabsList>
+            <TabsTrigger Value="preview">Preview</TabsTrigger>
+            <TabsTrigger Value="code">Code</TabsTrigger>
+        </TabsList>
+        <span class="font-mono text-xs text-muted-foreground">@Source</span>
+    </div>
+
+    <TabsContent Value="preview">
+        @* A plain dashed frame, not a Card: samples that need a Card render their own, and a
+           nested Card is the most common visible defect in component documentation. *@
+        <div class="flex min-h-[80px] flex-wrap items-start justify-center gap-4 rounded-xl border border-dashed bg-card/30 px-6 py-8">
+            @ChildContent
+        </div>
+
+        @* Where a sample's own request lands, and it has an ID.
+
+           The web head uses Unpoly to swap a fragment into this slot. The MAUI head has no
+           Unpoly nav and no server, so samples that post do so through @onsubmit / JS interop
+           and write their answer here themselves. The id is derived from the sample's file name
+           so a sample can name it without anything having to agree twice, matching the web head. *@
+        <div id="@PreviewId" class="preview"></div>
+    </TabsContent>
+
+    <TabsContent Value="code" Hidden>
+        <CodeBlock Code="@SourceText" Language="razor" Title="@Source" />
+    </TabsContent>
+</Tabs>
+
+@code {
+    /// <summary>File name of the sample, e.g. "ButtonVariants.razor".</summary>
+    [Parameter, EditorRequired] public string Source { get; set; } = default!;
+
+    [Parameter] public RenderFragment? ChildContent { get; set; }
+
+    [Inject] private HttpClient Http { get; set; } = default!;
+
+    /// <summary>
+    /// The id of this example's answer slot, derived from the sample's own file name so a
+    /// sample can name it without anything having to agree twice. Same derivation as the web head.
+    /// </summary>
+    string PreviewId => "preview-" + string.Concat(
+        Path.GetFileNameWithoutExtension(Source)
+            .Select((c, i) => char.IsUpper(c) && i > 0 ? "-" + char.ToLowerInvariant(c)
+                                                       : char.ToLowerInvariant(c).ToString()));
+
+    string SourceText = "";
+
+    protected override async Task OnParametersSetAsync()
+    {
+        // The samples are copied to wwwroot/samples at build time and served as static assets.
+        // Fetch by URL, exactly the way the web head reads the file — but over HTTP because a
+        // WebView app cannot read the project's source directory at runtime.
+        try
+        {
+            var url = $"samples/{Uri.EscapeDataString(Source)}";
+            var text = await Http.GetStringAsync(url);
+            SourceText = Trim(text);
+        }
+        catch
+        {
+            SourceText =
+                $"(sample not found: samples/{Source} — is it under Components/Examples?)";
+        }
+    }
+
+    /// <summary>
+    /// Drops the leading `@inherits`/`@using` lines and the trailing @@code block: a reader wants
+    /// the markup, and the plumbing above it is noise they would skip past every time.
+    /// </summary>
+    static string Trim(string text)
+    {
+        var lines = text.Replace("\r\n", "\n").Split('\n').ToList();
+        // A Razor comment spans lines, and only its first one starts with '@'. Dropping lines by
+        // that test alone beheaded the comment and left the rest of it — and a dangling *@ — at
+        // the top of every sample, which is what the samples had been showing.
+        while (lines.Count > 0)
+        {
+            if (lines[0].Trim().Length == 0) { lines.RemoveAt(0); continue; }
+
+            if (lines[0].TrimStart().StartsWith("@*"))
+            {
+                var end = lines.FindIndex(l => l.Contains("*@"));
+                if (end < 0) break;
+                lines.RemoveRange(0, end + 1);
+                continue;
+            }
+
+            if (lines[0].StartsWith('@') && !lines[0].StartsWith("@code")) { lines.RemoveAt(0); continue; }
+            break;
+        }
+
+        var code = lines.FindIndex(l => l.StartsWith("@code"));
+        if (code >= 0) lines = lines[..code];
+
+        return string.Join('\n', lines).Trim();
+    }
+}

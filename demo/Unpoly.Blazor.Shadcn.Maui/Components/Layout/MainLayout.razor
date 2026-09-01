@@ -1,32 +1,115 @@
 @inherits LayoutComponentBase
+
+@* The whole chrome is the library: Item and ScrollArea for the nav, Command for the search,
+   Sheet for the Customizer, Tabs and CodeBlock for every example, Button, Badge, Kbd and
+   Separator for the header.
+
+   That is the point rather than a flourish. A component library whose own documentation is built
+   from hand-rolled markup has not shown that its components are enough to build anything — it has
+   shown the opposite, and hand-rolled chrome is exactly where the gaps hide.
+
+   The web head wraps the chrome in <UpChrome> so fragment requests skip re-rendering it. The MAUI
+   head has no fragments and no server — Blazor renders the whole page once per route, so the
+   chrome is plain markup. Unpoly here is for `up.compiler` only (see index.html). *@
+
 @inject IJSRuntime JS
 
-<div class="flex min-h-screen flex-col">
-    <header class="flex items-center gap-2 border-b border-border px-4 py-3">
-        <span class="mr-2 font-semibold tracking-tight">Unpoly.Blazor.Shadcn.Maui</span>
+<header class="doc-header sticky top-0 z-40 border-b bg-background/80 backdrop-blur">
+    <div class="mx-auto flex h-16 max-w-[1400px] items-center gap-4 px-6">
+        <a href="/" class="font-semibold tracking-tight">
+            Unpoly.Blazor.Shadcn
+        </a>
+        <Badge Variant="secondary" Class="hidden sm:inline-flex">shadcn/ui for Blazor</Badge>
 
-        @* Href renders an <a>, which is shadcn's `asChild` case. Unpoly is loaded but does not
-           follow plain links, so this stays Blazor's router. *@
-        <Button Variant="ghost" Size="sm" Href="/">Home</Button>
-        <Button Variant="ghost" Size="sm" Href="/about">About</Button>
+        <div class="ml-auto flex items-center gap-2">
+            <DocSearch />
 
-        <Button Variant="ghost" Size="icon" Class="ml-auto" Type="button" @onclick="ToggleDark">
-            <Icon Name="sun-moon" Title="Toggle dark mode" />
-        </Button>
-    </header>
+            <Separator Orientation="vertical" Class="mx-1 h-6" />
 
-    <main class="flex-1 p-4">@Body</main>
+            <Select data-theme-picker aria-label="Theme" Class="hidden w-[180px] md:flex">
+                <SelectItem Value="shadcn">shadcn</SelectItem>
+                <SelectItem Value="vercel">Vercel</SelectItem>
+                <SelectItem Value="supabase">Supabase</SelectItem>
+                <SelectItem Value="modern-minimal">Modern Minimal</SelectItem>
+                <SelectItem Value="notebook">Notebook</SelectItem>
+                <SelectItem Value="catppuccin">Catppuccin</SelectItem>
+                <SelectItem Value="claymorphism">Claymorphism</SelectItem>
+                <SelectItem Value="amethyst-haze">Amethyst Haze</SelectItem>
+                <SelectItem Value="ocean-breeze">Ocean Breeze</SelectItem>
+                <SelectItem Value="tangerine">Tangerine</SelectItem>
+                <SelectItem Value="bubblegum">Bubblegum</SelectItem>
+                <SelectItem Value="perpetuity">Perpetuity</SelectItem>
+                <SelectItem Value="t3-chat">T3 Chat</SelectItem>
+                <SelectItem Value="stripe">★ Stripe</SelectItem>
+                <SelectItem Value="apple">★ Apple</SelectItem>
+                <SelectItem Value="airbnb">★ Airbnb</SelectItem>
+                <SelectItem Value="claude">★ Claude</SelectItem>
+                <SelectItem Value="cursor">Cursor</SelectItem>
+                <SelectItem Value="duolingo">Duolingo</SelectItem>
+                <SelectItem Value="ease-health">Ease Health</SelectItem>
+                <SelectItem Value="elevenlabs">ElevenLabs</SelectItem>
+                <SelectItem Value="fly">Fly.io</SelectItem>
+                <SelectItem Value="linear">Linear</SelectItem>
+                <SelectItem Value="raycast">Raycast</SelectItem>
+                <SelectItem Value="resend">Resend</SelectItem>
+                <SelectItem Value="superhuman">Superhuman</SelectItem>
+                <SelectItem Value="todoist">Todoist</SelectItem>
+                <SelectItem Value="wise">Wise</SelectItem>
+                <SelectItem Value="wiz">Wiz</SelectItem>
+                <SelectItem Value="amber-minimal">Amber Minimal</SelectItem>
+                <SelectItem Value="bold-tech">Bold Tech</SelectItem>
+                <SelectItem Value="clean-slate">Clean Slate</SelectItem>
+                <SelectItem Value="cosmic-night">Cosmic Night</SelectItem>
+                <SelectItem Value="elegant-luxury">Elegant Luxury</SelectItem>
+                <SelectItem Value="kodama-grove">Kodama Grove</SelectItem>
+                <SelectItem Value="midnight-bloom">Midnight Bloom</SelectItem>
+                <SelectItem Value="mocha-mousse">Mocha Mousse</SelectItem>
+                <SelectItem Value="neo-brutalism">Neo Brutalism</SelectItem>
+                <SelectItem Value="northern-lights">Northern Lights</SelectItem>
+                <SelectItem Value="pastel-dreams">Pastel Dreams</SelectItem>
+                <SelectItem Value="quantum-rose">Quantum Rose</SelectItem>
+                <SelectItem Value="retro-arcade">Retro Arcade</SelectItem>
+                <SelectItem Value="sage-garden">Sage Garden</SelectItem>
+                <SelectItem Value="soft-pop">Soft Pop</SelectItem>
+                <SelectItem Value="solar-dusk">Solar Dusk</SelectItem>
+                <SelectItem Value="starry-night">Starry Night</SelectItem>
+                <SelectItem Value="sunset-horizon">Sunset Horizon</SelectItem>
+                <SelectItem Value="vintage-paper">Vintage Paper</SelectItem>
+                <SelectItem Value="violet-bloom">Violet Bloom</SelectItem>
+                <SelectItem Value="github-dark">GitHub Dark</SelectItem>
+                <SelectItem Value="github-light">GitHub Light</SelectItem>
+                <SelectItem Value="discord">Discord</SelectItem>
+                <SelectItem Value="dracula">Dracula</SelectItem>
+                <SelectItem Value="nord">Nord</SelectItem>
+                <SelectItem Value="spotify">Spotify</SelectItem>
+                <SelectItem Value="slack">Slack</SelectItem>
+                <SelectItem Value="notion">Notion</SelectItem>
+                <SelectItem Value="cupertino">Cupertino</SelectItem>
+                <SelectItem Value="fluent">Fluent 2</SelectItem>
+            </Select>
+
+            <DocCustomizer />
+
+            <Button Variant="ghost" Size="icon" Type="button" data-dark-toggle
+                    aria-label="Toggle dark mode">
+                <Icon Name="eye" />
+            </Button>
+
+            <Button Variant="outline" Size="icon"
+                    Href="https://github.com/chicuong2k3/Unpoly.Blazor.Shadcn"
+                    aria-label="Source on GitHub">
+                <Icon Name="external-link" />
+            </Button>
+        </div>
+    </div>
+</header>
+
+<div class="mx-auto flex max-w-[1400px] gap-8 px-6">
+    @* Sticky under the header, which is 4rem tall and sticky itself. Same reason as the web
+       head: without this the nav scrolls away and a reader three screens in has no way back. *@
+    <div class="doc-nav sticky top-16 hidden h-[calc(100dvh-4rem)] lg:block">
+        <DocNav />
+    </div>
+
+    <main class="doc-main min-w-0 flex-1 py-8">@Body</main>
 </div>
-
-@code {
-    bool dark;
-
-    // shadcn's dark palette hangs off a class on <html>, and ui.css redefines the `dark:`
-    // variant against that class rather than the OS setting. One line of interop is the whole
-    // mechanism; there is no state to persist here because a MAUI app owns its own storage.
-    async Task ToggleDark()
-    {
-        dark = !dark;
-        await JS.InvokeVoidAsync("document.documentElement.classList.toggle", "dark", dark);
-    }
-}

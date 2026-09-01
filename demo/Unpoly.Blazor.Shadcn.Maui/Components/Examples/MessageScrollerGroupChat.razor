@@ -1,0 +1,82 @@
+@inject NavigationManager Nav
+@* The links carry the page's own path, not a bare "?query". Blazor renders <base href="/">,
+   and a bare query string resolves against the BASE — so "?older=4" is /?older=4, the site root,
+   and the example vanished the moment you used it. Every link that only changes the query has to
+   say where it is. *@
+
+@* Several participants and an assistant, with a Marker as a turn of its own. A marker is a thing
+   that happened rather than a thing someone said — joined, renamed, pinned — and it anchors like
+   any other turn, so a thread can settle on an event as easily as on a question.
+
+   Names come from the turn rather than from the alignment: in a group chat "who said this" is not
+   answered by which side it is on. *@
+<div class="mx-auto flex w-full max-w-sm flex-col gap-4" id="ms-group">
+    <Card Class="h-140 w-full gap-0">
+        <CardHeader Class="gap-1 border-b">
+            <CardTitle>Group Chat</CardTitle>
+            <CardDescription>
+                Several participants and an assistant. The marker is a turn of its own.
+            </CardDescription>
+        </CardHeader>
+
+        <CardContent Class="flex-1 overflow-hidden p-0">
+            <MessageScroller>
+                <MessageScrollerViewport>
+                    <MessageScrollerContent Class="p-(--card-spacing)">
+                        <ChatTranscript Turns="Shown" ShowAvatars="true" />
+
+                        @if (Joined)
+                        {
+                            <MessageScrollerItem MessageId="grp-marker" ScrollAnchor="true">
+                                <Marker>
+                                    <MarkerIcon><Icon Name="user-plus" Class="size-3" /></MarkerIcon>
+                                    <MarkerContent>Rocky joined the conversation</MarkerContent>
+                                </Marker>
+                            </MessageScrollerItem>
+                            <ChatTranscript Turns="AfterJoining" ShowAvatars="true" />
+                        }
+                    </MessageScrollerContent>
+                </MessageScrollerViewport>
+                <MessageScrollerButton />
+            </MessageScroller>
+        </CardContent>
+
+        <CardFooter Class="flex flex-col items-center gap-2 border-t">
+            <Button Variant="outline" Size="sm" up-target="#ms-group"
+                    Href="@($"{Page}?joined={(Joined ? 0 : 1)}")">
+                @(Joined ? "Reset the conversation" : "Add Rocky to the conversation")
+            </Button>
+            <p class="text-xs text-muted-foreground">
+                @(Joined ? "The marker anchored, and the reply arrived under it."
+                         : "This creates a marker and makes it the anchor.")
+            </p>
+        </CardFooter>
+    </Card>
+
+    <div class="mx-auto max-w-sm px-0.5 text-center text-xs text-balance text-muted-foreground">
+        A marker is a turn like any other, so the thread can settle on an event.
+    </div>
+</div>
+
+@code {
+    const string Page = "/components/message-scroller";
+
+    bool Joined =>
+        System.Web.HttpUtility.ParseQueryString(new Uri(Nav.Uri).Query)["joined"] == "1";
+
+    IReadOnlyList<ChatTranscript.Turn> Shown => Thread;
+
+    static readonly ChatTranscript.Turn[] Thread =
+    [
+        new("grp-1", "assistant", "Morning. The staging deploy finished at 06:12 and every check is green.", "Assistant"),
+        new("grp-2", "user", "Nice. Did the queue-depth alert make it in?"),
+        new("grp-3", "assistant", "It did, but the threshold is still the one from the incident. Someone who knows the steady state should set it.", "Nadia"),
+        new("grp-4", "user", "That would be Rocky. Adding him."),
+    ];
+
+    static readonly ChatTranscript.Turn[] AfterJoining =
+    [
+        new("grp-5", "assistant", "Sorry, catching up. The steady state is about forty messages deep, spiking to two hundred during a bulk import.\n\nSet it to three hundred sustained over five minutes and it will not fire on the imports.", "Rocky"),
+        new("grp-6", "user", "Perfect. Changing it now."),
+    ];
+}

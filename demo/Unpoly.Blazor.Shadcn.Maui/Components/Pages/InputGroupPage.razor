@@ -1,0 +1,59 @@
+@page "/components/input-group"
+
+<PageTitle>Input Group — Unpoly.Blazor.Shadcn</PageTitle>
+
+<h1 class="doc-h1">Input Group</h1>
+<p class="doc-lede">
+    An icon, a button or a unit inside the field's own frame. The frame carries the focus ring
+    rather than the input, because <code>:focus-within</code> is what makes a composite control
+    look focused rather than look like two things next to each other.
+</p>
+
+<h2 class="doc-h2">Basic</h2>
+<Example Source="InputGroupExample.razor"><InputGroupExample /></Example>
+
+<h2 class="doc-h2">Align</h2>
+<p class="doc-note">
+    Four places, named inline and block rather than left and right — which is what makes them
+    follow the writing direction, and why the block ones grow a second row instead of squeezing
+    the field.
+</p>
+<Example Source="InputGroupAlign.razor"><InputGroupAlign /></Example>
+
+<h2 class="doc-h2">Icon</h2>
+<Example Source="InputGroupIcon.razor"><InputGroupIcon /></Example>
+
+<h2 class="doc-h2">Text</h2>
+<p class="doc-note">
+    The case where a placeholder will not do: "$" has to stay visible while the number is typed.
+</p>
+<Example Source="InputGroupText.razor"><InputGroupText /></Example>
+
+<h2 class="doc-h2">Button</h2>
+<p class="doc-note">
+    Smaller than a standalone button, because it has to fit inside a 36px control — which is what
+    <code>InputGroupButton</code>'s own size table is for.
+</p>
+<Example Source="InputGroupButtonExample.razor"><InputGroupButtonExample /></Example>
+
+<h2 class="doc-h2">Kbd</h2>
+<Example Source="InputGroupKbd.razor"><InputGroupKbd /></Example>
+
+<h2 class="doc-h2">Dropdown</h2>
+<Example Source="InputGroupDropdown.razor"><InputGroupDropdown /></Example>
+
+<h2 class="doc-h2">Spinner</h2>
+<Example Source="InputGroupSpinner.razor"><InputGroupSpinner /></Example>
+
+<h2 class="doc-h2">Textarea</h2>
+<Example Source="InputGroupTextarea.razor"><InputGroupTextarea /></Example>
+
+<h2 class="doc-h2">Custom Input</h2>
+<p class="doc-note">
+    Any control, not only <code>InputGroupControl</code>. What the frame needs is a child that
+    fills it and draws no border of its own.
+</p>
+<Example Source="InputGroupCustomInput.razor"><InputGroupCustomInput /></Example>
+
+<h2 class="doc-h2">RTL</h2>
+<Example Source="InputGroupRtl.razor"><InputGroupRtl /></Example>

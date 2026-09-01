@@ -17,3 +17,24 @@
     html { -webkit-tap-highlight-color: transparent; }
     body { @apply bg-background text-foreground antialiased overscroll-none; }
 }
+
+@layer components {
+    /* A page's own type, matching the web head's doc chrome. */
+    .doc-h1 { @apply text-3xl font-semibold tracking-tight; }
+    .doc-lede { @apply mt-2 max-w-2xl text-muted-foreground; }
+    .doc-h2 { @apply mt-12 scroll-mt-20 text-lg font-semibold tracking-tight; }
+    .doc-note { @apply mt-2 max-w-2xl text-sm text-muted-foreground; }
+    .doc-note code, .doc-lede code {
+        @apply rounded bg-muted px-1 py-0.5 font-mono text-[0.85em];
+    }
+}
+
+@layer utilities {
+    /* The current nav row. The web head gets this from [up-nav]; the MAUI head computes it in
+       DocNav and applies the same class. Utilities on purpose: the row is an Item, and Item's
+       own bg-transparent sits in this same layer — a rule in @layer components lost that one
+       property to the layer order while the other two won on specificity. */
+    .doc-nav-item.up-current {
+        @apply bg-accent font-medium text-accent-foreground;
+    }
+}

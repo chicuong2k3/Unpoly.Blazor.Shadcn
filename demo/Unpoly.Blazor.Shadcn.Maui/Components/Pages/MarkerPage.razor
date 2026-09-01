@@ -1,0 +1,45 @@
+@page "/components/marker"
+
+<PageTitle>Marker — Unpoly.Blazor.Shadcn</PageTitle>
+
+<h1 class="doc-h1">Marker</h1>
+<p class="doc-lede">
+    A small labelled mark in a stream of text — a citation, a source, a status, a break between
+    days. shadcn ships it with the AI components, where it points at whatever a model is quoting;
+    nothing about it is specific to a model.
+</p>
+
+<h2 class="doc-h2">Variants</h2>
+<Example Source="MarkerVariants.razor"><MarkerVariants /></Example>
+
+<h2 class="doc-h2">Status</h2>
+<Example Source="MarkerStatus.razor"><MarkerStatus /></Example>
+
+<h2 class="doc-h2">Shimmer</h2>
+<p class="doc-note">
+    <code>animate-pulse</code> rather than a spinner: a marker is a word in a line of text, and a
+    turning circle in a sentence is a distraction rather than a signal.
+</p>
+<Example Source="MarkerShimmer.razor"><MarkerShimmer /></Example>
+
+<h2 class="doc-h2">Separator</h2>
+<Example Source="MarkerSeparator.razor"><MarkerSeparator /></Example>
+
+<h2 class="doc-h2">Border</h2>
+<Example Source="MarkerBorder.razor"><MarkerBorder /></Example>
+
+<h2 class="doc-h2">With Icon</h2>
+<Example Source="MarkerWithIcon.razor"><MarkerWithIcon /></Example>
+
+<h2 class="doc-h2">Links and Buttons</h2>
+<p class="doc-note">
+    A citation that goes somewhere is an <code>&lt;a&gt;</code>, so it is followable and openable
+    in a tab — which a span with a click handler is not.
+</p>
+<Example Source="MarkerLinks.razor"><MarkerLinks /></Example>
+
+<h2 class="doc-h2">In a conversation</h2>
+<Example Source="ConversationExample.razor"><ConversationExample /></Example>
+
+<h2 class="doc-h2">RTL</h2>
+<Example Source="MarkerRtl.razor"><MarkerRtl /></Example>

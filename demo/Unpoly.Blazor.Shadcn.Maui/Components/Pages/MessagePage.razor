@@ -1,0 +1,43 @@
+@page "/components/message"
+
+<PageTitle>Message — Unpoly.Blazor.Shadcn</PageTitle>
+
+<h1 class="doc-h1">Message</h1>
+<p class="doc-lede">
+    The wider shape around a <a href="/components/bubble">Bubble</a>, with room for an avatar, a
+    header and a footer. An <code>&lt;article&gt;</code> rather than a div: a thread is a list of
+    separately authored things, and that is what lets a screen reader move between them instead of
+    reading the whole thing as one wall.
+</p>
+
+<h2 class="doc-h2">Basic</h2>
+<Example Source="MessageAvatarExample.razor"><MessageAvatarExample /></Example>
+
+<h2 class="doc-h2">Avatar</h2>
+<p class="doc-note">
+    <code>aria-hidden</code>, because the author's name is in the header beside it — announcing
+    "MR, Marta Ruiz" on every message is announcing it twice.
+</p>
+<Example Source="MessageAvatarExample.razor"><MessageAvatarExample /></Example>
+
+<h2 class="doc-h2">Group</h2>
+<Example Source="MessageGroupExample.razor"><MessageGroupExample /></Example>
+
+<h2 class="doc-h2">Header and Footer</h2>
+<Example Source="MessageHeaderFooter.razor"><MessageHeaderFooter /></Example>
+
+<h2 class="doc-h2">Actions</h2>
+<p class="doc-note">
+    Buttons in a form, so each one posts and the row it changes is swapped — no client state, and
+    the count that comes back is the server's.
+</p>
+<Example Source="MessageActions.razor"><MessageActions /></Example>
+
+<h2 class="doc-h2">Attachment</h2>
+<Example Source="MessageAttachment.razor"><MessageAttachment /></Example>
+
+<h2 class="doc-h2">In a conversation</h2>
+<Example Source="ConversationExample.razor"><ConversationExample /></Example>
+
+<h2 class="doc-h2">RTL</h2>
+<Example Source="MessageRtl.razor"><MessageRtl /></Example>

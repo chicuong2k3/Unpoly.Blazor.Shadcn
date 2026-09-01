@@ -1,0 +1,9 @@
+@using Unpoly.Blazor.Shadcn.ECharts.Components
+@* Waterfall: positive and negative deltas stack to a running total, with the last value drawn
+   as the total bar. *@
+<EWaterfallChart Height="280px" Categories="@categories" Values="@values" />
+
+@code {
+    string[] categories = ["Start", "Q1", "Q2", "Q3", "End"];
+    double[] values = [100, 20, -10, 30, 140];
+}

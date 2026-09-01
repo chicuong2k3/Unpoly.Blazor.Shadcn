@@ -1,0 +1,11 @@
+@using Unpoly.Blazor.Shadcn.ECharts.Components
+
+<EScatterChart Data="@Data" SeriesName="Points" Height="300px" AriaLabel="Scatter chart" />
+
+@code {
+    double[][] Data =
+    [
+        [10, 8.0], [12, 7.5], [14, 9.2], [18, 8.8], [20, 10.1],
+        [24, 9.7], [28, 11.2], [30, 9.9], [34, 12.0], [38, 11.5],
+    ];
+}

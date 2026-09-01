@@ -1,0 +1,68 @@
+@* Feature sections — a bento grid of capability cards. The first card spans two columns and
+   carries a visual; the rest are text. Cards are real links where they lead somewhere. *@
+
+<section class="mx-auto max-w-6xl py-16">
+    <div class="mx-auto max-w-2xl text-center">
+        <h2 class="text-3xl font-semibold tracking-tight text-balance">Everything you need to ship</h2>
+        <p class="mt-4 text-muted-foreground">
+            Every section of the page, composed from the same components this site is built from.
+        </p>
+    </div>
+
+    <div class="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        <Card Class="sm:col-span-2">
+            <CardHeader>
+                <CardTitle>Static SSR, not a client app</CardTitle>
+                <CardDescription>
+                    The server renders the page; Unpoly swaps fragments. No hydration, no bundle
+                    that grows with the app, no re-render loop to reason about.
+                </CardDescription>
+            </CardHeader>
+            <CardContent>
+                <div class="grid h-40 place-items-center rounded-md border border-dashed bg-muted/40 text-sm text-muted-foreground">
+                    A screenshot of your product goes here
+                </div>
+            </CardContent>
+        </Card>
+
+        <Card>
+            <CardHeader>
+                <CardTitle>Native where the platform wins</CardTitle>
+                <CardDescription>
+                    <code>&lt;dialog&gt;</code>, <code>&lt;details&gt;</code>, <code>[popover]</code>
+                    and real form controls — focus, validation and keys come free.
+                </CardDescription>
+            </CardHeader>
+        </Card>
+
+        <Card>
+            <CardHeader>
+                <CardTitle>Class parity with shadcn</CardTitle>
+                <CardDescription>
+                    The same tokens and class strings, generated from shadcn's own source and
+                    checked against it.
+                </CardDescription>
+            </CardHeader>
+        </Card>
+
+        <Card>
+            <CardHeader>
+                <CardTitle>Theming by tokens</CardTitle>
+                <CardDescription>
+                    Every colour, radius and elevation is a runtime custom property. A theme is a
+                    <code>[data-theme]</code> block.
+                </CardDescription>
+            </CardHeader>
+        </Card>
+
+        <Card>
+            <CardHeader>
+                <CardTitle>Accessible by construction</CardTitle>
+                <CardDescription>
+                    Tables for calendars, articles for feeds, real inputs for controls. The ARIA
+                    is upstream's, reproduced exactly.
+                </CardDescription>
+            </CardHeader>
+        </Card>
+    </div>
+</section>

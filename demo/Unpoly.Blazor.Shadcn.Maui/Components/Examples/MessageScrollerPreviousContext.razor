@@ -1,0 +1,75 @@
+@inject NavigationManager Nav
+@* The links carry the page's own path, not a bare "?query". Blazor renders <base href="/">,
+   and a bare query string resolves against the BASE — so "?older=4" is /?older=4, the site root,
+   and the example vanished the moment you used it. Every link that only changes the query has to
+   say where it is. *@
+
+@* How much of the previous reply stays in view above an anchored turn. That is ScrollMargin, and
+   it is the difference between "a new question appeared" and "here is the answer to the thing you
+   just read" — a peek of the exchange above is what places the new turn in the conversation.
+
+   shadcn puts a slider on it and streams the next message; here the slider is a GET form and the
+   send button is a link, so both are in the URL and both work before any script runs. *@
+<div class="mx-auto flex w-full max-w-sm flex-col gap-4" id="ms-context">
+    <Card Class="h-140 w-full gap-0">
+        <CardHeader Class="gap-1 border-b">
+            <CardTitle>Keeping Context Visible</CardTitle>
+            <CardDescription>New turns keep part of the previous reply in view.</CardDescription>
+        </CardHeader>
+
+        <CardContent Class="flex-1 overflow-hidden p-0">
+            <MessageScroller OpenAt="anchor" ScrollMargin="@Margin">
+                <MessageScrollerViewport>
+                    <MessageScrollerContent Class="p-(--card-spacing)">
+                        <ChatTranscript Turns="Shown" />
+                    </MessageScrollerContent>
+                </MessageScrollerViewport>
+                <MessageScrollerButton />
+            </MessageScroller>
+        </CardContent>
+
+        <CardFooter Class="flex-col gap-2">
+            <form method="get" up-autosubmit up-target="#ms-context"
+                  class="flex w-full items-center gap-3">
+                <input type="hidden" name="sent" value="@Sent" />
+                <Label For="ms-context-margin" Class="shrink-0 text-xs">Peek</Label>
+                <Slider id="ms-context-margin" name="margin" Min="0" Max="160" Step="8"
+                        Value="@Margin" Class="flex-1" />
+                <output for="ms-context-margin" class="num w-10 text-end text-xs text-muted-foreground">@Margin</output>
+            </form>
+
+            <Button Size="sm" Class="w-full" up-target="#ms-context"
+                    Href="@(Sent < Thread.Length ? $"{Page}?margin={Margin}&sent={Sent + 1}" : null)"
+                    disabled="@(Sent >= Thread.Length)">
+                @(Sent < Thread.Length ? "Send the next message" : "No messages queued")
+            </Button>
+        </CardFooter>
+    </Card>
+
+    <div class="px-0.5 text-center text-xs text-muted-foreground">
+        Adjust the peek and send. Watch how much of the previous reply stays above the new turn.
+    </div>
+</div>
+
+@code {
+    const string Page = "/components/message-scroller";
+
+    System.Collections.Specialized.NameValueCollection Query =>
+        System.Web.HttpUtility.ParseQueryString(new Uri(Nav.Uri).Query);
+
+    int Margin => int.TryParse(Query["margin"], out var n) ? Math.Clamp(n, 0, 160) : 24;
+
+    int Sent => int.TryParse(Query["sent"], out var n) ? Math.Clamp(n, 2, Thread.Length) : 2;
+
+    IReadOnlyList<ChatTranscript.Turn> Shown => Thread[..Sent];
+
+    static readonly ChatTranscript.Turn[] Thread =
+    [
+        new("ctx-1", "user", "Why does a new question feel like it arrives out of nowhere?"),
+        new("ctx-2", "assistant", "Because the view lands on it with nothing above it. The turn is correct and the context is gone, so the reader has to scroll back to remember what it answers.\n\nLeaving a strip of the previous reply visible is what turns a jump into a continuation."),
+        new("ctx-3", "user", "How much should stay visible?"),
+        new("ctx-4", "assistant", "Enough to recognise, not enough to read. Around twenty-four pixels is a line and a half, which is plenty to say the thread did not begin here.\n\nToo much and the new turn starts below the fold, which defeats the anchoring."),
+        new("ctx-5", "user", "Does zero ever make sense?"),
+        new("ctx-6", "assistant", "For a transcript of separate items rather than a conversation, yes. Nothing above needs remembering, so the peek is only lost space."),
+    ];
+}

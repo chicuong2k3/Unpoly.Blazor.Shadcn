@@ -1,0 +1,8 @@
+@using Unpoly.Blazor.Shadcn.ECharts.Components
+@* Pictorial bar: bars drawn as repeated symbols instead of rectangles. *@
+<EPictorialBarChart Height="280px" Categories="@categories" Values="@values" Symbol="diamond" />
+
+@code {
+    string[] categories = ["Mon", "Tue", "Wed", "Thu", "Fri"];
+    double[] values = [120, 200, 150, 80, 70];
+}

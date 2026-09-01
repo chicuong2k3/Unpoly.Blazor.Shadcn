@@ -1,0 +1,8 @@
+@using Unpoly.Blazor.Shadcn.ECharts.Components
+@* When ECharts is already on the page, ESparkline offers the same shape with lazy-load and
+   animation — same props, ECharts behind it. The core Sparkline needs nothing loaded at all. *@
+<ESparkline Data="@data" Type="area" ShowArea Width="120px" Height="32px" />
+
+@code {
+    double[] data = [12, 18, 9, 22, 8, 19, 13, 14, 23, 18, 46, 52];
+}

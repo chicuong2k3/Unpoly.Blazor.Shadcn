@@ -1,0 +1,108 @@
+@page "/components/echarts"
+@using Unpoly.Blazor.Shadcn.ECharts.Components
+@using Unpoly.Blazor.Shadcn.ECharts.Models
+
+<PageTitle>ECharts — Unpoly.Blazor.Shadcn</PageTitle>
+
+<h1 class="doc-h1">ECharts</h1>
+<p class="doc-lede">
+    Apache ECharts for Blazor static SSR + Unpoly, <em>separated from the core</em> so the core ships no charting JS.
+    30 chart components — Lumeo parity — from Bar to Word Cloud. The server renders a <code>&lt;div data-echarts&gt;</code> with <code>data-options</code> JSON; the compiler in
+    <code>_content/Unpoly.Blazor.Shadcn.ECharts/echarts.js</code> creates, resizes and disposes the instance on every fragment swap.
+</p>
+<p class="doc-note">
+    Core <a href="/components/chart"><code>Chart</code></a> stays container-only (CSS variables + table fallback). Reach for
+    <code>EChart</code> when you need axes, zoom, or a line through irregular time. Install the separate package
+    <code>Unpoly.Blazor.Shadcn.ECharts</code> to opt in.
+</p>
+
+<div class="mt-4 rounded-md border bg-muted/30 p-4 text-sm">
+    <p class="font-medium">Wiring a head</p>
+    <pre class="mt-2 overflow-x-auto text-xs"><code>@@* App.razor — one script; echarts.min.js, the plugins and
+the world map are lazy-loaded by the compiler, only when a chart needs them *@@
+&lt;script src="_content/Unpoly.Blazor.Shadcn.ECharts/echarts.js" defer&gt;&lt;/script&gt;
+
+@@* app.css *@@
+@@source "../../Unpoly.Blazor.Shadcn.ECharts/Components/**/*.razor";
+@@source "../../Unpoly.Blazor.Shadcn.ECharts/wwwroot/echarts.js";</code></pre>
+    <p class="mt-2 text-muted-foreground">
+        Colors default to <code>--chart-1..5</code> so a theme change moves the chart without re-serializing.
+        Override with <code>Colors</code> or <code>OptionOverride</code>. Tooltip is no longer clipped — container is <code>overflow-visible</code> (fixed hover hidden).
+    </p>
+</div>
+
+<h2 class="doc-h2">Free-form (echarts.org homepage example)</h2>
+<p class="doc-note">Pass the same option object the ECharts docs show — it is JSON.</p>
+<Example Source="EChartsBasic.razor"><EChartsBasic /></Example>
+
+<h2 class="doc-h2">Cartesian — Bar / Line / Area / Scatter</h2>
+<div class="grid gap-6 md:grid-cols-2">
+    <div><h3 class="font-medium mb-2">Bar</h3><Example Source="EChartsBarExample.razor"><EChartsBarExample /></Example></div>
+    <div><h3 class="font-medium mb-2">Line</h3><Example Source="EChartsLineExample.razor"><EChartsLineExample /></Example></div>
+    <div><h3 class="font-medium mb-2">Area</h3><Example Source="EChartsAreaExample.razor"><EChartsAreaExample /></Example></div>
+    <div><h3 class="font-medium mb-2">Scatter</h3><Example Source="EChartsScatterExample.razor"><EChartsScatterExample /></Example></div>
+</div>
+
+<h2 class="doc-h2">Cartesian — Extended</h2>
+<div class="grid gap-6 md:grid-cols-2">
+    <div><h3 class="font-medium mb-2">Effect Scatter</h3><Example Source="EChartsEffectScatter.razor"><EChartsEffectScatter /></Example></div>
+    <div><h3 class="font-medium mb-2">Waterfall</h3><Example Source="EChartsWaterfall.razor"><EChartsWaterfall /></Example></div>
+    <div><h3 class="font-medium mb-2">Pictorial Bar</h3><Example Source="EChartsPictorialBar.razor"><EChartsPictorialBar /></Example></div>
+    <div><h3 class="font-medium mb-2">Mixed (Bar + Line)</h3><Example Source="EChartsMixed.razor"><EChartsMixed /></Example></div>
+</div>
+
+<h2 class="doc-h2">Financial</h2>
+<div class="grid gap-6 md:grid-cols-2">
+    <div><h3 class="font-medium mb-2">Candlestick</h3><Example Source="EChartsCandlestick.razor"><EChartsCandlestick /></Example></div>
+    <div><h3 class="font-medium mb-2">BoxPlot</h3><Example Source="EChartsBoxPlot.razor"><EChartsBoxPlot /></Example></div>
+</div>
+
+<h2 class="doc-h2">Proportional</h2>
+<div class="grid gap-6 md:grid-cols-2">
+    <div><h3 class="font-medium mb-2">Pie</h3><Example Source="EChartsPieExample.razor"><EChartsPieExample /></Example></div>
+    <div><h3 class="font-medium mb-2">Donut</h3><Example Source="EChartsDonutExample.razor"><EChartsDonutExample /></Example></div>
+    <div><h3 class="font-medium mb-2">Nightingale (Rose)</h3><Example Source="EChartsNightingale.razor"><EChartsNightingale /></Example></div>
+    <div><h3 class="font-medium mb-2">Funnel</h3><Example Source="EChartsFunnel.razor"><EChartsFunnel /></Example></div>
+</div>
+
+<h2 class="doc-h2">Radial & Polar</h2>
+<div class="grid gap-6 md:grid-cols-2">
+    <div><h3 class="font-medium mb-2">Radar</h3><Example Source="EChartsRadarExample.razor"><EChartsRadarExample /></Example></div>
+    <div><h3 class="font-medium mb-2">Gauge</h3><Example Source="EChartsGauge.razor"><EChartsGauge /></Example></div>
+    <div><h3 class="font-medium mb-2">Radial (Progress)</h3><Example Source="EChartsRadial.razor"><EChartsRadial /></Example></div>
+    <div><h3 class="font-medium mb-2">Polar Bar</h3><Example Source="EChartsPolarBar.razor"><EChartsPolarBar /></Example></div>
+    <div><h3 class="font-medium mb-2">Liquid Fill</h3><Example Source="EChartsLiquidFill.razor"><EChartsLiquidFill /></Example></div>
+</div>
+
+<h2 class="doc-h2">Hierarchical</h2>
+<div class="grid gap-6 md:grid-cols-2">
+    <div><h3 class="font-medium mb-2">Treemap</h3><Example Source="EChartsTreemap.razor"><EChartsTreemap /></Example></div>
+    <div><h3 class="font-medium mb-2">Sunburst</h3><Example Source="EChartsSunburst.razor"><EChartsSunburst /></Example></div>
+    <div><h3 class="font-medium mb-2">Tree</h3><Example Source="EChartsTree.razor"><EChartsTree /></Example></div>
+</div>
+
+<h2 class="doc-h2">Relationship & Flow</h2>
+<div class="grid gap-6 md:grid-cols-2">
+    <div><h3 class="font-medium mb-2">Graph</h3><Example Source="EChartsGraph.razor"><EChartsGraph /></Example></div>
+    <div><h3 class="font-medium mb-2">Sankey</h3><Example Source="EChartsSankey.razor"><EChartsSankey /></Example></div>
+    <div><h3 class="font-medium mb-2">Parallel</h3><Example Source="EChartsParallel.razor"><EChartsParallel /></Example></div>
+</div>
+
+<h2 class="doc-h2">Specialized</h2>
+<div class="grid gap-6 md:grid-cols-2">
+    <div><h3 class="font-medium mb-2">Heatmap</h3><Example Source="EChartsHeatmap.razor"><EChartsHeatmap /></Example></div>
+    <div><h3 class="font-medium mb-2">Calendar Heatmap</h3><Example Source="EChartsCalendarHeatmap.razor"><EChartsCalendarHeatmap /></Example></div>
+    <div><h3 class="font-medium mb-2">Theme River</h3><Example Source="EChartsThemeRiver.razor"><EChartsThemeRiver /></Example></div>
+    <div><h3 class="font-medium mb-2">Word Cloud</h3><Example Source="EChartsWordCloud.razor"><EChartsWordCloud /></Example></div>
+    <div class="md:col-span-2"><h3 class="font-medium mb-2">Geo Map</h3><Example Source="EChartsGeoMap.razor"><EChartsGeoMap /></Example></div>
+</div>
+
+<h2 class="doc-h2">API — Common props (Lumeo parity)</h2>
+<p class="doc-note">Every typed chart exposes: <code>Categories/Series/Data</code>, <code>ShowLegend</code>, <code>ShowTooltip</code>, <code>Colors</code>, <code>DataZoom</code>, <code>Toolbox</code>, <code>ShowDataLabels</code>, <code>AnimationDuration/Easing</code>, <code>IsLoading</code>, <code>AccessibilityLayer</code>, <code>OptionOverride</code> escape hatch, <code>Width/Height/Theme</code>, plus <code>EChartThreshold</code>/<code>EChartReferenceZone</code> as declarative <code>markLine/markArea</code>.</p>
+<div class="rounded-md border p-3 text-xs"><code>&lt;EBarChart Categories="@@cats" Series="@@series" ShowLegend DataZoom Toolbox OptionOverride="@@dict" IsLoading="@@loading" /&gt;</code></div>
+
+<h2 class="doc-h2">Why separate?</h2>
+<p class="doc-note">
+    The core library is copy-in source with no charting dependency. <code>echarts.min.js</code> is ~1MB minified.
+    Keeping it in <code>Unpoly.Blazor.Shadcn.ECharts</code> means apps that use only the table fallback never download it.
+</p>

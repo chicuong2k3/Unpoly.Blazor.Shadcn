@@ -1,0 +1,31 @@
+@page "/components/badge"
+
+<PageTitle>Badge — Unpoly.Blazor.Shadcn</PageTitle>
+
+<h1 class="doc-h1">Badge</h1>
+<p class="doc-lede">
+    A small status label. Six variants and a link form, and it is <code>rounded-full</code> here
+    as upstream has been since the new-york v4 refresh.
+</p>
+
+<h2 class="doc-h2">Variant</h2>
+<Example Source="BadgeVariants.razor"><BadgeVariants /></Example>
+
+<h2 class="doc-h2">With Icon</h2>
+<Example Source="BadgeWithIcon.razor"><BadgeWithIcon /></Example>
+
+<h2 class="doc-h2">With Spinner</h2>
+<Example Source="BadgeWithSpinner.razor"><BadgeWithSpinner /></Example>
+
+<h2 class="doc-h2">Link</h2>
+<p class="doc-note">
+    <code>Href</code> renders a real <code>&lt;a&gt;</code>, which is what shadcn's
+    <code>asChild</code> is for. A middle click opens it in a tab; a click handler would not.
+</p>
+<Example Source="BadgeLink.razor"><BadgeLink /></Example>
+
+<h2 class="doc-h2">Custom Colors</h2>
+<Example Source="BadgeCustomColors.razor"><BadgeCustomColors /></Example>
+
+<h2 class="doc-h2">RTL</h2>
+<Example Source="BadgeRtl.razor"><BadgeRtl /></Example>

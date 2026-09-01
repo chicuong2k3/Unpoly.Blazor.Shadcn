@@ -1,0 +1,29 @@
+@page "/components/progress"
+
+<PageTitle>Progress — Unpoly.Blazor.Shadcn</PageTitle>
+
+<h1 class="doc-h1">Progress</h1>
+<p class="doc-lede">
+    A real <code>role="progressbar"</code> with its value in the attributes, so the number is
+    announced rather than merely drawn.
+</p>
+
+<h2 class="doc-h2">Basic</h2>
+<Example Source="ProgressExample.razor"><ProgressExample /></Example>
+
+<h2 class="doc-h2">Label</h2>
+<Example Source="ProgressLabel.razor"><ProgressLabel /></Example>
+
+<h2 class="doc-h2">Controlled</h2>
+<p class="doc-note">
+    The bar follows the slider beside it. The slider is a real <code>&lt;input type="range"&gt;</code>,
+    so it posts, and one attribute names the bar it reports into.
+</p>
+<Example Source="ProgressControlled.razor"><ProgressControlled /></Example>
+
+<h2 class="doc-h2">RTL</h2>
+<p class="doc-note">
+    The bar fills from the other edge without being told: the indicator is positioned with
+    <code>inset-inline-start</code>, not <code>left</code>.
+</p>
+<Example Source="ProgressRtl.razor"><ProgressRtl /></Example>

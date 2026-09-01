@@ -1,0 +1,44 @@
+@page "/components/checkbox"
+
+<PageTitle>Checkbox — Unpoly.Blazor.Shadcn</PageTitle>
+
+<h1 class="doc-h1">Checkbox</h1>
+<p class="doc-lede">
+    A real <code>&lt;input type="checkbox"&gt;</code>, styled. Radix draws a button with a hidden
+    input beside it; on static SSR the real input is the only thing that posts and the only thing
+    that can be focused, so it stays and the tick is a mask on its own <code>::after</code>.
+</p>
+
+<h2 class="doc-h2">Basic</h2>
+<Example Source="CheckboxBasic.razor"><CheckboxBasic /></Example>
+
+<h2 class="doc-h2">Checked State</h2>
+<p class="doc-note">
+    Three states, and the third is the platform's: <code>indeterminate</code> is a DOM property
+    rather than an attribute, which is why a parent box whose children disagree is set by a
+    compiler and not by markup.
+</p>
+<Example Source="CheckboxCheckedState.razor"><CheckboxCheckedState /></Example>
+
+<h2 class="doc-h2">Description</h2>
+<Example Source="CheckboxDescription.razor"><CheckboxDescription /></Example>
+
+<h2 class="doc-h2">Disabled</h2>
+<Example Source="CheckboxDisabled.razor"><CheckboxDisabled /></Example>
+
+<h2 class="doc-h2">Invalid State</h2>
+<Example Source="CheckboxInvalid.razor"><CheckboxInvalid /></Example>
+
+<h2 class="doc-h2">Group</h2>
+<p class="doc-note">
+    Several boxes with one name post a list, which is how HTML has always done it. The
+    <code>&lt;fieldset&gt;</code> is what names the group — without it a screen reader announces
+    three unrelated checkboxes.
+</p>
+<Example Source="CheckboxGroup.razor"><CheckboxGroup /></Example>
+
+<h2 class="doc-h2">Table</h2>
+<Example Source="CheckboxTable.razor"><CheckboxTable /></Example>
+
+<h2 class="doc-h2">RTL</h2>
+<Example Source="CheckboxRtl.razor"><CheckboxRtl /></Example>

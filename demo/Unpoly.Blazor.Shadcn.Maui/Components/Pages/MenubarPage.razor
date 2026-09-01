@@ -1,0 +1,32 @@
+@page "/components/menubar"
+
+<PageTitle>Menubar — Unpoly.Blazor.Shadcn</PageTitle>
+
+<h1 class="doc-h1">Menubar</h1>
+<p class="doc-lede">
+    Once any menu is open, hovering another opens that one instead of doing nothing. That is what
+    makes a menubar feel like a menubar, and it is the only part of it that is not free — the
+    panels themselves are the same <code>[popover]</code> as a dropdown.
+</p>
+
+<h2 class="doc-h2">Basic</h2>
+<Example Source="MenubarExample.razor"><MenubarExample /></Example>
+
+<h2 class="doc-h2">With Icons</h2>
+<Example Source="MenubarWithIcons.razor"><MenubarWithIcons /></Example>
+
+<h2 class="doc-h2">Checkbox</h2>
+<Example Source="MenubarCheckbox.razor"><MenubarCheckbox /></Example>
+
+<h2 class="doc-h2">Radio</h2>
+<Example Source="MenubarRadio.razor"><MenubarRadio /></Example>
+
+<h2 class="doc-h2">Submenu</h2>
+<p class="doc-note">
+    Right opens, Left closes, Escape closes the lot — the APG's rule, and what makes a nested
+    menubar usable with no pointer at all.
+</p>
+<Example Source="MenubarSubmenu.razor"><MenubarSubmenu /></Example>
+
+<h2 class="doc-h2">RTL</h2>
+<Example Source="MenubarRtl.razor"><MenubarRtl /></Example>

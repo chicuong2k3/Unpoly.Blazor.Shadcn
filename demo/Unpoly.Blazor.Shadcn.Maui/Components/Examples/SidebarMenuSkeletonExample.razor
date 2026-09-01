@@ -1,0 +1,21 @@
+@* What a menu looks like before it has any rows. The widths are random per row upstream, which
+   is what keeps a loading list from reading as a striped pattern; here they are given, because
+   the server renders this and a random width would change on every request. *@
+<SidebarFrame Height="280px">
+    <Sidebar Collapsible="icon">
+        <SidebarContent>
+            <SidebarGroup>
+                <SidebarGroupLabel>Loading</SidebarGroupLabel>
+                <SidebarGroupContent>
+                    <SidebarMenu>
+                        @foreach (var width in new[] { "72%", "56%", "84%", "64%", "76%" })
+                        {
+                            <SidebarMenuItem><SidebarMenuSkeleton ShowIcon Width="@width" /></SidebarMenuItem>
+                        }
+                    </SidebarMenu>
+                </SidebarGroupContent>
+            </SidebarGroup>
+        </SidebarContent>
+    </Sidebar>
+    <SidebarInset Class="p-4 text-sm text-muted-foreground">Five rows that are not there yet.</SidebarInset>
+</SidebarFrame>

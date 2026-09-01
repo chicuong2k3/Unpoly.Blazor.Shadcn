@@ -1,0 +1,8 @@
+@using Unpoly.Blazor.Shadcn.ECharts.Components
+@* Parallel: each row is a point across a set of axes. *@
+<EParallelChart Height="280px" Data="@data" ParallelAxis="@axis" />
+
+@code {
+    object axis = new[] { new { dim = 0, name = "Price" }, new { dim = 1, name = "Weight" }, new { dim = 2, name = "Rating" } };
+    object data = new[] { new[] { 1, 10, 3 }, new[] { 2, 20, 4 }, new[] { 3, 15, 2 } };
+}

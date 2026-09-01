@@ -1,0 +1,59 @@
+@page "/components/dropdown-menu"
+
+<PageTitle>Dropdown Menu — Unpoly.Blazor.Shadcn</PageTitle>
+
+<h1 class="doc-h1">Dropdown Menu</h1>
+<p class="doc-lede">
+    Built on the popover API, which supplies the top layer, light dismiss and Escape. The panel is
+    promoted out of the document flow, so it escapes any <code>overflow: hidden</code> it is
+    written inside — that is the whole reason to use it rather than an absolutely positioned div.
+</p>
+<p class="doc-note">
+    <code>popovertarget</code> opens it before any JavaScript has run, and keeps opening it if
+    <code>ui.js</code> fails to load. The compiler only adds the positioning and the roving focus.
+</p>
+
+<h2 class="doc-h2">Basic</h2>
+<Example Source="DropdownBasic.razor"><DropdownBasic /></Example>
+
+<h2 class="doc-h2">Shortcuts</h2>
+<Example Source="DropdownShortcuts.razor"><DropdownShortcuts /></Example>
+
+<h2 class="doc-h2">Icons</h2>
+<Example Source="DropdownIcons.razor"><DropdownIcons /></Example>
+
+<h2 class="doc-h2">Checkboxes</h2>
+<p class="doc-note">
+    A real <code>&lt;input type="checkbox"&gt;</code> in the row, so the menu posts with the form
+    it is in and the tick is the platform's.
+</p>
+<Example Source="DropdownStateful.razor"><DropdownStateful /></Example>
+
+<h2 class="doc-h2">Checkboxes Icons</h2>
+<Example Source="DropdownCheckboxIcons.razor"><DropdownCheckboxIcons /></Example>
+
+<h2 class="doc-h2">Radio Group</h2>
+<Example Source="DropdownRadioIcons.razor"><DropdownRadioIcons /></Example>
+
+<h2 class="doc-h2">Radio Icons</h2>
+<Example Source="DropdownRadioIcons.razor"><DropdownRadioIcons /></Example>
+
+<h2 class="doc-h2">Submenu</h2>
+<p class="doc-note">
+    Right opens, Left closes, Escape closes the lot — the APG's keys, bound in
+    <code>ui.js</code> because <code>[popover]</code> has no nesting of its own. The panel opens
+    <i>beside</i> its row rather than below it, or it lands on top of the row you came from.
+</p>
+<Example Source="DropdownSubExample.razor"><DropdownSubExample /></Example>
+
+<h2 class="doc-h2">Destructive</h2>
+<Example Source="DropdownDestructive.razor"><DropdownDestructive /></Example>
+
+<h2 class="doc-h2">Avatar</h2>
+<Example Source="DropdownAvatar.razor"><DropdownAvatar /></Example>
+
+<h2 class="doc-h2">Complex</h2>
+<Example Source="DropdownComplex.razor"><DropdownComplex /></Example>
+
+<h2 class="doc-h2">RTL</h2>
+<Example Source="DropdownRtl.razor"><DropdownRtl /></Example>

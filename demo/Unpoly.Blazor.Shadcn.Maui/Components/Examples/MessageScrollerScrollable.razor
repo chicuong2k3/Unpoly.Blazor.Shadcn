@@ -1,0 +1,55 @@
+@* Where the reader can still go, published as state so a footer can say it in CSS alone. The
+   root carries data-can-scroll-start and data-can-scroll-end; shadcn reads the same two booleans
+   through useMessageScrollerScrollable.
+
+   The footer here has all four sentences in the markup and shows one of them. No script picks
+   which — the attributes on the root do, through the group-data variants. *@
+<div class="mx-auto flex w-full max-w-sm flex-col gap-4">
+    <Card Class="h-140 w-full gap-0 overflow-hidden">
+        <CardHeader Class="gap-1 border-b">
+            <CardTitle>Scroll Status</CardTitle>
+            <CardDescription>
+                Where the reader can go, based on the current scroll position.
+            </CardDescription>
+        </CardHeader>
+
+        <MessageScroller OpenAt="start" Class="min-h-0 flex-1">
+            <CardContent Class="flex-1 overflow-hidden p-0">
+                <MessageScrollerViewport>
+                    <MessageScrollerContent Class="gap-4 p-(--card-spacing)">
+                        <ChatTranscript Turns="Thread" />
+                    </MessageScrollerContent>
+                </MessageScrollerViewport>
+                <MessageScrollerButton Direction="start" />
+                <MessageScrollerButton />
+            </CardContent>
+
+            <CardFooter Class="justify-center border-t text-center text-sm text-muted-foreground">
+                <span class="hidden group-data-[can-scroll-start=false]/message-scroller:group-data-[can-scroll-end=true]/message-scroller:block">
+                    You are at the top. You can only scroll down.
+                </span>
+                <span class="hidden group-data-[can-scroll-start=true]/message-scroller:group-data-[can-scroll-end=false]/message-scroller:block">
+                    You are at the bottom. You can only scroll up.
+                </span>
+                <span class="hidden group-data-[can-scroll-start=true]/message-scroller:group-data-[can-scroll-end=true]/message-scroller:block">
+                    You can scroll both ways.
+                </span>
+                <span class="hidden group-data-[can-scroll-start=false]/message-scroller:group-data-[can-scroll-end=false]/message-scroller:block">
+                    All messages fit in the viewport.
+                </span>
+            </CardFooter>
+        </MessageScroller>
+    </Card>
+
+    <div class="px-0.5 text-center text-xs text-muted-foreground">
+        Scroll the transcript to see the footer update.
+    </div>
+</div>
+
+@code {
+    static readonly ChatTranscript.Turn[] Thread =
+        [.. Enumerable.Range(1, 12).Select(i => i % 2 == 1
+            ? new ChatTranscript.Turn($"scr-{i}", "user", $"Review scroll checkpoint {i}.")
+            : new ChatTranscript.Turn($"scr-{i}", "assistant",
+                $"Checkpoint {i} is synced. The two booleans update as the viewport moves.\n\nAt the first message the footer should only point down. In the middle it should say both directions are available, and at the newest message it should only point back up."))];
+}

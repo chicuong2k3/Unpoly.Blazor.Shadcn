@@ -1,0 +1,42 @@
+@* A group that folds. shadcn wraps the group in a Collapsible and makes the label its trigger;
+   here the collapsible IS a <details>, so the fold is the browser own — it works with no script,
+   it is in the page for a crawler, and the chevron turns on [open] rather than on a state
+   variable.
+
+   The <summary> has to be the FIRST CHILD of the <details>, which is why the collapsible sits
+   inside the group rather than around it: wrapped the other way the summary is a grandchild, and
+   a grandchild summary opens nothing at all. *@
+<SidebarFrame Height="340px">
+    <Sidebar Collapsible="icon">
+        <SidebarContent>
+            <SidebarGroup>
+                <Collapsible Open Class="group/collapsible">
+                    <CollapsibleTrigger>
+                        <SidebarGroupLabel Class="w-full cursor-pointer">
+                            Help
+                            <Icon Name="chevron-down"
+                                  Class="ms-auto transition-transform group-open/collapsible:rotate-180" />
+                        </SidebarGroupLabel>
+                    </CollapsibleTrigger>
+                    <CollapsibleContent>
+                        <SidebarGroupContent>
+                            <SidebarMenu>
+                                <SidebarMenuItem>
+                                    <SidebarMenuButton Href="/components/dialog">
+                                        <Icon Name="info" /><span>Support</span>
+                                    </SidebarMenuButton>
+                                </SidebarMenuItem>
+                                <SidebarMenuItem>
+                                    <SidebarMenuButton Href="/components/table">
+                                        <Icon Name="menu" /><span>Documentation</span>
+                                    </SidebarMenuButton>
+                                </SidebarMenuItem>
+                            </SidebarMenu>
+                        </SidebarGroupContent>
+                    </CollapsibleContent>
+                </Collapsible>
+            </SidebarGroup>
+        </SidebarContent>
+    </Sidebar>
+    <SidebarInset Class="p-4 text-sm text-muted-foreground">Fold the group from its own label.</SidebarInset>
+</SidebarFrame>
