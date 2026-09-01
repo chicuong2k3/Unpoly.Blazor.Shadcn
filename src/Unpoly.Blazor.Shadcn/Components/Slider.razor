@@ -26,10 +26,20 @@
        so a plain id="…" at the call site binds to the Id parameter below and never reaches the
        element. The slider rendered with no id at all, and every <label for> and <output for>
        pointing at it addressed nothing. *@
-    <input type="range" data-slot="slider" id="@Id" min="@Min" max="@Max" step="@Step"
-           value="@Value" disabled="@Disabled" data-disabled="@(Disabled ? "" : null)"
-           data-orientation="@Orientation" class="@Classes"
-           @attributes="AdditionalAttributes" />
+    @if (ValueChanged.HasDelegate)
+    {
+        <input type="range" data-slot="slider" id="@Id" min="@Min" max="@Max" step="@Step"
+               value="@Value" disabled="@Disabled" data-disabled="@(Disabled ? "" : null)"
+               data-orientation="@Orientation" class="@Classes"
+               @onchange="OnChange" @attributes="AdditionalAttributes" />
+    }
+    else
+    {
+        <input type="range" data-slot="slider" id="@Id" min="@Min" max="@Max" step="@Step"
+               value="@Value" disabled="@Disabled" data-disabled="@(Disabled ? "" : null)"
+               data-orientation="@Orientation" class="@Classes"
+               @attributes="AdditionalAttributes" />
+    }
 }
 else
 {
@@ -54,6 +64,14 @@ else
     [Parameter] public string Step { get; set; } = "1";
 
     [Parameter] public double? Value { get; set; }
+
+    /// <summary>The bound single-thumb value, from <c>@bind-Value</c>. Only rendered when binding
+    /// is in use. Its presence decides whether the slider renders value/@onchange or the splat.</summary>
+    [Parameter] public EventCallback<decimal> ValueChanged { get; set; }
+
+    async Task OnChange(ChangeEventArgs e) =>
+        await ValueChanged.InvokeAsync(
+            decimal.TryParse(e.Value?.ToString(), out var value) ? value : 0m);
 
     /// <summary>One thumb per entry, as upstream's value array. Two is a range.</summary>
     [Parameter] public double[]? Values { get; set; }

@@ -8,8 +8,16 @@
    The pressed appearance comes from `checked:` in the recipe rather than from data-state. *@
 
 <label data-slot="toggle" class="@Classes" @attributes="AdditionalAttributes">
-    <input type="checkbox" class="sr-only peer" name="@Name" value="@Value" checked="@Checked"
-           disabled="@Disabled" role="button" aria-pressed="@(Checked ? "true" : "false")" />
+    @if (CheckedChanged.HasDelegate)
+    {
+        <input type="checkbox" class="sr-only peer" name="@Name" value="@Value" checked="@Checked"
+               disabled="@Disabled" role="button" aria-pressed="@(Checked ? "true" : "false")" @onchange="OnChange" />
+    }
+    else
+    {
+        <input type="checkbox" class="sr-only peer" name="@Name" value="@Value" checked="@Checked"
+               disabled="@Disabled" role="button" aria-pressed="@(Checked ? "true" : "false")" />
+    }
     @ChildContent
 </label>
 
@@ -17,7 +25,16 @@
     [Parameter] public string? Name { get; set; }
     [Parameter] public string Value { get; set; } = "true";
     [Parameter] public bool Checked { get; set; }
+
+    /// <summary>Raises on change when bound. Its presence decides whether the component renders
+    /// checked/@onchange or lets the <c>@attributes</c> splat do it.</summary>
+    [Parameter] public EventCallback<bool> CheckedChanged { get; set; }
+
     [Parameter] public bool Disabled { get; set; }
+
+    async Task OnChange(ChangeEventArgs e) =>
+        await CheckedChanged.InvokeAsync(e.Value is not null && e.Value is not false
+            && !(e.Value is string s && s == "false"));
 
     /// <summary>default | outline</summary>
     [Parameter] public string Variant { get; set; } = "default";

@@ -4,9 +4,31 @@
    not the wrapper, is what decides membership. So <RadioGroup> is presentation only and the
    name is written on each item, as it is in plain HTML. *@
 
-<input type="radio" data-slot="radio-group-item" class="@Classes" @attributes="AdditionalAttributes" />
+@* Two-way binding via @bind / @bind-Checked. When the caller passes CheckedChanged, the input
+   renders checked="@Checked" with an @onchange that raises it. When it does not — a static
+   checked="..." or the splat — the unbound form is identical to shadcn, so the parity tests
+   see the same DOM. *@
+@if (CheckedChanged.HasDelegate)
+{
+    <input type="radio" data-slot="radio-group-item" checked="@Checked" @onchange="OnChange" class="@Classes" @attributes="AdditionalAttributes" />
+}
+else
+{
+    <input type="radio" data-slot="radio-group-item" class="@Classes" @attributes="AdditionalAttributes" />
+}
 
 @code {
+    /// <summary>The bound checked state, from <c>@bind</c>/<c>@bind-Checked</c>.</summary>
+    [Parameter] public bool Checked { get; set; }
+
+    /// <summary>Raises on change when bound. Its presence decides whether the component renders
+    /// checked/@onchange or lets the <c>@attributes</c> splat do it.</summary>
+    [Parameter] public EventCallback<bool> CheckedChanged { get; set; }
+
+    async Task OnChange(ChangeEventArgs e) =>
+        await CheckedChanged.InvokeAsync(e.Value is not null && e.Value is not false
+            && !(e.Value is string s && s == "false"));
+
     const string Base =
         "aspect-square size-4 shrink-0 rounded-full border border-input text-primary " +
         "shadow-xs transition-[color,box-shadow] outline-none focus-visible:border-ring " +

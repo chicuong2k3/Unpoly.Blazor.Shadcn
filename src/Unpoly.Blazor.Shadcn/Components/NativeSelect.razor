@@ -5,8 +5,16 @@
    long list on a phone, a form that must not depend on any script at all. *@
 
 <div data-slot="native-select-wrapper" class="relative">
-    <select data-slot="native-select" data-size="@Size" class="@Classes"
-            @attributes="AdditionalAttributes">@ChildContent</select>
+    @if (ValueChanged.HasDelegate)
+    {
+        <select data-slot="native-select" data-size="@Size" class="@Classes" value="@Value"
+                @onchange="OnChange" @attributes="AdditionalAttributes">@ChildContent</select>
+    }
+    else
+    {
+        <select data-slot="native-select" data-size="@Size" class="@Classes"
+                @attributes="AdditionalAttributes">@ChildContent</select>
+    }
     <Icon Name="chevron-down" data-slot="native-select-icon"
           Class="pointer-events-none absolute top-1/2 end-3 size-4 -translate-y-1/2 opacity-50" />
 </div>
@@ -14,6 +22,16 @@
 @code {
     /// <summary>default | sm</summary>
     [Parameter] public string Size { get; set; } = "default";
+
+    /// <summary>The bound value, from <c>@bind-Value</c>. Only rendered when binding is in use.</summary>
+    [Parameter] public string? Value { get; set; }
+
+    /// <summary>Raises on change when <c>@bind-Value</c> is used. Its presence decides whether the
+    /// component renders the bound value/onchange or lets the <c>@attributes</c> splat do it.</summary>
+    [Parameter] public EventCallback<string?> ValueChanged { get; set; }
+
+    async Task OnChange(ChangeEventArgs e) =>
+        await ValueChanged.InvokeAsync(e.Value?.ToString());
 
     const string Base =
         "h-control w-full min-w-0 appearance-none rounded-md border border-input " +

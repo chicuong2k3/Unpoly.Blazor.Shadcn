@@ -20,9 +20,18 @@
    drawn panel, the sizing the call site asked for (`max-w-[170px]`, `w-full`) has to move to the
    visible control — and guessing which classes those are by subtracting the recipe leaves
    `pr-9` and the aria-invalid rules behind to shift the wrapper's layout. *@
-<select data-slot="select" data-size="@Size" data-wrapper-class="@Class"
-        data-align-item-with-trigger="@(AlignItemWithTrigger ? null : "false")" class="@Classes"
-        @attributes="AdditionalAttributes">@ChildContent</select>
+@if (ValueChanged.HasDelegate)
+{
+    <select data-slot="select" data-size="@Size" data-wrapper-class="@Class"
+            data-align-item-with-trigger="@(AlignItemWithTrigger ? null : "false")" class="@Classes"
+            value="@Value" @onchange="OnChange" @attributes="AdditionalAttributes">@ChildContent</select>
+}
+else
+{
+    <select data-slot="select" data-size="@Size" data-wrapper-class="@Class"
+            data-align-item-with-trigger="@(AlignItemWithTrigger ? null : "false")" class="@Classes"
+            @attributes="AdditionalAttributes">@ChildContent</select>
+}
 
 @code {
     /// <summary>default | sm. ui.js copies it onto the trigger it draws.</summary>
@@ -34,6 +43,16 @@
     /// pointer. Off, the list hangs below the control like a menu.
     /// </summary>
     [Parameter] public bool AlignItemWithTrigger { get; set; } = true;
+
+    /// <summary>The bound value, from <c>@bind-Value</c>. Only rendered when binding is in use.</summary>
+    [Parameter] public string? Value { get; set; }
+
+    /// <summary>Raises on change when <c>@bind-Value</c> is used. Its presence decides whether the
+    /// component renders the bound value/onchange or lets the <c>@attributes</c> splat do it.</summary>
+    [Parameter] public EventCallback<string?> ValueChanged { get; set; }
+
+    async Task OnChange(ChangeEventArgs e) =>
+        await ValueChanged.InvokeAsync(e.Value?.ToString());
 
     const string Base =
         "";
