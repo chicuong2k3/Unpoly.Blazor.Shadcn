@@ -2,12 +2,35 @@
 
 @* shadcn/ui <Input>. Everything but `type` arrives through @attributes, exactly as shadcn
    spreads `...props` — so `name`, `value`, `placeholder`, `required`, `up-validate` and the
-   rest are written as plain HTML at the call site. *@
+   rest are written as plain HTML at the call site.
 
-<input type="@Type" data-slot="input" class="@Classes" @attributes="AdditionalAttributes" />
+   Two-way binding via `@bind-Value` is also supported. When the caller passes ValueChanged
+   (which `@bind-Value` generates), the input renders `value="@Value"` and an `@onchange` that
+   raises it. When the caller does NOT bind — it splats a static `value="..."` like the docs do —
+   the splat supplies the value and neither is emitted, so the two never conflict. *@
+
+@if (ValueChanged.HasDelegate)
+{
+    <input type="@Type" data-slot="input" class="@Classes" value="@Value"
+           @onchange="OnChange" @attributes="AdditionalAttributes" />
+}
+else
+{
+    <input type="@Type" data-slot="input" class="@Classes" @attributes="AdditionalAttributes" />
+}
 
 @code {
     [Parameter] public string Type { get; set; } = "text";
+
+    /// <summary>The bound value, from <c>@bind-Value</c>. Only rendered when binding is in use.</summary>
+    [Parameter] public string? Value { get; set; }
+
+    /// <summary>Raises on change when <c>@bind-Value</c> is used. Its presence decides whether the
+    /// component renders the bound value/onchange or lets the <c>@attributes</c> splat do it.</summary>
+    [Parameter] public EventCallback<string?> ValueChanged { get; set; }
+
+    async Task OnChange(ChangeEventArgs e) =>
+        await ValueChanged.InvokeAsync(e.Value?.ToString());
 
     const string Base =
         "h-control w-full min-w-0 rounded-md border border-input bg-transparent px-3 py-1 " +
