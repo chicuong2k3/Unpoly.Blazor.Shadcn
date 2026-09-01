@@ -4,13 +4,82 @@
 /* Tokens, the @theme inline indirection, and the behaviour CSS that stands in for Radix. */
 @import "../../../src/Unpoly.Blazor.Shadcn/Styles/ui.css";
 
+/* A theme is a [data-theme] block, which is what lets them all load at once and be switched by
+   an attribute rather than by a rebuild. That works because every token is a runtime custom
+   property — nothing a theme sets is resolved by Tailwind at build time. Same set as the web
+   head, so the theme picker here offers the same names and the same look. */
+@import "../../../themes/vercel.css";
+@import "../../../themes/supabase.css";
+@import "../../../themes/modern-minimal.css";
+@import "../../../themes/notebook.css";
+@import "../../../themes/catppuccin.css";
+@import "../../../themes/claymorphism.css";
+@import "../../../themes/amethyst-haze.css";
+@import "../../../themes/ocean-breeze.css";
+@import "../../../themes/tangerine.css";
+@import "../../../themes/bubblegum.css";
+@import "../../../themes/perpetuity.css";
+@import "../../../themes/t3-chat.css";
+@import "../../../themes/stripe.css";
+@import "../../../themes/apple.css";
+@import "../../../themes/airbnb.css";
+@import "../../../themes/claude.css";
+@import "../../../themes/cursor.css";
+@import "../../../themes/duolingo.css";
+@import "../../../themes/ease-health.css";
+@import "../../../themes/elevenlabs.css";
+@import "../../../themes/fly.css";
+@import "../../../themes/linear.css";
+@import "../../../themes/raycast.css";
+@import "../../../themes/resend.css";
+@import "../../../themes/superhuman.css";
+@import "../../../themes/todoist.css";
+@import "../../../themes/wise.css";
+@import "../../../themes/wiz.css";
+@import "../../../themes/amber-minimal.css";
+@import "../../../themes/bold-tech.css";
+@import "../../../themes/clean-slate.css";
+@import "../../../themes/cosmic-night.css";
+@import "../../../themes/elegant-luxury.css";
+@import "../../../themes/kodama-grove.css";
+@import "../../../themes/midnight-bloom.css";
+@import "../../../themes/mocha-mousse.css";
+@import "../../../themes/neo-brutalism.css";
+@import "../../../themes/northern-lights.css";
+@import "../../../themes/pastel-dreams.css";
+@import "../../../themes/quantum-rose.css";
+@import "../../../themes/retro-arcade.css";
+@import "../../../themes/sage-garden.css";
+@import "../../../themes/soft-pop.css";
+@import "../../../themes/solar-dusk.css";
+@import "../../../themes/starry-night.css";
+@import "../../../themes/sunset-horizon.css";
+@import "../../../themes/vintage-paper.css";
+@import "../../../themes/violet-bloom.css";
+@import "../../../themes/github-dark.css";
+@import "../../../themes/github-light.css";
+@import "../../../themes/discord.css";
+@import "../../../themes/dracula.css";
+@import "../../../themes/nord.css";
+@import "../../../themes/spotify.css";
+@import "../../../themes/slack.css";
+@import "../../../themes/notion.css";
+@import "../../../themes/cupertino.css";
+@import "../../../themes/fluent.css";
+@import "../../../themes/customizer.css";
+
 /* The CLI does not scan .razor on its own. ui.js is here because the Select panel, the
    dropdown and the confirm dialog are assembled in JavaScript out of class strings that
-   exist nowhere else — leave it out and those three are unstyled in a Release build only. */
+   exist nowhere else — leave it out and those three are unstyled in a Release build only.
+   ECharts/Maps are here so their markup- and JS-built utilities are emitted too. */
 @source "../Components/**/*.razor";
 @source "../../../src/Unpoly.Blazor.Shadcn/Components/**/*.razor";
 @source "../../../src/Unpoly.Blazor.Shadcn/ButtonVariants.cs";
 @source "../../../src/Unpoly.Blazor.Shadcn/wwwroot/ui.js";
+@source "../../../src/Unpoly.Blazor.Shadcn.ECharts/Components/**/*.razor";
+@source "../../../src/Unpoly.Blazor.Shadcn.ECharts/wwwroot/echarts.js";
+@source "../../../src/Unpoly.Blazor.Shadcn.Maps/Components/**/*.razor";
+@source "../../../src/Unpoly.Blazor.Shadcn.Maps/wwwroot/map/map.js";
 
 @layer base {
     /* A WebView is not a browser tab: no rubber-band scroll, no text selection by accident. */
