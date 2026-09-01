@@ -1,0 +1,17 @@
+@* Radix keeps checked state in React. Here each row contains a real input,
+   so a menu inside a form posts with it — and works with scripting off. *@
+<DropdownMenu>
+    <DropdownMenuTrigger Target="demo-menu-2">Columns<Icon Name="chevron-down" /></DropdownMenuTrigger>
+
+    <DropdownMenuContent Id="demo-menu-2" Align="start">
+        <DropdownMenuLabel Inset>Visible</DropdownMenuLabel>
+        <DropdownMenuCheckboxItem Name="col" Value="status" Checked>Status</DropdownMenuCheckboxItem>
+        <DropdownMenuCheckboxItem Name="col" Value="total">Total</DropdownMenuCheckboxItem>
+        <DropdownMenuSeparator />
+        <DropdownMenuLabel Inset>Density</DropdownMenuLabel>
+        <DropdownMenuRadioGroup>
+            <DropdownMenuRadioItem Name="density" Value="cosy" Checked>Cosy</DropdownMenuRadioItem>
+            <DropdownMenuRadioItem Name="density" Value="compact">Compact</DropdownMenuRadioItem>
+        </DropdownMenuRadioGroup>
+    </DropdownMenuContent>
+</DropdownMenu>

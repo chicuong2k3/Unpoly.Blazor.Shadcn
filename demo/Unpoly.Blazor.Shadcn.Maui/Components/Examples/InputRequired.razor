@@ -1,0 +1,19 @@
+@* `required` is the validation. The browser refuses to submit and says why, in the reader own
+   language, before a request is made — and the server checks it again, because a client-side
+   rule is a convenience and never a guarantee. *@
+<form method="post" action="/account" class="w-[360px]">
+    <AntiforgeryToken />
+    <FieldGroup>
+        <Field>
+            <FieldLabel For="rq-email">Email</FieldLabel>
+            <Input id="rq-email" name="email" type="email" required />
+        </Field>
+        <Field>
+            <FieldLabel For="rq-pw">Password</FieldLabel>
+            <Input id="rq-pw" name="password" type="password" required minlength="12"
+                   autocomplete="new-password" />
+            <FieldDescription>Twelve characters or more.</FieldDescription>
+        </Field>
+        <Button Type="submit">Create the account</Button>
+    </FieldGroup>
+</form>

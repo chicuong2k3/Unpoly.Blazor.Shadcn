@@ -1,0 +1,10 @@
+@* Vertical is layout classes on the group. The items are radios either way, so the arrow keys
+   move between them without being told which direction the group runs. *@
+<ToggleGroup Variant="outline" Class="w-40 flex-col items-stretch" aria-label="View">
+    <ToggleGroupItem Name="tgv" Value="grid" Variant="outline" Checked>
+        <Icon Name="layout-grid" />Grid
+    </ToggleGroupItem>
+    <ToggleGroupItem Name="tgv" Value="list" Variant="outline">
+        <Icon Name="menu" />List
+    </ToggleGroupItem>
+</ToggleGroup>

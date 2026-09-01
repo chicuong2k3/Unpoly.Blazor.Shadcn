@@ -1,0 +1,113 @@
+@* The open state lives in a `sidebar_state` cookie, which the server reads and passes to
+   SidebarProvider — so the first paint is already right and there is no flash of a sidebar
+   opening itself. ui.js only keeps the two in step afterwards.
+
+   [up-nav] marks the current row: Unpoly compares each href with the address bar, which keeps
+   working after a fragment swap because the swap is what changes the address bar. *@
+@* A sidebar is position:fixed, because in a real app it IS the left edge of the window. Inside a
+   documentation page that means it escapes onto the page and covers the site's own navigation —
+   so this example gives it a containing block of its own. `transform` is what does that: any
+   transformed ancestor becomes the containing block for a fixed descendant, which is a twenty-
+   year-old CSS rule and the only way to bound one without rewriting the component.
+
+   Nothing here belongs in an application. There the sidebar IS the window's edge. *@
+<div class="w-full overflow-hidden rounded-lg border" style="transform: translateZ(0)">
+    <SidebarProvider Open Class="min-h-[420px] items-start">
+        <Sidebar Collapsible="icon">
+            <SidebarHeader>
+                <SidebarMenu>
+                    <SidebarMenuItem>
+                        <SidebarMenuButton Size="lg" Href="/">
+                            <Icon Name="circle" />
+                            <span class="font-medium">Acme Inc</span>
+                        </SidebarMenuButton>
+                    </SidebarMenuItem>
+                </SidebarMenu>
+                <SidebarInput placeholder="Search…" aria-label="Search the sidebar" />
+            </SidebarHeader>
+
+            <SidebarContent up-nav>
+                <SidebarGroup>
+                    <SidebarGroupLabel>Platform</SidebarGroupLabel>
+                    <SidebarGroupAction AriaLabel="Add a project"><Icon Name="plus" /></SidebarGroupAction>
+                    <SidebarGroupContent>
+                        <SidebarMenu>
+                            @foreach (var (label, icon, href, badge) in Rows)
+                            {
+                                <SidebarMenuItem>
+                                    <SidebarMenuButton Href="@href">
+                                        <Icon Name="@icon" /><span>@label</span>
+                                    </SidebarMenuButton>
+                                    @if (badge is not null)
+                                    {
+                                        <SidebarMenuBadge>@badge</SidebarMenuBadge>
+                                    }
+                                    <SidebarMenuAction AriaLabel="@($"More actions for {label}")" ShowOnHover>
+                                        <Icon Name="ellipsis" />
+                                    </SidebarMenuAction>
+                                </SidebarMenuItem>
+                            }
+
+                            <SidebarMenuItem>
+                                <SidebarMenuButton Href="/components/table">
+                                    <Icon Name="menu" /><span>Reports</span>
+                                </SidebarMenuButton>
+                                <SidebarMenuSub>
+                                    <SidebarMenuSubItem>
+                                        <SidebarMenuSubButton Href="/components/table">Revenue</SidebarMenuSubButton>
+                                    </SidebarMenuSubItem>
+                                    <SidebarMenuSubItem>
+                                        <SidebarMenuSubButton Href="/components/badge" Size="sm">Churn</SidebarMenuSubButton>
+                                    </SidebarMenuSubItem>
+                                </SidebarMenuSub>
+                            </SidebarMenuItem>
+                        </SidebarMenu>
+                    </SidebarGroupContent>
+                </SidebarGroup>
+
+                <SidebarSeparator />
+
+                <SidebarGroup>
+                    <SidebarGroupLabel>Still loading</SidebarGroupLabel>
+                    <SidebarGroupContent>
+                        <SidebarMenuSkeleton ShowIcon Width="60%" />
+                        <SidebarMenuSkeleton ShowIcon Width="80%" />
+                    </SidebarGroupContent>
+                </SidebarGroup>
+            </SidebarContent>
+
+            <SidebarFooter>
+                <SidebarMenu>
+                    <SidebarMenuItem>
+                        <SidebarMenuButton Href="/theming">
+                            <Icon Name="settings" /><span>Settings</span>
+                        </SidebarMenuButton>
+                    </SidebarMenuItem>
+                </SidebarMenu>
+            </SidebarFooter>
+
+            <SidebarRail />
+        </Sidebar>
+
+        <SidebarInset Class="p-4">
+            <div class="flex items-center gap-2">
+                <SidebarTrigger />
+                <Separator Orientation="vertical" Class="h-4" />
+                <span class="text-sm font-medium">Dashboard</span>
+            </div>
+            <p class="mt-4 max-w-prose text-sm text-muted-foreground">
+                Collapse the sidebar and reload the page: it stays collapsed, because the state is
+                a cookie the server reads rather than anything held in the browser.
+            </p>
+        </SidebarInset>
+    </SidebarProvider>
+</div>
+
+@code {
+    static readonly (string Label, string Icon, string Href, string? Badge)[] Rows =
+    [
+        ("Inbox", "info", "/components/card", "12"),
+        ("Projects", "folder", "/components/layout", null),
+        ("Team", "eye", "/components/avatar", null),
+    ];
+}

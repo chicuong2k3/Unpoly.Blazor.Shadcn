@@ -1,0 +1,15 @@
+@* Without the frame. The scroller is behaviour rather than appearance — overflow-anchor and a
+   button — so stripping the border and the padding leaves it working. *@
+<MessageScroller Class="relative h-56 w-full max-w-lg">
+    <MessageScrollerViewport Class="h-full">
+        <MessageScrollerContent Class="flex flex-col gap-2">
+            @foreach (var n in Enumerable.Range(1, 12))
+            {
+                <MessageScrollerItem Class="text-sm text-muted-foreground">
+                    Line @n — long enough to be worth scrolling past.
+                </MessageScrollerItem>
+            }
+        </MessageScrollerContent>
+    </MessageScrollerViewport>
+    <MessageScrollerButton Class="absolute right-2 bottom-2" />
+</MessageScroller>

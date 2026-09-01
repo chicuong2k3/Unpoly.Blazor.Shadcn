@@ -1,0 +1,28 @@
+@* Structurally a Sheet — a native <dialog>, so the focus trap, Escape and the backdrop are the
+   platform's. What a drawer adds is that you can drag it shut, which on a phone is the gesture
+   people try before they look for a close button. *@
+<DrawerTrigger Target="drawer-demo">Open the drawer</DrawerTrigger>
+
+<Drawer Id="drawer-demo">
+    <DrawerHeader>
+        <DrawerTitle>Move to project</DrawerTitle>
+        <DrawerDescription>Drag it down to dismiss, or press Escape.</DrawerDescription>
+    </DrawerHeader>
+
+    <div class="px-4 pb-2">
+        <RadioGroup>
+            @foreach (var p in new[] { "Inbox", "Website redesign", "Q3 launch" })
+            {
+                <Field Orientation="horizontal">
+                    <RadioGroupItem id="@($"proj-{p}")" name="project" value="@p" />
+                    <FieldLabel For="@($"proj-{p}")">@p</FieldLabel>
+                </Field>
+            }
+        </RadioGroup>
+    </div>
+
+    <DrawerFooter>
+        <Button>Move</Button>
+        <DrawerClose>Cancel</DrawerClose>
+    </DrawerFooter>
+</Drawer>

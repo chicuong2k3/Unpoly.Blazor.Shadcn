@@ -1,0 +1,16 @@
+@* The Name is what groups radios in the DOM, so it goes on each item —
+   <RadioGroup> is presentation. That is HTML's rule, not a port decision. *@
+<RadioGroup aria-label="Plan">
+    <Label Class="flex cursor-pointer items-center gap-2.5 text-sm">
+        <RadioGroupItem name="plan" value="free" checked />
+        <span>Free</span>
+    </Label>
+    <Label Class="flex cursor-pointer items-center gap-2.5 text-sm">
+        <RadioGroupItem name="plan" value="pro" />
+        <span>Pro</span>
+    </Label>
+    <Label Class="flex cursor-pointer items-center gap-2.5 text-sm">
+        <RadioGroupItem name="plan" value="team" disabled />
+        <span class="opacity-50">Team (contact sales)</span>
+    </Label>
+</RadioGroup>

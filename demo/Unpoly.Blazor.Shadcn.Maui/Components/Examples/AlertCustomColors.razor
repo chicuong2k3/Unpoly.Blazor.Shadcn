@@ -1,0 +1,16 @@
+@* Two variants ship, and a third is a class rather than a new variant: the colours are tokens,
+   so an alert in a different key is `bg-*` and `text-*` on the root. Do it with theme tokens and
+   it follows the theme; do it with a literal colour and it does not. *@
+<div class="flex w-[460px] flex-col gap-3">
+    <Alert Class="border-amber-500/40 bg-amber-50 text-amber-900 dark:bg-amber-950/40 dark:text-amber-200">
+        <Icon Name="triangle-alert" />
+        <AlertTitle>Low stock</AlertTitle>
+        <AlertDescription>Four left in this size.</AlertDescription>
+    </Alert>
+
+    <Alert Class="border-primary/30 bg-primary/5">
+        <Icon Name="circle-check" />
+        <AlertTitle>Saved</AlertTitle>
+        <AlertDescription>Tinted with the theme's own primary, so it follows a theme change.</AlertDescription>
+    </Alert>
+</div>

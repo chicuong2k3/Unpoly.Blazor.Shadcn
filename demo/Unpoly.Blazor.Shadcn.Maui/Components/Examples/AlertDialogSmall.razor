@@ -1,0 +1,18 @@
+@* Narrower, for a question with a short answer. Size, not a class: the recipe reads data-size,
+   so `sm` is max-w-xs at every width while the default only widens at the sm breakpoint. Passing
+   `sm:max-w-sm` as a Class instead — which this used to do — leaves the recipe's own sm rule in
+   place and demos nothing. *@
+<AlertDialogTrigger Target="ad-small" Variant="outline">Show Dialog</AlertDialogTrigger>
+
+<AlertDialog Id="ad-small" Size="sm">
+    <AlertDialogHeader>
+        <AlertDialogTitle>Allow accessory to connect?</AlertDialogTitle>
+        <AlertDialogDescription>
+            Do you want to allow the USB accessory to connect to this device?
+        </AlertDialogDescription>
+    </AlertDialogHeader>
+    <AlertDialogFooter>
+        <AlertDialogCancel>Don&#39;t allow</AlertDialogCancel>
+        <AlertDialogAction>Allow</AlertDialogAction>
+    </AlertDialogFooter>
+</AlertDialog>

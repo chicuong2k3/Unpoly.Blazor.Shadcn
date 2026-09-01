@@ -1,0 +1,80 @@
+@* A feed. Each post is an <article> with a real permalink, which is what makes a post shareable
+   and indexable — a feed of divs is a feed nobody can link into.
+
+   Like and repost are POST forms targeting :origin, so the count comes from the server and one
+   button does not re-render the feed. Optimistic UI is deliberately absent: on this stack the
+   round trip is the truth, and a counter that goes up and then back down is worse than one that
+   waits 80ms. *@
+
+<div class="w-full max-w-xl space-y-4">
+    @foreach (var p in Posts)
+    {
+        <article class="rounded-lg border p-4">
+            <header class="flex items-start gap-3">
+                <Avatar><AvatarFallback>@p.Initials</AvatarFallback></Avatar>
+                <div class="min-w-0 flex-1">
+                    <p class="flex flex-wrap items-baseline gap-x-1.5 text-sm">
+                        <a href="@($"/@{p.Handle}")" class="font-medium hover:underline">@p.Name</a>
+                        <span class="text-muted-foreground">&#64;@p.Handle</span>
+                        <span class="text-muted-foreground" aria-hidden="true">·</span>
+                        <a href="@($"/posts/{p.Id}")" class="text-muted-foreground hover:underline">
+                            <time datetime="@p.At">@p.When</time>
+                        </a>
+                    </p>
+                </div>
+                <DropdownMenu>
+                    <DropdownMenuTrigger Target="@($"post-{p.Id}")" Variant="ghost" Size="icon"
+                                         aria-label="@($"Options for the post by {p.Name}")">
+                        <Icon Name="ellipsis" />
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent Id="@($"post-{p.Id}")" Align="end">
+                        <DropdownMenuItem>Copy link</DropdownMenuItem>
+                        <DropdownMenuItem>Mute @p.Name</DropdownMenuItem>
+                        <DropdownMenuSeparator />
+                        <DropdownMenuItem Variant="destructive">Report</DropdownMenuItem>
+                    </DropdownMenuContent>
+                </DropdownMenu>
+            </header>
+
+            <p class="mt-3 text-sm leading-relaxed">@p.Body</p>
+
+            <footer class="mt-3 flex items-center gap-1">
+                @foreach (var (action, icon, count, label) in Actions(p))
+                {
+                    <form method="post" action="@($"/posts/{p.Id}/{action}")" up-target=":origin">
+                        <AntiforgeryToken />
+                        <Button Variant="ghost" Type="submit" Class="text-muted-foreground" aria-label="@label">
+                            <Icon Name="@icon" /><span class="num text-xs">@count</span>
+                        </Button>
+                    </form>
+                }
+                <Button Variant="ghost" Size="icon" Class="ml-auto text-muted-foreground"
+                        Href="@($"/posts/{p.Id}/share")" up-layer="new modal" aria-label="Share">
+                    <Icon Name="share" />
+                </Button>
+            </footer>
+        </article>
+    }
+</div>
+
+@code {
+    record Post(int Id, string Name, string Handle, string Initials, string Body, string When,
+                string At, int Replies, int Reposts, int Likes);
+
+    static readonly Post[] Posts =
+    [
+        new(1, "Mai Linh", "mailinh", "ML",
+            "Shipped the new checkout. Two fewer steps and the error messages finally say what to do.",
+            "2h", "2026-03-11T08:10", 4, 12, 87),
+        new(2, "Jonas Weber", "jweber", "JW",
+            "Reminder that a table is still the best chart for eleven data points.",
+            "5h", "2026-03-11T05:40", 9, 31, 210),
+    ];
+
+    static (string Action, string Icon, int Count, string Label)[] Actions(Post p) =>
+    [
+        ("reply", "message-circle", p.Replies, $"Reply to {p.Name}"),
+        ("repost", "repeat", p.Reposts, $"Repost {p.Name}"),
+        ("like", "heart", p.Likes, $"Like the post by {p.Name}"),
+    ];
+}

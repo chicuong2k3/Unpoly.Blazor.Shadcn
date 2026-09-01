@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+    <title>Unpoly.Blazor.Shadcn.Maui</title>
+    <base href="/" />
+    <link rel="stylesheet" href="app.css" />
+    <link rel="stylesheet" href="Unpoly.Blazor.Shadcn.Maui.styles.css" />
+    <link rel="stylesheet" href="_content/Unpoly.Blazor.Shadcn/toastify/toastify.css" />
+    <link rel="stylesheet" href="_content/Unpoly.Blazor.Shadcn/airdatepicker/air-datepicker.css" />
+    <link rel="icon" href="data:,">
+
+    <!-- Unpoly is here for exactly one thing: `up.compiler`, which is the whole API surface
+         ui.js uses (29 registrations plus two `up.on`). Its navigation is NOT wanted — Blazor's
+         router owns that. Nothing needs disabling: Unpoly's followSelectors default to
+         [up-follow] only, so a plain <a href> stays Blazor's. AddUnpoly()/<UnpolyHead /> are
+         what would push 'a[href]' in, which is one reason neither appears in this project. -->
+    <script src="_content/Unpoly.Blazor/unpoly.min.js"></script>
+
+    <script>
+        // Blazor's renderer mutates the DOM directly, so Unpoly never sees an insertion and its
+        // compilers never run on it: every dropdown, dialog, tab strip and select is silently
+        // inert. Nothing logs, nothing throws — the click just does nothing.
+        //
+        // up.hello() compiles a subtree; up.destroy() runs the destructors. Both halves matter:
+        // without the removedNodes branch every navigation leaks the timers and listeners that
+        // ui.js's compilers set up, and that failure is invisible until the app feels slow.
+        addEventListener('DOMContentLoaded', () => {
+            new MutationObserver(records => {
+                for (const r of records) {
+                    for (const n of r.addedNodes)   if (n.nodeType === 1) up.hello(n)
+                    // isConnected, khong phai thua: mot compiler DI CHUYEN node (Select boc lai
+                    // <select> cua no) cung sinh ra removedNodes, va up.destroy() khong chi go
+                    // listener — no GO PHAN TU KHOI DOM. Thieu dieu kien nay thi <select> bien mat
+                    // ngay khi duoc nang cap, khong loi, khong log: cho do chi con cai label.
+                    for (const n of r.removedNodes) if (n.nodeType === 1 && !n.isConnected) up.destroy(n)
+                }
+            }).observe(document.body, { childList: true, subtree: true })
+        })
+    </script>
+
+    <script src="_content/Unpoly.Blazor.Shadcn/toastify/toastify.js" defer></script>
+    <script src="_content/Unpoly.Blazor.Shadcn/airdatepicker/air-datepicker.js" defer></script>
+    <script src="_content/Unpoly.Blazor.Shadcn/ui.js" defer></script>
+</head>
+
+<body>
+    <div class="status-bar-safe-area"></div>
+
+    <div id="app">Loading...</div>
+
+    <div id="blazor-error-ui" data-nosnippet
+         class="fixed bottom-0 left-0 z-50 hidden w-full bg-destructive px-6 py-3 text-destructive-foreground shadow-lg">
+        An unhandled error has occurred.
+        <a href="." class="reload underline">Reload</a>
+        <span class="dismiss cursor-pointer">🗙</span>
+    </div>
+
+    <script src="_framework/blazor.webview.js" autostart="false"></script>
+</body>
+
+</html>

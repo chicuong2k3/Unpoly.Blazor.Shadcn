@@ -545,6 +545,12 @@
         "has-[:disabled]:opacity-50"
       ],
       "why": "The root is a <label> wrapping the real input, because a label is what makes the whole control clickable and the input is what posts. A <label> is never :disabled - only the input is - so upstream's disabled:opacity-50 matched nothing at all and a disabled toggle looked exactly like an enabled one. has-[:disabled] asks the same question of the element that can answer it."
+    },
+    "hover-card-content": {
+      "classes": [
+        "[&:not(:popover-open)]:hidden"
+      ],
+      "why": "The <dialog>/popover API hides closed popovers via the UA display:none rule, but an author display class on the panel — such as flex or w-64 — overrides that and leaves the closed card visible. shadcn uses Radix's data-state for hiding; the HTML dialog has [open] instead, and the popover API exposes :popover-open, so this selector restores the hidden-when-closed contract."
     }
   },
   "dropped": {

@@ -1,0 +1,25 @@
+@page "/about"
+
+<PageTitle>About</PageTitle>
+
+<h1 class="text-2xl font-semibold tracking-tight">What is and is not here</h1>
+
+<Tabs Class="mt-6 max-w-lg" Value="have">
+    <TabsList>
+        <TabsTrigger Value="have">Kept</TabsTrigger>
+        <TabsTrigger Value="lost">Dropped</TabsTrigger>
+    </TabsList>
+
+    <TabsContent Value="have" Class="pt-4 text-sm text-muted-foreground">
+        The component layer: markup, shadcn's class strings, the tokens, the
+        <code>data-slot</code> contract, the ARIA, and the client behaviour in
+        <code>ui.js</code>.
+    </TabsContent>
+
+    <TabsContent Value="lost" Hidden Class="pt-4 text-sm text-muted-foreground">
+        Everything server-side. <code>up-target</code>, <code>up-validate</code>, the 422
+        contract, layers, <code>up-poll</code>, <code>UpChrome</code>. A WebView has no server
+        to swap fragments from, so forms are <code>EditForm</code> and navigation is Blazor's
+        router.
+    </TabsContent>
+</Tabs>

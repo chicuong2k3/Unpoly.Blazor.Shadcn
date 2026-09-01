@@ -1,0 +1,13 @@
+@* Two ways, and the first is the one to reach for. A button that starts an Unpoly request grows
+   its own spinner from `.up-active` — no parameter, no state, and it clears itself when the
+   request ends. <Spinner> is for the other case: a button whose work is not a request, and it
+   goes before or after the label like any other icon. *@
+<div class="flex flex-wrap items-center gap-3">
+    <form id="button-spinner-form" method="post" action="/orders/3201/refund" up-target="#preview-button-spinner" up-disable>
+        <AntiforgeryToken />
+        <Button Type="submit">Refund — spins by itself</Button>
+    </form>
+
+    <Button Variant="outline" disabled><Spinner />Generating</Button>
+    <Button Variant="secondary" disabled>Downloading<Spinner /></Button>
+</div>

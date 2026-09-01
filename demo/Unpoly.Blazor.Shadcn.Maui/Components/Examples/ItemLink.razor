@@ -1,0 +1,15 @@
+@* Give it an Href and the whole row is a link — one target, one focus stop, and Unpoly follows
+   it. A row with a link inside it instead gives you a small target and two tab stops. *@
+<ItemGroup Class="w-[420px] rounded-lg border" up-nav>
+    <Item Href="/components/card" Class="px-4">
+        <ItemContent><ItemTitle>Card</ItemTitle>
+            <ItemDescription>Seven parts</ItemDescription></ItemContent>
+        <ItemActions><Icon Name="chevron-right" Class="text-muted-foreground" /></ItemActions>
+    </Item>
+    <ItemSeparator />
+    <Item Href="/components/table" Class="px-4">
+        <ItemContent><ItemTitle>Table</ItemTitle>
+            <ItemDescription>In a scroll container</ItemDescription></ItemContent>
+        <ItemActions><Icon Name="chevron-right" Class="text-muted-foreground" /></ItemActions>
+    </Item>
+</ItemGroup>

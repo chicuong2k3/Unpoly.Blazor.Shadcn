@@ -1,0 +1,94 @@
+@* shadcn ships these with its AI components. Nothing in them is specific to a model — this is
+   the right shape for any thread, and the demo's chat block is the same parts arranged for a
+   two-person conversation.
+
+   The scroller follows the newest message only while you are already at the bottom; scroll up to
+   read something and it stops, and a button appears saying so. *@
+<MessageScroller Class="relative h-80 w-full max-w-xl rounded-lg border">
+    <MessageScrollerViewport Class="h-full p-4">
+        <MessageScrollerContent>
+            <MessageGroup>
+                <MessageScrollerItem>
+                    <Message>
+                        <MessageAvatar>
+                            <Avatar><AvatarFallback>ML</AvatarFallback></Avatar>
+                        </MessageAvatar>
+                        <MessageContent>
+                            <MessageHeader>
+                                <span class="font-medium">Mai Linh</span>
+                                <time class="num text-xs text-muted-foreground" datetime="2026-03-11T09:12">09:12</time>
+                            </MessageHeader>
+                            @* Consecutive turns by one author, drawn as one block and named
+                               once rather than once per bubble. *@
+                            <BubbleGroup AriaLabel="From Mai Linh">
+                                <Bubble Variant="muted">
+                                    <BubbleContent>Did the invoice go out?</BubbleContent>
+                                </Bubble>
+                                <Bubble Variant="muted">
+                                    <BubbleContent>No rush.</BubbleContent>
+                                </Bubble>
+                            </BubbleGroup>
+                        </MessageContent>
+                    </Message>
+                </MessageScrollerItem>
+
+                <MessageScrollerItem>
+                    <Message Align="end">
+                        <MessageContent>
+                            <Bubble>
+                                <BubbleContent>Sent it this morning. The PDF is attached.</BubbleContent>
+                                <BubbleReactions>
+                                    <Badge Variant="secondary">2 reactions</Badge>
+                                </BubbleReactions>
+                            </Bubble>
+
+                            <AttachmentGroup>
+                                <li>
+                                    <Attachment Size="sm">
+                                        @* The trigger is a sheet over the whole card, so the
+                                           media and the text are its siblings, not its children. *@
+                                        <AttachmentMedia><Icon Name="file" /></AttachmentMedia>
+                                        <AttachmentContent>
+                                            <AttachmentTitle>acme-invoice.pdf</AttachmentTitle>
+                                            <AttachmentDescription>82 KB</AttachmentDescription>
+                                        </AttachmentContent>
+                                        <AttachmentTrigger Href="/files/acme-invoice.pdf" target="_blank" rel="noreferrer">
+                                            <span class="sr-only">Open acme-invoice.pdf</span>
+                                        </AttachmentTrigger>
+                                        <AttachmentActions>
+                                            <AttachmentAction AriaLabel="Remove acme-invoice.pdf">
+                                                <Icon Name="x" />
+                                            </AttachmentAction>
+                                        </AttachmentActions>
+                                    </Attachment>
+                                </li>
+                            </AttachmentGroup>
+
+                            <MessageFooter>
+                                <Marker Variant="border">
+                                    <MarkerIcon><Icon Name="check" Class="size-3" /></MarkerIcon>
+                                    <MarkerContent>Read</MarkerContent>
+                                </Marker>
+                            </MessageFooter>
+                        </MessageContent>
+                    </Message>
+                </MessageScrollerItem>
+
+                <MessageScrollerItem>
+                    <Message>
+                        <MessageAvatar>
+                            <Avatar><AvatarFallback>ML</AvatarFallback></Avatar>
+                        </MessageAvatar>
+                        <MessageContent>
+                            <Bubble Variant="muted">
+                                <BubbleContent>Perfect, thank you.</BubbleContent>
+                            </Bubble>
+                        </MessageContent>
+                    </Message>
+                </MessageScrollerItem>
+            </MessageGroup>
+        </MessageScrollerContent>
+    </MessageScrollerViewport>
+
+    <MessageScrollerButton Class="absolute right-4 bottom-4" />
+</MessageScroller>

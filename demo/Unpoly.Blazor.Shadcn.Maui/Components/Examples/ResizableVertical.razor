@@ -1,0 +1,11 @@
+@* The group runs down instead of across. The handle reads the group's orientation and rewrites
+   flex-grow the same way; the arrow keys work in both. *@
+<ResizablePanelGroup Orientation="vertical" Class="h-64 w-full max-w-lg rounded-lg border">
+    <ResizablePanel DefaultSize="1" MinSize="0.2" Class="flex items-center justify-center p-4">
+        <span class="text-sm font-medium">Editor</span>
+    </ResizablePanel>
+    <ResizableHandle Orientation="horizontal" WithHandle />
+    <ResizablePanel DefaultSize="1" MinSize="0.2" Class="flex items-center justify-center p-4">
+        <span class="text-sm font-medium">Output</span>
+    </ResizablePanel>
+</ResizablePanelGroup>

@@ -1,0 +1,13 @@
+@* A long list needs nothing: the OS panel scrolls itself, with the platform's own scrollbar,
+   momentum and type-ahead. Radix's ScrollUpButton and ScrollDownButton exist because a div does
+   not have those. *@
+<Field Class="w-[280px]">
+    <FieldLabel For="ss-year">Year</FieldLabel>
+    <Select id="ss-year" name="year">
+        @foreach (var year in Enumerable.Range(1960, 66).Reverse())
+        {
+            <SelectItem Value="@year.ToString()" Selected="@(year == 2026)">@year</SelectItem>
+        }
+    </Select>
+    <FieldDescription>Sixty-six options, and no scroll buttons to build.</FieldDescription>
+</Field>

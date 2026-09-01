@@ -1,0 +1,18 @@
+@* Two calendars and two names, for the same reason the slider has no second thumb: a range is
+   two values, and posting them as two fields is what a server reads and what the back button
+   preserves. *@
+<div class="flex flex-wrap items-start gap-4">
+    <div class="flex flex-col gap-2">
+        <Label>From</Label>
+        <Calendar Name="from" Month="@(new DateOnly(2026, 3, 1))"
+                  Selected="@(new DateOnly(2026, 3, 11))" Today="@(new DateOnly(2026, 3, 11))"
+                  Class="w-fit rounded-lg border p-3" />
+    </div>
+    <div class="flex flex-col gap-2">
+        <Label>To</Label>
+        <Calendar Name="to" Month="@(new DateOnly(2026, 4, 1))"
+                  Selected="@(new DateOnly(2026, 4, 2))" Today="@(new DateOnly(2026, 3, 11))"
+                  Disabled="@(d => d < new DateOnly(2026, 3, 11))"
+                  Class="w-fit rounded-lg border p-3" />
+    </div>
+</div>

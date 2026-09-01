@@ -1,0 +1,8 @@
+@* A date of birth is the case where a calendar is the wrong control: nobody wants to page back
+   three hundred months. autocomplete="bday" lets the browser fill it, and max stops a birthday in
+   the future without a round trip. *@
+<Field Class="w-[280px]">
+    <FieldLabel For="dp-bday">Date of birth</FieldLabel>
+    <DatePicker id="dp-bday" name="bday" autocomplete="bday" max="2026-08-28" />
+    <FieldDescription>Typing it is faster than paging a calendar back forty years.</FieldDescription>
+</Field>

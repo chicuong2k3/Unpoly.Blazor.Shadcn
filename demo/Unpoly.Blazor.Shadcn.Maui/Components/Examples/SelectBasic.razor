@@ -1,0 +1,12 @@
+@* A real <select>: it posts without JavaScript, and a phone renders its own
+   wheel. ui.js draws the shadcn panel beside it and hides the native one. There is no
+   SelectTrigger / SelectValue / SelectContent — the element is all three. *@
+<div class="w-[220px]">
+    <FormField For="kind" Label="Product type">
+        <Select id="kind" name="kind">
+            <SelectItem Value="dress">Dress</SelectItem>
+            <SelectItem Value="top" Selected>Top</SelectItem>
+            <SelectItem Value="shoes">Shoes</SelectItem>
+        </Select>
+    </FormField>
+</div>

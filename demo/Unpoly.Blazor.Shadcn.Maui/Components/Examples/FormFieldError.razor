@@ -1,0 +1,10 @@
+@* Message turns the label red, replaces the description, and is announced —
+   FormMessage carries role="alert" because the error arrives after a submit, when focus is
+   somewhere else. With no Message, nothing renders at all: an empty <p> would open a hole
+   under every valid field. *@
+<div class="w-[360px]">
+    <FormField For="phone" Label="Phone" Description="Digits only."
+               Message="That does not look like a phone number.">
+        <Input id="phone" name="phone" value="+44 abc" aria-invalid="true" />
+    </FormField>
+</div>

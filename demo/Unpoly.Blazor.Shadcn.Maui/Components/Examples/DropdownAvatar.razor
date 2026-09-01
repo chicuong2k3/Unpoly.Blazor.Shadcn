@@ -1,0 +1,22 @@
+@* The account menu. The label at the top is a label rather than a disabled item, because it is
+   not a command and offering it as one is offering something that does nothing. *@
+<DropdownMenu>
+    <DropdownMenuTrigger Target="dd-avatar" Variant="ghost" Size="icon"
+                         Class="rounded-full" aria-label="Your account">
+        <Avatar Class="size-8"><AvatarFallback>MR</AvatarFallback></Avatar>
+    </DropdownMenuTrigger>
+    <DropdownMenuContent Id="dd-avatar" Align="end" Class="w-60">
+        <div class="flex items-center gap-2 px-2 py-1.5">
+            <Avatar Class="size-8"><AvatarFallback>MR</AvatarFallback></Avatar>
+            <div class="min-w-0 text-sm">
+                <div class="truncate font-medium">Marta Ruiz</div>
+                <div class="truncate text-xs text-muted-foreground">marta@example.com</div>
+            </div>
+        </div>
+        <DropdownMenuSeparator />
+        <DropdownMenuItem Href="/account"><Icon Name="circle" />Account</DropdownMenuItem>
+        <DropdownMenuItem Href="/theming"><Icon Name="settings" />Settings</DropdownMenuItem>
+        <DropdownMenuSeparator />
+        <DropdownMenuItem Variant="destructive"><Icon Name="external-link" />Sign out</DropdownMenuItem>
+    </DropdownMenuContent>
+</DropdownMenu>

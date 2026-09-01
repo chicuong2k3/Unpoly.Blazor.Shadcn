@@ -1,0 +1,36 @@
+@* Selection in a table, with no selection state anywhere but the DOM: the boxes share a name, so
+   the bulk form posts a list, and the bar appears through :has(:checked) — CSS reading the boxes
+   rather than a second copy of the truth that can drift from them. *@
+<form method="post" action="/orders/bulk" class="w-[520px] overflow-hidden rounded-lg border">
+    <AntiforgeryToken />
+    <div class="hidden items-center gap-2 border-b bg-muted/50 px-3 py-2 [form:has(:checked)>&]:flex">
+        <span class="text-sm text-muted-foreground">Selected</span>
+        <Button Variant="outline" Type="submit" Class="ml-auto">Export</Button>
+    </div>
+    <Table>
+        <TableHeader>
+            <TableRow>
+                <TableHead Class="w-10"><span class="sr-only">Select</span></TableHead>
+                <TableHead>Order</TableHead>
+                <TableHead Class="text-right">Total</TableHead>
+            </TableRow>
+        </TableHeader>
+        <TableBody>
+            @foreach (var (number, total) in Rows)
+            {
+                <TableRow>
+                    <TableCell><Checkbox name="ids" value="@number" aria-label="@($"Select {number}")" /></TableCell>
+                    <TableCell Class="num">@number</TableCell>
+                    <TableCell Class="num text-right">@total</TableCell>
+                </TableRow>
+            }
+        </TableBody>
+    </Table>
+</form>
+
+@code {
+    static readonly (string Number, string Total)[] Rows =
+    [
+        ("#3201", "$248.00"), ("#3200", "$92.50"), ("#3199", "$412.00"),
+    ];
+}

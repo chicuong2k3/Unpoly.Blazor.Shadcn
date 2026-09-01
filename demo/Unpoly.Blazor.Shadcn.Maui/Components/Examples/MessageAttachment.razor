@@ -1,0 +1,21 @@
+@* A file on a turn. The attachment is a sibling of the bubble rather than inside it, so a long
+   message and its files do not share one rounded box. *@
+<Message Align="end" Class="w-[460px]">
+    <MessageContent>
+        <Bubble><BubbleContent>Sent it this morning. The PDF is attached.</BubbleContent></Bubble>
+        <AttachmentGroup>
+            <li>
+                <Attachment Size="sm" Class="w-56">
+                    <AttachmentMedia><Icon Name="file" /></AttachmentMedia>
+                    <AttachmentContent>
+                        <AttachmentTitle>acme-invoice.pdf</AttachmentTitle>
+                        <AttachmentDescription>82 KB</AttachmentDescription>
+                    </AttachmentContent>
+                    <AttachmentTrigger Href="/files/acme-invoice.pdf" target="_blank" rel="noreferrer">
+                        <span class="sr-only">Open acme-invoice.pdf</span>
+                    </AttachmentTrigger>
+                </Attachment>
+            </li>
+        </AttachmentGroup>
+    </MessageContent>
+</Message>

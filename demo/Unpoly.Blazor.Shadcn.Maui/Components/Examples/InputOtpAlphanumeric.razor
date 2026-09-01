@@ -1,0 +1,12 @@
+@* Letters as well as digits — a recovery code rather than an SMS one. inputmode="text" and
+   autocapitalize="characters", so the phone keyboard arrives in the right mode. *@
+<InputOtp Name="recovery" Length="6">
+    <InputOtpGroup>
+        @foreach (var i in Enumerable.Range(1, 6))
+        {
+            <InputOtpSlot First="@(i == 1)" inputmode="text" autocapitalize="characters"
+                          pattern="[A-Za-z0-9]" AriaLabel="@($"Character {i} of 6")"
+                          Class="uppercase" />
+        }
+    </InputOtpGroup>
+</InputOtp>

@@ -1,0 +1,52 @@
+@* shadcn's Data Table is TanStack Table wired to this. On static SSR there is no client-side
+   table state to manage: the toolbar is a GET form, the URL is the state, and the server answers.
+   That is the whole difference, and it means the view is bookmarkable and Back works.
+
+   The full version is the data table block on the Blocks page. *@
+<div class="w-[560px] space-y-3">
+    <form method="get" up-autosubmit up-target="[data-list]" class="flex gap-2">
+        <InputGroup Class="flex-1">
+            <InputGroupAddon><Icon Name="search" /></InputGroupAddon>
+            <InputGroupControl name="q" type="search" placeholder="Search orders…"
+                               up-watch-delay="400" />
+        </InputGroup>
+        <Select name="status" Class="w-[150px]" aria-label="Status">
+            <SelectItem Value="" Selected>Any status</SelectItem>
+            <SelectItem Value="paid">Paid</SelectItem>
+            <SelectItem Value="pending">Pending</SelectItem>
+        </Select>
+    </form>
+
+    <div data-list class="overflow-hidden rounded-lg border">
+        <Table>
+            <TableHeader>
+                <TableRow>
+                    <TableHead>
+                        <a href="?sort=order" class="inline-flex items-center gap-1 hover:underline">
+                            Order<Icon Name="arrow-down" Class="size-3.5" />
+                        </a>
+                    </TableHead>
+                    <TableHead>Status</TableHead>
+                    <TableHead Class="text-right">Total</TableHead>
+                </TableRow>
+            </TableHeader>
+            <TableBody>
+                @foreach (var (number, status, total) in Rows)
+                {
+                    <TableRow>
+                        <TableCell Class="num font-medium">@number</TableCell>
+                        <TableCell><Badge Variant="@(status == "Paid" ? "secondary" : "outline")">@status</Badge></TableCell>
+                        <TableCell Class="num text-right">@total</TableCell>
+                    </TableRow>
+                }
+            </TableBody>
+        </Table>
+    </div>
+</div>
+
+@code {
+    static readonly (string Number, string Status, string Total)[] Rows =
+    [
+        ("#3201", "Paid", "$248.00"), ("#3200", "Pending", "$92.50"), ("#3199", "Paid", "$412.00"),
+    ];
+}

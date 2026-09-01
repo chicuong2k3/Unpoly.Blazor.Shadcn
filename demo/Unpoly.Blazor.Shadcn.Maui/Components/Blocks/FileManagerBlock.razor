@@ -1,0 +1,114 @@
+@* Files. A breadcrumb, a view toggle and a table — and the whole state is in the URL, which is
+   the only reason "send me a link to that folder" works.
+
+   The view toggle is a GET form with [up-autosubmit], not a class swap in the browser: switching
+   to the grid re-renders from the server, so a bookmark of the grid view opens as the grid view.
+
+   Selection is real checkboxes sharing one name, so the bulk bar posts a list of ids with no
+   script at all. The bar appears through :has(:checked) — CSS doing what a selection store does
+   in a framework, and it cannot fall out of step with the boxes because it is reading them. *@
+
+<div class="w-full space-y-3">
+    <div class="flex flex-wrap items-center gap-2">
+        <Breadcrumb Class="mr-auto">
+            <BreadcrumbList>
+                <BreadcrumbItem><BreadcrumbLink Href="/files">Files</BreadcrumbLink></BreadcrumbItem>
+                <BreadcrumbSeparator />
+                <BreadcrumbItem><BreadcrumbLink Href="/files/2026">2026</BreadcrumbLink></BreadcrumbItem>
+                <BreadcrumbSeparator />
+                <BreadcrumbItem><BreadcrumbPage>Contracts</BreadcrumbPage></BreadcrumbItem>
+            </BreadcrumbList>
+        </Breadcrumb>
+
+        <form method="get" up-autosubmit up-target="[data-files]">
+            <ToggleGroup aria-label="View">
+                <ToggleGroupItem Name="view" Value="list" Checked aria-label="List">
+                    <Icon Name="menu" />
+                </ToggleGroupItem>
+                <ToggleGroupItem Name="view" Value="grid" aria-label="Grid">
+                    <Icon Name="layout-grid" />
+                </ToggleGroupItem>
+            </ToggleGroup>
+        </form>
+
+        <Button Href="/files/upload" up-layer="new modal">
+            <Icon Name="upload" />Upload
+        </Button>
+    </div>
+
+    <form method="post" action="/files/bulk" data-files class="overflow-hidden rounded-lg border">
+        <AntiforgeryToken />
+
+        <div class="hidden items-center gap-2 border-b bg-muted/50 px-3 py-2 [form:has(:checked)>&]:flex">
+            <span class="text-sm text-muted-foreground">Selected files</span>
+            <ButtonGroup Class="ml-auto">
+                <Button Variant="outline" Type="submit" name="action" value="download">
+                    <Icon Name="download" />Download
+                </Button>
+                <Button Variant="outline" Type="submit" name="action" value="delete"
+                        data-ask="Delete the selected files?">
+                    <Icon Name="trash-2" />Delete
+                </Button>
+            </ButtonGroup>
+        </div>
+
+        <Table>
+            <TableHeader>
+                <TableRow>
+                    <TableHead Class="w-10"><span class="sr-only">Select</span></TableHead>
+                    <TableHead>Name</TableHead>
+                    <TableHead Class="hidden sm:table-cell">Modified</TableHead>
+                    <TableHead Class="text-right">Size</TableHead>
+                    <TableHead Class="w-10"></TableHead>
+                </TableRow>
+            </TableHeader>
+            <TableBody>
+                @foreach (var f in Entries)
+                {
+                    <TableRow>
+                        <TableCell>
+                            <Checkbox name="ids" value="@f.Name" aria-label="@($"Select {f.Name}")" />
+                        </TableCell>
+                        <TableCell>
+                            <a href="@($"/files/2026/contracts/{f.Name}")"
+                               class="flex items-center gap-2 hover:underline">
+                                <Icon Name="@(f.Size is null ? "folder" : "file")"
+                                      Class="size-4 text-muted-foreground" />@f.Name
+                            </a>
+                        </TableCell>
+                        <TableCell Class="hidden text-muted-foreground sm:table-cell">@f.Modified</TableCell>
+                        <TableCell Class="num text-right text-muted-foreground">@(f.Size ?? "—")</TableCell>
+                        <TableCell>
+                            <DropdownMenu>
+                                <DropdownMenuTrigger Target="@($"file-{f.Name}")" Variant="ghost" Size="icon"
+                                                     aria-label="@($"Actions for {f.Name}")">
+                                    <Icon Name="ellipsis" />
+                                </DropdownMenuTrigger>
+                                <DropdownMenuContent Id="@($"file-{f.Name}")" Align="end">
+                                    <DropdownMenuItem>Rename</DropdownMenuItem>
+                                    <DropdownMenuItem>Move…</DropdownMenuItem>
+                                    <DropdownMenuSeparator />
+                                    <DropdownMenuItem Variant="destructive"
+                                                      data-ask="@($"Delete {f.Name}?")">Delete</DropdownMenuItem>
+                                </DropdownMenuContent>
+                            </DropdownMenu>
+                        </TableCell>
+                    </TableRow>
+                }
+            </TableBody>
+        </Table>
+    </form>
+</div>
+
+@code {
+    record Entry(string Name, string? Size, string Modified);
+
+    static readonly Entry[] Entries =
+    [
+        new("Signed", null, "2 Mar"),
+        new("Drafts", null, "28 Feb"),
+        new("acme-msa.pdf", "1.2 MB", "11 Mar"),
+        new("nda-2026.docx", "48 KB", "9 Mar"),
+        new("rate-card.xlsx", "212 KB", "1 Mar"),
+    ];
+}

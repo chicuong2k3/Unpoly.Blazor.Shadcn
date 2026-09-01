@@ -1,0 +1,19 @@
+@* Six real inputs, not one hidden field with painted boxes. The field posts without
+   JavaScript, autocomplete="one-time-code" lets the phone offer the code it just received, and
+   nothing needs re-hydrating after a fragment swap.
+
+   ui.js adds only what typing expects: advance on entry, retreat AND clear on backspace, and a
+   paste of the whole code filling every box. The server sees one value, not six. *@
+<InputOtp Name="code" Length="6">
+    <InputOtpGroup>
+        <InputOtpSlot First AriaLabel="Digit 1 of 6" />
+        <InputOtpSlot AriaLabel="Digit 2 of 6" />
+        <InputOtpSlot AriaLabel="Digit 3 of 6" />
+    </InputOtpGroup>
+    <InputOtpSeparator />
+    <InputOtpGroup>
+        <InputOtpSlot AriaLabel="Digit 4 of 6" />
+        <InputOtpSlot AriaLabel="Digit 5 of 6" />
+        <InputOtpSlot AriaLabel="Digit 6 of 6" />
+    </InputOtpGroup>
+</InputOtp>

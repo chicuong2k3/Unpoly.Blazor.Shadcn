@@ -1,0 +1,41 @@
+@* Four figures across the top of a dashboard. The grid collapses to one column on a
+   phone rather than scrolling sideways, and every number is set in --font-numeric so a column of
+   them reads digit over digit. *@
+
+<div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+    <Card>
+        <CardHeader>
+            <CardDescription>Revenue</CardDescription>
+            <CardTitle Class="num text-2xl">$42,180</CardTitle>
+            <CardAction><Badge Variant="secondary"><Icon Name="arrow-up" />12.4%</Badge></CardAction>
+        </CardHeader>
+        <CardFooter Class="text-sm text-muted-foreground">Compared with last month</CardFooter>
+    </Card>
+
+    <Card>
+        <CardHeader>
+            <CardDescription>Orders</CardDescription>
+            <CardTitle Class="num text-2xl">1,284</CardTitle>
+            <CardAction><Badge Variant="secondary"><Icon Name="arrow-up" />4.1%</Badge></CardAction>
+        </CardHeader>
+        <CardFooter Class="text-sm text-muted-foreground">Compared with last month</CardFooter>
+    </Card>
+
+    <Card>
+        <CardHeader>
+            <CardDescription>Refunds</CardDescription>
+            <CardTitle Class="num text-2xl">18</CardTitle>
+            <CardAction><Badge Variant="destructive"><Icon Name="arrow-up" />2.0%</Badge></CardAction>
+        </CardHeader>
+        <CardFooter Class="text-sm text-muted-foreground">Compared with last month</CardFooter>
+    </Card>
+
+    <Card>
+        <CardHeader>
+            <CardDescription>Stock cover</CardDescription>
+            <CardTitle Class="num text-2xl">62%</CardTitle>
+        </CardHeader>
+        <CardContent><Progress Value="62" /></CardContent>
+        <CardFooter Class="text-sm text-muted-foreground">Across every warehouse</CardFooter>
+    </Card>
+</div>

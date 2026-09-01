@@ -1,0 +1,12 @@
+@* One <details> per item, sharing a Name — which is the browser's own exclusive group, and what
+   shadcn calls type="single". No compiler, no state, works with scripting off. *@
+<Accordion Class="w-[460px]">
+    <AccordionItem Name="faq-basic" Open>
+        <AccordionTrigger>Does it work without JavaScript?</AccordionTrigger>
+        <AccordionContent>Yes. The element is the whole state machine.</AccordionContent>
+    </AccordionItem>
+    <AccordionItem Name="faq-basic">
+        <AccordionTrigger>Is the markup really shadcn's?</AccordionTrigger>
+        <AccordionContent>Class for class, generated from its source and tested against it.</AccordionContent>
+    </AccordionItem>
+</Accordion>

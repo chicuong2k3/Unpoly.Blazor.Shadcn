@@ -1,0 +1,18 @@
+@* A read receipt in the reaction slot: a tick you can hover or focus for the exact time. The
+   time does not deserve a line of its own, and a title attribute is not reachable by keyboard. *@
+<div class="flex w-full max-w-sm flex-col gap-4">
+    <Bubble Variant="secondary">
+        <BubbleContent>Did you remove the stale route?</BubbleContent>
+    </Bubble>
+
+    <Bubble Align="end">
+        <BubbleContent>Yes, removed it from the registry.</BubbleContent>
+        <BubbleReactions>
+            <TooltipTrigger Target="bubble-read" Variant="ghost" Size="icon-xs"
+                            aria-label="When this was read">
+                <Icon Name="check" />
+            </TooltipTrigger>
+            <TooltipContent Id="bubble-read">Read on 5 January 2026 at 4:32 PM</TooltipContent>
+        </BubbleReactions>
+    </Bubble>
+</div>

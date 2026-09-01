@@ -1,0 +1,25 @@
+@* A long list scrolls inside the panel, and the highlighted row is kept in view with
+   scrollIntoView({ block: "nearest" }) — nearest rather than centre, or arrowing down one row
+   jumps the whole list. *@
+<Command Class="w-[420px] border">
+    <CommandInput Placeholder="Search components…" />
+    <CommandList Class="max-h-64">
+        <CommandEmpty Class="py-6 text-center text-sm text-muted-foreground">No results.</CommandEmpty>
+        <CommandGroup Heading="Everything">
+            @foreach (var name in Names)
+            {
+                <CommandItem Href="@($"/components/{name}")"><span>@name</span></CommandItem>
+            }
+        </CommandGroup>
+    </CommandList>
+</Command>
+
+@code {
+    static readonly string[] Names =
+    [
+        "accordion", "alert", "avatar", "badge", "breadcrumb", "button", "card", "checkbox",
+        "collapsible", "combobox", "command", "dialog", "drawer", "empty", "field", "input",
+        "item", "kbd", "label", "popover", "progress", "select", "separator", "sheet", "slider",
+        "switch", "table", "tabs", "textarea", "toggle", "tooltip",
+    ];
+}

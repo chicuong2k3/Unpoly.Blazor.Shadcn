@@ -1,0 +1,24 @@
+@* The value lives in a real <input type="hidden">, which is the whole point: the form posts it,
+   a fragment swap cannot lose it, and the server reads it without a line of JSON. *@
+<div class="w-72">
+    <Field>
+        <FieldLabel For="cb-framework">Framework</FieldLabel>
+        <Combobox Target="cb-framework-list">
+            <input type="hidden" name="framework" value="blazor" data-combobox-value />
+            <ComboboxTrigger id="cb-framework" Target="cb-framework-list">
+                <ComboboxValue data-placeholder="Choose one…">Blazor</ComboboxValue>
+            </ComboboxTrigger>
+
+            <ComboboxContent Id="cb-framework-list" Class="w-72">
+                <ComboboxList>
+                    <ComboboxEmpty>Nothing matches that.</ComboboxEmpty>
+                    <ComboboxItem Value="blazor" Selected>Blazor</ComboboxItem>
+                    <ComboboxItem Value="rails" Keywords="ruby">Rails</ComboboxItem>
+                    <ComboboxItem Value="laravel" Keywords="php">Laravel</ComboboxItem>
+                    <ComboboxItem Value="phoenix" Keywords="elixir">Phoenix</ComboboxItem>
+                </ComboboxList>
+            </ComboboxContent>
+        </Combobox>
+        <FieldDescription>Posts as <code>framework</code>, like any other field.</FieldDescription>
+    </Field>
+</div>

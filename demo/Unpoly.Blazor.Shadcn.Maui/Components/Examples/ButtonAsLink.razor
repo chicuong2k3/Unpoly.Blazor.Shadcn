@@ -1,0 +1,4 @@
+@* shadcn wraps a Link with asChild. There is no cloneElement in Blazor, so Href
+   renders the <a> directly — which is also what Unpoly wants to follow. *@
+<Button Href="/components/badge">Go to Badge</Button>
+<Button Variant="outline" Href="/blocks" up-target=".doc-main">Blocks (swaps the fragment)</Button>

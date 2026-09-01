@@ -1,0 +1,15 @@
+@* The popover API supplies the top layer, light dismiss and Escape; popovertarget opens it
+   before any JavaScript has run. ui.js only measures where to put it. *@
+<Popover>
+    <PopoverTrigger Target="demo-popover">Dimensions</PopoverTrigger>
+    <PopoverContent Id="demo-popover" Align="start" Class="w-80 p-4">
+        <PopoverHeader>
+            <PopoverTitle>Dimensions</PopoverTitle>
+            <PopoverDescription>Set the size of the layer.</PopoverDescription>
+        </PopoverHeader>
+        <div class="mt-4 grid gap-3">
+            <FormField For="pop-w" Label="Width"><Input id="pop-w" value="100%" /></FormField>
+            <FormField For="pop-h" Label="Height"><Input id="pop-h" value="25px" /></FormField>
+        </div>
+    </PopoverContent>
+</Popover>

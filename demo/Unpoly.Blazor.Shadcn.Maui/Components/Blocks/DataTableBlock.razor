@@ -1,0 +1,103 @@
+@* A list with a toolbar, a table and a pager — the shape most back-office
+   screens are.
+
+   The whole thing is a GET form. [up-autosubmit] resubmits on change, [up-watch-delay] debounces
+   the search box while it is typed in, and [up-target] replaces only the list. There is no
+   client-side filter state: the URL is the state, so the result is bookmarkable and Back works.
+
+   [data-list] rather than a class the design system owns, so a restyle cannot break the swap. *@
+
+<form method="get" up-target="[data-list]" up-fallback=".doc-main">
+    <div class="flex flex-wrap items-center gap-2">
+        <Input name="q" type="search" placeholder="Search orders…" Class="max-w-[280px]"
+               up-autosubmit up-watch-event="input" up-watch-delay="400" aria-label="Search orders" />
+
+        <Select name="status" aria-label="Status" Class="max-w-[180px]" up-autosubmit>
+            <SelectItem Value="">Any status</SelectItem>
+            <SelectItem Value="paid">Paid</SelectItem>
+            <SelectItem Value="pending">Pending</SelectItem>
+            <SelectItem Value="refunded">Refunded</SelectItem>
+        </Select>
+
+        <DropdownMenu Class="ml-auto">
+            <DropdownMenuTrigger Target="dt-columns" Variant="outline" Size="sm">
+                Columns<Icon Name="chevron-down" />
+            </DropdownMenuTrigger>
+            <DropdownMenuContent Id="dt-columns" Align="end">
+                <DropdownMenuCheckboxItem Name="col" Value="customer" Checked>Customer</DropdownMenuCheckboxItem>
+                <DropdownMenuCheckboxItem Name="col" Value="status" Checked>Status</DropdownMenuCheckboxItem>
+                <DropdownMenuCheckboxItem Name="col" Value="total" Checked>Total</DropdownMenuCheckboxItem>
+            </DropdownMenuContent>
+        </DropdownMenu>
+    </div>
+</form>
+
+<div data-list class="mt-4">
+    <Table>
+        <TableHeader>
+            <TableRow>
+                <TableHead Class="w-10"><Checkbox aria-label="Select all" /></TableHead>
+                <TableHead>Order</TableHead>
+                <TableHead>Customer</TableHead>
+                <TableHead>Status</TableHead>
+                <TableHead Class="text-right">Total</TableHead>
+                <TableHead Class="w-10"></TableHead>
+            </TableRow>
+        </TableHeader>
+        <TableBody>
+            @foreach (var row in Rows)
+            {
+                <TableRow>
+                    <TableCell><Checkbox aria-label="@($"Select {row.Code}")" /></TableCell>
+                    <TableCell Class="font-medium">@row.Code</TableCell>
+                    <TableCell>@row.Customer</TableCell>
+                    <TableCell>
+                        <Badge Variant="@(row.Status == "Paid" ? "secondary" : "outline")">@row.Status</Badge>
+                    </TableCell>
+                    <TableCell Class="num text-right">@row.Total</TableCell>
+                    <TableCell>
+                        <DropdownMenu>
+                            <DropdownMenuTrigger Target="@($"row-{row.Code}")" Variant="ghost" Size="icon"
+                                                 aria-label="@($"Actions for {row.Code}")">
+                                <Icon Name="ellipsis" />
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent Id="@($"row-{row.Code}")" Align="end">
+                                <DropdownMenuItem Href="@($"/orders/{row.Code}")">
+                                    <Icon Name="eye" />View
+                                </DropdownMenuItem>
+                                <DropdownMenuSeparator />
+                                <DropdownMenuItem Variant="destructive" data-ask="@($"Refund {row.Code}?")">
+                                    <Icon Name="trash-2" />Refund
+                                </DropdownMenuItem>
+                            </DropdownMenuContent>
+                        </DropdownMenu>
+                    </TableCell>
+                </TableRow>
+            }
+        </TableBody>
+    </Table>
+
+    <div class="mt-4 flex items-center justify-between">
+        <p class="num text-xs text-muted-foreground">128 orders · page 1 / 9</p>
+        <Pagination Class="mx-0 w-auto justify-end">
+            <PaginationContent>
+                <PaginationItem><PaginationPrevious Href="?page=1" Disabled /></PaginationItem>
+                <PaginationItem><PaginationLink Href="?page=1" IsActive>1</PaginationLink></PaginationItem>
+                <PaginationItem><PaginationLink Href="?page=2">2</PaginationLink></PaginationItem>
+                <PaginationItem><PaginationEllipsis /></PaginationItem>
+                <PaginationItem><PaginationNext Href="?page=2" /></PaginationItem>
+            </PaginationContent>
+        </Pagination>
+    </div>
+</div>
+
+@code {
+    record Row(string Code, string Customer, string Status, string Total);
+
+    static readonly Row[] Rows =
+    [
+        new("#3201", "Marta Ruiz", "Paid", "$248.00"),
+        new("#3200", "Ana Lopes", "Pending", "$92.50"),
+        new("#3199", "Jonas Weber", "Paid", "$1,410.00"),
+    ];
+}

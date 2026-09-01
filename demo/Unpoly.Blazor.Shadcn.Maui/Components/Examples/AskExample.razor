@@ -1,0 +1,9 @@
+@* For a confirmation attached to a control that already exists, [data-ask] needs
+   no <AlertDialog> in the page: ui.js builds one, catches the click in the capture phase before
+   Unpoly sees it, and re-issues it if the answer is yes.
+
+   Not [up-confirm]: that calls window.confirm, and Unpoly's hook for it is never awaited, so a
+   promise returned from an override is ignored. *@
+<Button Variant="destructive" data-ask="Delete this product? Images and variants go with it.">
+    <Icon Name="trash-2" />Delete product
+</Button>

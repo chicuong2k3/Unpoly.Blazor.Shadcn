@@ -1,0 +1,12 @@
+@* Any ratio, written the way CSS writes it. 3 / 4 is a portrait photograph; 4 / 5 is what most
+   phone cameras produce, which is worth knowing before cropping a whole catalogue to 1 / 1. *@
+<div class="flex items-start gap-4">
+    <AspectRatio Ratio="3 / 4" Class="w-40 overflow-hidden rounded-lg bg-muted">
+        <img src="https://placehold.co/300x400" alt="A placeholder portrait" width="300" height="400"
+             class="size-full object-cover" />
+    </AspectRatio>
+    <AspectRatio Ratio="4 / 5" Class="w-40 overflow-hidden rounded-lg bg-muted">
+        <img src="https://placehold.co/400x500" alt="Another placeholder" width="400" height="500"
+             class="size-full object-cover" />
+    </AspectRatio>
+</div>

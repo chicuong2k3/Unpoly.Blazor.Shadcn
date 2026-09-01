@@ -1,0 +1,23 @@
+@* An empty state that says what to do next. Three things it must have and
+   usually does not: a reason the list is empty, one obvious action, and a way out if the list is
+   empty because of a filter rather than because there is nothing. *@
+
+<Card Class="border-dashed">
+    <CardContent Class="flex flex-col items-center gap-4 py-16 text-center">
+        <div class="grid size-12 place-items-center rounded-full bg-muted">
+            <Icon Name="search" Class="size-5 text-muted-foreground" />
+        </div>
+
+        <div class="space-y-1">
+            <p class="font-medium">No orders match “corset”</p>
+            <p class="max-w-sm text-sm text-muted-foreground">
+                There are 128 orders in total. Try a shorter search, or clear the filters.
+            </p>
+        </div>
+
+        <div class="flex gap-2">
+            <Button Variant="outline" Href="/orders" up-target="[data-list]">Clear filters</Button>
+            <Button Href="/orders/new"><Icon Name="plus" />New order</Button>
+        </div>
+    </CardContent>
+</Card>

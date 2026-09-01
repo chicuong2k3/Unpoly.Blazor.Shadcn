@@ -1,0 +1,45 @@
+@* Once any menu is open, hovering another opens that one — the behaviour that makes a bar of
+   dropdowns feel like a menubar. Left and Right move along the bar, Down opens. *@
+<Menubar>
+    <MenubarMenu>
+        <MenubarTrigger Target="mb-file">File</MenubarTrigger>
+        <MenubarContent Id="mb-file">
+            <MenubarItem>New tab<MenubarShortcut>⌘T</MenubarShortcut></MenubarItem>
+            <MenubarItem>New window<MenubarShortcut>⌘N</MenubarShortcut></MenubarItem>
+            <MenubarSeparator />
+            <MenubarSub>
+                <MenubarSubTrigger Target="mb-file-share">Share</MenubarSubTrigger>
+                <MenubarSubContent Id="mb-file-share">
+                    <MenubarItem>Email link</MenubarItem>
+                    <MenubarItem>Messages</MenubarItem>
+                </MenubarSubContent>
+            </MenubarSub>
+            <MenubarSeparator />
+            <MenubarItem>Print<MenubarShortcut>⌘P</MenubarShortcut></MenubarItem>
+        </MenubarContent>
+    </MenubarMenu>
+
+    <MenubarMenu>
+        <MenubarTrigger Target="mb-edit">Edit</MenubarTrigger>
+        <MenubarContent Id="mb-edit">
+            <MenubarItem>Undo<MenubarShortcut>⌘Z</MenubarShortcut></MenubarItem>
+            <MenubarItem>Redo<MenubarShortcut>⇧⌘Z</MenubarShortcut></MenubarItem>
+        </MenubarContent>
+    </MenubarMenu>
+
+    <MenubarMenu>
+        <MenubarTrigger Target="mb-view">View</MenubarTrigger>
+        <MenubarContent Id="mb-view">
+            <MenubarLabel>Chrome</MenubarLabel>
+            <MenubarGroup>
+                <MenubarCheckboxItem Name="mb-bookmarks" Checked>Always show bookmarks</MenubarCheckboxItem>
+                <MenubarCheckboxItem Name="mb-full">Always show full URLs</MenubarCheckboxItem>
+            </MenubarGroup>
+            <MenubarSeparator />
+            <MenubarRadioGroup>
+                <MenubarRadioItem Name="mb-zoom" Value="100" Checked>100%</MenubarRadioItem>
+                <MenubarRadioItem Name="mb-zoom" Value="125">125%</MenubarRadioItem>
+            </MenubarRadioGroup>
+        </MenubarContent>
+    </MenubarMenu>
+</Menubar>

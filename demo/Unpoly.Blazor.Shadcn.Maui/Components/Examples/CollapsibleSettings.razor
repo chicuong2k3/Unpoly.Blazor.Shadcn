@@ -1,0 +1,40 @@
+@* The shape every settings screen has: a summary line that stays, and the advanced half folded
+   away. Open it once and the fields inside post like any others — they are in the form whether
+   the section is open or not, which is a property of <details> worth knowing before you rely on
+   it either way. *@
+<form method="post" action="/settings/shipping" class="w-[460px]">
+    <AntiforgeryToken />
+    <Card>
+        <CardHeader>
+            <CardTitle>Shipping</CardTitle>
+            <CardDescription>Where orders go by default.</CardDescription>
+        </CardHeader>
+        <CardContent Class="flex flex-col gap-4">
+            <Field>
+                <FieldLabel For="s-country">Country</FieldLabel>
+                <Select id="s-country" name="country">
+                    <SelectItem Value="vn" Selected>Viet Nam</SelectItem>
+                    <SelectItem Value="pt">Portugal</SelectItem>
+                </Select>
+            </Field>
+
+            <Collapsible>
+                <CollapsibleTrigger Class="flex w-full items-center justify-between rounded-md py-1 text-sm font-medium hover:underline">
+                    Advanced
+                    <Icon Name="chevron-down" Class="size-4" />
+                </CollapsibleTrigger>
+                <CollapsibleContent Class="flex flex-col gap-4 pt-4">
+                    <Field Orientation="horizontal">
+                        <Switch id="s-signature" name="signature" value="yes" />
+                        <FieldLabel For="s-signature">Require a signature</FieldLabel>
+                    </Field>
+                    <Field>
+                        <FieldLabel For="s-note">Note for the courier</FieldLabel>
+                        <Textarea id="s-note" name="note" rows="2" />
+                    </Field>
+                </CollapsibleContent>
+            </Collapsible>
+        </CardContent>
+        <CardFooter><Button Type="submit">Save</Button></CardFooter>
+    </Card>
+</form>

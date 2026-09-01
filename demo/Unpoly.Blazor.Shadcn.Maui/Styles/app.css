@@ -1,0 +1,19 @@
+/* Input for the Tailwind CLI. Built to wwwroot/app.css on every `dotnet build`. */
+@import "tailwindcss";
+
+/* Tokens, the @theme inline indirection, and the behaviour CSS that stands in for Radix. */
+@import "../../../src/Unpoly.Blazor.Shadcn/Styles/ui.css";
+
+/* The CLI does not scan .razor on its own. ui.js is here because the Select panel, the
+   dropdown and the confirm dialog are assembled in JavaScript out of class strings that
+   exist nowhere else — leave it out and those three are unstyled in a Release build only. */
+@source "../Components/**/*.razor";
+@source "../../../src/Unpoly.Blazor.Shadcn/Components/**/*.razor";
+@source "../../../src/Unpoly.Blazor.Shadcn/ButtonVariants.cs";
+@source "../../../src/Unpoly.Blazor.Shadcn/wwwroot/ui.js";
+
+@layer base {
+    /* A WebView is not a browser tab: no rubber-band scroll, no text selection by accident. */
+    html { -webkit-tap-highlight-color: transparent; }
+    body { @apply bg-background text-foreground antialiased overscroll-none; }
+}

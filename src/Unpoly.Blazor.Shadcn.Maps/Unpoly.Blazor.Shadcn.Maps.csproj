@@ -14,7 +14,10 @@
     <RepositoryUrl>https://github.com/chicuong2k3/Unpoly.Blazor.Shadcn</RepositoryUrl>
   </PropertyGroup>
   <ItemGroup>
-    <FrameworkReference Include="Microsoft.AspNetCore.App" />
+    <!-- Only Components/CompilerServices/Rendering/Web namespaces are used, verified from the
+         compiled assembly references. By NuGet so this also targets MAUI Blazor Hybrid, where a
+         FrameworkReference to Microsoft.AspNetCore.App does not exist. See the main csproj. -->
+    <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="10.0.11" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="../Unpoly.Blazor.Shadcn/Unpoly.Blazor.Shadcn.csproj" />

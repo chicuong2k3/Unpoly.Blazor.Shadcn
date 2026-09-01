@@ -1,0 +1,57 @@
+@* The pieces that only make sense inside another one, shown together rather than alone.
+
+   FieldSeparator carries a word — "or", "and then" — so a form can say why it is divided instead
+   of just drawing a line. ItemHeader and ItemFooter wrap a group rather than a row.
+   PopoverAnchor is what a panel is measured against when that should not be the trigger: the
+   field, say, rather than the small button beside it. *@
+
+<div class="w-[420px] space-y-8">
+    <FieldSet>
+        <FieldGroup>
+            <Field>
+                <FieldLabel For="c-email">Email</FieldLabel>
+                <FieldContent>
+                    <Input id="c-email" name="email" type="email" />
+                    <FieldDescription>We only use it for receipts.</FieldDescription>
+                </FieldContent>
+            </Field>
+
+            <FieldSeparator>
+                <FieldSeparatorContent>or</FieldSeparatorContent>
+            </FieldSeparator>
+
+            <Field>
+                <FieldLabel For="c-phone">Phone</FieldLabel>
+                <FieldContent><Input id="c-phone" name="phone" type="tel" /></FieldContent>
+            </Field>
+        </FieldGroup>
+    </FieldSet>
+
+    <ItemGroup>
+        <ItemHeader>
+            <ItemTitle>Recent activity</ItemTitle>
+            <ItemDescription>The last three things that happened.</ItemDescription>
+        </ItemHeader>
+        <Item>
+            <ItemMedia><Icon Name="check" Class="text-muted-foreground" /></ItemMedia>
+            <ItemContent><ItemTitle>Order #3201 was paid</ItemTitle></ItemContent>
+        </Item>
+        <ItemFooter>
+            <Button Variant="ghost" Size="sm">See everything</Button>
+        </ItemFooter>
+    </ItemGroup>
+
+    <Popover>
+        <PopoverAnchor Class="flex items-center gap-2">
+            <Input name="colour" value="#a02742" Class="w-[160px]" />
+            <PopoverTrigger Target="anchored" Size="icon" aria-label="Pick a colour">
+                <Icon Name="eye" />
+            </PopoverTrigger>
+        </PopoverAnchor>
+        @* Measured against the whole row, not against the little button — so the panel lines up
+           with the field a reader is actually looking at. *@
+        <PopoverContent Id="anchored" Align="start" Class="w-[220px] p-3 text-sm">
+            The panel is placed against the anchor, not the trigger.
+        </PopoverContent>
+    </Popover>
+</div>

@@ -1,0 +1,24 @@
+@* shadcn’s own: small, an icon tinted with the destructive colour above the question, and the
+   destructive recipe on the action rather than on the trigger — the colour belongs to the thing
+   that does the damage, not to the thing that opens the question.
+
+   Variant on the button, not a hand-built class string: AlertDialogAction has the parameter, and
+   passing ButtonVariants.Of(...) as a Class was building the same thing twice. *@
+<AlertDialogTrigger Target="ad-destructive" Variant="destructive">Delete Chat</AlertDialogTrigger>
+
+<AlertDialog Id="ad-destructive" Size="sm">
+    <AlertDialogHeader>
+        <AlertDialogMedia aria-hidden="true"
+                          Class="bg-destructive/10 text-destructive dark:bg-destructive/20">
+            <Icon Name="trash-2" />
+        </AlertDialogMedia>
+        <AlertDialogTitle>Delete chat?</AlertDialogTitle>
+        <AlertDialogDescription>
+            This permanently deletes the conversation. Anything it remembered goes with it.
+        </AlertDialogDescription>
+    </AlertDialogHeader>
+    <AlertDialogFooter>
+        <AlertDialogCancel Variant="outline">Cancel</AlertDialogCancel>
+        <AlertDialogAction Variant="destructive">Delete</AlertDialogAction>
+    </AlertDialogFooter>
+</AlertDialog>

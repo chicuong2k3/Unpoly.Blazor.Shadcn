@@ -1,0 +1,18 @@
+@* A local view switch: no request, no URL. A tab that should be linkable is a
+   link with [up-target] instead.
+
+   Inactive panels are hidden with the `hidden` attribute, not display:none in a class, so their
+   fields stay in the form and still post. A tabbed form that silently drops half its values is
+   the bug this avoids. *@
+<Tabs Value="account" Class="w-[420px]">
+    <TabsList>
+        <TabsTrigger Value="account">Account</TabsTrigger>
+        <TabsTrigger Value="password">Password</TabsTrigger>
+    </TabsList>
+    <TabsContent Value="account">
+        <FormField For="tab-name" Label="Name"><Input id="tab-name" name="name" value="Marta" /></FormField>
+    </TabsContent>
+    <TabsContent Value="password" Hidden>
+        <FormField For="tab-pw" Label="New password"><Input id="tab-pw" name="pw" type="password" /></FormField>
+    </TabsContent>
+</Tabs>

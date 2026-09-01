@@ -1,0 +1,13 @@
+@* data-variant="destructive" is upstream's own attribute, and data-ask turns the row into a
+   confirmation without a line of markup in the page — ui.js builds the AlertDialog. *@
+<DropdownMenu>
+    <DropdownMenuTrigger Target="dd-destructive">Row</DropdownMenuTrigger>
+    <DropdownMenuContent Id="dd-destructive" Class="w-52">
+        <DropdownMenuItem>Open</DropdownMenuItem>
+        <DropdownMenuItem>Duplicate</DropdownMenuItem>
+        <DropdownMenuSeparator />
+        <DropdownMenuItem Variant="destructive" data-ask="Delete this row? It cannot be undone.">
+            <Icon Name="trash-2" />Delete
+        </DropdownMenuItem>
+    </DropdownMenuContent>
+</DropdownMenu>

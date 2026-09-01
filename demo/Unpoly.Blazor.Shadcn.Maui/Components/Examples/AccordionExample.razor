@@ -1,0 +1,19 @@
+@* <details> and <summary>. No compiler, no state to lose across a fragment
+   swap, and it works with scripting off. Giving every item the same Name makes the group
+   single-open — shadcn's type="single", straight from the platform. *@
+<Accordion Class="w-[480px]">
+    <AccordionItem Name="faq" Open>
+        <AccordionTrigger>Does it work without JavaScript?</AccordionTrigger>
+        <AccordionContent>
+            This one does. Anything built on a native element — accordion, dialog, select,
+            checkbox — keeps working; the compiler-backed components degrade to plain controls.
+        </AccordionContent>
+    </AccordionItem>
+    <AccordionItem Name="faq">
+        <AccordionTrigger>Is the markup really shadcn's?</AccordionTrigger>
+        <AccordionContent>
+            The class lists are generated from shadcn's own source and compared against it by the
+            test suite. Every difference is in deviations.json with a reason.
+        </AccordionContent>
+    </AccordionItem>
+</Accordion>

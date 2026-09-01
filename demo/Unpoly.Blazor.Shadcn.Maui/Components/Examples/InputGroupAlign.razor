@@ -1,0 +1,20 @@
+@* Four places an addon can sit, and the two block ones are why the group grows a second row
+   rather than squeezing the field: a toolbar under a textarea belongs under it. *@
+<div class="flex w-[420px] flex-col gap-4">
+    <InputGroup>
+        <InputGroupAddon Align="inline-start"><Icon Name="search" /></InputGroupAddon>
+        <InputGroupControl name="a" placeholder="inline-start" />
+    </InputGroup>
+    <InputGroup>
+        <InputGroupControl name="b" placeholder="inline-end" />
+        <InputGroupAddon Align="inline-end"><span class="text-xs">USD</span></InputGroupAddon>
+    </InputGroup>
+    <InputGroup>
+        <InputGroupAddon Align="block-start"><span class="text-xs text-muted-foreground">Subject</span></InputGroupAddon>
+        <InputGroupControl name="c" placeholder="block-start" />
+    </InputGroup>
+    <InputGroup>
+        <InputGroupControl name="d" placeholder="block-end" />
+        <InputGroupAddon Align="block-end"><span class="text-xs text-muted-foreground">Markdown supported</span></InputGroupAddon>
+    </InputGroup>
+</div>

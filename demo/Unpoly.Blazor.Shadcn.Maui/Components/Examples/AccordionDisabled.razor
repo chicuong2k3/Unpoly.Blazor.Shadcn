@@ -1,0 +1,14 @@
+@* A <summary> cannot be disabled — the element has no such state. Take it out of the tab order
+   and stop the pointer instead, and say so with aria-disabled, which is the part that reaches a
+   screen reader. *@
+<Accordion Class="w-[460px]">
+    <AccordionItem Name="faq-disabled">
+        <AccordionTrigger>Available</AccordionTrigger>
+        <AccordionContent>Open me.</AccordionContent>
+    </AccordionItem>
+    <AccordionItem Name="faq-disabled">
+        <AccordionTrigger tabindex="-1" aria-disabled="true"
+                          Class="pointer-events-none opacity-50">Not yet written</AccordionTrigger>
+        <AccordionContent>Nothing here.</AccordionContent>
+    </AccordionItem>
+</Accordion>

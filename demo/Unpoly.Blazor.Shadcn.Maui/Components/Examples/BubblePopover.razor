@@ -1,0 +1,25 @@
+@* The detail behind a failure, one press away. A destructive bubble says what happened; the
+   popover carries the part nobody needs until they do — which is what keeps the thread readable. *@
+<div class="flex w-full max-w-sm flex-col gap-4">
+    <Bubble Align="end">
+        <BubbleContent>Run the build script.</BubbleContent>
+    </Bubble>
+
+    <Bubble Variant="destructive">
+        <BubbleContent>Failed to run the command.</BubbleContent>
+        <BubbleReactions>
+            <PopoverTrigger Target="bubble-error" Variant="ghost" Size="icon-xs"
+                            aria-label="Show error details" Class="aria-expanded:text-destructive">
+                <Icon Name="info" />
+            </PopoverTrigger>
+            <PopoverContent Id="bubble-error" Class="w-72">
+                <PopoverHeader>
+                    <PopoverTitle Class="text-sm">Command failed with exit code 1</PopoverTitle>
+                    <PopoverDescription Class="text-sm">
+                        ENOENT: no such file or directory, open pnpm-lock.yaml
+                    </PopoverDescription>
+                </PopoverHeader>
+            </PopoverContent>
+        </BubbleReactions>
+    </Bubble>
+</div>

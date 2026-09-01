@@ -1,0 +1,20 @@
+@* A menu at the end of the row. The row is not a link here: a link with a menu inside it is a
+   link you cannot open without hitting the menu by accident. *@
+<Item Variant="outline" Class="w-[420px]">
+    <ItemMedia><Avatar Class="size-8"><AvatarFallback Class="text-xs">JW</AvatarFallback></Avatar></ItemMedia>
+    <ItemContent><ItemTitle>Jonas Weber</ItemTitle><ItemDescription>Editor</ItemDescription></ItemContent>
+    <ItemActions>
+        <DropdownMenu>
+            <DropdownMenuTrigger Target="item-menu" Variant="ghost" Size="icon-sm"
+                                 aria-label="Actions for Jonas Weber">
+                <Icon Name="ellipsis" />
+            </DropdownMenuTrigger>
+            <DropdownMenuContent Id="item-menu" Align="end" Class="w-44">
+                <DropdownMenuItem>Change role</DropdownMenuItem>
+                <DropdownMenuItem>Resend invitation</DropdownMenuItem>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem Variant="destructive" data-ask="Remove Jonas Weber?">Remove</DropdownMenuItem>
+            </DropdownMenuContent>
+        </DropdownMenu>
+    </ItemActions>
+</Item>

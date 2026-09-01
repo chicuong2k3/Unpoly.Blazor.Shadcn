@@ -1,0 +1,38 @@
+@* An item is a button, so anything may go inside it — and Keywords is what the filter reads, which
+   is how "js" finds Node without the word appearing on screen. *@
+<div class="w-80">
+    <Combobox Target="cb-ci-list">
+        <input type="hidden" name="runtime" value="node" data-combobox-value />
+        <ComboboxTrigger id="cb-ci" Target="cb-ci-list">
+            <ComboboxValue data-placeholder="Pick a runtime…">Node.js</ComboboxValue>
+        </ComboboxTrigger>
+
+        <ComboboxContent Id="cb-ci-list" Class="w-80">
+            <ComboboxList>
+                <ComboboxEmpty>No runtime by that name.</ComboboxEmpty>
+                @foreach (var (value, name, note, keywords) in Runtimes)
+                {
+                    <ComboboxItem Value="@value" Label="@name" Keywords="@keywords" Selected="@(value == "node")"
+                                  Class="items-start py-2">
+                        <Avatar Class="size-6">
+                            <AvatarFallback Class="text-[10px]">@name[..2].ToUpperInvariant()</AvatarFallback>
+                        </Avatar>
+                        <span class="flex flex-col gap-0.5 text-start">
+                            <span class="text-sm font-medium">@name</span>
+                            <span class="text-xs text-muted-foreground">@note</span>
+                        </span>
+                    </ComboboxItem>
+                }
+            </ComboboxList>
+        </ComboboxContent>
+    </Combobox>
+</div>
+
+@code {
+    static readonly (string Value, string Name, string Note, string Keywords)[] Runtimes =
+    [
+        ("node", "Node.js", "The default everywhere.", "js javascript"),
+        ("deno", "Deno", "TypeScript without a build step.", "ts typescript"),
+        ("bun", "Bun", "Fast, and the test runner is built in.", "js zig"),
+    ];
+}

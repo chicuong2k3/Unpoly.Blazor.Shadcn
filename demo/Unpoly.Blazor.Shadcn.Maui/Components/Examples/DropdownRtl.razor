@@ -1,0 +1,13 @@
+@* The panel lines up with the other edge and the submenu opens the other way, because both are
+   measured rather than hardcoded — getBoundingClientRect is already direction-aware. *@
+<div dir="rtl">
+    <DropdownMenu>
+        <DropdownMenuTrigger Target="dd-rtl">الإجراءات</DropdownMenuTrigger>
+        <DropdownMenuContent Id="dd-rtl" Class="w-52">
+            <DropdownMenuItem><Icon Name="pencil" />إعادة تسمية</DropdownMenuItem>
+            <DropdownMenuItem><Icon Name="copy" />نسخ</DropdownMenuItem>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem Variant="destructive"><Icon Name="trash-2" />حذف</DropdownMenuItem>
+        </DropdownMenuContent>
+    </DropdownMenu>
+</div>

@@ -1,0 +1,13 @@
+@* Two delays, and they are not the same number for a reason: opening slowly stops a card
+   appearing every time the pointer crosses a link, and closing slowly lets you move onto the card
+   without it vanishing under you. *@
+<div class="flex flex-wrap items-center gap-6">
+    <HoverCardTrigger Target="hc-fast" OpenDelay="0" Class="underline underline-offset-4">instant</HoverCardTrigger>
+    <HoverCardContent Id="hc-fast" Class="w-56 p-3 text-sm">No wait at all.</HoverCardContent>
+
+    <HoverCardTrigger Target="hc-slow" OpenDelay="700" CloseDelay="500"
+                      Class="underline underline-offset-4">patient</HoverCardTrigger>
+    <HoverCardContent Id="hc-slow" Class="w-56 p-3 text-sm">
+        Waits 700ms to open, 500ms to close.
+    </HoverCardContent>
+</div>

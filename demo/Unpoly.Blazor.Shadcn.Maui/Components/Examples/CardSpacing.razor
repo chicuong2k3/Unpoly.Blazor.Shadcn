@@ -1,0 +1,13 @@
+@* The gap between the parts is one class on the root, and the padding is one on each part —
+   which is what lets a dense dashboard card and a marketing card be the same component. *@
+<div class="flex flex-wrap items-start gap-4">
+    <Card Class="w-64 gap-2 py-4">
+        <CardHeader Class="px-4"><CardTitle Class="text-sm">Dense</CardTitle></CardHeader>
+        <CardContent Class="px-4 text-sm text-muted-foreground">gap-2, py-4, px-4.</CardContent>
+    </Card>
+
+    <Card Class="w-64 gap-8 py-8">
+        <CardHeader Class="px-8"><CardTitle>Airy</CardTitle></CardHeader>
+        <CardContent Class="px-8 text-sm text-muted-foreground">gap-8, py-8, px-8.</CardContent>
+    </Card>
+</div>

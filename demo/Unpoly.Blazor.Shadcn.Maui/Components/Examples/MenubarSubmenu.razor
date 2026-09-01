@@ -1,0 +1,19 @@
+@* Right opens the submenu and Left closes it, which is the APG's rule and what makes a nested
+   menubar usable with no pointer at all. *@
+<Menubar>
+    <MenubarMenu>
+        <MenubarTrigger Target="mbs-file">File</MenubarTrigger>
+        <MenubarContent Id="mbs-file">
+            <MenubarItem>New tab</MenubarItem>
+            <MenubarSub>
+                <MenubarSubTrigger Target="mbs-share">Share</MenubarSubTrigger>
+                <MenubarSubContent Id="mbs-share">
+                    <MenubarItem>Email link</MenubarItem>
+                    <MenubarItem>Messages</MenubarItem>
+                </MenubarSubContent>
+            </MenubarSub>
+            <MenubarSeparator />
+            <MenubarItem>Print<MenubarShortcut>⌘P</MenubarShortcut></MenubarItem>
+        </MenubarContent>
+    </MenubarMenu>
+</Menubar>

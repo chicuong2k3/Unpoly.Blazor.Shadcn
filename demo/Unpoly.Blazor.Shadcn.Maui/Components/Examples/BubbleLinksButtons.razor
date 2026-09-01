@@ -1,0 +1,48 @@
+@* Both, because the section is called Links and Buttons and the component does both: the bubble
+   IS the control. Not a row of buttons under the thread — the reader presses the thing they
+   read, which is why every Bubble variant styles `bubble-content:is(button,a):hover`.
+
+   The form has an id because it carries [up-disable]. When Unpoly disables the button you just
+   pressed — the focused element — it moves focus to the enclosing form group and needs to derive
+   a target for it. A form with no id yields nothing to target, and Unpoly threw
+   `Cannot read properties of undefined` after every swap: harmless, invisible, and enough to
+   make the whole thing look broken.
+
+   The quick replies are submit buttons in a form, so they post with no JavaScript taking part.
+   The last one is an anchor, so it goes somewhere, opens in a tab on middle-click and shows its
+   destination in the status bar — none of which a click handler gives you. *@
+<form id="bubble-links-buttons-form" method="post" action="/chat/1/reply" up-target="#preview-bubble-links-buttons" up-disable
+      class="flex w-full max-w-sm flex-col gap-8">
+    <AntiforgeryToken />
+
+    <Bubble Variant="muted">
+        <BubbleContent>How can I help you today?</BubbleContent>
+    </Bubble>
+
+    <BubbleGroup>
+        @foreach (var (value, label) in Replies)
+        {
+            <Bubble Variant="tinted" Align="end">
+                <BubbleContent Type="submit" name="reply" value="@value">@label</BubbleContent>
+            </Bubble>
+        }
+    </BubbleGroup>
+</form>
+
+@* OUTSIDE the form. Unpoly resolves a link's options from the nearest ancestor that carries
+   them, so a link inside this form inherited its up-target="#preview-bubble-links-buttons" — it fetched the docs
+   page, tried to extract a fragment that is not in it, and threw. The bubble looked dead and
+   the console said `Cannot read properties of undefined`. A link is not part of the form
+   anyway; it is the other thing this section is called after. *@
+<Bubble Variant="tinted" Align="end" Class="w-full max-w-sm">
+    <BubbleContent Href="/components/button">Read the button docs instead</BubbleContent>
+</Bubble>
+
+@code {
+    static readonly (string Value, string Label)[] Replies =
+    [
+        ("password", "I forgot my password"),
+        ("subscription", "I need help with my subscription"),
+        ("human", "Something else. Talk to a human."),
+    ];
+}

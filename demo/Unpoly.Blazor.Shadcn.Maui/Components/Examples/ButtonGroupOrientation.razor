@@ -1,0 +1,16 @@
+@* Orientation is a parameter the recipe reads, not a class to remember: it decides which edge
+   the joins are on, and vertical also flips the group to a column. This demoed nothing at all
+   until the component had the parameter — Orientation="vertical" was landing on the div as an
+   unknown attribute and the group stayed a row. *@
+<div class="flex items-start gap-8">
+    <ButtonGroup aria-label="Range">
+        <Button Variant="outline">Day</Button>
+        <Button Variant="outline">Week</Button>
+        <Button Variant="outline">Month</Button>
+    </ButtonGroup>
+
+    <ButtonGroup Orientation="vertical" aria-label="Media controls" Class="h-fit">
+        <Button Variant="outline" Size="icon"><Icon Name="plus" /></Button>
+        <Button Variant="outline" Size="icon"><Icon Name="minus" /></Button>
+    </ButtonGroup>
+</div>

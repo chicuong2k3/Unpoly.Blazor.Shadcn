@@ -1,0 +1,15 @@
+@* A real <select> joined to a button. It posts, it brings the OS picker on a phone, and the
+   joining is the group's — not classes typed on each control. ui.js wraps the select in
+   [data-slot=select-root] to draw the shadcn panel beside it, and the group reaches through
+   that wrapper to the control it draws. *@
+<form method="get" class="w-[420px]">
+    <ButtonGroup>
+        <Select name="currency" aria-label="Currency" Class="w-28">
+            <SelectItem Value="usd" Selected>USD</SelectItem>
+            <SelectItem Value="eur">EUR</SelectItem>
+            <SelectItem Value="vnd">VND</SelectItem>
+        </Select>
+        <Input name="amount" type="number" placeholder="0.00" aria-label="Amount" />
+        <Button Type="submit" Variant="outline">Convert</Button>
+    </ButtonGroup>
+</form>

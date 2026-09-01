@@ -1,0 +1,16 @@
+@* shadcn's unenhanced select, kept separate from <Select> on purpose: this one is never
+   upgraded by ui.js, so it always shows the OS panel. Use it where that is what you want — a
+   long list on a phone, or a form that must not depend on any script at all. *@
+<div class="w-[220px]">
+    <FormField For="ns-country" Label="Country">
+        <NativeSelect id="ns-country" name="country">
+            <NativeSelectOptgroup Label="Europe">
+                <NativeSelectOption Value="pt">Portugal</NativeSelectOption>
+                <NativeSelectOption Value="es" Selected>Spain</NativeSelectOption>
+            </NativeSelectOptgroup>
+            <NativeSelectOptgroup Label="Asia">
+                <NativeSelectOption Value="vn">Vietnam</NativeSelectOption>
+            </NativeSelectOptgroup>
+        </NativeSelect>
+    </FormField>
+</div>

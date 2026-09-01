@@ -1,0 +1,18 @@
+@* Both are a real <select>. The difference is only which arrow you get: NativeSelect keeps the
+   platform's own control in a shadcn frame, and Select replaces the arrow to match the rest of
+   the system. Neither needs JavaScript, both post the same way, and both bring the OS picker on
+   a phone — so this is a decision about how it looks and about nothing else. *@
+<div class="flex w-[420px] flex-col gap-4">
+    <Field>
+        <FieldLabel For="cmp-native">NativeSelect</FieldLabel>
+        <NativeSelect id="cmp-native" name="a">
+            <option>The platform draws the arrow</option>
+        </NativeSelect>
+    </Field>
+    <Field>
+        <FieldLabel For="cmp-select">Select</FieldLabel>
+        <Select id="cmp-select" name="b">
+            <SelectItem Value="x">ui.behavior.css draws it</SelectItem>
+        </Select>
+    </Field>
+</div>

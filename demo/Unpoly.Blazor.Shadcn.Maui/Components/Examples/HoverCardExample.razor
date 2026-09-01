@@ -1,0 +1,18 @@
+@* The trigger stays a real link: a hover card previews what the link points at, and the link
+   has to work for everyone who never hovers — touch, keyboard, screen reader. The pointer may
+   travel from the trigger into the panel without it closing, which is the one thing that makes
+   a hover card usable and the one thing implementations forget. *@
+<HoverCard>
+    <HoverCardTrigger Target="demo-hc" Href="/components/avatar" Class="underline underline-offset-4">
+        @@marta
+    </HoverCardTrigger>
+    <HoverCardContent Id="demo-hc" Class="w-72 p-4">
+        <div class="flex gap-3">
+            <Avatar><AvatarFallback>MR</AvatarFallback></Avatar>
+            <div class="space-y-1">
+                <p class="text-sm font-medium">Marta Ruiz</p>
+                <p class="text-sm text-muted-foreground">Joined March 2024 · 128 orders</p>
+            </div>
+        </div>
+    </HoverCardContent>
+</HoverCard>

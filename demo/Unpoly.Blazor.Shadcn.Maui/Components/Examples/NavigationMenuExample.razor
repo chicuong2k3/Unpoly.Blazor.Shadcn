@@ -1,0 +1,39 @@
+@* A <nav> with a real <ul> inside, so a screen reader announces the landmark and the item count.
+   Each panel is its own popover in the top layer rather than a slot in one shared viewport: no
+   cross-fade between panels, and in exchange nothing clips them and there is no z-index to lose. *@
+<NavigationMenu AriaLabel="Product" up-nav>
+    <NavigationMenuList>
+        <NavigationMenuItem>
+            <NavigationMenuTrigger Target="nav-features">Features</NavigationMenuTrigger>
+            <NavigationMenuContent Id="nav-features" Class="w-[420px] p-2">
+                <ul class="grid gap-1 md:grid-cols-2">
+                    <li>
+                        <NavigationMenuLink Href="/components/button">
+                            <div class="font-medium">Components</div>
+                            <p class="text-muted-foreground">Every one, with its source.</p>
+                        </NavigationMenuLink>
+                    </li>
+                    <li>
+                        <NavigationMenuLink Href="/blocks">
+                            <div class="font-medium">Blocks</div>
+                            <p class="text-muted-foreground">Whole sections to copy.</p>
+                        </NavigationMenuLink>
+                    </li>
+                    <li>
+                        <NavigationMenuLink Href="/theming">
+                            <div class="font-medium">Theming</div>
+                            <p class="text-muted-foreground">Tokens, and what they cannot do.</p>
+                        </NavigationMenuLink>
+                    </li>
+                </ul>
+            </NavigationMenuContent>
+        </NavigationMenuItem>
+
+        <NavigationMenuItem>
+            <NavigationMenuLink Href="/theming">Pricing</NavigationMenuLink>
+        </NavigationMenuItem>
+        <NavigationMenuItem>
+            <NavigationMenuLink Href="/blocks">Docs</NavigationMenuLink>
+        </NavigationMenuItem>
+    </NavigationMenuList>
+</NavigationMenu>

@@ -1,0 +1,9 @@
+@* <FormField> composes these four. Reach for them directly when the shape it produces does
+   not fit — a control that is not one element, a description below the error, a label that is
+   not first. *@
+<FormItem Class="w-[360px]">
+    <FormLabel For="prim-key" Error>API key</FormLabel>
+    <Input id="prim-key" name="key" value="sk-…" aria-invalid="true" />
+    <FormMessage Message="That key has been revoked." />
+    <FormDescription>Keys are shown once. Generate a new one to replace it.</FormDescription>
+</FormItem>

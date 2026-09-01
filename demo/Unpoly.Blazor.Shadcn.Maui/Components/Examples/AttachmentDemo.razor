@@ -1,0 +1,40 @@
+@* shadcn's own demo: a row of vertical image cards above a file that is still uploading. The
+   vertical orientation is what turns the card into a thumbnail with its name underneath. *@
+<div class="flex w-full max-w-sm flex-col gap-3">
+    <AttachmentGroup>
+        @foreach (var (name, meta, src) in Images)
+        {
+            <li>
+                <Attachment Orientation="vertical">
+                    <AttachmentMedia Variant="image">
+                        <img src="@src" alt="" width="160" height="120" loading="lazy" />
+                    </AttachmentMedia>
+                    <AttachmentContent>
+                        <AttachmentTitle>@name</AttachmentTitle>
+                        <AttachmentDescription>@meta</AttachmentDescription>
+                    </AttachmentContent>
+                </Attachment>
+            </li>
+        }
+    </AttachmentGroup>
+
+    <Attachment State="uploading" Class="w-full">
+        <AttachmentMedia><Spinner /></AttachmentMedia>
+        <AttachmentContent>
+            <AttachmentTitle>sales-dashboard.pdf</AttachmentTitle>
+            <AttachmentDescription>Uploading · 64%</AttachmentDescription>
+        </AttachmentContent>
+        <AttachmentActions>
+            <AttachmentAction AriaLabel="Cancel upload"><Icon Name="x" /></AttachmentAction>
+        </AttachmentActions>
+    </Attachment>
+</div>
+
+@code {
+    static readonly (string Name, string Meta, string Src)[] Images =
+    [
+        ("workspace.png", "PNG · 820 KB", "https://placehold.co/160x120/e4e4e7/71717a?text=Workspace"),
+        ("desk-reference.jpg", "JPG · 1.1 MB", "https://placehold.co/160x120/e4e4e7/71717a?text=Desk"),
+        ("office-reference.jpg", "JPG · 940 KB", "https://placehold.co/160x120/e4e4e7/71717a?text=Office"),
+    ];
+}

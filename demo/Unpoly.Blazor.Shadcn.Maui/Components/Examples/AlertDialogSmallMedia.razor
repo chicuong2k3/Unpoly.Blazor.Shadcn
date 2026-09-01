@@ -1,0 +1,17 @@
+@* The small size with an icon above the question. The header regroups itself when a media slot
+   is present — that is a has-data selector on the header, not something the caller arranges. *@
+<AlertDialogTrigger Target="ad-small-media" Variant="outline">Show Dialog</AlertDialogTrigger>
+
+<AlertDialog Id="ad-small-media" Size="sm">
+    <AlertDialogHeader>
+        <AlertDialogMedia aria-hidden="true"><Icon Name="bluetooth" /></AlertDialogMedia>
+        <AlertDialogTitle>Allow accessory to connect?</AlertDialogTitle>
+        <AlertDialogDescription>
+            Do you want to allow the USB accessory to connect to this device?
+        </AlertDialogDescription>
+    </AlertDialogHeader>
+    <AlertDialogFooter>
+        <AlertDialogCancel>Don&#39;t allow</AlertDialogCancel>
+        <AlertDialogAction>Allow</AlertDialogAction>
+    </AlertDialogFooter>
+</AlertDialog>

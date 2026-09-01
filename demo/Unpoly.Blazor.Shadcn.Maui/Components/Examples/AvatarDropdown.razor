@@ -1,0 +1,16 @@
+@* The account menu every application has. The avatar sits inside the trigger, so the whole
+   thing is one button with one accessible name. *@
+<DropdownMenu>
+    <DropdownMenuTrigger Target="avatar-menu" Variant="ghost" Size="icon"
+                         Class="rounded-full" aria-label="Your account">
+        <Avatar Class="size-8"><AvatarFallback>MR</AvatarFallback></Avatar>
+    </DropdownMenuTrigger>
+    <DropdownMenuContent Id="avatar-menu" Align="end" Class="w-52">
+        <DropdownMenuLabel>Marta Ruiz</DropdownMenuLabel>
+        <DropdownMenuSeparator />
+        <DropdownMenuItem Href="/account">Account</DropdownMenuItem>
+        <DropdownMenuItem Href="/account/orders">Orders</DropdownMenuItem>
+        <DropdownMenuSeparator />
+        <DropdownMenuItem Variant="destructive">Sign out</DropdownMenuItem>
+    </DropdownMenuContent>
+</DropdownMenu>

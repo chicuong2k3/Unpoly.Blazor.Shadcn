@@ -1,0 +1,43 @@
+@* An axis. Recharts draws one onto a canvas; here it is a column of <th> beside the plot, so the
+   numbers are in the DOM — Find in Page reaches them, a print stylesheet keeps them, and a
+   screen reader reads the scale before the bars rather than guessing it from heights. *@
+<Chart Id="revenue-axis" Series="@Palette" Class="h-56 w-full max-w-lg">
+    <div class="flex h-full gap-2">
+        <div class="flex flex-col justify-between pb-5 text-[10px] text-muted-foreground">
+            @foreach (var tick in Ticks)
+            {
+                <span class="num leading-none">@tick</span>
+            }
+        </div>
+
+        <table class="h-full flex-1">
+            <caption class="sr-only">Revenue by week, in hundreds of US dollars, 0 to 6,000</caption>
+            <thead class="sr-only">
+                <tr><th scope="col">Week</th><th scope="col">Revenue</th></tr>
+            </thead>
+            <tbody class="flex h-full items-stretch gap-2 border-s border-b bg-[repeating-linear-gradient(to_top,var(--border)_0_1px,transparent_1px_25%)]">
+                @foreach (var (label, value) in Weeks)
+                {
+                    <tr class="flex flex-1 flex-col items-center justify-end gap-1.5">
+                        <td class="w-full rounded-t-sm" style="@($"height: {value * 100 / 60}%; background: var(--color-revenue)")">
+                            <span class="sr-only">@(value)00 dollars</span>
+                        </td>
+                        <th scope="row" class="text-[10px] font-normal text-muted-foreground">@label</th>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</Chart>
+
+@code {
+    static readonly Dictionary<string, string> Palette = new() { ["revenue"] = "var(--chart-1)" };
+
+    static readonly string[] Ticks = ["6k", "4.5k", "3k", "1.5k", "0"];
+
+    static readonly (string Label, int Value)[] Weeks =
+    [
+        ("W1", 29), ("W2", 34), ("W3", 31), ("W4", 42), ("W5", 39),
+        ("W6", 48), ("W7", 44), ("W8", 56), ("W9", 51), ("W10", 60),
+    ];
+}

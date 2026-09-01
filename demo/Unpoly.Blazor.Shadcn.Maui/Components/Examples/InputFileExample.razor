@@ -1,0 +1,11 @@
+@* type="file" is a control the browser draws itself, and the `file:` variants are how Tailwind
+   reaches the button inside it. The form needs enctype="multipart/form-data" or the file is not
+   sent — silently, which is the first thing to check when an upload arrives empty. *@
+<form method="post" action="/files/upload" enctype="multipart/form-data" class="w-[360px]">
+    <AntiforgeryToken />
+    <Field>
+        <FieldLabel For="in-file">Attachment</FieldLabel>
+        <Input id="in-file" name="file" type="file" accept=".pdf,.png,.jpg" />
+        <FieldDescription>PDF or an image, up to 10 MB.</FieldDescription>
+    </Field>
+</form>

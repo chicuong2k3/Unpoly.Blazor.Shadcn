@@ -1,0 +1,13 @@
+@* An addon inside the field own frame — the frame carries the focus ring, so the whole thing
+   looks like one control because it behaves like one. *@
+<div class="flex w-[360px] flex-col gap-4">
+    <InputGroup>
+        <InputGroupAddon><Icon Name="search" /></InputGroupAddon>
+        <InputGroupControl name="q" type="search" placeholder="Search orders…" />
+    </InputGroup>
+
+    <InputGroup>
+        <InputGroupControl name="price" type="number" placeholder="0.00" />
+        <InputGroupAddon Align="inline-end"><span class="text-xs">USD</span></InputGroupAddon>
+    </InputGroup>
+</div>

@@ -1,0 +1,22 @@
+@* Vertical: the snap axis changes in CSS and the arrows move above and below. The compiler reads
+   the orientation to know which scroll offset to nudge. *@
+<div class="relative w-full max-w-xs py-12">
+    <Carousel Orientation="vertical" AriaLabel="Vertical">
+        <CarouselContent Orientation="vertical" Class="-mt-1 h-[270px]">
+            @foreach (var n in Enumerable.Range(1, 5))
+            {
+                <CarouselItem Orientation="vertical" Class="basis-1/2 pt-1">
+                    <div class="p-1">
+                        <Card>
+                            <CardContent Class="flex items-center justify-center p-6">
+                                <span class="num text-3xl font-semibold">@n</span>
+                            </CardContent>
+                        </Card>
+                    </div>
+                </CarouselItem>
+            }
+        </CarouselContent>
+        <CarouselPrevious Orientation="vertical" />
+        <CarouselNext Orientation="vertical" />
+    </Carousel>
+</div>

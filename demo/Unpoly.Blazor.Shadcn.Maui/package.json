@@ -1,0 +1,11 @@
+{
+  "name": "unpoly-blazor-shadcn-maui",
+  "private": true,
+  "scripts": {
+    "css": "tailwindcss -i ./Styles/app.css -o ./wwwroot/app.css --minify"
+  },
+  "devDependencies": {
+    "@tailwindcss/cli": "^4.1.0",
+    "tailwindcss": "^4.1.0"
+  }
+}

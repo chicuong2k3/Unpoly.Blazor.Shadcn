@@ -1,0 +1,22 @@
+@* Two selects rather than paging. On a booking screen the month is one step away; on a date of
+   birth it is three hundred, which is why <DatePicker> exists. Both are GET forms, so the month
+   stays in the URL. *@
+<div class="flex w-fit flex-col gap-3 rounded-lg border p-3">
+    <form method="get" up-autosubmit up-target="[data-slot=calendar]" class="flex gap-2">
+        <Select name="month" aria-label="Month" Class="w-[130px]">
+            @foreach (var m in Enumerable.Range(1, 12))
+            {
+                <SelectItem Value="@m.ToString()" Selected="@(m == 3)">
+                    @System.Globalization.CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(m)
+                </SelectItem>
+            }
+        </Select>
+        <Select name="year" aria-label="Year" Class="w-[100px]">
+            @foreach (var y in Enumerable.Range(2024, 5))
+            {
+                <SelectItem Value="@y.ToString()" Selected="@(y == 2026)">@y</SelectItem>
+            }
+        </Select>
+    </form>
+    <Calendar Name="day" Month="@(new DateOnly(2026, 3, 1))" Today="@(new DateOnly(2026, 3, 11))" />
+</div>

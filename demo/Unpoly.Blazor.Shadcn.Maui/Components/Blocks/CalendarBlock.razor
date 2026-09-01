@@ -1,0 +1,92 @@
+@* A month view. The grid is a <table> because a calendar is a table: seven columns of days under
+   seven column headers, and every screen reader already knows how to read one. A grid of divs has
+   to reimplement that, and usually reimplements half of it.
+
+   Navigation is two links to real URLs, so a month is bookmarkable and Back moves through months.
+   Only [data-month] is swapped, so anything around it keeps its state.
+
+   For picking a single date this block is the wrong tool — that is <input type="date">, which the
+   DatePicker component wraps. This is for showing what is on. *@
+
+<Card Class="w-full max-w-3xl">
+    <CardHeader>
+        <CardTitle>March 2026</CardTitle>
+        <CardAction>
+            <ButtonGroup>
+                <Button Variant="outline" Size="icon" Href="/calendar/2026-02"
+                        up-target="[data-month]" aria-label="Previous month">
+                    <Icon Name="chevron-left" />
+                </Button>
+                <Button Variant="outline" Href="/calendar" up-target="[data-month]">Today</Button>
+                <Button Variant="outline" Size="icon" Href="/calendar/2026-04"
+                        up-target="[data-month]" aria-label="Next month">
+                    <Icon Name="chevron-right" />
+                </Button>
+            </ButtonGroup>
+        </CardAction>
+    </CardHeader>
+
+    <CardContent data-month>
+        <table class="w-full border-separate border-spacing-1">
+            <caption class="sr-only">March 2026</caption>
+            <thead>
+                <tr>
+                    @foreach (var d in Days)
+                    {
+                        <th scope="col" class="pb-2 text-xs font-normal text-muted-foreground">
+                            <span aria-hidden="true">@d[..1]</span>
+                            <span class="sr-only">@d</span>
+                        </th>
+                    }
+                </tr>
+            </thead>
+            <tbody>
+                @for (var week = 0; week < 5; week++)
+                {
+                    <tr>
+                        @for (var column = 1; column <= 7; column++)
+                        {
+                            var date = week * 7 + column;
+                            <td class="p-0 align-top">
+                                @if (date <= 31)
+                                {
+                                    <a href="@($"/calendar/2026-03-{date:00}")" up-target="[data-day]"
+                                       aria-current="@(date == Today ? "date" : null)" class="@Cell(date)">
+                                        <span class="num text-xs">@date</span>
+                                        @foreach (var e in Events.Where(e => e.Day == date))
+                                        {
+                                            <span class="mt-0.5 line-clamp-1 rounded-sm bg-primary/15 px-1 text-[10px] text-primary">
+                                                @e.Title
+                                            </span>
+                                        }
+                                    </a>
+                                }
+                            </td>
+                        }
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </CardContent>
+</Card>
+
+@code {
+    static readonly string[] Days = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
+
+    record Event(int Day, string Title);
+
+    static readonly Event[] Events =
+    [
+        new(4, "Standup"), new(11, "Design review"), new(11, "1:1"),
+        new(18, "Ship 2.4"), new(25, "Retro"),
+    ];
+
+    const int Today = 11;
+
+    // aria-current is what tells a screen reader which day is today. The ring only tells eyes,
+    // and a calendar where today is a colour and nothing else is a calendar half the people
+    // using it cannot orient in.
+    static string Cell(int date) =>
+        "flex min-h-16 flex-col rounded-md p-1.5 hover:bg-accent focus-visible:ring-[3px] focus-visible:ring-ring/50 focus-visible:outline-none"
+        + (date == Today ? " bg-accent/60 ring-1 ring-primary" : "");
+}

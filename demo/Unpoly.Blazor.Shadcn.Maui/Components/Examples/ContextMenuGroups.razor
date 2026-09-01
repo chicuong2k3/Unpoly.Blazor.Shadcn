@@ -1,0 +1,20 @@
+@* Groups with a rule between them. The label is a label rather than a disabled row, because a
+   heading offered as a command is a command that does nothing. *@
+<ContextMenu Target="cm-groups">
+    <ContextMenuTrigger Class="flex h-32 w-72 items-center justify-center rounded-md border border-dashed text-sm text-muted-foreground">
+        Right-click here
+    </ContextMenuTrigger>
+    <ContextMenuContent Id="cm-groups" Class="w-52">
+        <ContextMenuLabel>This row</ContextMenuLabel>
+        <ContextMenuGroup>
+            <ContextMenuItem>Open</ContextMenuItem>
+            <ContextMenuItem>Duplicate</ContextMenuItem>
+        </ContextMenuGroup>
+        <ContextMenuSeparator />
+        <ContextMenuLabel>Selection</ContextMenuLabel>
+        <ContextMenuGroup>
+            <ContextMenuItem>Export</ContextMenuItem>
+            <ContextMenuItem>Archive</ContextMenuItem>
+        </ContextMenuGroup>
+    </ContextMenuContent>
+</ContextMenu>

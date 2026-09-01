@@ -1,0 +1,21 @@
+@* The group owns the rhythm, so the fields do not each carry a margin that has to agree with its
+   neighbours — and a nested group tightens rather than restating the spacing. *@
+<FieldGroup Class="w-[420px]">
+    <Field>
+        <FieldLabel For="fg2-name">Name</FieldLabel>
+        <Input id="fg2-name" name="name" />
+    </Field>
+
+    <FieldSeparator><FieldSeparatorContent>and how to reach you</FieldSeparatorContent></FieldSeparator>
+
+    <FieldGroup>
+        <Field>
+            <FieldLabel For="fg2-email">Email</FieldLabel>
+            <Input id="fg2-email" name="email" type="email" />
+        </Field>
+        <Field>
+            <FieldLabel For="fg2-phone">Phone</FieldLabel>
+            <Input id="fg2-phone" name="phone" type="tel" />
+        </Field>
+    </FieldGroup>
+</FieldGroup>

@@ -1,0 +1,14 @@
+@* Four edges, and the side is a recipe rather than a class: upstream writes it as
+   `side === "right" && "…"`, which is a variant said differently. *@
+<div class="flex flex-wrap items-center gap-3">
+    @foreach (var side in new[] { "right", "left", "top", "bottom" })
+    {
+        <SheetTrigger Target="@($"sheet-{side}")" Variant="outline">@side</SheetTrigger>
+        <Sheet Id="@($"sheet-{side}")" Side="@side">
+            <SheetHeader>
+                <SheetTitle>From the @side</SheetTitle>
+                <SheetDescription>Escape closes it; so does clicking the backdrop.</SheetDescription>
+            </SheetHeader>
+        </Sheet>
+    }
+</div>

@@ -1,0 +1,14 @@
+@* Vertical is a layout change, so it is layout classes. The compiler does not care which way the
+   list runs; it moves focus with the arrow keys either way. *@
+<Tabs Value="general" Class="flex w-[520px] flex-row gap-6">
+    <TabsList Class="h-auto flex-col items-stretch">
+        <TabsTrigger Value="general" Class="justify-start">General</TabsTrigger>
+        <TabsTrigger Value="billing" Class="justify-start">Billing</TabsTrigger>
+        <TabsTrigger Value="team" Class="justify-start">Team</TabsTrigger>
+    </TabsList>
+    <div class="flex-1">
+        <TabsContent Value="general" Class="text-sm text-muted-foreground">Name, timezone, language.</TabsContent>
+        <TabsContent Value="billing" Hidden Class="text-sm text-muted-foreground">Card ending 6411.</TabsContent>
+        <TabsContent Value="team" Hidden Class="text-sm text-muted-foreground">Three people.</TabsContent>
+    </div>
+</Tabs>

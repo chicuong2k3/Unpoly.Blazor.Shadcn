@@ -1,0 +1,15 @@
+@* The dash is aria-hidden: it groups the digits for the eye, and announcing "minus" between the
+   third and the fourth digit of a code helps nobody. *@
+<InputOtp Name="code-sep" Length="6">
+    <InputOtpGroup>
+        <InputOtpSlot First AriaLabel="Digit 1 of 6" />
+        <InputOtpSlot AriaLabel="Digit 2 of 6" />
+        <InputOtpSlot AriaLabel="Digit 3 of 6" />
+    </InputOtpGroup>
+    <InputOtpSeparator />
+    <InputOtpGroup>
+        <InputOtpSlot AriaLabel="Digit 4 of 6" />
+        <InputOtpSlot AriaLabel="Digit 5 of 6" />
+        <InputOtpSlot AriaLabel="Digit 6 of 6" />
+    </InputOtpGroup>
+</InputOtp>

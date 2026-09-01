@@ -1,0 +1,12 @@
+@* Shaped like the form it stands in for, or the page jumps when the real thing arrives — which
+   is the only thing a skeleton is actually for. *@
+<div class="flex w-[420px] flex-col gap-5">
+    @foreach (var w in new[] { "w-16", "w-24", "w-20" })
+    {
+        <div class="flex flex-col gap-2">
+            <Skeleton Class="@($"h-3.5 {w}")" />
+            <Skeleton Class="h-9 w-full rounded-md" />
+        </div>
+    }
+    <Skeleton Class="h-9 w-24 rounded-md" />
+</div>

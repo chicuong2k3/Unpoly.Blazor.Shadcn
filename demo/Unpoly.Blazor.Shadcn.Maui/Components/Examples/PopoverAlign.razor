@@ -1,0 +1,13 @@
+@* Align is which edge lines up with the trigger, Side is above or below. Both are hints: the
+   compiler flips them when there is no room, because a panel half off the screen is worse than
+   one on the other side. *@
+<div class="flex flex-wrap items-center gap-3">
+    <PopoverTrigger Target="pop-start" Variant="outline">start</PopoverTrigger>
+    <PopoverContent Id="pop-start" Align="start" Class="w-56 p-3 text-sm">Left edges line up.</PopoverContent>
+
+    <PopoverTrigger Target="pop-center" Variant="outline">center</PopoverTrigger>
+    <PopoverContent Id="pop-center" Align="center" Class="w-56 p-3 text-sm">Centred on the trigger.</PopoverContent>
+
+    <PopoverTrigger Target="pop-end" Variant="outline">end</PopoverTrigger>
+    <PopoverContent Id="pop-end" Align="end" Class="w-56 p-3 text-sm">Right edges line up.</PopoverContent>
+</div>

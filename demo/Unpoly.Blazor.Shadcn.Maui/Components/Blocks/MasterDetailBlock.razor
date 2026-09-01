@@ -1,0 +1,70 @@
+@* The shape behind mail, chat and any inbox: a list on the left, one item on the right.
+
+   Each row is a link to a real URL and only the detail pane is swapped, so the list keeps its
+   scroll position and its place, and the address bar always names what is on screen. [up-nav]
+   marks the current row without a line of state.
+
+   On a phone the two columns become one and the link is a full navigation — the same markup,
+   because nothing here depends on both being visible. *@
+
+<div class="grid h-[520px] grid-cols-1 overflow-hidden rounded-lg border md:grid-cols-[300px_1fr]">
+    <div class="hidden flex-col border-r md:flex" up-nav>
+        <div class="border-b p-3">
+            <InputGroup>
+                <InputGroupAddon><Icon Name="search" /></InputGroupAddon>
+                <InputGroupControl name="q" type="search" placeholder="Search mail…" />
+            </InputGroup>
+        </div>
+
+        <ScrollArea Class="flex-1">
+            <ItemGroup>
+                @foreach (var mail in Inbox)
+                {
+                    <Item Href="@($"/mail/{mail.Id}")" up-target="[data-detail]"
+                          Class="rounded-none border-b px-3 py-3">
+                        <ItemMedia><Avatar Size="sm"><AvatarFallback>@mail.Initials</AvatarFallback></Avatar></ItemMedia>
+                        <ItemContent>
+                            <ItemTitle Class="flex items-center justify-between gap-2">
+                                <span>@mail.From</span>
+                                <span class="num text-xs font-normal text-muted-foreground">@mail.When</span>
+                            </ItemTitle>
+                            <ItemDescription Class="line-clamp-1">@mail.Subject</ItemDescription>
+                        </ItemContent>
+                    </Item>
+                }
+            </ItemGroup>
+        </ScrollArea>
+    </div>
+
+    <div data-detail class="flex min-w-0 flex-col">
+        <div class="flex items-start justify-between gap-4 border-b p-4">
+            <div>
+                <h2 class="font-medium">Your order has shipped</h2>
+                <p class="text-sm text-muted-foreground">Marta Ruiz · 12 March, 09:41</p>
+            </div>
+            <ButtonGroup>
+                <Button Variant="outline" Size="icon" aria-label="Archive"><Icon Name="upload" /></Button>
+                <Button Variant="outline" Size="icon" aria-label="Delete"
+                        data-ask="Delete this message?"><Icon Name="trash-2" /></Button>
+            </ButtonGroup>
+        </div>
+
+        <ScrollArea Class="flex-1 p-4">
+            <p class="max-w-prose text-sm leading-relaxed">
+                Order #3201 left the warehouse this morning and should reach you on Thursday.
+                The tracking number is in the attachment.
+            </p>
+        </ScrollArea>
+    </div>
+</div>
+
+@code {
+    record Mail(int Id, string From, string Initials, string Subject, string When);
+
+    static readonly Mail[] Inbox =
+    [
+        new(1, "Marta Ruiz", "MR", "Your order has shipped", "09:41"),
+        new(2, "Ana Lopes", "AL", "Question about sizing", "Tue"),
+        new(3, "Jonas Weber", "JW", "Refund processed", "Mon"),
+    ];
+}

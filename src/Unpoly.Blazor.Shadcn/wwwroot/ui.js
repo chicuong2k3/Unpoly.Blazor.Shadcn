@@ -34,6 +34,95 @@
   //   }
   const config = () => window.shadcnUi || {}
 
+  // ---- platform driver — the one place this file knows which renderer it is on --------------
+  // This library ships identical Razor components to two hosts:
+  //   (a) a Blazor static SSR web head running Unpoly — navigation and the fragments it swaps,
+  //   (b) a MAUI Blazor Hybrid app — Blazor renders into a WebView and there is no Unpoly at all.
+  // In (a) every compiler is registered with `up.compiler`, which runs it on first load AND on
+  // every fragment swap, and detaches it when the swap is torn down. In (b) the same compilers
+  // must run when Blazor inserts DOM inside the WebView and be torn down when Blazor removes it.
+  //
+  // So `shadcnCompiler`/`shadcnOn` are the ONLY names the 40+ compilers below are allowed to
+  // call. When Unpoly is present they just pass through to it — a web head sees exactly what it
+  // saw before this shim existed. When it is not (MAUI), a MutationObserver drives the same
+  // compilers against the same selectors, honouring the destructor contract: a compiler returns
+  // a teardown, and the teardown runs when its element leaves the DOM.
+  //
+  // The lazy-asset compilers (AirDatepicker, Prism, QRCode, image-compare) may return no teardown
+  // because they bail ("asset not loaded yet"). Under Unpoly a bail is retried on the next swap;
+  // here the observer re-runs a compiler that produced no teardown on every further mutation so
+  // a bail is retried, not lost.
+  const usingUnpoly = typeof window.up !== 'undefined' && typeof window.up.compiler === 'function'
+
+  // Compilers keyed by the selector string they were registered with, plus a WeakMap of the
+  // elements each compiler already owns (so the same element is not compiled twice).
+  const compilerRegistry = new Map()
+  const compiledElements = new WeakMap()
+
+  const shadcnCompiler = (selector, compile) => {
+    if (usingUnpoly) return window.up.compiler(selector, compile)
+    const set = compilerRegistry.get(selector) || new Set()
+    set.add(compile)
+    compilerRegistry.set(selector, set)
+    // An element already in the DOM that the observer has not visited yet (e.g. the first paint
+    // happens before the observer starts) is compiled now.
+    for (const el of document.querySelectorAll(selector)) runCompiler(el, compile, selector)
+  }
+
+  const shadcnOn = (name, handler) => {
+    if (usingUnpoly) return window.up.on(name, handler)
+    // In the hybrid host there is no `up.on` channel. The two events this library listens for
+    // are dispatched on the global window by whichever code owns the underlying feature; the
+    // handler here is registered on `document` so it works for both `window` and any target.
+    document.addEventListener(name, (e) => handler(e.detail ?? e), true)
+  }
+
+  // Run one compiler on one element. Returns true if it produced a teardown (it "took" the
+  // element); false if it bailed and should be retried on a later mutation.
+  const runCompiler = (el, compile, selector) => {
+    const owned = compiledElements.get(el)
+    if (owned && owned.has(compile)) return true
+    const teardown = compile(el)
+    let set = compiledElements.get(el)
+    if (!set) { set = new Set(); compiledElements.set(el, set) }
+    if (typeof teardown === 'function') { set.add(compile); el.__shadcnTeardown = teardown }
+    // No teardown (a bail, or a compiler that attaches state to global structure) → not owned.
+    // The observer will retry it on the next mutation; this is what makes a lazy-asset bail work
+    // without swapping fragments.
+    return typeof teardown === 'function'
+  }
+
+  if (!usingUnpoly) {
+    // A compiler may inject DOM that matches another registered selector (a select builds a
+    // popover, a tooltip builds a panel). Each injection is itself a mutation the observer sees,
+    // so the observer MUST stay connected — a MAUI render inserts components at any time and each
+    // must be compiled. To avoid re-compiling the same element forever, `compiledElements` marks
+    // what each compiler already owns; `runCompiler` is a no-op on an owned element. A compiler
+    // that returned a teardown is owned and never re-runs; one that bailed is re-tried each pass.
+    const observer = new MutationObserver((mutations) => {
+      const scan = (node) => {
+        if (!(node instanceof Element)) return
+        for (const [selector, set] of compilerRegistry) {
+          if (node.matches?.(selector)) for (const c of set) runCompiler(node, c, selector)
+          for (const m of node.querySelectorAll(selector)) for (const c of set) runCompiler(m, c, selector)
+        }
+      }
+      for (const { addedNodes, removedNodes } of mutations) {
+        for (const node of addedNodes) scan(node)
+        for (const node of removedNodes) {
+          if (!(node instanceof Element)) continue
+          const teardown = node.__shadcnTeardown
+          if (typeof teardown === 'function') { teardown(); delete node.__shadcnTeardown }
+          compiledElements.delete(node)
+        }
+      }
+    })
+    observer.observe(document.body, { subtree: true, childList: true })
+    // The first paint's elements that arrived before the observer above started.
+    for (const [selector, set] of compilerRegistry)
+      for (const el of document.querySelectorAll(selector)) for (const c of set) runCompiler(el, c, selector)
+  }
+
   // ---- lazy assets — only when a component that needs them is actually on the page -----------
   // SSR + Unpoly renders HTML on the server. The old wiring loaded prism.js / qrcode.js for
   // *every* request even when the page had no <CodeBlock> or <QrCode>. That is 80 KB + 20 KB
@@ -236,9 +325,9 @@
   toast.warning = (text, o) => toast(text, { ...o, type: 'warning' })
   toast.loading = (text, o) => toast(text, { ...o, type: 'loading', duration: o?.duration ?? -1 })
 
-  up.on('sonner:toast', (event) => toast(event.text, { type: event.flavor || event.type || 'success' }))
+  shadcnOn('sonner:toast', (event) => toast(event.text, { type: event.flavor || event.type || 'success' }))
   // The cart event carries its own wording and predates the toast channel.
-  up.on('cart:changed', (event) => toast(event.text))
+  shadcnOn('cart:changed', (event) => toast(event.text))
 
   // =============================================================================================
   // AlertDialog — a destructive confirmation
@@ -303,7 +392,7 @@
     })
   }
 
-  up.compiler('[data-ask]', (element) => {
+  shadcnCompiler('[data-ask]', (element) => {
     const onClick = async (event) => {
       // A second click — the one this handler issues itself after a yes.
       if (element.dataset.asked) return
@@ -332,7 +421,7 @@
   // alert-dialog-trigger belongs here too. It was missing, and an attribute selector is exact:
   // [data-slot="dialog-trigger"] does not match alert-dialog-trigger, so every AlertDialog in
   // the library was inert — the button rendered, nothing bound to it, and no error said so.
-  up.compiler('[data-slot="dialog-trigger"], [data-slot="sheet-trigger"], '
+  shadcnCompiler('[data-slot="dialog-trigger"], [data-slot="sheet-trigger"], '
             + '[data-slot="alert-dialog-trigger"], '
             + '[data-slot="attachment-trigger"][data-target]', (trigger) => {
     const open = (event) => {
@@ -351,7 +440,7 @@
   // drawer-close is on this list because it was not, and nothing else bound it: the button
   // relied on formmethod="dialog", which only acts on a submit button that HAS a form owner, and
   // no drawer in the demo is inside a form. So every Close and Cancel in a drawer did nothing.
-  up.compiler('[data-slot="dialog-close"], [data-slot="sheet-close"], ' +
+  shadcnCompiler('[data-slot="dialog-close"], [data-slot="sheet-close"], ' +
               '[data-slot="drawer-close"], [data-dialog-close]',
               (button) => {
     const close = (event) => { event.preventDefault(); button.closest('dialog')?.close() }
@@ -364,7 +453,7 @@
   // page slid past behind it, which nothing built on Radix does because Radix locks the scroll.
   // Counted rather than toggled: drawers nest, and the first one to close must not unlock the
   // page while another is still open.
-  up.compiler('dialog[data-slot="dialog"], dialog[data-slot="alert-dialog"], ' +
+  shadcnCompiler('dialog[data-slot="dialog"], dialog[data-slot="alert-dialog"], ' +
               'dialog[data-slot="command-dialog"], dialog[data-slot="sheet"], ' +
               'dialog[data-slot="drawer"]', (dialog) => {
     const onToggle = () => {
@@ -385,7 +474,7 @@
 
   // Clicking the backdrop dismisses. The <dialog> element IS the backdrop area, so a click whose
   // target is the dialog itself — rather than the panel inside it — landed outside.
-  up.compiler('dialog[data-dismissable]', (dialog) => {
+  shadcnCompiler('dialog[data-dismissable]', (dialog) => {
     const onClick = (event) => { if (event.target === dialog) dialog.close() }
     dialog.addEventListener('click', onClick)
     return () => dialog.removeEventListener('click', onClick)
@@ -418,7 +507,7 @@
 
   let tabsSeq = 0
 
-  up.compiler('[data-slot="tabs"]', (root) => {
+  shadcnCompiler('[data-slot="tabs"]', (root) => {
     // Tabs nest: this documentation page puts every example inside its own Preview/Code tabs, so
     // an example that is itself a tab strip has one Tabs inside another. Both compilers see the
     // same bubbled event, so each one has to check that the trigger is ITS OWN — mine, not merely
@@ -495,7 +584,7 @@
   // The trigger gets it too, because a chevron that turns when its menu opens is written
   // `group-data-[state=open]:rotate-180` — the group is the trigger, not the panel.
 
-  up.compiler('[popover][data-slot]', (panel) => {
+  shadcnCompiler('[popover][data-slot]', (panel) => {
     const trigger = document.querySelector(`[popovertarget="${panel.id}"]`)
 
     const onToggle = (event) => {
@@ -595,7 +684,7 @@
 
   // Every trigger that opens a panel anchored to itself: a dropdown, a popover, a submenu row,
   // and a menubar's own buttons. They differ in where the panel goes, not in how it opens.
-  up.compiler('[data-slot="dropdown-menu-trigger"], [data-slot="popover-trigger"], ' +
+  shadcnCompiler('[data-slot="dropdown-menu-trigger"], [data-slot="popover-trigger"], ' +
               '[data-slot="dropdown-menu-sub-trigger"], [data-slot="menubar-trigger"], ' +
               '[data-slot="menubar-sub-trigger"], [data-slot="context-menu-sub-trigger"], ' +
               // The navigation menu was missing from this list, and nothing else placed it: its
@@ -666,7 +755,7 @@
   // The panel is rendered inside its <li>, so it is a DOM descendant of the bar even while it is
   // painted in the top layer — which is what lets one pair of listeners on the bar cover both the
   // trigger and the panel, and what makes moving from one into the other not a leave at all.
-  up.compiler('[data-slot="navigation-menu"]', (root) => {
+  shadcnCompiler('[data-slot="navigation-menu"]', (root) => {
     const triggers = () => [...root.querySelectorAll('[data-slot="navigation-menu-trigger"]')]
     const panelOf = (trigger) => document.getElementById(trigger.dataset.target)
     const openPanels = () => triggers().map(panelOf).filter((p) => p?.matches(':popover-open'))
@@ -744,7 +833,7 @@
   // English, Left in Arabic — and the other one closes it. The APG says so, and hard-coding
   // Right leaves an RTL user opening a submenu with the key that visually points back at the
   // menu they came from.
-  up.compiler('[data-slot="dropdown-menu-content"], [data-slot="context-menu-content"], ' +
+  shadcnCompiler('[data-slot="dropdown-menu-content"], [data-slot="context-menu-content"], ' +
               '[data-slot="menubar-content"], [data-slot="dropdown-menu-sub-content"], ' +
               '[data-slot="context-menu-sub-content"], [data-slot="menubar-sub-content"]',
               (panel) => {
@@ -847,7 +936,7 @@
   // the panel stayed open after a click, so picking "CSV" left the menu sitting there and read
   // as "the dropdown will not let me choose". Radix closes on select and so does every other
   // menu; a sub-trigger is the exception, because its whole job is to open the next panel.
-  up.compiler('[data-slot="dropdown-menu-content"], [data-slot="context-menu-content"], ' +
+  shadcnCompiler('[data-slot="dropdown-menu-content"], [data-slot="context-menu-content"], ' +
               '[data-slot="menubar-content"], [data-slot="dropdown-menu-sub-content"], ' +
               '[data-slot="context-menu-sub-content"], [data-slot="menubar-sub-content"]',
               (panel) => {
@@ -883,7 +972,7 @@
   // the way a range picker should — a third click starts a new range, and the band between the
   // two ends fills in as you go. The boxes stay the state; nothing here remembers anything.
 
-  up.compiler('[data-slot="calendar"][data-mode="range"]', (calendar) => {
+  shadcnCompiler('[data-slot="calendar"][data-mode="range"]', (calendar) => {
     const boxes = () => [...calendar.querySelectorAll('input[type=checkbox]')]
     const ticked = () => boxes().filter((b) => b.checked)
     const day = (box) => box.value
@@ -929,7 +1018,7 @@
   // Indeterminate is a property rather than an attribute, which is why it is set here and not
   // in the markup — the "some but not all" state has no HTML spelling.
 
-  up.compiler('[data-select-all]', (master) => {
+  shadcnCompiler('[data-select-all]', (master) => {
     const scope = master.closest('form, table, [data-select-scope]') || document
     const boxes = () => [...scope.querySelectorAll(
       `input[type=checkbox][name="${master.dataset.selectAll}"]`)].filter((b) => !b.disabled)
@@ -965,7 +1054,7 @@
   // card per chart, filled from the data attributes of whatever the pointer is over. Nothing is
   // measured and no series data lives in JavaScript — the markup carries it.
 
-  up.compiler('[data-slot="chart"]:has([data-slot="chart-tooltip"])', (chart) => {
+  shadcnCompiler('[data-slot="chart"]:has([data-slot="chart-tooltip"])', (chart) => {
     const card = chart.querySelector('[data-slot="chart-tooltip"]')
 
     const rows = (point) => {
@@ -1032,7 +1121,7 @@
   // touch, because the platform fires the same event for all three. A right-click handler bolted
   // onto a div gets only the first, which is how context menus end up unreachable by keyboard.
 
-  up.compiler('[data-slot="context-menu"]', (root) => {
+  shadcnCompiler('[data-slot="context-menu"]', (root) => {
     const panel = document.getElementById(root.dataset.target)
     const trigger = root.querySelector('[data-slot="context-menu-trigger"]')
     if (!panel || !trigger) return
@@ -1121,7 +1210,7 @@
   // doing nothing — the thing that makes a menubar feel like one, and the only part of it that
   // is not free.
 
-  up.compiler('[data-slot="menubar"]', (bar) => {
+  shadcnCompiler('[data-slot="menubar"]', (bar) => {
     const triggers = () => [...bar.querySelectorAll('[data-slot="menubar-trigger"]')]
     const panelFor = (trigger) => document.getElementById(trigger.dataset.target)
 
@@ -1172,7 +1261,7 @@
   // Pointer events, not touch events: the same code then works for a mouse drag and a stylus,
   // and setPointerCapture means letting go outside the panel still ends the drag.
 
-  up.compiler('[data-slot="drawer-trigger"]', (trigger) => {
+  shadcnCompiler('[data-slot="drawer-trigger"]', (trigger) => {
     const onClick = () => {
       const dialog = document.getElementById(trigger.dataset.open)
       if (!dialog) return
@@ -1187,7 +1276,7 @@
     return () => trigger.removeEventListener('click', onClick)
   })
 
-  up.compiler('dialog[data-slot="drawer"]', (dialog) => {
+  shadcnCompiler('dialog[data-slot="drawer"]', (dialog) => {
     const panel = dialog.querySelector('[data-slot="drawer-content"]')
     if (!panel) return
 
@@ -1313,7 +1402,7 @@
   // lose it, and the server reads it with no JSON anywhere. Everything below is presentation over
   // that one fact.
 
-  up.compiler('[data-slot="combobox"]', (root) => {
+  shadcnCompiler('[data-slot="combobox"]', (root) => {
     const panel = document.getElementById(root.dataset.target)
     if (!panel) return
 
@@ -1588,7 +1677,7 @@
   // nothing to toggle, and a control that does nothing is worse than one that is absent — the
   // sidebar stays open and every link in it is still reachable.
 
-  up.compiler('[data-sidebar-toggle]', (control) => {
+  shadcnCompiler('[data-sidebar-toggle]', (control) => {
     const wrapper = control.closest('[data-slot="sidebar-wrapper"]') || document.body
 
     const sidebars = () => [...wrapper.querySelectorAll('[data-slot="sidebar"]')]
@@ -1657,7 +1746,7 @@
   // in the CSS does the first half without any script at all — the browser holds the scroll
   // position against content inserted above the anchor — and this adds the button.
 
-  up.compiler('[data-slot="message-scroller"]', (root) => {
+  shadcnCompiler('[data-slot="message-scroller"]', (root) => {
     const viewport = root.querySelector('[data-slot="message-scroller-viewport"]')
     if (!viewport) return
 
@@ -1827,7 +1916,7 @@
   // [data-tooltip-target] is on this list because a tooltip is not always a component of its
   // own: a sidebar row IS the trigger, and it already has a data-slot saying what it is. The
   // attribute is the general hook — anything can name a tip and get the whole behaviour.
-  up.compiler('[data-slot="tooltip-trigger"], [data-tooltip-target]', (trigger) => {
+  shadcnCompiler('[data-slot="tooltip-trigger"], [data-tooltip-target]', (trigger) => {
     const panel = document.getElementById(trigger.dataset.target || trigger.dataset.tooltipTarget)
     if (!panel) return
 
@@ -1906,7 +1995,7 @@
   // the page is not on a secure origin is worse than no button at all, so it stays absent unless
   // the clipboard is actually there.
 
-  up.compiler('[data-slot="code-block-copy"]', (button) => {
+  shadcnCompiler('[data-slot="code-block-copy"]', (button) => {
     if (!navigator.clipboard?.writeText) return
     button.hidden = false
 
@@ -1946,7 +2035,7 @@
   // `prism-normalize-whitespace` trims, `prism-line-numbers` adds the gutter when <pre> has
   // `line-numbers`. Autoloader lazily fetches missing languages from the CDN or from ./components/
   // relative to prism.js when self-hosted.
-  up.compiler('[data-slot="code-block"]', (root) => {
+  shadcnCompiler('[data-slot="code-block"]', (root) => {
     const code = root.querySelector('[data-slot="code-block-code"]')
     if (!code) return
     if (!code.className.match(/\blanguage-/)) code.classList.add('language-none')
@@ -1981,7 +2070,7 @@
   // `colorDark`/`colorLight` may be CSS variables (`var(--foreground)`) — resolved via
   // getComputedStyle so dark mode just works when no explicit colors are given.
   // Quiet zone is CSS padding on the generated canvas/img; `data-margin="0"` removes it.
-  up.compiler('[data-slot="qr-code"][data-qrcode]', (el) => {
+  shadcnCompiler('[data-slot="qr-code"][data-qrcode]', (el) => {
     const cssVar = (name, fallback) => {
       const v = getComputedStyle(document.documentElement).getPropertyValue(name).trim()
       return v || fallback
@@ -2049,7 +2138,7 @@
   // Static SSR renders <img-comparison-slider> with two <img slot="first/second">. This compiler
   // lazy-loads the WC definition only when [data-slot="image-compare"] is on the page, so a landing
   // page with no compare never fetches the 11KB script.
-  up.compiler('[data-slot="image-compare"][data-image-compare]', (el) => {
+  shadcnCompiler('[data-slot="image-compare"][data-image-compare]', (el) => {
     const slider = el.querySelector('img-comparison-slider')
     if (!slider) return
     const ensure = () => {
@@ -2080,7 +2169,7 @@
 
   const fold = (s) => s.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase()
 
-  up.compiler('[data-slot="command"], [data-slot="command-dialog"]', (root) => {
+  shadcnCompiler('[data-slot="command"], [data-slot="command-dialog"]', (root) => {
     const input = root.querySelector('[data-slot="command-input"]')
     const list = root.querySelector('[data-slot="command-list"]')
     if (!input || !list) return
@@ -2187,7 +2276,7 @@
 
   // The shortcut that opens a palette. `mod` is ⌘ on a Mac and Ctrl everywhere else, which is the
   // distinction every implementation gets wrong in one direction or the other.
-  up.compiler('[data-command-key]', (dialog) => {
+  shadcnCompiler('[data-command-key]', (dialog) => {
     const combo = (dialog.dataset.commandKey || 'mod+k').toLowerCase().split('+')
     const key = combo[combo.length - 1]
     const wantsMod = combo.includes('mod') || combo.includes('ctrl') || combo.includes('cmd')
@@ -2227,7 +2316,7 @@
   // The hidden input is the one the server sees. Keeping it in step here rather than joining the
   // boxes in every handler is the difference between one place to get it right and one per form.
 
-  up.compiler('[data-slot="input-otp"]', (root) => {
+  shadcnCompiler('[data-slot="input-otp"]', (root) => {
     const boxes = [...root.querySelectorAll('[data-slot="input-otp-slot"]')]
     const hidden = root.querySelector('[data-otp-value]')
     if (boxes.length === 0 || !hidden) return
@@ -2364,7 +2453,7 @@
     }
   }, 500)
 
-  up.compiler('[data-slot="hover-card-trigger"]', (trigger) => {
+  shadcnCompiler('[data-slot="hover-card-trigger"]', (trigger) => {
     const panel = document.getElementById(trigger.dataset.target)
     if (!panel) return
     let openTimer, closeTimer
@@ -2483,7 +2572,7 @@
   // output on the page rather than once per demo. It is the whole of shadcn's "controlled"
   // slider: there, the value lives in a state variable and is printed beside the label; here it
   // lives in the input, which is the thing that posts, and the output reads it.
-  up.compiler('output[for]', (output) => {
+  shadcnCompiler('output[for]', (output) => {
     const source = document.getElementById(output.getAttribute('for'))
     if (!source) return
 
@@ -2493,7 +2582,7 @@
     return () => source.removeEventListener('input', show)
   })
 
-  up.compiler('input[type="checkbox"][data-toggles]', (box) => {
+  shadcnCompiler('input[type="checkbox"][data-toggles]', (box) => {
     const target = document.getElementById(box.dataset.toggles)
     const name = box.dataset.togglesAttribute
     if (!target || !name) return
@@ -2506,7 +2595,7 @@
     return () => box.removeEventListener('change', write)
   })
 
-  up.compiler('select[data-slot="select"]', (select) => {
+  shadcnCompiler('select[data-slot="select"]', (select) => {
     if (select.multiple || select.closest('[data-slot="select-root"]')) return
     if (select.options.length === 0) return
     // A disabled select is still drawn. Bailing out left the native control on screen wearing no
@@ -2752,7 +2841,7 @@
   const isoDate = (d) =>
     `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`
 
-  up.compiler('[data-slot="date-picker"]', (input) => {
+  shadcnCompiler('[data-slot="date-picker"]', (input) => {
     if (typeof window.AirDatepicker !== 'function') return
 
     // What the form posts stays ISO (yyyy-MM-dd), matching the domain's DateOnly parsing, while
@@ -2818,7 +2907,7 @@
   // and only then is the attribute cleared. Reading the duration from the element rather than
   // hardcoding one means a theme that slows the animation down does not get it cut short.
 
-  up.compiler('dialog[data-slot]', (dialog) => {
+  shadcnCompiler('dialog[data-slot]', (dialog) => {
     const panel = dialog.firstElementChild || dialog
 
     const opened = () => { panel.dataset.state = 'open' }
@@ -2845,7 +2934,7 @@
   // property and CSS does the rest. Without it the slider still works — it is the fill that is
   // missing, not the control, which is why this is a compiler and not a requirement.
 
-  up.compiler('input[type="range"][data-slot="slider"]', (input) => {
+  shadcnCompiler('input[type="range"][data-slot="slider"]', (input) => {
     const paint = () => {
       const min = Number(input.min || 0)
       const max = Number(input.max || 100)
@@ -2864,7 +2953,7 @@
   // The band's percentages arrive inline from the server; this keeps them true while dragging,
   // and mirrors each value into any <output for="..."> pointed at the input, which is the
   // element HTML already has for "the live result of a control".
-  up.compiler('[data-slot="slider"][data-range]', (root) => {
+  shadcnCompiler('[data-slot="slider"][data-range]', (root) => {
     const inputs = [...root.querySelectorAll('input[type="range"]')]
     const min = Number(inputs[0]?.min || 0)
     const span = Number(inputs[0]?.max || 100) - min
@@ -2899,7 +2988,7 @@
   // Without this the day was chosen — the radio really was checked, and it really would post —
   // but the panel stayed open over the page and the button still said the old date, so the
   // choice looked like it had not registered at all.
-  up.compiler('[popover] [data-slot="calendar"]', (calendar) => {
+  shadcnCompiler('[popover] [data-slot="calendar"]', (calendar) => {
     const panel = calendar.closest('[popover]')
     if (!panel?.id) return
     const trigger = document.querySelector(`[popovertarget="${panel.id}"]`)
@@ -2947,7 +3036,7 @@
   // slider is the input that posts and the bar is what it reports, so the link between them is
   // one attribute naming the other — and with scripting off you still get a working slider and a
   // bar showing whatever the server rendered.
-  up.compiler('input[type="range"][data-controls]', (slider) => {
+  shadcnCompiler('input[type="range"][data-controls]', (slider) => {
     const bar = document.getElementById(slider.dataset.controls)
     const indicator = bar?.querySelector('[data-slot="progress-indicator"]')
     if (!indicator) return
@@ -2976,7 +3065,7 @@
   // the rest of the page (a form, a control bound to it) sees the new value. Nothing here holds
   // state; the input is the state, and with scripting off it is still a working number field.
 
-  up.compiler('[data-slot="stepper"]', (root) => {
+  shadcnCompiler('[data-slot="stepper"]', (root) => {
     const input = root.querySelector('input[type="number"]')
     if (!input) return
 
@@ -3018,7 +3107,7 @@
   // same application and ASP.NET will refuse it otherwise — and the failure is a 400 with no
   // body, which reads like a broken endpoint rather than a missing token.
 
-  up.compiler('[data-slot="file-upload"]', (root) => {
+  shadcnCompiler('[data-slot="file-upload"]', (root) => {
     const zone = root.querySelector('[data-slot="file-upload-zone"]')
     const picker = root.querySelector('[data-slot="file-upload-input"]')
     const value = root.querySelector('[data-slot="file-upload-value"]')
@@ -3164,7 +3253,7 @@
   // each end, which is what upstream's canScrollPrev/canScrollNext do. They ship hidden and are
   // revealed here, because an arrow that cannot scroll is worse than no arrow.
 
-  up.compiler('[data-slot="carousel"]', (root) => {
+  shadcnCompiler('[data-slot="carousel"]', (root) => {
     const scroller = root.querySelector('[data-slot="carousel-content"]')
     if (!scroller) return
 
@@ -3220,7 +3309,7 @@
   // Arrow keys move it too. A divider only a pointer can move is a divider that half the people
   // using it cannot move at all, and role=separator promises otherwise.
 
-  up.compiler('[data-slot="resizable-handle"]', (handle) => {
+  shadcnCompiler('[data-slot="resizable-handle"]', (handle) => {
     const group = handle.closest('[data-slot="resizable-panel-group"]')
     const before = handle.previousElementSibling
     const after = handle.nextElementSibling

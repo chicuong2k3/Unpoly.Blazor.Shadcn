@@ -1,0 +1,9 @@
+@* An icon button needs a name. `aria-label` is not decoration here: without it the button is
+   announced as "button" and nothing else, which is the single most common accessibility failure
+   in a toolbar. *@
+<div class="flex flex-wrap items-center gap-3">
+    <Button Size="icon" aria-label="Add an item"><Icon Name="plus" /></Button>
+    <Button Size="icon-sm" Variant="outline" aria-label="Edit"><Icon Name="pencil" /></Button>
+    <Button Size="icon-xs" Variant="ghost" aria-label="More"><Icon Name="ellipsis" /></Button>
+    <Button Size="icon-lg" Variant="secondary" aria-label="Search"><Icon Name="search" /></Button>
+</div>

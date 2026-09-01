@@ -1,0 +1,15 @@
+@* Inside a popover, which is shadcn's date-picker shape. For a form field, <DatePicker> around
+   <input type="date"> is smaller and brings the OS picker on a phone — reach for this when the
+   month has to be visible while choosing. *@
+<div class="w-[280px]">
+    <Field>
+        <FieldLabel For="cal-dp">Delivery date</FieldLabel>
+        <PopoverTrigger Target="cal-dp-panel" id="cal-dp" Class="w-full justify-between font-normal">
+            11 March 2026<Icon Name="calendar" Class="opacity-50" />
+        </PopoverTrigger>
+        <PopoverContent Id="cal-dp-panel" Align="start" Class="w-auto p-3">
+            <Calendar Name="delivery" Month="@(new DateOnly(2026, 3, 1))"
+                      Selected="@(new DateOnly(2026, 3, 11))" Today="@(new DateOnly(2026, 3, 11))" />
+        </PopoverContent>
+    </Field>
+</div>

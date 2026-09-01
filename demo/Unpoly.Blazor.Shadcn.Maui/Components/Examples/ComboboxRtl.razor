@@ -1,0 +1,17 @@
+@* Nothing here is told which side is the start: the trigger's chevron sits on the end edge and the
+   list aligns to the start edge because both are logical properties. *@
+<div dir="rtl" class="w-72">
+    <Combobox Target="cb-rtl-list">
+        <input type="hidden" name="city" value="cairo" data-combobox-value />
+        <ComboboxTrigger id="cb-rtl" Target="cb-rtl-list">
+            <ComboboxValue data-placeholder="اختر مدينة…">القاهرة</ComboboxValue>
+        </ComboboxTrigger>
+        <ComboboxContent Id="cb-rtl-list" Class="w-72">
+            <ComboboxList>
+                <ComboboxEmpty>لا توجد مدينة بهذا الاسم.</ComboboxEmpty>
+                <ComboboxItem Value="cairo" Selected>القاهرة</ComboboxItem>
+                <ComboboxItem Value="amman">عمّان</ComboboxItem>
+            </ComboboxList>
+        </ComboboxContent>
+    </Combobox>
+</div>

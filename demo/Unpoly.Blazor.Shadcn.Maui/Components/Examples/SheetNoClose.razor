@@ -1,0 +1,15 @@
+@* Without the corner X. Worth knowing what you are giving up: Escape and the backdrop still
+   close it, because both are the dialog element's, not the button's — but a panel with no
+   visible way out is one people learn to distrust. Leave it off only when the footer has one. *@
+<SheetTrigger Target="sheet-no-close" Variant="outline">Open</SheetTrigger>
+
+<Sheet Id="sheet-no-close" ShowCloseButton="false">
+    <SheetHeader>
+        <SheetTitle>Move to project</SheetTitle>
+        <SheetDescription>No corner X — the footer carries the way out.</SheetDescription>
+    </SheetHeader>
+    <SheetFooter>
+        <Button>Move</Button>
+        <SheetClose>Cancel</SheetClose>
+    </SheetFooter>
+</Sheet>

@@ -1,0 +1,15 @@
+@* With and without the grip. Without it the handle is a one-pixel line: findable by pointer, and
+   nothing says it can be dragged — so the grip is not decoration, it is the affordance. *@
+<div class="flex flex-col gap-4">
+    <ResizablePanelGroup Class="h-28 w-full max-w-lg rounded-lg border">
+        <ResizablePanel Class="flex items-center justify-center p-4"><span class="text-sm">With a grip</span></ResizablePanel>
+        <ResizableHandle WithHandle />
+        <ResizablePanel Class="flex items-center justify-center p-4"><span class="text-sm">Drag it</span></ResizablePanel>
+    </ResizablePanelGroup>
+
+    <ResizablePanelGroup Class="h-28 w-full max-w-lg rounded-lg border">
+        <ResizablePanel Class="flex items-center justify-center p-4"><span class="text-sm">Without</span></ResizablePanel>
+        <ResizableHandle />
+        <ResizablePanel Class="flex items-center justify-center p-4"><span class="text-sm">Still draggable</span></ResizablePanel>
+    </ResizablePanelGroup>
+</div>

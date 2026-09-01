@@ -1,0 +1,25 @@
+@* Several boxes with one name post a list, which is how HTML has always done it — no JavaScript
+   takes part. The fieldset is what names the group; without it a screen reader announces five
+   unrelated checkboxes. *@
+<FieldSet Class="w-[420px]">
+    <FieldLegend Variant="label">Notify me about</FieldLegend>
+    <FieldDescription>Posts as <code>notify</code>, once per ticked box.</FieldDescription>
+    <FieldGroup data-slot="checkbox-group" Class="gap-3">
+        @foreach (var (id, label) in Options)
+        {
+            <Field Orientation="horizontal">
+                <Checkbox id="@id" name="notify" value="@id" />
+                <FieldLabel For="@id">@label</FieldLabel>
+            </Field>
+        }
+    </FieldGroup>
+</FieldSet>
+
+@code {
+    static readonly (string Id, string Label)[] Options =
+    [
+        ("shipped", "An order ships"),
+        ("refunded", "A refund is issued"),
+        ("stock", "Something runs out of stock"),
+    ];
+}

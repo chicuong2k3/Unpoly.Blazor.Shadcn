@@ -1,0 +1,15 @@
+@* An image that reaches the card's edges: the card is overflow-hidden and the image sits
+   outside the padded parts. AspectRatio keeps the shape so nothing reflows as it loads. *@
+<Card Class="w-72 gap-0 overflow-hidden p-0">
+    <AspectRatio Ratio="16 / 9" Class="bg-muted">
+        <img src="https://placehold.co/640x360" alt="" width="640" height="360" loading="lazy"
+             class="size-full object-cover" />
+    </AspectRatio>
+    <CardHeader Class="pt-4">
+        <CardTitle>Weekender</CardTitle>
+        <CardDescription>Waxed canvas, leather trim.</CardDescription>
+    </CardHeader>
+    <CardFooter Class="pb-4">
+        <span class="num text-sm font-medium">$189</span>
+    </CardFooter>
+</Card>

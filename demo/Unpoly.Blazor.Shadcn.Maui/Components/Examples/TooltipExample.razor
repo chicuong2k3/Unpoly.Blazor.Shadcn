@@ -1,0 +1,7 @@
+@* Opens on hover AND focus: a tooltip only reachable by mouse is one half the
+   users never see. Escape closes it. The trigger is described by the tip, not named by it —
+   aria-describedby, so the button keeps whatever it already says. *@
+<Tooltip>
+    <TooltipTrigger Target="demo-tip" Class="@ButtonVariants.Of("outline")">Hover me</TooltipTrigger>
+    <TooltipContent Id="demo-tip">Added to your library</TooltipContent>
+</Tooltip>

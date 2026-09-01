@@ -1,0 +1,10 @@
+@* Disabled is a predicate, so the rule lives in one place and the markup does not repeat it.
+   A disabled day is still announced — which tells a reader the date exists and is taken, rather
+   than leaving them to wonder why nothing happened. *@
+<Calendar Name="stay" Month="@(new DateOnly(2026, 3, 1))" Today="@(new DateOnly(2026, 3, 11))"
+          Disabled="@(d => Booked.Contains(d.Day) || d.DayOfWeek == DayOfWeek.Sunday)"
+          Class="w-fit rounded-lg border p-3" />
+
+@code {
+    static readonly int[] Booked = [12, 13, 14, 20, 21];
+}

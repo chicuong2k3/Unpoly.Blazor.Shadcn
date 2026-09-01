@@ -1,0 +1,32 @@
+@inherits LayoutComponentBase
+@inject IJSRuntime JS
+
+<div class="flex min-h-screen flex-col">
+    <header class="flex items-center gap-2 border-b border-border px-4 py-3">
+        <span class="mr-2 font-semibold tracking-tight">Unpoly.Blazor.Shadcn.Maui</span>
+
+        @* Href renders an <a>, which is shadcn's `asChild` case. Unpoly is loaded but does not
+           follow plain links, so this stays Blazor's router. *@
+        <Button Variant="ghost" Size="sm" Href="/">Home</Button>
+        <Button Variant="ghost" Size="sm" Href="/about">About</Button>
+
+        <Button Variant="ghost" Size="icon" Class="ml-auto" Type="button" @onclick="ToggleDark">
+            <Icon Name="sun-moon" Title="Toggle dark mode" />
+        </Button>
+    </header>
+
+    <main class="flex-1 p-4">@Body</main>
+</div>
+
+@code {
+    bool dark;
+
+    // shadcn's dark palette hangs off a class on <html>, and ui.css redefines the `dark:`
+    // variant against that class rather than the OS setting. One line of interop is the whole
+    // mechanism; there is no state to persist here because a MAUI app owns its own storage.
+    async Task ToggleDark()
+    {
+        dark = !dark;
+        await JS.InvokeVoidAsync("document.documentElement.classList.toggle", "dark", dark);
+    }
+}

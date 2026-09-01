@@ -1,0 +1,44 @@
+@* A multi-step form. Each step is a real URL and a real POST, not a client-side index —
+   which is what makes the back button work, a refresh safe, and a half-finished application
+   resumable from an email link.
+
+   The progress is stated twice on purpose: a bar for the glance, and "Step 2 of 4" for anyone
+   who cannot see it. A bar alone is decoration. *@
+
+<div class="mx-auto max-w-xl">
+    <div class="space-y-2">
+        <div class="flex items-center justify-between text-sm">
+            <p class="font-medium">Step 2 of 4 — Address</p>
+            <p class="text-muted-foreground">About 2 minutes left</p>
+        </div>
+        <Progress Value="50" aria-label="Step 2 of 4" />
+    </div>
+
+    <form method="post" action="/apply/2" class="wizard-step mt-8"
+          up-target=".wizard-step" up-fail-target=".wizard-step">
+        <FieldSet>
+            <FieldLegend>Where should we deliver?</FieldLegend>
+            <FieldGroup>
+                <Field>
+                    <FieldLabel For="w-line1">Address</FieldLabel>
+                    <Input id="w-line1" name="line1" required autocomplete="address-line1" />
+                </Field>
+                <Field>
+                    <FieldLabel For="w-city">City</FieldLabel>
+                    <Input id="w-city" name="city" required autocomplete="address-level2" />
+                </Field>
+                <Field>
+                    <FieldLabel For="w-post">Postcode</FieldLabel>
+                    <Input id="w-post" name="postcode" required autocomplete="postal-code"
+                           Class="num w-[160px]" />
+                </Field>
+            </FieldGroup>
+        </FieldSet>
+
+        <div class="mt-8 flex items-center justify-between">
+            @* A link, not a button: going back is navigation, and it must not resubmit. *@
+            <Button Variant="ghost" Href="/apply/1"><Icon Name="arrow-left" />Back</Button>
+            <Button up-disable>Continue<Icon Name="arrow-right" /></Button>
+        </div>
+    </form>
+</div>

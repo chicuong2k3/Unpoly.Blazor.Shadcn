@@ -1,0 +1,18 @@
+@* The grab bar is the affordance, not the target: the drag is on the whole panel, so it works
+   whether or not the bar is there. It is drawn for a top or bottom drawer only — on a side one it
+   would be a vertical bar nobody has been taught to pull. *@
+<div class="flex flex-wrap items-center gap-3">
+    <DrawerTrigger Target="drawer-handle">With a handle</DrawerTrigger>
+    <Drawer Id="drawer-handle">
+        <DrawerHeader><DrawerTitle>Pull it down</DrawerTitle>
+            <DrawerDescription>Or drag anywhere on the panel.</DrawerDescription></DrawerHeader>
+        <DrawerFooter><DrawerClose>Close</DrawerClose></DrawerFooter>
+    </Drawer>
+
+    <DrawerTrigger Target="drawer-nohandle">Without</DrawerTrigger>
+    <Drawer Id="drawer-nohandle" ShowHandle="false">
+        <DrawerHeader><DrawerTitle>Still draggable</DrawerTitle>
+            <DrawerDescription>Nothing says so, which is the cost.</DrawerDescription></DrawerHeader>
+        <DrawerFooter><DrawerClose>Close</DrawerClose></DrawerFooter>
+    </Drawer>
+</div>

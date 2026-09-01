@@ -1,0 +1,41 @@
+@page "/gallery/{Chunk:int}"
+@using System.Reflection
+
+@* Mọi ví dụ của demo web, dựng bằng phản chiếu chứ không phải 451 dòng gọi tay: một
+   component mới trong Examples/ tự có mặt ở đây, không ai phải nhớ thêm vào danh sách.
+
+   Chia lô vì render cả 451 trong một lượt khoá luồng UI của WebView đủ lâu để timer
+   không chạy nữa — trang không bao giờ xuất hiện và không có gì báo tại sao. *@
+
+<div class="p-4" data-chunk="@Chunk" data-chunk-count="@ChunkCount" data-total="@All.Count">
+    <h1 class="text-xl font-semibold">lô @Chunk / @(ChunkCount - 1) — @Slice.Count / @All.Count examples</h1>
+</div>
+
+@foreach (var type in Slice)
+{
+    <section class="border-b p-4" data-example="@type.Name">
+        <p class="mb-2 font-mono text-xs text-muted-foreground">@type.Name</p>
+        <DynamicComponent Type="type" />
+    </section>
+}
+
+@code {
+    const int Size = 20;
+
+    [Parameter] public int Chunk { get; set; }
+
+    static readonly List<Type> All = typeof(Gallery).Assembly
+        .GetTypes()
+        .Where(t => t.IsSubclassOf(typeof(ComponentBase)) && !t.IsAbstract
+                 && (t.Namespace?.EndsWith(".Examples") == true || t.Namespace?.EndsWith(".Blocks") == true))
+        // Một ví dụ có tham số bắt buộc sẽ ném khi dựng không tham số. Không ví dụ nào
+        // hiện có như vậy; điều kiện này để cái đầu tiên như thế bị bỏ qua chứ không
+        // làm cả lô trắng.
+        .Where(t => !t.GetProperties().Any(p => p.GetCustomAttribute<EditorRequiredAttribute>() != null))
+        .OrderBy(t => t.Name)
+        .ToList();
+
+    static int ChunkCount => (All.Count + Size - 1) / Size;
+
+    List<Type> Slice => All.Skip(Chunk * Size).Take(Size).ToList();
+}

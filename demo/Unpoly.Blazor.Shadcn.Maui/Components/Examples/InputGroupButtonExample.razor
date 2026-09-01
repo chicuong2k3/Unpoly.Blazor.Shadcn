@@ -1,0 +1,16 @@
+@* The button lives in the frame, and it is smaller than a standalone button because it has to
+   fit inside a 36px control — which is what InputGroupButton's own size table is for. *@
+<div class="flex w-[360px] flex-col gap-4">
+    <InputGroup>
+        <InputGroupControl name="pw" type="password" value="hunter2hunter2" />
+        <InputGroupAddon Align="inline-end">
+            <InputGroupButton Size="icon-xs" aria-label="Show the password"><Icon Name="eye" /></InputGroupButton>
+        </InputGroupAddon>
+    </InputGroup>
+    <InputGroup>
+        <InputGroupControl name="invite" value="https://example.com/invite/9f2a" readonly />
+        <InputGroupAddon Align="inline-end">
+            <InputGroupButton Size="sm">Copy</InputGroupButton>
+        </InputGroupAddon>
+    </InputGroup>
+</div>

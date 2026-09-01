@@ -1,0 +1,40 @@
+@* Everything at once, which is the case where the keyboard matters: Down and Up rove the rows,
+   Right opens a submenu, Left closes it, Escape closes the lot, and every one of those is bound
+   in ui.js because [popover] has no nesting of its own. *@
+<DropdownMenu>
+    <DropdownMenuTrigger Target="dd-complex">Everything</DropdownMenuTrigger>
+    <DropdownMenuContent Id="dd-complex" Class="w-60">
+        <DropdownMenuLabel>My account</DropdownMenuLabel>
+        <DropdownMenuSeparator />
+        <DropdownMenuGroup>
+            <DropdownMenuItem Href="/account">
+                <Icon Name="circle" />Profile<DropdownMenuShortcut>⇧⌘P</DropdownMenuShortcut>
+            </DropdownMenuItem>
+            <DropdownMenuItem>
+                <Icon Name="settings" />Settings<DropdownMenuShortcut>⌘,</DropdownMenuShortcut>
+            </DropdownMenuItem>
+        </DropdownMenuGroup>
+
+        <DropdownMenuSeparator />
+        <DropdownMenuSub>
+            <DropdownMenuSubTrigger Target="dd-complex-invite">Invite someone</DropdownMenuSubTrigger>
+            <DropdownMenuSubContent Id="dd-complex-invite" Class="w-48">
+                <DropdownMenuItem><Icon Name="send" />By email</DropdownMenuItem>
+                <DropdownMenuItem><Icon Name="copy" />Copy a link</DropdownMenuItem>
+            </DropdownMenuSubContent>
+        </DropdownMenuSub>
+
+        <DropdownMenuSeparator />
+        <DropdownMenuCheckboxItem Name="dd-complex-beta" Checked>Beta features</DropdownMenuCheckboxItem>
+
+        <DropdownMenuSeparator />
+        <DropdownMenuLabel Inset>Theme</DropdownMenuLabel>
+        <DropdownMenuRadioGroup>
+            <DropdownMenuRadioItem Name="dd-complex-theme" Value="light" Checked>Light</DropdownMenuRadioItem>
+            <DropdownMenuRadioItem Name="dd-complex-theme" Value="dark">Dark</DropdownMenuRadioItem>
+        </DropdownMenuRadioGroup>
+
+        <DropdownMenuSeparator />
+        <DropdownMenuItem Variant="destructive" data-ask="Sign out?">Sign out</DropdownMenuItem>
+    </DropdownMenuContent>
+</DropdownMenu>

@@ -1,0 +1,11 @@
+@* lucide-react ships one component per icon; 2000 Razor files is not an icon
+   set, it is a build problem. One component takes the name instead.
+
+   Size comes from the parent's recipe: every component contains
+   [&_svg:not([class*='size-'])]:size-4, so an icon in a button is 16px without asking and steps
+   aside the moment you say otherwise. An icon is decorative unless given a Title. *@
+<Icon Name="check" />
+<Icon Name="chevron-right" />
+<Icon Name="search" Class="size-6" />
+<Icon Name="trash-2" Class="size-6 text-destructive" Title="Delete" />
+<Button Size="icon" aria-label="Settings"><Icon Name="settings" /></Button>

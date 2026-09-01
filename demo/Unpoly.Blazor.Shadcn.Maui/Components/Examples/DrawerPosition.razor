@@ -1,0 +1,15 @@
+@* Four directions. The drag follows: a bottom drawer is pulled down, a left one is pulled left,
+   and the compiler reads the direction rather than being told twice. *@
+<div class="flex flex-wrap items-center gap-3">
+    @foreach (var side in new[] { "bottom", "top", "left", "right" })
+    {
+        <DrawerTrigger Target="@($"drawer-{side}")">@side</DrawerTrigger>
+        <Drawer Id="@($"drawer-{side}")" Direction="@side">
+            <DrawerHeader>
+                <DrawerTitle>From the @side</DrawerTitle>
+                <DrawerDescription>Drag it away, or press Escape.</DrawerDescription>
+            </DrawerHeader>
+            <DrawerFooter><DrawerClose>Close</DrawerClose></DrawerFooter>
+        </Drawer>
+    }
+</div>

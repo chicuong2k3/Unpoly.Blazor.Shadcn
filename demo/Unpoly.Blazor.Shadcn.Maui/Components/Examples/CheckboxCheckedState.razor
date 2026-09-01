@@ -1,0 +1,16 @@
+@* Three states, and the third is the platform's: `indeterminate` is a DOM property rather than
+   an attribute, so it is set by the compiler on a parent box whose children disagree. *@
+<div class="flex flex-col gap-3">
+    <Field Orientation="horizontal">
+        <Checkbox id="c-on" checked />
+        <FieldLabel For="c-on">Checked</FieldLabel>
+    </Field>
+    <Field Orientation="horizontal">
+        <Checkbox id="c-off" />
+        <FieldLabel For="c-off">Unchecked</FieldLabel>
+    </Field>
+    <Field Orientation="horizontal">
+        <Checkbox id="c-mixed" data-indeterminate aria-checked="mixed" />
+        <FieldLabel For="c-mixed">Indeterminate — some children, not all</FieldLabel>
+    </Field>
+</div>

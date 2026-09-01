@@ -1,0 +1,12 @@
+@* No way out but the footer. Escape and the backdrop still close it, because both belong to the
+   element — which is why removing the X is a cosmetic decision here and a trap in a library that
+   builds its own overlay. *@
+<DialogTrigger Target="dlg-noclose">Open</DialogTrigger>
+
+<Dialog Id="dlg-noclose" ShowCloseButton="false">
+    <DialogHeader>
+        <DialogTitle>One more thing</DialogTitle>
+        <DialogDescription>Escape still works. So does clicking outside.</DialogDescription>
+    </DialogHeader>
+    <DialogFooter><DialogClose Variant="default">Got it</DialogClose></DialogFooter>
+</Dialog>

@@ -1,0 +1,19 @@
+@* The whole thing. The server sees one field, not six — the compiler keeps a hidden input in
+   step, because six named fields would push the joining into every handler that reads it. *@
+<form id="input-otp-form" method="post" action="/verify" up-target="#preview-input-otp-form" up-disable class="flex flex-col gap-4">
+    <AntiforgeryToken />
+    <Field Class="w-fit">
+        <FieldLabel>Verification code</FieldLabel>
+        <InputOtp Name="code" Length="6">
+            <InputOtpGroup>
+                @foreach (var i in Enumerable.Range(1, 6))
+                {
+                    <InputOtpSlot First="@(i == 1)" inputmode="numeric" pattern="[0-9]"
+                                  AriaLabel="@($"Digit {i} of 6")" />
+                }
+            </InputOtpGroup>
+        </InputOtp>
+        <FieldDescription>Sent to the number ending 4482.</FieldDescription>
+    </Field>
+    <Button Type="submit" Class="w-fit">Verify</Button>
+</form>

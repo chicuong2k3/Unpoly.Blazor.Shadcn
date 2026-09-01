@@ -1,5 +1,27 @@
 # Unpoly.Blazor.Shadcn — working rules
 
+## Every component change updates BOTH demos
+
+This library ships identical Razor components to **two hosts**, both in this repo:
+
+| Head | Project | How it renders |
+|---|---|---|
+| Web | `demo/Unpoly.Blazor.Shadcn.Demo` | Blazor static SSR + Unpoly navigation |
+| MAUI | `demo/Unpoly.Blazor.Shadcn.Maui` | Blazor interactive in a WebView, no server |
+
+Both live in `Unpoly.Blazor.Shadcn.slnx`. Changing a library component is not done until the
+change is reflected and verified in **both** demo projects: the matching example in
+`demo/Unpoly.Blazor.Shadcn.Demo/Components/` AND `demo/Unpoly.Blazor.Shadcn.Maui/Components/`.
+Added/removed components, lazy assets / `_content/...` scripts (both `wwwroot/index.html`), and
+CSS/token changes all apply to both heads. The two demos are intentionally different (static SSR
+vs interactive WebView) — a change is not a copy-paste, but every `src/` component the demo
+exercises should be present in both.
+
+```bash
+dotnet build demo/Unpoly.Blazor.Shadcn.Demo/Unpoly.Blazor.Shadcn.Demo.csproj
+dotnet build demo/Unpoly.Blazor.Shadcn.Maui/Unpoly.Blazor.Shadcn.Maui.csproj   # Windows + MAUI workload
+```
+
 ## The class strings are generated. Do not type them.
 
 Every component's class list comes from `upstream/`, the real shadcn/ui source, via

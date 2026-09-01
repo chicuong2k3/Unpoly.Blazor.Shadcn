@@ -1,0 +1,7 @@
+@* No IsLoading parameter, and none is needed: Unpoly marks whatever started a
+   request with .up-active, and the library grows the spinner from that. [up-disable] makes the
+   form inert while it is out. Nothing here knows whether a request is in flight — the browser
+   does. *@
+<form method="post" up-target=".doc-main">
+    <Button up-disable>Save changes</Button>
+</form>

@@ -1,0 +1,16 @@
+@* The arrows flip, because "previous" is a direction in the reading order rather than on the
+   screen — which is the one place a mirrored layout usually gets wrong. *@
+<div dir="rtl">
+    <Pagination>
+        <PaginationContent>
+            <PaginationItem>
+                <PaginationPrevious Href="?page=2" Class="[&_svg]:rotate-180" />
+            </PaginationItem>
+            <PaginationItem><PaginationLink Href="?page=3" IsActive>٣</PaginationLink></PaginationItem>
+            <PaginationItem><PaginationLink Href="?page=4">٤</PaginationLink></PaginationItem>
+            <PaginationItem>
+                <PaginationNext Href="?page=4" Class="[&_svg]:rotate-180" />
+            </PaginationItem>
+        </PaginationContent>
+    </Pagination>
+</div>

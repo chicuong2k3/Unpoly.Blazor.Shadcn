@@ -1,0 +1,12 @@
+@* The label dims with the box because the field reads the input's state with has-[:disabled],
+   rather than because it was told twice. *@
+<div class="flex flex-col gap-3">
+    <Field Orientation="horizontal">
+        <Checkbox id="d-on" checked disabled />
+        <FieldLabel For="d-on">Included in your plan</FieldLabel>
+    </Field>
+    <Field Orientation="horizontal">
+        <Checkbox id="d-off" disabled />
+        <FieldLabel For="d-off">Not available on this plan</FieldLabel>
+    </Field>
+</div>

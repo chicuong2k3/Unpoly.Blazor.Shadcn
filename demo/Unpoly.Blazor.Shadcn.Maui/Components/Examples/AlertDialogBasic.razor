@@ -1,0 +1,17 @@
+@* Not dismissable: no light dismiss, and the backdrop does nothing. The question has to be
+   answered, which is the entire difference from a Dialog. *@
+<AlertDialogTrigger Target="ad-basic" Variant="outline">Show Dialog</AlertDialogTrigger>
+
+<AlertDialog Id="ad-basic">
+    <AlertDialogHeader>
+        <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+        <AlertDialogDescription>
+            This action cannot be undone. This will permanently delete your account and remove
+            your data from our servers.
+        </AlertDialogDescription>
+    </AlertDialogHeader>
+    <AlertDialogFooter>
+        <AlertDialogCancel>Cancel</AlertDialogCancel>
+        <AlertDialogAction>Continue</AlertDialogAction>
+    </AlertDialogFooter>
+</AlertDialog>

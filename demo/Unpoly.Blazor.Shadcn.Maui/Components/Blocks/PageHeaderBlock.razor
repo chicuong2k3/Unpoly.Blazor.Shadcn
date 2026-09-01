@@ -1,0 +1,44 @@
+@* The top of a back-office screen: where you are, what it is, and the one or
+   two things you can do to it. *@
+
+<div class="space-y-4">
+    <Breadcrumb>
+        <BreadcrumbList>
+            <BreadcrumbItem><BreadcrumbLink Href="/">Dashboard</BreadcrumbLink></BreadcrumbItem>
+            <BreadcrumbSeparator />
+            <BreadcrumbItem><BreadcrumbLink Href="/orders">Orders</BreadcrumbLink></BreadcrumbItem>
+            <BreadcrumbSeparator />
+            <BreadcrumbItem><BreadcrumbPage>#3201</BreadcrumbPage></BreadcrumbItem>
+        </BreadcrumbList>
+    </Breadcrumb>
+
+    <div class="flex flex-wrap items-start justify-between gap-4">
+        <div>
+            <div class="flex items-center gap-3">
+                <h1 class="text-2xl font-semibold tracking-tight">Order #3201</h1>
+                <Badge Variant="secondary">Paid</Badge>
+            </div>
+            <p class="mt-1 text-sm text-muted-foreground">
+                Placed 12 March 2026 by Marta Ruiz · 3 items
+            </p>
+        </div>
+
+        <div class="flex items-center gap-2">
+            <Button Variant="outline"><Icon Name="copy" />Duplicate</Button>
+            <DropdownMenu>
+                <DropdownMenuTrigger Target="order-actions" Variant="outline" Size="icon"
+                                     aria-label="More actions">
+                    <Icon Name="ellipsis" />
+                </DropdownMenuTrigger>
+                <DropdownMenuContent Id="order-actions" Align="end">
+                    <DropdownMenuItem><Icon Name="upload" />Export</DropdownMenuItem>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem Variant="destructive" data-ask="Refund order #3201?">
+                        <Icon Name="trash-2" />Refund
+                    </DropdownMenuItem>
+                </DropdownMenuContent>
+            </DropdownMenu>
+            <Button up-disable>Save</Button>
+        </div>
+    </div>
+</div>

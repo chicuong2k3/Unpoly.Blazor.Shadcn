@@ -1,0 +1,23 @@
+@* The description belongs to each option, not to the group, so it is announced with the option
+   it describes. *@
+<RadioGroup Class="w-[440px]">
+    @foreach (var (id, title, note) in Plans)
+    {
+        <Field Orientation="horizontal" Class="items-start">
+            <RadioGroupItem id="@id" name="plan" value="@id" Class="mt-1" checked="@(id == "pro")" />
+            <FieldContent>
+                <FieldLabel For="@id">@title</FieldLabel>
+                <FieldDescription>@note</FieldDescription>
+            </FieldContent>
+        </Field>
+    }
+</RadioGroup>
+
+@code {
+    static readonly (string Id, string Title, string Note)[] Plans =
+    [
+        ("free", "Free", "One project, community support."),
+        ("pro", "Pro", "Unlimited projects, email support within a day."),
+        ("team", "Team", "Everything in Pro, plus roles and audit logs."),
+    ];
+}

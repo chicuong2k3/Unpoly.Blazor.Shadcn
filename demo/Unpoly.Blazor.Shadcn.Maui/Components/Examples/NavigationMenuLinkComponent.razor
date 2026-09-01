@@ -1,0 +1,17 @@
+@* shadcn writes asChild here so the link can be a router Link. There is no router: it is an
+   <a href>, and [up-nav] on the list is what marks the current one — Unpoly compares each href
+   with the address bar, which keeps working after a fragment swap because the swap is what
+   changed the address bar. *@
+<NavigationMenu AriaLabel="Docs" up-nav>
+    <NavigationMenuList>
+        <NavigationMenuItem>
+            <NavigationMenuLink Href="/" up-target=".doc-main" up-preload>Overview</NavigationMenuLink>
+        </NavigationMenuItem>
+        <NavigationMenuItem>
+            <NavigationMenuLink Href="/theming" up-target=".doc-main">Theming</NavigationMenuLink>
+        </NavigationMenuItem>
+        <NavigationMenuItem>
+            <NavigationMenuLink Href="/blocks" up-target=".doc-main">Blocks</NavigationMenuLink>
+        </NavigationMenuItem>
+    </NavigationMenuList>
+</NavigationMenu>

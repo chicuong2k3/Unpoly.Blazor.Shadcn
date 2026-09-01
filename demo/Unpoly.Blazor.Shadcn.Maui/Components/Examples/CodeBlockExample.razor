@@ -1,0 +1,17 @@
+@* Not a shadcn component — shadcn's own docs draw code with a bespoke MDX pipeline and export
+   nothing. This library's documentation is built out of this library, so it had to exist: every
+   Code tab on every page of this site is this component.
+
+   The content is a string, not ChildContent. Razor would parse markup inside a <pre> as
+   components, so a snippet containing <Button> would render a button rather than show one. *@
+<CodeBlock Title="Program.cs" Language="csharp" Class="w-full max-w-2xl"
+           Code="@Sample" />
+
+@code {
+    const string Sample = """
+        builder.Services.AddUnpoly(o => o.MainTargets = [".content"]);
+
+        app.UseUnpoly();      // before UseAntiforgery
+        app.UseAntiforgery();
+        """;
+}

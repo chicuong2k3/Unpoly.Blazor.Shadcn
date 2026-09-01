@@ -1,0 +1,109 @@
+@* Checkout. The summary is beside the form on a desktop and above it on a phone — never
+   below, because the total is what someone checks before they commit.
+
+   The submit says the amount. "Place order" on its own asks people to trust that the number
+   they saw earlier is still the number. *@
+
+<div class="mx-auto grid max-w-4xl gap-8 lg:grid-cols-[1fr_360px]">
+    <form method="post" class="checkout-form space-y-8"
+          up-target="body" up-fail-target=".checkout-form">
+        <FieldSet>
+            <FieldLegend>Contact</FieldLegend>
+            <FieldGroup>
+                <Field>
+                    <FieldLabel For="co-email">Email</FieldLabel>
+                    <Input id="co-email" name="email" type="email" required autocomplete="email" />
+                    <FieldDescription>The receipt goes here.</FieldDescription>
+                </Field>
+            </FieldGroup>
+        </FieldSet>
+
+        <FieldSet>
+            <FieldLegend>Delivery</FieldLegend>
+            <FieldGroup>
+                <Field>
+                    <FieldLabel For="co-name">Recipient</FieldLabel>
+                    <Input id="co-name" name="name" required autocomplete="name" />
+                </Field>
+                <Field>
+                    <FieldLabel For="co-address">Address</FieldLabel>
+                    <Input id="co-address" name="address" required autocomplete="address-line1" />
+                </Field>
+                <Field>
+                    <FieldLabel For="co-city">City</FieldLabel>
+                    <Input id="co-city" name="city" required autocomplete="address-level2" />
+                </Field>
+            </FieldGroup>
+        </FieldSet>
+
+        <FieldSet>
+            <FieldLegend>How should it arrive?</FieldLegend>
+            <RadioGroup>
+                <Label Class="flex cursor-pointer items-center justify-between gap-4 rounded-md border p-4 has-[:checked]:border-primary">
+                    <span class="flex items-center gap-3">
+                        <RadioGroupItem name="shipping" value="standard" checked />
+                        <span>
+                            <span class="block text-sm font-medium">Standard</span>
+                            <span class="block text-sm text-muted-foreground">3–5 working days</span>
+                        </span>
+                    </span>
+                    <span class="num text-sm">$4.00</span>
+                </Label>
+                <Label Class="flex cursor-pointer items-center justify-between gap-4 rounded-md border p-4 has-[:checked]:border-primary">
+                    <span class="flex items-center gap-3">
+                        <RadioGroupItem name="shipping" value="express" />
+                        <span>
+                            <span class="block text-sm font-medium">Express</span>
+                            <span class="block text-sm text-muted-foreground">Next working day</span>
+                        </span>
+                    </span>
+                    <span class="num text-sm">$12.00</span>
+                </Label>
+            </RadioGroup>
+        </FieldSet>
+
+        <Button Class="w-full" Size="lg" up-disable>Pay $164.00</Button>
+    </form>
+
+    <Card Class="h-fit lg:order-last">
+        <CardHeader>
+            <CardTitle>Your order</CardTitle>
+            <CardDescription>2 items</CardDescription>
+        </CardHeader>
+
+        <CardContent Class="space-y-4">
+            <ItemGroup>
+                <Item>
+                    <ItemMedia>
+                        <AspectRatio Ratio="1" Class="w-12 overflow-hidden rounded-md bg-muted" />
+                    </ItemMedia>
+                    <ItemContent>
+                        <ItemTitle>Corset, black</ItemTitle>
+                        <ItemDescription>Size M · 1</ItemDescription>
+                    </ItemContent>
+                    <ItemActions><span class="num text-sm">$148.00</span></ItemActions>
+                </Item>
+            </ItemGroup>
+
+            <Separator />
+
+            <dl class="space-y-1.5 text-sm">
+                <div class="flex justify-between">
+                    <dt class="text-muted-foreground">Subtotal</dt><dd class="num">$148.00</dd>
+                </div>
+                <div class="flex justify-between">
+                    <dt class="text-muted-foreground">Delivery</dt><dd class="num">$4.00</dd>
+                </div>
+                <div class="flex justify-between">
+                    <dt class="text-muted-foreground">Tax</dt><dd class="num">$12.00</dd>
+                </div>
+            </dl>
+
+            <Separator />
+
+            <div class="flex justify-between font-medium">
+                <span>Total</span><span class="num">$164.00</span>
+            </div>
+        </CardContent>
+    </Card>
+</div>

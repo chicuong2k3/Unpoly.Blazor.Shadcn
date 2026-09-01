@@ -1,0 +1,13 @@
+@* shadcn's natural-language picker parses "next tuesday" in the browser. Parsing a date is the
+   server's job here: it already has to, because a client-side parse is a convenience and the
+   value still arrives as text. up-validate echoes back what it understood, so the reader sees the
+   interpretation before submitting rather than after. *@
+<form method="post" action="/reminders" up-target="#preview-date-picker-natural" class="w-[420px]">
+    <AntiforgeryToken />
+    <Field>
+        <FieldLabel For="dpn-when">When</FieldLabel>
+        <Input id="dpn-when" name="when" value="next tuesday at 9" up-validate
+               autocomplete="off" />
+        <FieldDescription>Understood as <b>Tuesday 17 March, 09:00</b>.</FieldDescription>
+    </Field>
+</form>

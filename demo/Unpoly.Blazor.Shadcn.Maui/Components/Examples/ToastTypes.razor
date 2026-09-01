@@ -1,0 +1,8 @@
+@* Sonner's API over Toastify: toast(), toast.success(), toast.error(). The call sites read the
+   same, which is the point — a model that knows sonner writes this correctly first time. *@
+<div class="flex flex-wrap items-center gap-3">
+    <Button Variant="outline" onclick="toast('Saved')">Default</Button>
+    <Button Variant="outline" onclick="toast.success('Order refunded')">Success</Button>
+    <Button Variant="outline" onclick="toast.error('The card was declined')">Error</Button>
+    <Button Variant="outline" onclick="toast.info('Two addresses on this account')">Info</Button>
+</div>

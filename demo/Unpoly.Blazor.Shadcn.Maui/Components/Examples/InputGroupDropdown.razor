@@ -1,0 +1,17 @@
+@* A menu inside the frame, for a field with a mode. The panel is in the top layer, so it is not
+   clipped by the group's own overflow. *@
+<InputGroup Class="w-[420px]">
+    <InputGroupAddon>
+        <DropdownMenu>
+            <DropdownMenuTrigger Target="ig-mode" Variant="ghost" Size="sm" Class="h-7 gap-1 px-2">
+                Name<Icon Name="chevron-down" Class="size-3.5" />
+            </DropdownMenuTrigger>
+            <DropdownMenuContent Id="ig-mode" Class="w-40">
+                <DropdownMenuItem>Name</DropdownMenuItem>
+                <DropdownMenuItem>Email</DropdownMenuItem>
+                <DropdownMenuItem>Order number</DropdownMenuItem>
+            </DropdownMenuContent>
+        </DropdownMenu>
+    </InputGroupAddon>
+    <InputGroupControl name="q" type="search" placeholder="Search by name…" />
+</InputGroup>

@@ -1,0 +1,23 @@
+@* Orientation="responsive" stacks below the container breakpoint and turns at it — a container
+   query, not a viewport one, so a field in a narrow sidebar stacks while the same field in the
+   page beside it does not. That is why the group is the container.
+
+   Do not put a width on the label: the recipe gives it flex-auto above the breakpoint, so a w-40
+   makes the label eat the row and squeezes the control into whatever is left. *@
+<FieldGroup Class="w-full max-w-lg">
+    <Field Orientation="responsive">
+        <FieldLabel For="frs-name">Full name</FieldLabel>
+        <FieldContent><Input id="frs-name" name="name" /></FieldContent>
+    </Field>
+    <Field Orientation="responsive">
+        <FieldLabel For="frs-email">Email</FieldLabel>
+        <FieldContent><Input id="frs-email" name="email" type="email" /></FieldContent>
+    </Field>
+    <Field Orientation="responsive">
+        <FieldLabel For="frs-note">Note</FieldLabel>
+        <FieldContent>
+            <Textarea id="frs-note" name="note" rows="2" />
+            <FieldDescription>Resize the window to see it turn.</FieldDescription>
+        </FieldContent>
+    </Field>
+</FieldGroup>

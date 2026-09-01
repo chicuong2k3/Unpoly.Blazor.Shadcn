@@ -1,0 +1,7 @@
+@* Same again with a spinner: leading while the work is starting, trailing while it continues.
+   The spinner inherits the badge's colour and size, because it is an icon and the badge already
+   sizes its icons. *@
+<div class="flex flex-wrap items-center gap-2">
+    <Badge Variant="destructive"><Spinner />Deleting</Badge>
+    <Badge Variant="secondary">Generating<Spinner /></Badge>
+</div>

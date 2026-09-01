@@ -1,0 +1,26 @@
+@* A real <ul>: "list, 3 items" is how someone hears how many files are attached before deciding
+   whether to go through them. *@
+<AttachmentGroup Class="w-[460px]">
+    @foreach (var (name, size) in Files)
+    {
+        <li>
+            <Attachment Size="sm" Class="w-56">
+                <AttachmentMedia><Icon Name="file" /></AttachmentMedia>
+                <AttachmentContent>
+                    <AttachmentTitle>@name</AttachmentTitle>
+                    <AttachmentDescription>@size</AttachmentDescription>
+                </AttachmentContent>
+                <AttachmentTrigger Href="@($"/files/{name}")" target="_blank" rel="noreferrer">
+                    <span class="sr-only">Open @name</span>
+                </AttachmentTrigger>
+            </Attachment>
+        </li>
+    }
+</AttachmentGroup>
+
+@code {
+    static readonly (string Name, string Size)[] Files =
+    [
+        ("acme-msa.pdf", "1.2 MB"), ("nda-2026.docx", "48 KB"), ("rate-card.xlsx", "212 KB"),
+    ];
+}

@@ -1,0 +1,7 @@
+@* The label points at the input, so clicking it focuses the slider and the arrow keys take over
+   from there — which is the whole reason a range control still wants a real label. *@
+<Field Class="w-[380px]">
+    <FieldLabel For="fsl-budget">Budget</FieldLabel>
+    <Slider id="fsl-budget" name="budget" Min="0" Max="500" Step="50" Value="200" />
+    <FieldDescription>Steps of 50, enforced by the input rather than by a check afterwards.</FieldDescription>
+</Field>

@@ -1,0 +1,88 @@
+@* The phone layout: a bar at the top, a tab bar at the bottom, the page between them.
+
+   Three things here are not obvious and all three are the difference between a web page and
+   something that feels like an app.
+
+   `100dvh`, not `100vh`. On a phone the browser's own chrome slides away as you scroll, and vh
+   is frozen at its largest — so a full-height layout ends up with its bottom bar under the
+   address bar until you scroll. dvh follows.
+
+   `env(safe-area-inset-bottom)`. The home indicator on a modern phone sits over the bottom of
+   the screen; without the inset the last tab is under it and cannot be tapped.
+
+   And the tab bar is a <nav> of real links with [up-nav], which is what marks the current one.
+   Not buttons, not a state variable: each tab is a URL, so a tab is shareable and Back works. *@
+
+<div class="mx-auto flex h-[100dvh] max-h-[640px] w-full max-w-sm flex-col overflow-hidden rounded-[2rem] border-8 border-foreground/90 bg-background">
+    <header class="flex items-center gap-2 border-b px-4 py-3">
+        <Button Variant="ghost" Size="icon" Href="/" aria-label="Back">
+            <Icon Name="chevron-left" />
+        </Button>
+        <h1 class="flex-1 truncate text-base font-semibold">Orders</h1>
+        <DropdownMenuTrigger Target="ms-menu" Variant="ghost" Size="icon" aria-label="More">
+            <Icon Name="ellipsis-vertical" />
+        </DropdownMenuTrigger>
+        <DropdownMenuContent Id="ms-menu" Align="end">
+            <DropdownMenuItem Href="/orders/export">Export</DropdownMenuItem>
+            <DropdownMenuItem Href="/orders/filters">Filters</DropdownMenuItem>
+        </DropdownMenuContent>
+    </header>
+
+    <ScrollArea Class="flex-1">
+        <ItemGroup>
+            @foreach (var (number, who, total, state) in Orders)
+            {
+                <Item Href="@($"/orders/{number}")" Class="border-b px-4 py-3">
+                    <ItemContent>
+                        <ItemTitle Class="num">@number</ItemTitle>
+                        <ItemDescription>@who</ItemDescription>
+                    </ItemContent>
+                    <ItemActions>
+                        <span class="num text-sm">@total</span>
+                        <Badge Variant="@(state == "Paid" ? "secondary" : "outline")">@state</Badge>
+                    </ItemActions>
+                </Item>
+            }
+        </ItemGroup>
+    </ScrollArea>
+
+    @* A floating action sits above the tab bar, not in it: it is the one thing this screen is
+       for, and putting it among five equals says the opposite. *@
+    <div class="relative">
+        <Button Size="icon" Href="/orders/new" up-layer="new modal"
+                Class="absolute -top-14 right-4 size-14 rounded-full shadow-lg"
+                aria-label="New order">
+            <Icon Name="plus" />
+        </Button>
+    </div>
+
+    <nav up-nav aria-label="Sections"
+         class="grid grid-cols-4 border-t pb-[env(safe-area-inset-bottom)]">
+        @foreach (var (label, icon, href) in Tabs)
+        {
+            <a href="@href"
+               class="flex flex-col items-center gap-1 py-2 text-[11px] text-muted-foreground transition-colors hover:text-foreground [&.up-current]:text-foreground [&.up-current]:font-medium">
+                <Icon Name="@icon" Class="size-5" />
+                @label
+            </a>
+        }
+    </nav>
+</div>
+
+@code {
+    static readonly (string Number, string Who, string Total, string State)[] Orders =
+    [
+        ("#3201", "Marta Ruiz", "$128", "Paid"),
+        ("#3200", "Ana Lopes", "$64", "Pending"),
+        ("#3199", "Jonas Weber", "$212", "Paid"),
+        ("#3198", "Kiên Trần", "$41", "Pending"),
+    ];
+
+    static readonly (string Label, string Icon, string Href)[] Tabs =
+    [
+        ("Home", "circle", "/"),
+        ("Orders", "copy", "/blocks"),
+        ("Search", "search", "/components/command"),
+        ("Account", "eye", "/components/avatar"),
+    ];
+}

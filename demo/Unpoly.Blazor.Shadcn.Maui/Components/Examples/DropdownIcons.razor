@@ -1,0 +1,10 @@
+@* Icons are sized and coloured by the row, so they need no classes of their own — which is why
+   the recipe carries [&_svg] rules rather than each call site carrying size-4. *@
+<DropdownMenu>
+    <DropdownMenuTrigger Target="dd-icons">Actions</DropdownMenuTrigger>
+    <DropdownMenuContent Id="dd-icons" Class="w-52">
+        <DropdownMenuItem><Icon Name="pencil" />Rename</DropdownMenuItem>
+        <DropdownMenuItem><Icon Name="copy" />Duplicate</DropdownMenuItem>
+        <DropdownMenuItem><Icon Name="upload" />Export</DropdownMenuItem>
+    </DropdownMenuContent>
+</DropdownMenu>

@@ -1,0 +1,10 @@
+@* Where the shortcut does not fit on the control. The tooltip opens on focus as well as on
+   hover, so the hint is reachable by the keyboard it is describing. *@
+<div class="flex items-center gap-3">
+    <TooltipTrigger Target="kbd-tip" Variant="outline" Size="icon" aria-label="Save">
+        <Icon Name="upload" />
+    </TooltipTrigger>
+    <TooltipContent Id="kbd-tip">
+        Save <KbdGroup Class="ms-1"><Kbd>⌘</Kbd><Kbd>S</Kbd></KbdGroup>
+    </TooltipContent>
+</div>

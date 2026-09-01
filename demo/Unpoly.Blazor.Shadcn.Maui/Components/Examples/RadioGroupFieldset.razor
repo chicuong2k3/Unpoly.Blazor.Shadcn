@@ -1,0 +1,22 @@
+@* The fieldset is what names the group. Without it a screen reader announces three unrelated
+   radios and never says what they are choosing between. *@
+<FieldSet Class="w-[420px]">
+    <FieldLegend Variant="label">Delivery window</FieldLegend>
+    <FieldDescription>We will text you an hour before.</FieldDescription>
+    <RadioGroup>
+        @foreach (var (id, label) in Windows)
+        {
+            <Field Orientation="horizontal">
+                <RadioGroupItem id="@id" name="window" value="@id" checked="@(id == "am")" />
+                <FieldLabel For="@id">@label</FieldLabel>
+            </Field>
+        }
+    </RadioGroup>
+</FieldSet>
+
+@code {
+    static readonly (string Id, string Label)[] Windows =
+    [
+        ("am", "Morning, 8–12"), ("pm", "Afternoon, 12–5"), ("eve", "Evening, 5–9"),
+    ];
+}

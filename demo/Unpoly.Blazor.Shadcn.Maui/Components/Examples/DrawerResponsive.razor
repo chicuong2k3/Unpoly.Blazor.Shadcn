@@ -1,0 +1,17 @@
+@* shadcn's responsive example renders a Dialog on a desktop and a Drawer on a phone, chosen in
+   React from a media query. Static SSR has no such hook — and needs none: both are the same
+   <dialog>, so one element with a media query on its frame is the whole thing. Below 640px it
+   comes up from the bottom and can be dragged away; above, it is a centred modal. *@
+<DrawerTrigger Target="drawer-responsive">Open</DrawerTrigger>
+
+<Drawer Id="drawer-responsive"
+        Class="sm:!inset-auto sm:!top-1/2 sm:!left-1/2 sm:!max-w-lg sm:!-translate-x-1/2 sm:!-translate-y-1/2 sm:!rounded-lg">
+    <DrawerHeader>
+        <DrawerTitle>Move to project</DrawerTitle>
+        <DrawerDescription>A sheet on a phone, a dialog on a desktop, one element.</DrawerDescription>
+    </DrawerHeader>
+    <DrawerFooter>
+        <Button>Move</Button>
+        <DrawerClose>Cancel</DrawerClose>
+    </DrawerFooter>
+</Drawer>

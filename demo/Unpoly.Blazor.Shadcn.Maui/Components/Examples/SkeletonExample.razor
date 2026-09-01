@@ -1,0 +1,11 @@
+@* A skeleton the SERVER renders is never seen: static SSR finishes
+   OnInitializedAsync before a byte exists. The one a user sees comes from Unpoly's
+   [up-placeholder], which fills the target the moment the request leaves — so skeletons live in
+   a <template> in the layout, not in the page they stand in for. *@
+<div class="flex items-center gap-4">
+    <Skeleton Class="size-12 rounded-full" />
+    <div class="space-y-2">
+        <Skeleton Class="h-4 w-[220px]" />
+        <Skeleton Class="h-4 w-[160px]" />
+    </div>
+</div>

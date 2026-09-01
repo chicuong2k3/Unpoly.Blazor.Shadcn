@@ -1,0 +1,31 @@
+@* Multi-select. Every chip carries its own hidden input under the same name, so the server reads
+   a list — no JavaScript takes part in the submission at all. *@
+<div class="w-80">
+    <Field>
+        <FieldLabel For="cb-tags-input">Collections</FieldLabel>
+        <Combobox Target="cb-tags-list" Multiple>
+            <ComboboxChips data-name="collections">
+                <ComboboxChip Value="summer" Name="collections" Label="Summer">Summer</ComboboxChip>
+                <ComboboxChipInput id="cb-tags-input" Placeholder="Add a collection…"
+                                   AriaLabel="Collections" />
+                <ComboboxClear />
+            </ComboboxChips>
+
+            <ComboboxContent Id="cb-tags-list" Class="w-80">
+                <ComboboxList>
+                    <ComboboxEmpty>No collection by that name.</ComboboxEmpty>
+                    <ComboboxGroup>
+                        <ComboboxLabel>Seasonal</ComboboxLabel>
+                        <ComboboxItem Value="summer" Selected>Summer</ComboboxItem>
+                        <ComboboxItem Value="winter">Winter</ComboboxItem>
+                    </ComboboxGroup>
+                    <ComboboxSeparator />
+                    <ComboboxGroup Heading="Evergreen">
+                        <ComboboxItem Value="basics">Basics</ComboboxItem>
+                        <ComboboxItem Value="sale">Sale</ComboboxItem>
+                    </ComboboxGroup>
+                </ComboboxList>
+            </ComboboxContent>
+        </Combobox>
+    </Field>
+</div>

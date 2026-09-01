@@ -1,0 +1,16 @@
+@* A badge with a glyph rather than a dot. Give it a name when it says something the row does
+   not — "verified" is not otherwise written anywhere. *@
+<div class="flex items-center gap-6">
+    <Avatar>
+        <AvatarFallback>JW</AvatarFallback>
+        <AvatarBadge Class="bg-primary text-primary-foreground" aria-label="Verified">
+            <Icon Name="check" Class="size-2.5" />
+        </AvatarBadge>
+    </Avatar>
+    <Avatar>
+        <AvatarFallback>AL</AvatarFallback>
+        <AvatarBadge Class="bg-destructive text-white" aria-label="Suspended">
+            <Icon Name="x" Class="size-2.5" />
+        </AvatarBadge>
+    </Avatar>
+</div>

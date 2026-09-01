@@ -1,0 +1,20 @@
+@* A form in a popover posts like any other form. The panel is in the top layer, which does not
+   take it out of the DOM — so it is still inside the <form> it is written in, and still submits. *@
+<PopoverTrigger Target="pop-form" Variant="outline">Dimensions</PopoverTrigger>
+
+<PopoverContent Id="pop-form" Class="w-80 p-4">
+    <form id="popover-with-form-form" method="post" action="/canvas/size" up-target="#preview-popover-with-form" up-disable
+          class="flex flex-col gap-3">
+        <AntiforgeryToken />
+        <div class="text-sm font-medium">Canvas</div>
+        <Field Orientation="horizontal">
+            <FieldLabel For="pf-w" Class="w-20">Width</FieldLabel>
+            <Input id="pf-w" name="width" type="number" value="1280" />
+        </Field>
+        <Field Orientation="horizontal">
+            <FieldLabel For="pf-h" Class="w-20">Height</FieldLabel>
+            <Input id="pf-h" name="height" type="number" value="720" />
+        </Field>
+        <Button Type="submit" Size="sm" Class="self-end">Apply</Button>
+    </form>
+</PopoverContent>

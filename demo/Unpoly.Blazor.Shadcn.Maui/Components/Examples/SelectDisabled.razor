@@ -1,0 +1,20 @@
+@* Both kinds: the whole control, and one option inside it. A disabled option is still announced
+   and still skipped, which is what tells a reader the choice exists and is not available. *@
+<div class="flex w-[280px] flex-col gap-4">
+    <Field>
+        <FieldLabel For="sd-all">Plan</FieldLabel>
+        <Select id="sd-all" name="plan" disabled>
+            <SelectItem Value="free" Selected>Free</SelectItem>
+        </Select>
+        <FieldDescription>Change it from the billing screen.</FieldDescription>
+    </Field>
+
+    <Field>
+        <FieldLabel For="sd-one">Shipping</FieldLabel>
+        <Select id="sd-one" name="shipping">
+            <SelectItem Value="standard" Selected>Standard</SelectItem>
+            <SelectItem Value="express">Express</SelectItem>
+            <SelectItem Value="same-day" disabled>Same day — not in your area</SelectItem>
+        </Select>
+    </Field>
+</div>

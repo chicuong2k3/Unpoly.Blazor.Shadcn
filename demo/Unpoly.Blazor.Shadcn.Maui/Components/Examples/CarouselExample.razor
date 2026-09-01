@@ -1,0 +1,26 @@
+@* Scroll-snap, not a carousel library. It swipes on a phone and scrolls on a trackpad with no
+   JavaScript at all; the arrows are the only scripted part, and they hide themselves if the
+   compiler never runs.
+
+   One slide at a time, as shadcn's own basic demo shows it — the several-at-once case is the
+   Sizes section below, and showing it here made the two look like the same demo twice. *@
+<div class="relative w-full max-w-[12rem] px-12 sm:max-w-xs">
+    <Carousel AriaLabel="Recent releases">
+        <CarouselContent>
+            @foreach (var n in Enumerable.Range(1, 5))
+            {
+                <CarouselItem>
+                    <div class="p-1">
+                        <Card>
+                            <CardContent Class="flex aspect-square items-center justify-center p-6">
+                                <span class="num text-4xl font-semibold">@n</span>
+                            </CardContent>
+                        </Card>
+                    </div>
+                </CarouselItem>
+            }
+        </CarouselContent>
+        <CarouselPrevious />
+        <CarouselNext />
+    </Carousel>
+</div>

@@ -1,0 +1,15 @@
+@* <optgroup> is the grouping, and its label is announced by the OS picker for free. Radix draws
+   a SelectGroup and a SelectLabel to reproduce what the element already has. *@
+<Field Class="w-[280px]">
+    <FieldLabel For="sg-tz">Timezone</FieldLabel>
+    <Select id="sg-tz" name="tz">
+        <optgroup label="Europe">
+            <SelectItem Value="lisbon">Lisbon</SelectItem>
+            <SelectItem Value="berlin">Berlin</SelectItem>
+        </optgroup>
+        <optgroup label="Asia">
+            <SelectItem Value="hanoi" Selected>Ha Noi</SelectItem>
+            <SelectItem Value="tokyo">Tokyo</SelectItem>
+        </optgroup>
+    </Select>
+</Field>

@@ -1,0 +1,14 @@
+@* <details>. No compiler, nothing to lose across a fragment swap, and it works with
+   scripting off — a Collapsible is an Accordion with one item and no group, which is exactly
+   what the element gives you. *@
+<Collapsible Class="w-[380px] space-y-2">
+    <CollapsibleTrigger Class="flex w-full items-center justify-between rounded-md px-3 py-2 text-sm font-medium hover:bg-accent">
+        <span>3 people have access</span>
+        <Icon Name="chevron-down" />
+    </CollapsibleTrigger>
+    <CollapsibleContent Class="space-y-1 px-3 pb-2 text-sm text-muted-foreground">
+        <p>marta@example.com</p>
+        <p>ana@example.com</p>
+        <p>jonas@example.com</p>
+    </CollapsibleContent>
+</Collapsible>
