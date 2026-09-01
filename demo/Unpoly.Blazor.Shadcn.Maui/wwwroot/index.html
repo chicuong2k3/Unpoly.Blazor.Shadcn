@@ -40,6 +40,10 @@
         // without the removedNodes branch every navigation leaks the timers and listeners that
         // ui.js's compilers set up, and that failure is invisible until the app feels slow.
         addEventListener('DOMContentLoaded', () => {
+            // Compile whatever Blazor has already rendered by now (the first paint). Without
+            // this, the theme picker / dark toggle / customizer in the header are registered
+            // by demo.js before any DOM exists, and only a later mutation would compile them.
+            up.hello(document.body)
             new MutationObserver(records => {
                 for (const r of records) {
                     for (const n of r.addedNodes)   if (n.nodeType === 1) up.hello(n)
