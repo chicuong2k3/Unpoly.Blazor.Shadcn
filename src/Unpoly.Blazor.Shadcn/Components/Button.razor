@@ -14,7 +14,8 @@
 }
 else
 {
-    <button type="@Type" data-slot="button" data-variant="@Variant" data-size="@Size" class="@Classes" @attributes="AdditionalAttributes">@ChildContent</button>
+    <button type="@Type" data-slot="button" data-variant="@Variant" data-size="@Size" class="@Classes"
+            @onclick="OnClick" @attributes="AdditionalAttributes">@ChildContent</button>
 }
 
 @code {
@@ -32,6 +33,14 @@ else
 
     /// <summary>HTML button type. Only meaningful when <see cref="Href"/> is null.</summary>
     [Parameter] public string Type { get; set; } = "submit";
+
+    /// <summary>
+    /// Click handler, for an interactive host (Blazor WebView). The static-SSR web head renders
+    /// once and navigates, so this is never set there; the button just has no @onclick. When a
+    /// host binds <c>OnClick</c> the handler is wired onto the &lt;button&gt;. Ignored when
+    /// <see cref="Href"/> renders an &lt;a&gt; (a link navigates; it does not click).
+    /// </summary>
+    [Parameter] public EventCallback<MouseEventArgs> OnClick { get; set; }
 
     string Classes => ButtonVariants.Of(Variant, Size, Class);
 }
