@@ -3,7 +3,7 @@ using Unpoly.Blazor.Shadcn.Components;
 
 namespace Unpoly.Blazor.Shadcn.Tests;
 
-public class CodeBlockPrismTests : TestContext
+public class CodeBlockPrismTests : BunitContext
 {
     [Fact]
     public void CodeBlock_adds_language_class_for_prism()

@@ -4,7 +4,7 @@ using Unpoly.Blazor.Shadcn.ECharts.Models;
 
 namespace Unpoly.Blazor.Shadcn.Tests;
 
-public class EChartsTests : TestContext
+public class EChartsTests : BunitContext
 {
     [Fact]
     public void EChart_renders_data_echarts_and_options()
@@ -36,7 +36,7 @@ public class EChartsTests : TestContext
     [Fact]
     public void EBarChart_generates_bar_series()
     {
-        var cut = Render<EBarChart>(p => p.Add(c => c.Categories, new[] { "A", "B" }).Add(c => c.Values, new[] { 1.0, 2.0 }));
+        var cut = Render<EBarChart>(p => p.Add(c => c.Categories, ["A", "B"]).Add(c => c.Values, [1.0, 2.0]));
         var opts = cut.Find("[data-slot=\"echart\"]").GetAttribute("data-options");
         Assert.Contains("\"bar\"", opts);
         Assert.Contains("\"A\"", opts);
@@ -45,7 +45,7 @@ public class EChartsTests : TestContext
     [Fact]
     public void ELineChart_respects_show_legend_and_tooltip()
     {
-        var cut = Render<ELineChart>(p => p.Add(c => c.Categories, new[] { "M" }).Add(c => c.Values, new[] { 1.0 }).Add(c => c.ShowLegend, false).Add(c => c.ShowTooltip, false));
+        var cut = Render<ELineChart>(p => p.Add(c => c.Categories, ["M"]).Add(c => c.Values, [1.0]).Add(c => c.ShowLegend, false).Add(c => c.ShowTooltip, false));
         var opts = cut.Find("[data-slot=\"echart\"]").GetAttribute("data-options");
         // legend/tooltip omitted when false -> not in json
         Assert.DoesNotContain("\"legend\"", opts);
@@ -65,14 +65,14 @@ public class EChartsTests : TestContext
     public void EChart_option_override_merges_via_extension_data()
     {
         var ov = new Dictionary<string, object?> { ["toolbox"] = new { feature = new { saveAsImage = new { } } } };
-        var cut = Render<EBarChart>(p => p.Add(c => c.Categories, new[] { "A" }).Add(c => c.Values, new[] { 1.0 }).Add(c => c.OptionOverride, ov));
+        var cut = Render<EBarChart>(p => p.Add(c => c.Categories, ["A"]).Add(c => c.Values, [1.0]).Add(c => c.OptionOverride, ov));
         Assert.Contains("toolbox", cut.Find("[data-slot=\"echart\"]").GetAttribute("data-options"));
     }
 
     [Fact]
     public void ECharts_is_loading_renders_skeleton_not_chart()
     {
-        var cut = Render<EBarChart>(p => p.Add(c => c.Categories, new[] { "A" }).Add(c => c.Values, new[] { 1.0 }).Add(c => c.IsLoading, true));
+        var cut = Render<EBarChart>(p => p.Add(c => c.Categories, ["A"]).Add(c => c.Values, [1.0]).Add(c => c.IsLoading, true));
         Assert.NotNull(cut.Find("[data-slot=\"chart-skeleton\"]"));
         Assert.Empty(cut.FindAll("[data-slot=\"echart\"]"));
     }
@@ -98,7 +98,7 @@ public class EChartsTests : TestContext
 
         // a caller-provided singleAxis wins — the default { type = "time" } must not be emitted
         var ov = new Dictionary<string, object?> { ["singleAxis"] = new { type = "time", min = "2024/01/01" } };
-        var cut2 = Render<EThemeRiverChart>(p => p.Add(c => c.Data, new object[0]).Add(c => c.OptionOverride, ov));
+        var cut2 = Render<EThemeRiverChart>(p => p.Add(c => c.Data, Array.Empty<object>()).Add(c => c.OptionOverride, ov));
         Assert.Contains("2024/01/01", cut2.Find("[data-slot=\"echart\"]").GetAttribute("data-options"));
     }
 }

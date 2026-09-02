@@ -2,6 +2,6 @@
    JavaScript at the call site: Ctx.UpEmit("sonner:toast", new { text = "Saved" }) writes a
    response header and Unpoly turns it into the same event. *@
 <Button Variant="outline" Type="button"
-        onclick="toast.success('Your changes were saved')">Show a toast</Button>
+        data-toast='{"text":"Your changes were saved","type":"success"}'>Show a toast</Button>
 <Button Variant="outline" Type="button"
-        onclick="toast.error('Could not reach the server')">Show an error</Button>
+        data-toast='{"text":"Could not reach the server","type":"error"}'>Show an error</Button>

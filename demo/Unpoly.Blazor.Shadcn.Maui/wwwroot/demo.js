@@ -385,3 +385,26 @@ up.compiler('form[up-target], form[up-autosubmit], form[method="post"], form[met
     form.removeEventListener('change', onchange)
   }
 })
+
+// ---- toast ----------------------------------------------------------------------------------
+// The toast buttons carry their spec in data-toast, because Razor compiles any onclick as a C#
+// event handler and `toast('...')` is not valid C#. The spec is JSON, so the example still reads
+// like a sonner call site — the only difference is the JS has moved out of the markup and into
+// this compiler, which turns it back into a call on the global toast() that ui.js exposes.
+
+up.compiler('[data-toast]', (button) => {
+  const onClick = () => {
+    const spec = JSON.parse(button.dataset.toast)
+    const action = spec.action && {
+      label: spec.action.label || spec.action.text || 'Undo',
+      onClick: (event) => {
+        event?.stopPropagation?.()
+        const t = spec.action.toast
+        window.toast(t.text, t.type ? { type: t.type } : {})
+      },
+    }
+    window.toast(spec.text, { type: spec.type || 'success', action })
+  }
+  button.addEventListener('click', onClick)
+  return () => button.removeEventListener('click', onClick)
+})

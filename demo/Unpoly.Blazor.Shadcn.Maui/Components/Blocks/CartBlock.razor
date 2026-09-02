@@ -18,7 +18,7 @@
                     <ItemActions Class="flex items-center gap-2">
                         <form method="post" up-target=":origin" class="flex items-center gap-1">
                             <AntiforgeryToken />
-                            <Input name="qty" type="number" min="1" Value="@i.Qty" Class="num w-14" aria-label="@($"Quantity for {i.Name}")" />
+                            <Input name="qty" type="number" min="1" value="@i.Qty.ToString()" Class="num w-14" aria-label="@($"Quantity for {i.Name}")" />
                             <input type="hidden" name="code" value="@i.Code" />
                             <Button Size="icon" Variant="ghost" Type="submit" aria-label="Update quantity"><Icon Name="refresh-cw" /></Button>
                         </form>

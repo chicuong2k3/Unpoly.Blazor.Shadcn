@@ -6,11 +6,11 @@
    a toast whose action has been taken has nothing left to say. *@
 <div class="flex flex-wrap items-center gap-3">
     <Button Variant="outline" Type="button"
-            onclick="toast('Order archived', { action: { label: 'Undo', onClick: () => toast.success('Order restored') } })">
+            data-toast='{"text":"Order archived","type":"success","action":{"label":"Undo","toast":{"text":"Order restored"}}}'>
         With an undo
     </Button>
     <Button Variant="outline" Type="button"
-            onclick="toast.error('Payment failed', { action: { label: 'Retry', onClick: () => toast.success('Payment taken') } })">
+            data-toast='{"text":"Payment failed","type":"error","action":{"label":"Retry","toast":{"text":"Payment taken","type":"success"}}}'>
         With a retry
     </Button>
 </div>

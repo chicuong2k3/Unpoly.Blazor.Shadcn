@@ -5,7 +5,7 @@ using Unpoly.Blazor.Shadcn.Components;
 
 namespace Unpoly.Blazor.Shadcn.Tests;
 
-public class QrCodeTests : TestContext
+public class QrCodeTests : BunitContext
 {
     [Fact]
     public void QrCode_renders_data_slot_and_qrcode_marker()
