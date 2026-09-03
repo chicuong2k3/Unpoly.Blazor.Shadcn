@@ -236,7 +236,9 @@ internal static class Nat
         var ucm = webkit_user_content_manager_new();
         var injected = webkit_user_script_new(
             ProbeScript(),
-            2 /* ALL_FRAMES */, 0 /* AT_DOCUMENT_START */, IntPtr.Zero, IntPtr.Zero);
+            1 /* WEBKIT_USER_CONTENT_INJECT_ALL_FRAMES */,
+            0 /* WEBKIT_USER_SCRIPT_INJECT_AT_DOCUMENT_START */,
+            IntPtr.Zero, IntPtr.Zero);
         webkit_user_content_manager_add_script(ucm, injected);
         return webkit_web_view_new_with_user_content_manager(ucm);
     }
@@ -287,7 +289,8 @@ internal static class Nat
             var st = (CallbackState)GCHandle.FromIntPtr(userData).Target!;
             try
             {
-                var jsResult = webkit_web_view_run_javascript_finish(source, res, out var err);
+                IntPtr err = IntPtr.Zero;
+                var jsResult = webkit_web_view_run_javascript_finish(source, res, ref err);
                 if (err != IntPtr.Zero)
                 {
                     // GError { domain, code, message* } — message sits after two pointers.
@@ -348,7 +351,8 @@ internal static class Nat
             var st = (CallbackState)GCHandle.FromIntPtr(userData).Target!;
             try
             {
-                var surface = webkit_web_view_get_snapshot_finish(source, res, out var err);
+                IntPtr err = IntPtr.Zero;
+                var surface = webkit_web_view_get_snapshot_finish(source, res, ref err);
                 if (err == IntPtr.Zero && surface != IntPtr.Zero)
                 {
                     var bytes = Marshal.StringToCoTaskMemUTF8(path);
@@ -426,7 +430,7 @@ internal static class Nat
 
     [DllImport(WebKit, CallingConvention = CallingConvention.Cdecl)]
     private static extern IntPtr webkit_web_view_run_javascript_finish(
-        IntPtr view, IntPtr result, out IntPtr error);
+        IntPtr view, IntPtr result, ref IntPtr error);
 
     [DllImport(WebKit, CallingConvention = CallingConvention.Cdecl)]
     private static extern IntPtr webkit_javascript_result_get_js_value(IntPtr jsResult);
@@ -438,7 +442,7 @@ internal static class Nat
 
     [DllImport(WebKit, CallingConvention = CallingConvention.Cdecl)]
     private static extern IntPtr webkit_web_view_get_snapshot_finish(
-        IntPtr view, IntPtr result, out IntPtr error);
+        IntPtr view, IntPtr result, ref IntPtr error);
 
     [DllImport(WebKit, CallingConvention = CallingConvention.Cdecl)]
     private static extern int webkit_get_major_version();
