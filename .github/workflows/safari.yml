@@ -1,0 +1,124 @@
+name: safari-real
+
+# Runs the demo under the real WebKitGTK 2.36 engine (the WebKit family
+# Safari 15.x / iOS 15.x ships) and asserts the compat work against it —
+# console capture, computed styles, popover open, mobile overflow, PNG
+# snapshots. Results are committed to the `safari-test-results` branch so
+# they are readable without any auth.
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/safari.yml"
+      - "tests/safari-real/**"
+      - "src/Unpoly.Blazor.Shadcn/**"
+      - "demo/**"
+
+permissions:
+  contents: write
+
+jobs:
+  webkitgtk:
+    runs-on: ubuntu-22.04
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+
+      # Jammy-updates carries newer WebKitGTK (16.x/17.x engine); pin the
+      # 2.36 line when the archive still offers it, and report what ran.
+      - name: Install WebKitGTK (pin 2.36 when available)
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y apt-cache 2>/dev/null || true
+          V=$(apt-cache madison libwebkit2gtk-4.0-37 | awk '$3 ~ /^2\.36/ {print $3; exit}')
+          echo "webkit2gtk candidate: ${V:-<latest>}"
+          if [ -n "$V" ]; then
+            sudo apt-get install -y \
+              libwebkit2gtk-4.0-37="$V" \
+              gir1.2-webkit2-4.0="$V" \
+              python3-gi python3-gi-cairo gir1.2-gtk-3.0 xvfb
+          else
+            sudo apt-get install -y \
+              libwebkit2gtk-4.0-37 \
+              gir1.2-webkit2-4.0 \
+              python3-gi python3-gi-cairo gir1.2-gtk-3.0 xvfb
+          fi
+          dpkg -l | grep webkit2gtk || true
+
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: "10.0.x"
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install js deps (root for build tools, demo for tailwind)
+        run: |
+          npm ci
+          npm ci --prefix demo/Unpoly.Blazor.Shadcn.Demo
+
+      - name: Build the demo
+        run: dotnet build demo/Unpoly.Blazor.Shadcn.Demo/Unpoly.Blazor.Shadcn.Demo.csproj -c Release --nologo
+
+      - name: Start the demo
+        run: |
+          ASPNETCORE_ENVIRONMENT=Development \
+          ASPNETCORE_URLS=http://127.0.0.1:8080 \
+          nohup dotnet demo/Unpoly.Blazor.Shadcn.Demo/bin/Release/net10.0/Unpoly.Blazor.Shadcn.Demo.dll \
+            > demo.log 2>&1 &
+          for i in $(seq 1 60); do
+            if curl -fsS http://127.0.0.1:8080/ > /dev/null; then echo "demo up"; exit 0; fi
+            sleep 1
+          done
+          echo "demo did not start"; tail -40 demo.log; exit 1
+
+      - name: Run the real-engine probe
+        run: xvfb-run -a python3 tests/safari-real/webkitgtk_probe.py http://127.0.0.1:8080 results
+
+      - name: Show the verdict in the log
+        if: always()
+        run: |
+          cat results/results.md || true
+          exit $([ -f results/results.json ] && python3 -c "import json;raise SystemExit(1 if json.load(open('results/results.json'))['failed'] else 0)")
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: safari-real-results
+          path: |
+            results/
+            demo.log
+
+      # The results branch is the readable channel: raw.githubusercontent.com
+      # serves it without auth, so the verdict (and screenshots) are one URL
+      # away for anyone, any machine, any time.
+      - name: Publish results to the safari-test-results branch
+        if: always()
+        run: |
+          git config --global user.email "actions@github.com"
+          git config --global user.name "safari-real-bot"
+          git fetch origin safari-test-results || true
+          git worktree add -f /tmp/res origin/safari-test-results 2>/dev/null \
+            || (mkdir -p /tmp/res && cd /tmp/res && git init -q -b safari-test-results)
+          cp -f results/* /tmp/res/ 2>/dev/null || true
+          cd /tmp/res
+          git add -A
+          git diff --cached --quiet && echo "nothing new" && exit 0
+          git commit -m "safari-real results: run ${{ github.run_id }} (${GITHUB_SHA::7})"
+          git push -q -f https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}.git safari-test-results
+
+      - name: Fail the job on any failed assertion
+        if: always()
+        run: |
+          python3 - <<'EOF'
+          import json, sys
+          data = json.load(open("results/results.json"))
+          failed = [a["name"] for a in data["asserts"] if not a["ok"]]
+          if failed:
+              print("FAILED ASSERTIONS: " + ", ".join(failed))
+              sys.exit(1)
+          print("all assertions passed")
+          EOF
