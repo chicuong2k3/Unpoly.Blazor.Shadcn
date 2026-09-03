@@ -43,13 +43,25 @@ def assert_(name, ok, detail=""):
 class Probe:
     def __init__(self):
         self.view = WebKit2.WebView()
-        self.view.connect("console-message", self.on_console)
+        # The signal name differs across bindings; console capture also runs
+        # through the injected document-start script below, so this is a bonus.
+        try:
+            self.view.connect("console-message", self.on_console)
+        except TypeError:
+            pass
+        content = self.view.get_user_content_manager()
+        content.add_script(WebKit2.UserScript(
+            "window.__errs = [];"
+            "var __e = console.error.bind(console);"
+            "console.error = function(){ window.__errs.push(Array.prototype.join.call(arguments, ' ')); __e.apply(null, arguments); };"
+            "window.addEventListener('error', function(ev){ window.__errs.push('pageerror: ' + ev.message); });",
+            WebKit2.UserContentInjectedFrames.ALL_FRAMES,
+            WebKit2.UserScriptInjectBehavior.AT_DOCUMENT_START,
+        ))
         self.win = Gtk.OffscreenWindow()
         self.win.add(self.view)
         self.win.set_default_size(*DESKTOP)
         self.win.resize(*DESKTOP)
-        self.pending = None
-        self.loop = GLib.MainLoop()
 
     def on_console(self, view, level, message, line, source):
         if level in (WebKit2.ConsoleMessageLevel.ERROR, WebKit2.ConsoleMessageLevel.WARNING):
@@ -146,7 +158,8 @@ STATE_JS = """(() => {
     mq640: matchMedia('(min-width: 640px)').matches,
     popoverApi: typeof HTMLElement.prototype.showPopover,
     scrollWidth: document.documentElement.scrollWidth,
-    innerWidth: window.innerWidth
+    innerWidth: window.innerWidth,
+    errs: (window.__errs || []).slice(0, 20)
   });
 })()"""
 
@@ -166,6 +179,7 @@ def run():
         probe.goto("/", settle=2.0)
         s = json.loads(probe.js(STATE_JS))
         print("STATE /: " + json.dumps(s), flush=True)
+        console_errors.extend("[js] " + e for e in s.get("errs", []))
 
         assert_("unpoly-booted", s["booted"] is not None, f"up.version={s['booted']}")
         assert_("body-has-background", is_rgb_nontransparent(s["bodyBg"]), s["bodyBg"])
@@ -224,6 +238,7 @@ def run():
         probe.goto("/", settle=2.0)
         m = json.loads(probe.js(STATE_JS))
         print("STATE mobile: " + json.dumps(m), flush=True)
+        console_errors.extend("[js] " + e for e in m.get("errs", []))
         assert_("mobile-no-horizontal-overflow",
                 m["scrollWidth"] <= m["innerWidth"] + 1,
                 f"scrollWidth={m['scrollWidth']} innerWidth={m['innerWidth']}")
