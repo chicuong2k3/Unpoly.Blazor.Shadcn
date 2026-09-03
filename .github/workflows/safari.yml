@@ -79,6 +79,9 @@ jobs:
           done
           echo "demo did not start"; tail -40 demo.log; exit 1
 
+      - name: Build the probe
+        run: dotnet build tests/SafariReal/SafariReal.csproj -c Release --nologo -v quiet
+
       - name: Run the real-engine probe (C#)
         run: xvfb-run -a dotnet run --project tests/SafariReal/SafariReal.csproj -c Release --no-build -- http://127.0.0.1:8080 results
 
