@@ -14,6 +14,12 @@ WORKDIR /source
 # Copy the full repo because the demo project references src/ and themes/
 COPY . .
 
+# Root devDependencies (postcss + css-has-pseudo plugin), required by
+# tools/postcss-oklab.cjs which both demo css builds invoke. Without this,
+# `npm run css` fails in Docker with MODULE_NOT_FOUND even though it works
+# locally, because locally root node_modules happens to exist.
+RUN npm ci
+
 # Pre-seed node_modules so the csproj Tailwind target finds them.
 WORKDIR /source/demo/Unpoly.Blazor.Shadcn.Demo
 RUN npm ci
