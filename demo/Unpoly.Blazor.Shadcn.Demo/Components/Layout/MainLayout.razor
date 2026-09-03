@@ -24,9 +24,9 @@
             <div class="ml-auto flex items-center gap-2">
                 <DocSearch />
 
-                <Separator Orientation="vertical" Class="mx-1 h-6" />
+                <Separator Orientation="vertical" Class="hidden mx-1 h-6 sm:block" />
 
-                <Select data-theme-picker aria-label="Theme" Class="hidden w-[180px] md:flex">
+                <Select data-theme-picker aria-label="Theme" Class="flex w-[130px] sm:w-[180px]">
                     <SelectItem Value="shadcn">shadcn</SelectItem>
                     <SelectItem Value="vercel">Vercel</SelectItem>
                     <SelectItem Value="supabase">Supabase</SelectItem>
@@ -95,7 +95,7 @@
                     <Icon Name="eye" />
                 </Button>
 
-                <Button Variant="outline" Size="icon"
+                <Button Variant="outline" Size="icon" Class="hidden sm:inline-flex"
                         Href="https://github.com/chicuong2k3/Unpoly.Blazor.Shadcn"
                         up-follow="false" aria-label="Source on GitHub">
                     <Icon Name="external-link" />

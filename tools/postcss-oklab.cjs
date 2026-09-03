@@ -54,6 +54,27 @@ postcss([
       },
     },
   },
+  {
+    // WebKit 15.4-15.6 fails to resolve custom properties declared inside a
+    // cascade layer (part of why Tailwind v4 pins its Safari floor at 16.4):
+    // structural utilities render but every var(--token) color comes out
+    // empty. Hoisting the token definitions to the unlayered top restores
+    // them on every engine — unlayered custom properties are the shadcn v3
+    // architecture and lose to nothing here, since only themes define these.
+    postcssPlugin: "hoist-token-rules",
+    RuleExit(rule) {
+      const parent = rule.parent;
+      if (!parent || parent.type !== "atrule" || parent.name !== "layer") return;
+      const decls = rule.nodes.filter((n) => n.type === "decl");
+      if (decls.length === 0 || decls.length !== rule.nodes.length) return;
+      if (!decls.every((d) => d.prop.startsWith("--"))) return;
+      const layerRoot = parent.parent;
+      if (!layerRoot || layerRoot.type !== "root") return;
+      rule.remove();
+      if (parent.nodes.length === 0) parent.remove();
+      layerRoot.prepend(rule);
+    },
+  },
   oklab({ preserve: true }),
 ])
   .process(css, { from: inFile })
