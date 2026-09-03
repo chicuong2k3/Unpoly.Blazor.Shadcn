@@ -21,6 +21,10 @@ Source: `demo/Unpoly.Blazor.Shadcn.Demo/Components/Blocks/`. Rendered: run the d
 | `DataTableBlock` | any list screen with filters | Input, Select, Table, Checkbox, DropdownMenu, Pagination |
 | `FiltersBlock` | more filters than fit in a toolbar | Popover, Field, Select, DatePicker, Badge |
 | `SettingsBlock` | a settings screen with sections | Card, FormField, Switch, Separator, AlertDialog |
+| `NavbarBlock` | logo, links, search and account on one bar | Button, Input, DropdownMenu, Avatar, Icon |
+| `AppShellBlock` | collapsible sidebar plus content well | Sidebar, Breadcrumb, Separator |
+| `OnboardingBlock` | multi-step signup, one URL per step | Card, Progress, Input, Checkbox, Button |
+| `ProfileBlock` | a public profile with stats and activity | Card, Avatar, Item, Button |
 | `FormWizardBlock` | a multi-step form | Progress, FieldSet, Field, Button |
 | `MasterDetailBlock` | mail, chat, any inbox | Item, ScrollArea, InputGroup, ButtonGroup |
 | `NotificationsBlock` | a notification centre | Card, Item, Icon |
@@ -29,6 +33,12 @@ Source: `demo/Unpoly.Blazor.Shadcn.Demo/Components/Blocks/`. Rendered: run the d
 | `HeroBlock` | a marketing landing area | Badge, Button, AvatarGroup |
 | `EmptyStateBlock` | a list with nothing in it | Card, Icon, Button |
 | `AnalyticsBlock` | a chart on a dashboard | Card, Badge, Select, Icon |
+| `TimelineBlock` | releases and incidents on a vertical line | Badge, Select |
+| `BillingBlock` | plan, usage, invoices and card | Card, Progress, Table, Badge, AlertDialog |
+| `ChangelogBlock` | versions with typed change rows | Badge, Separator |
+| `IntegrationsBlock` | connector directory plus API strip | Input, CodeBlock |
+| `NewsletterBlock` | one-field email capture | Input, Button |
+| `NotFoundBlock` | 404 with recovery links | Button |
 | `CalendarBlock` | a month view of what is on | Card, ButtonGroup, Button |
 | `ChatBlock` | a conversation | ScrollArea, Textarea, Avatar, DropdownMenu |
 | `FileManagerBlock` | files and folders | Breadcrumb, Table, Checkbox, ToggleGroup, DropdownMenu |
@@ -158,6 +168,61 @@ its largest, so a `100vh` layout puts its bottom bar under the address bar until
 `100dvh` follows the chrome. Without `env(safe-area-inset-bottom)` the last tab sits under the
 home indicator and cannot be tapped. And the tab bar is a `<nav>` of real links with `[up-nav]`,
 not buttons and a state variable: a tab is a URL, so it can be shared and Back works.
+
+**ProfileBlock — follow swaps `:origin`, message is a route.**
+The follow form targets itself so only the button swaps. Message goes to a conversation route,
+because a conversation is a URL worth sharing — not a dialog. Profile tabs (posts/media/likes)
+are links to filtered views, never a client-side index.
+
+**TimelineBlock — `<article>` plus `<time>`, filtered by GET.**
+Each entry carries a real `datetime` so readers and machines agree on when it happened; the dot
+is decoration and means nothing alone. The kind filter is a GET form, so a filtered timeline is
+a shareable URL.
+
+**BillingBlock — the server formats money, destruction needs a dialog.**
+One total everywhere means the total is computed once, on the server — formatting money in the
+browser is how a shop shows two totals on two screens. Cancel and remove-card sit behind an
+`AlertDialog`, never beside Save. Invoices are table rows with download links, because finance
+prints them.
+
+**NavbarBlock — the phone menu is a `<details>`, the search is a GET.**
+A menu driven by state needs script to open and can desync from it; `<details>` opens with
+scripting off and never disagrees with itself. Search posts nowhere — it GETs a results URL,
+so a search is shareable. The account menu stays a `DropdownMenu`, which is what closes on
+outside click and escape for free.
+
+**AppShellBlock — collapse is a cookie, navigation is links.**
+`Sidebar` reads its collapsed state from a cookie on the server, so the first paint already has
+the right width — collapsing in the browser first paints wrong, then jumps. The menu rows are
+`Item` links with `[up-nav]`, so the current page highlights itself from the address bar and
+every screen inside the shell is a URL. Content placeholders are `bg-muted/50` divs: replace
+them with `StatsBlock`, `AnalyticsBlock`, or `DataTableBlock`, not with new markup.
+
+**OnboardingBlock — steps are routes, each form posts forward.**
+A step counter in state breaks Back, loses everything on refresh, and cannot resume from a link
+— so `/onboarding/profile`, `/team`, `/billing` are three routes and the progress bar renders
+from the step number. Each form posts to the next step's URL with `up-target="body"`; a failure
+re-renders the same step with the entered values, because the values were posted, not typed
+into a state that just reset.
+
+**ChangelogBlock — one anchor per version, typed chips per row.**
+A release note nobody can link to is a blog post. Each version carries an `id` and a real
+`<time>`; rows start with an Added/Fixed/Changed chip so the eye scans without reading.
+
+**IntegrationsBlock — cards link out, search GETs, logos are tiles.**
+Each connector card is a link to its setup route. Search filters over GET so `?q=slack` is
+shareable. Brand marks are flat color tiles with a letter: Lucide has no brand glyphs, and a
+hotlinked logo 404s exactly when the page matters.
+
+**NewsletterBlock — the form swaps itself.**
+`up-target=":origin"` replaces the form with the confirmation, so there is no thank-you page
+to break Back and no client-side success flag to drift. The frequency promise in the copy is
+load-bearing: lists that hide it earn spam complaints instead of subscribers.
+
+**NotFoundBlock — two ways back, three likely doors.**
+Home for the lost; Back as a *link*, never a button, because Back must not resubmit. Below,
+cards to the three pages analytics always shows absorbing mistyped URLs. No search box: a site
+search that returns nothing twice is worse than links.
 
 ## Building a new one
 

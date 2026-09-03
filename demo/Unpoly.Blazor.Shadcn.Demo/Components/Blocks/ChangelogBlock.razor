@@ -1,0 +1,52 @@
+@* Changelog — versions down the left, changes down the right. Each entry names its
+   version in a badge and dates itself with a real <time>; change rows carry a typed chip
+   (Added / Fixed / Changed) so scanning works without reading. Newest first, one anchor per
+   version (`id="v3-4-0"`) so a release note is linkable from anywhere. No JavaScript: the
+   only interaction a changelog needs is a URL per version, and it already has one. *@
+
+<div class="mx-auto w-full max-w-3xl">
+    <h2 class="text-2xl font-semibold tracking-tight">Changelog</h2>
+    <p class="mt-1 text-sm text-muted-foreground">What shipped, and when. Newest first.</p>
+
+    <div class="mt-8 space-y-10">
+        <section id="v3-4-0" aria-labelledby="v3-4-0-title">
+            <div class="flex flex-wrap items-center gap-3">
+                <Badge Variant="default" Class="num">v3.4.0</Badge>
+                <time datetime="2026-06-10" class="text-xs text-muted-foreground">Jun 10, 2026</time>
+            </div>
+            <h3 id="v3-4-0-title" class="mt-3 text-lg font-semibold">Canary deploys for everyone</h3>
+            <ul class="mt-3 space-y-2 text-sm">
+                <li class="flex items-start gap-2"><Badge Variant="secondary" Class="mt-0.5 shrink-0">Added</Badge><span>Percentage rollouts with automatic halt on error-budget burn.</span></li>
+                <li class="flex items-start gap-2"><Badge Variant="secondary" Class="mt-0.5 shrink-0">Added</Badge><span>Flag-level audit log, exportable as CSV.</span></li>
+                <li class="flex items-start gap-2"><Badge Variant="outline" Class="mt-0.5 shrink-0">Fixed</Badge><span>Stuck “releasing” state when the last check never reported.</span></li>
+            </ul>
+        </section>
+
+        <Separator />
+
+        <section id="v3-3-2" aria-labelledby="v3-3-2-title">
+            <div class="flex flex-wrap items-center gap-3">
+                <Badge Variant="secondary" Class="num">v3.3.2</Badge>
+                <time datetime="2026-05-28" class="text-xs text-muted-foreground">May 28, 2026</time>
+            </div>
+            <h3 id="v3-3-2-title" class="mt-3 text-lg font-semibold">Guardrails review lane</h3>
+            <ul class="mt-3 space-y-2 text-sm">
+                <li class="flex items-start gap-2"><Badge Variant="secondary" Class="mt-0.5 shrink-0">Added</Badge><span>Second approver required above the risk threshold.</span></li>
+                <li class="flex items-start gap-2"><Badge Variant="outline" Class="mt-0.5 shrink-0">Changed</Badge><span>Review SLA counts business hours, not wall clock.</span></li>
+            </ul>
+        </section>
+
+        <Separator />
+
+        <section id="v3-3-1" aria-labelledby="v3-3-1-title">
+            <div class="flex flex-wrap items-center gap-3">
+                <Badge Variant="secondary" Class="num">v3.3.1</Badge>
+                <time datetime="2026-05-14" class="text-xs text-muted-foreground">May 14, 2026</time>
+            </div>
+            <h3 id="v3-3-1-title" class="mt-3 text-lg font-semibold">Small fixes</h3>
+            <ul class="mt-3 space-y-2 text-sm">
+                <li class="flex items-start gap-2"><Badge Variant="outline" Class="mt-0.5 shrink-0">Fixed</Badge><span>Timezone drift on scheduled rollouts across DST.</span></li>
+            </ul>
+        </section>
+    </div>
+</div>

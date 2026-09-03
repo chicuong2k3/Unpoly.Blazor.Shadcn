@@ -1,0 +1,18 @@
+@* Newsletter — one field, one button, one honesty line. The form posts and swaps
+   itself (`up-target=":origin"`), so success replaces the form with a confirmation and a
+   failed address re-renders the same form with the error — no redirect to a thank-you page
+   that breaks Back, no client-side success state to get out of sync. The frequency promise
+   ("monthly, unsubscribe anytime") is load-bearing copy: lists that hide it get spam
+   complaints instead of subscribers. Social proof is a number, not logos nobody recognizes. *@
+
+<section class="mx-auto max-w-2xl py-16 text-center">
+    <h2 class="text-3xl font-semibold tracking-tight text-balance">Ship notes, monthly</h2>
+    <p class="mx-auto mt-3 max-w-md text-muted-foreground">
+        One email a month: what shipped, what broke, and what we learned. No Spam, ever.
+    </p>
+    <form method="post" action="/newsletter" up-target=":origin" class="mx-auto mt-6 flex max-w-md gap-2">
+        <Input Type="email" name="email" placeholder="@("you@acme.co")" required="required" aria-label="Email address" Class="flex-1" />
+        <Button Type="submit" Variant="default">Subscribe</Button>
+    </form>
+    <p class="mt-3 text-xs text-muted-foreground">Join 12,400 readers · Unsubscribe anytime</p>
+</section>

@@ -1,0 +1,82 @@
+@* App shell — sidebar plus content, the frame every admin screen hangs inside. This is
+   the shadcn dashboard-01 shape: a collapsible sidebar, a header row with a trigger and a
+   breadcrumb, and a content well. Collapse is a cookie the server reads, so the first paint
+   already matches — no flash of the wrong width, no layout shift. Navigation is Item links
+   with [up-nav], so the current row highlights itself from the address bar and every page
+   inside the shell is a shareable URL. The content below is placeholder cards; replace them
+   with StatsBlock, AnalyticsBlock, or DataTableBlock. *@
+
+<SidebarProvider>
+    <Sidebar Collapsible="offcanvas">
+        <SidebarHeader>
+            <div class="flex items-center gap-2 px-2 py-1">
+                <span class="flex size-7 items-center justify-center rounded-md bg-primary text-sm font-bold text-primary-foreground">A</span>
+                <span class="font-semibold">Acme Inc.</span>
+            </div>
+        </SidebarHeader>
+        <SidebarContent>
+            <SidebarGroup>
+                <SidebarGroupLabel>Platform</SidebarGroupLabel>
+                <SidebarGroupContent>
+                    <SidebarMenu>
+                        <SidebarMenuItem>
+                            <SidebarMenuButton Href="/blocks" Active="true">Dashboard</SidebarMenuButton>
+                        </SidebarMenuItem>
+                        <SidebarMenuItem>
+                            <SidebarMenuButton Href="/blocks">Orders</SidebarMenuButton>
+                        </SidebarMenuItem>
+                        <SidebarMenuItem>
+                            <SidebarMenuButton Href="/blocks">Customers</SidebarMenuButton>
+                        </SidebarMenuItem>
+                    </SidebarMenu>
+                </SidebarGroupContent>
+            </SidebarGroup>
+            <SidebarGroup>
+                <SidebarGroupLabel>Workspace</SidebarGroupLabel>
+                <SidebarGroupContent>
+                    <SidebarMenu>
+                        <SidebarMenuItem>
+                            <SidebarMenuButton Href="/blocks">Settings</SidebarMenuButton>
+                        </SidebarMenuItem>
+                        <SidebarMenuItem>
+                            <SidebarMenuButton Href="/blocks">Billing</SidebarMenuButton>
+                        </SidebarMenuItem>
+                    </SidebarMenu>
+                </SidebarGroupContent>
+            </SidebarGroup>
+        </SidebarContent>
+        <SidebarFooter>
+            <SidebarMenu>
+                <SidebarMenuItem>
+                    <SidebarMenuButton Href="/blocks">Mina Stone</SidebarMenuButton>
+                </SidebarMenuItem>
+            </SidebarMenu>
+        </SidebarFooter>
+        <SidebarRail />
+    </Sidebar>
+    <SidebarInset>
+        <header class="flex h-14 items-center gap-2 border-b px-4">
+            <SidebarTrigger />
+            <Separator Orientation="vertical" Class="mx-2 h-4" />
+            <Breadcrumb>
+                <BreadcrumbList>
+                    <BreadcrumbItem>
+                        <BreadcrumbLink Href="/blocks">Acme</BreadcrumbLink>
+                    </BreadcrumbItem>
+                    <BreadcrumbSeparator />
+                    <BreadcrumbItem>
+                        <BreadcrumbPage>Dashboard</BreadcrumbPage>
+                    </BreadcrumbItem>
+                </BreadcrumbList>
+            </Breadcrumb>
+        </header>
+        <div class="grid auto-rows-min gap-4 p-4 md:grid-cols-3">
+            <div class="aspect-video rounded-xl bg-muted/50"></div>
+            <div class="aspect-video rounded-xl bg-muted/50"></div>
+            <div class="aspect-video rounded-xl bg-muted/50"></div>
+        </div>
+        <div class="px-4 pb-4">
+            <div class="min-h-48 flex-1 rounded-xl bg-muted/50"></div>
+        </div>
+    </SidebarInset>
+</SidebarProvider>

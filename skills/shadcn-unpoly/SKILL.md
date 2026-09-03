@@ -130,7 +130,10 @@ Two consequences worth knowing before you reach for a component:
   see, and the Select panel, the dropdown and the confirm dialog are built in JavaScript. Without
   it those three render unstyled, silently, in production only.
 - **Component attributes cannot mix C# and markup.** `id="row-@item.Id"` is fine on a plain
-  `<input>` and a compile error on `<Input>`. Write `id="@($"row-{item.Id}")"`.
+  `<input>` and a compile error on `<Input>`. Write `id="@($"row-{item.Id}")"`. The same holds
+  for `@@`: `placeholder="you@@acme.co"` renders a literal `@` on a plain element and fails
+  with RZ9986 on a component — write `placeholder="@("you@acme.co")"`. This exact mistake once
+  broke the whole demo build from a newsletter block.
 - **A `bool` attribute renders valueless.** `data-active="@IsActive"` gives `data-active` with no
   value, which CSS cannot match. Write `data-active="@(IsActive ? "true" : null)"`.
 - **`[SupplyParameterFromForm]` cannot be passed as a bUnit parameter.** Assign
@@ -243,3 +246,37 @@ Copy the class strings from ui.shadcn.com verbatim. Change exactly four things: 
 last so a caller can override, and `@inherits UiComponentBase`. Keep the ARIA identical — that is
 the part of shadcn this port reproduces exactly, and there is a test for every component that
 says so. Then run `python tools/gen_api.py` so `API.md` matches.
+
+## Writing pages and blocks: components first
+
+A hand-rolled `<button>`, pill, tab strip or status dot is a second design system that drifts
+from the first. Reach in this order, and stop at the first yes:
+
+1. **Is it a component?** Navigation row → `<Item Href>`. Button → `<Button>` (all six
+   variants; `Href` instead of `asChild`). Status → `<Badge>` (four variants). List row →
+   `<Item>` family. Dialog, menu, popover, sheet, drawer, tooltip → the component pair, never
+   a bare `<div>` plus script. Stats → `Card` + `Badge` + `Progress`. Filter → GET form +
+   `Input` + `Select`, never a state variable.
+2. **Plain markup only for what no component draws:** layout wrappers (`div`/`section`/grid),
+   semantic wrappers (`article`/`time`), text, SVG sparklines, and brand-logo tiles (Lucide has
+   no brand glyphs — a flat color tile plus a letter is the sanctioned substitute).
+
+Three rules inside that:
+
+- **Four variants means four.** `<Badge>` has four; the fifth state and beyond is a dot-plus-text
+  span, not an invented variant. Tabs that navigate are links (the URL is the state); the
+  `<Tabs>` component is only for panels on one page.
+- **Pairs must agree twice.** Trigger/content components share one id contract: `Target="x"` on
+  the trigger, `Id="x"` on the content (`Dialog`, `DropdownMenu`, `Popover`, `Sheet`, `Drawer`,
+  `Combobox`, `ContextMenu`, `Menubar`, `HoverCard`). `API.md` marks which side is
+  `[EditorRequired]` and the build fails without it — but a *mismatched* string fails silently
+  at runtime. Read the id back after writing it.
+- **`<Icon Name>` is a string, not a type.** A wrong name renders an empty box and says nothing;
+  two invisible icons have shipped that way before. Never invent a name: grep `tools/icons.txt`
+  first, and run `python tools/check_icons.py` before pushing (CI runs it). A missing glyph is
+  added with `tools/gen_icons.py --add <name>`, not worked around.
+
+**A new block is four edits, not one:** the file under `demo/…/Components/Blocks/`, an
+`<Example>` entry in the gallery page under the right category, a row plus its trap in
+`BLOCKS.md`, and `python tools/check_demo.py` to confirm coverage. A block merged without its
+gallery entry is a block nobody reviews.

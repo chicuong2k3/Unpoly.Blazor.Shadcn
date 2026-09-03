@@ -1,0 +1,59 @@
+@* Onboarding — three steps, three URLs. Step state lives in the route
+   (/onboarding/profile, /onboarding/team, /onboarding/billing), never in a client-side
+   index: Back works, refresh keeps your place, and a half-finished signup resumes from a
+   link in an email. The progress bar is server-rendered from the step number. Each step's
+   form posts to the next step's URL; validation failures re-render the same step with the
+   entered values intact. This file is step one of three. *@
+
+<div class="mx-auto w-full max-w-xl">
+    <div class="flex items-center justify-between text-sm">
+        <p class="font-medium">Step 1 of 3 — Your profile</p>
+        <p class="text-muted-foreground">33%</p>
+    </div>
+    <Progress Value="33" Class="mt-2" />
+
+    <Card Class="mt-6">
+        <CardHeader>
+            <CardTitle>Tell us about yourself</CardTitle>
+            <CardDescription>This shows up on invoices and team invites. Change it anytime.</CardDescription>
+        </CardHeader>
+        <CardContent>
+            <form method="post" action="/onboarding/team" up-target="body">
+                <div class="grid gap-4">
+                    <div class="grid gap-2">
+                        <Label for="display-name">Display name</Label>
+                        <Input Type="text" name="display-name" id="display-name" placeholder="Mina Stone" required="required" />
+                    </div>
+                    <div class="grid gap-2">
+                        <Label for="company">Company</Label>
+                        <Input Type="text" name="company" id="company" placeholder="Acme Inc." />
+                    </div>
+                    <fieldset class="grid gap-2">
+                        <legend class="text-sm font-medium">What will you use Acme for?</legend>
+                        <label class="flex items-center gap-2 text-sm">
+                            <Checkbox name="use" value="dashboard" /> Team dashboard
+                        </label>
+                        <label class="flex items-center gap-2 text-sm">
+                            <Checkbox name="use" value="store" /> Online store
+                        </label>
+                        <label class="flex items-center gap-2 text-sm">
+                            <Checkbox name="use" value="api" /> API access
+                        </label>
+                    </fieldset>
+                </div>
+                <div class="mt-6 flex items-center justify-between">
+                    <p class="text-xs text-muted-foreground">Takes about a minute.</p>
+                    <Button Type="submit" Variant="default">Continue</Button>
+                </div>
+            </form>
+        </CardContent>
+    </Card>
+
+    <div class="mt-4 flex items-center justify-center gap-2 text-xs text-muted-foreground">
+        <a href="/onboarding/profile" class="font-medium text-foreground" aria-current="step">Profile</a>
+        <span aria-hidden="true">→</span>
+        <a href="/onboarding/team" class="transition hover:text-foreground">Team</a>
+        <span aria-hidden="true">→</span>
+        <a href="/onboarding/billing" class="transition hover:text-foreground">Billing</a>
+    </div>
+</div>

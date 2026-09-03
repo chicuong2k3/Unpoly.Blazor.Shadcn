@@ -14,231 +14,206 @@
     </BreadcrumbList>
 </Breadcrumb>
 
-<div class="mt-4 flex flex-wrap items-start justify-between gap-4">
-    <div>
-        <h1 class="doc-h1">Live Demo</h1>
-        <p class="doc-lede">
-            Trang mẫu dựng hoàn toàn từ component của thư viện, biên tập live qua hot reload.
-        </p>
-    </div>
-    <div class="flex items-center gap-2">
-        <DialogTrigger Target="live-dialog" Variant="default" Size="default">
-            Mở dialog
-        </DialogTrigger>
-        <DropdownMenu>
-            <DropdownMenuTrigger Target="live-menu" Variant="outline" Size="default">
-                Hành động
-            </DropdownMenuTrigger>
-            <DropdownMenuContent Id="live-menu" Align="end">
-                <DropdownMenuLabel>Tài liệu</DropdownMenuLabel>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem Href="/components/button">Button</DropdownMenuItem>
-                <DropdownMenuItem Href="/components/card">Card</DropdownMenuItem>
-                <DropdownMenuItem Href="/blocks">Blocks</DropdownMenuItem>
-            </DropdownMenuContent>
-        </DropdownMenu>
-    </div>
-</div>
-
-<Dialog Id="live-dialog" Size="default" Dismissable="true">
-    <DialogHeader>
-        <DialogTitle>Dialog chuẩn</DialogTitle>
-        <DialogDescription>
-            Thẻ &lt;dialog&gt; native, mở bằng compiler trong ui.js — không portal, không state client.
-        </DialogDescription>
-    </DialogHeader>
-    <DialogFooter>
-        <DialogClose Variant="outline" Size="default">Đóng</DialogClose>
-    </DialogFooter>
-</Dialog>
-
-<div class="mt-6 grid gap-4 md:grid-cols-3">
-    <Card>
-        <CardHeader>
-            <div class="flex items-center gap-3">
-                <div class="flex h-10 w-10 items-center justify-center rounded-lg bg-violet-100 text-violet-700">
-                    <Icon Name="layers" Title="Components" />
-                </div>
-                <div>
-                    <CardTitle>Components</CardTitle>
-                    <CardDescription>Metadata sinh từ source.</CardDescription>
-                </div>
-            </div>
-        </CardHeader>
-        <CardContent>
-            <p class="text-3xl font-semibold tracking-tight">301</p>
-            <p class="mt-1 text-sm font-medium text-emerald-600">+12 tuần này</p>
-        </CardContent>
-    </Card>
-    <Card>
-        <CardHeader>
-            <div class="flex items-center gap-3">
-                <div class="flex h-10 w-10 items-center justify-center rounded-lg bg-sky-100 text-sky-700">
-                    <Icon Name="layout-grid" Title="Blocks" />
-                </div>
-                <div>
-                    <CardTitle>Blocks</CardTitle>
-                    <CardDescription>Kèm wiring Unpoly.</CardDescription>
-                </div>
-            </div>
-        </CardHeader>
-        <CardContent>
-            <p class="text-3xl font-semibold tracking-tight">26</p>
-            <p class="mt-1 text-sm font-medium text-sky-600">Đủ dựng cả app</p>
-        </CardContent>
-    </Card>
-    <Card>
-        <CardHeader>
-            <div class="flex items-center gap-3">
-                <div class="flex h-10 w-10 items-center justify-center rounded-lg bg-amber-100 text-amber-700">
-                    <Icon Name="palette" Title="Themes" />
-                </div>
-                <div>
-                    <CardTitle>Themes</CardTitle>
-                    <CardDescription>Token runtime.</CardDescription>
-                </div>
-            </div>
-        </CardHeader>
-        <CardContent>
-            <p class="text-3xl font-semibold tracking-tight">50+</p>
-            <p class="mt-1 text-sm font-medium text-amber-600">Đổi không rebuild</p>
-        </CardContent>
-    </Card>
-</div>
-
-<div class="mt-6 grid gap-4 lg:grid-cols-5">
-    <Card Class="lg:col-span-3">
-        <CardHeader>
-            <CardTitle>Danh sách</CardTitle>
-            <CardDescription>Form GET, URL là state — đúng pattern DataTableBlock.</CardDescription>
-        </CardHeader>
-        <CardContent>
-            <form method="get" action="/live-demo" up-target="[data-live-list]" up-autosubmit>
-                <div class="flex flex-wrap items-center gap-3">
-                    <Input Type="search" name="q" placeholder="Tìm theo tên…" />
-                    <Select name="status">
-                        <SelectItem Value="all">Tất cả</SelectItem>
-                        <SelectItem Value="active">Đang chạy</SelectItem>
-                        <SelectItem Value="idle">Đang nghỉ</SelectItem>
-                    </Select>
-                    <Button Type="submit" Variant="default">Lọc</Button>
-                </div>
-            </form>
-            <div data-live-list class="mt-4">
-                <Table>
-                    <TableHeader>
-                        <TableRow>
-                            <TableHead>Công việc</TableHead>
-                            <TableHead>Trạng thái</TableHead>
-                            <TableHead>Tiến độ</TableHead>
-                        </TableRow>
-                    </TableHeader>
-                    <TableBody>
-                        <TableRow>
-                            <TableCell>Hot reload</TableCell>
-                            <TableCell><Badge Variant="default">Đang chạy</Badge></TableCell>
-                            <TableCell><Progress Value="90" /></TableCell>
-                        </TableRow>
-                        <TableRow>
-                            <TableCell>Tailwind watch</TableCell>
-                            <TableCell><Badge Variant="secondary">Ổn định</Badge></TableCell>
-                            <TableCell><Progress Value="70" /></TableCell>
-                        </TableRow>
-                        <TableRow>
-                            <TableCell>Stitch bridge</TableCell>
-                            <TableCell><Badge Variant="outline">Sắp làm</Badge></TableCell>
-                            <TableCell><Progress Value="20" /></TableCell>
-                        </TableRow>
-                    </TableBody>
-                </Table>
-            </div>
-        </CardContent>
-    </Card>
-
-    <div class="flex flex-col gap-4 lg:col-span-2">
-        <Card>
-            <CardHeader>
-                <CardTitle>Hoạt động gần đây</CardTitle>
-                <CardDescription>ItemGroup + Avatar + Badge.</CardDescription>
-            </CardHeader>
-            <CardContent>
-                <ItemGroup>
-                    <Item>
-                        <ItemMedia>
-                            <Avatar Size="sm"><AvatarFallback Class="bg-violet-100 text-violet-700">HR</AvatarFallback></Avatar>
-                        </ItemMedia>
-                        <ItemContent>
-                            <ItemTitle>Hot reload pass</ItemTitle>
-                            <ItemDescription>Sửa razor, preview đổi không restart.</ItemDescription>
-                        </ItemContent>
-                        <ItemActions><Badge Variant="default">Mới</Badge></ItemActions>
-                    </Item>
-                    <Item>
-                        <ItemMedia>
-                            <Avatar Size="sm"><AvatarFallback Class="bg-emerald-100 text-emerald-700">TW</AvatarFallback></Avatar>
-                        </ItemMedia>
-                        <ItemContent>
-                            <ItemTitle>Tailwind tách watcher riêng</ItemTitle>
-                            <ItemDescription>css:watch chạy terminal riêng.</ItemDescription>
-                        </ItemContent>
-                        <ItemActions><Badge Variant="secondary">Xong</Badge></ItemActions>
-                    </Item>
-                    <Item>
-                        <ItemMedia>
-                            <Avatar Size="sm"><AvatarFallback Class="bg-amber-100 text-amber-700">ST</AvatarFallback></Avatar>
-                        </ItemMedia>
-                        <ItemContent>
-                            <ItemTitle>Stitch bridge</ItemTitle>
-                            <ItemDescription>Dịch mẫu Stitch sang component.</ItemDescription>
-                        </ItemContent>
-                        <ItemActions><Badge Variant="outline">Chờ</Badge></ItemActions>
-                    </Item>
-                </ItemGroup>
-            </CardContent>
-        </Card>
-
-        <Card>
-            <CardHeader>
-                <CardTitle>Tùy chọn xem</CardTitle>
-            </CardHeader>
-            <CardContent>
-                <div class="flex items-center justify-between gap-4 py-2">
-                    <Label>Hiện số liệu chi tiết</Label>
-                    <Switch name="show-stats" />
-                </div>
-                <Separator />
-                <div class="flex items-center justify-between gap-4 py-2">
-                    <Label>Tự reload khi có bản mới</Label>
-                    <Switch name="auto-reload" />
-                </div>
-                <Separator />
-                <div class="flex items-center justify-between gap-4 py-2">
-                    <Label>Chế độ tối</Label>
-                    <Switch name="dark" Size="sm" />
-                </div>
-            </CardContent>
-        </Card>
-    </div>
-</div>
-
-<h2 class="doc-h2">Tabs</h2>
-<Tabs Value="xem-truoc" Class="mt-4">
-    <TabsList>
-        <TabsTrigger Value="xem-truoc">Xem trước</TabsTrigger>
-        <TabsTrigger Value="ghi-chu">Ghi chú</TabsTrigger>
-    </TabsList>
-    <TabsContent Value="xem-truoc">
-        <Alert Variant="default">
-            <AlertTitle>Panel hidden vẫn post được</AlertTitle>
-            <AlertDescription>Tab không active dùng <code>hidden</code> nên field bên trong vẫn submit.</AlertDescription>
-        </Alert>
-    </TabsContent>
-    <TabsContent Value="ghi-chu" Hidden>
-        <div class="flex items-start gap-3 rounded-lg bg-sky-50 p-4 text-sky-900">
-            <Icon Name="info" Title="Info" />
-            <p class="text-sm">Màu bệt theo ngữ nghĩa: tím = xây dựng, xanh dương = thông tin, hổ phách = chờ đợi, lục = xong.</p>
+@* Dashboard Analytics tối: panel .dark để token sang palette tối.
+   Sparkline là SVG inline — số liệu tĩnh thì không cần lôi chart lib vào. *@
+<div class="dark mt-4 overflow-hidden rounded-3xl bg-[#0a0a0b] px-6 py-6 text-white sm:px-8">
+    <div class="flex flex-wrap items-center gap-3">
+        <div class="flex items-center gap-2">
+            <span class="flex size-7 items-center justify-center rounded-lg bg-white text-sm font-bold text-black">A</span>
+            <span class="text-sm font-semibold">Aster Insights</span>
         </div>
-    </TabsContent>
-</Tabs>
+        <nav class="flex items-center gap-1.5 text-xs text-white/45">
+            <a href="/live-demo" class="transition hover:text-white">Aster Cloud</a>
+            <span>/</span>
+            <span class="text-white/80">Segment Builder</span>
+        </nav>
+        <div class="ml-auto flex items-center gap-2">
+            <Button Variant="outline" Size="sm" Class="rounded-lg border-white/15 bg-transparent text-white">
+                <Icon Name="share-2" Title="Share" /> Share
+            </Button>
+            <Button Variant="outline" Size="sm" Class="rounded-lg border-white/15 bg-transparent text-white">
+                <Icon Name="hammer" Title="Build" /> Build
+            </Button>
+            <span class="inline-flex items-center gap-1.5 rounded-lg border border-white/15 bg-white/[0.04] px-2.5 py-1.5 text-xs text-white/80">
+                <span class="size-1.5 rounded-full bg-emerald-400"></span>SEQ-307 activation
+            </span>
+        </div>
+    </div>
 
-<Separator Class="my-8" />
+    <div class="mt-4 rounded-2xl border border-white/10 bg-white/[0.02] p-5">
+        <div class="flex flex-wrap items-start justify-between gap-3">
+            <div>
+                <h1 class="text-base font-semibold tracking-tight">Segment Health</h1>
+                <p class="mt-0.5 text-xs text-white/50">47 Sources · 3 Conflicts</p>
+            </div>
+            <div class="flex items-center gap-1 rounded-lg border border-white/10 bg-white/[0.03] p-0.5 text-xs">
+                <button type="button" class="rounded-md bg-white/10 px-2.5 py-1 font-medium text-white">Week</button>
+                <button type="button" class="rounded-md px-2.5 py-1 text-white/55 transition hover:text-white">Month</button>
+                <button type="button" class="rounded-md px-2.5 py-1 text-white/55 transition hover:text-white">Year</button>
+            </div>
+        </div>
+
+        <div class="mt-4 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+            <div class="flex items-center justify-between gap-3">
+                <div>
+                    <p class="flex items-center gap-1.5 text-xs text-white/50"><Icon Name="check-check" Title="Matched" Class="size-3.5" /> Matched</p>
+                    <p class="mt-1 text-2xl font-semibold tracking-tight">488k</p>
+                    <p class="text-xs text-white/45">+12% this week</p>
+                </div>
+                <svg viewBox="0 0 100 32" preserveAspectRatio="none" class="h-8 w-24 text-white/40" aria-hidden="true">
+                    <polyline points="0,24 12,20 24,22 36,14 48,16 60,10 72,12 84,6 100,8" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                </svg>
+            </div>
+            <div class="flex items-center justify-between gap-3">
+                <div>
+                    <p class="flex items-center gap-1.5 text-xs text-white/50"><Icon Name="git-fork" Title="Conflicts" Class="size-3.5" /> Conflicts</p>
+                    <p class="mt-1 text-2xl font-semibold tracking-tight">12</p>
+                    <p class="text-xs text-rose-300">-2.4% fewer</p>
+                </div>
+                <svg viewBox="0 0 100 32" preserveAspectRatio="none" class="h-8 w-24 text-white/40" aria-hidden="true">
+                    <polyline points="0,10 12,14 24,12 36,20 48,18 60,24 72,22 84,26 100,24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                </svg>
+            </div>
+            <div class="flex items-center justify-between gap-3">
+                <div>
+                    <p class="flex items-center gap-1.5 text-xs text-white/50"><Icon Name="layers" Title="Cohorts" Class="size-3.5" /> Cohorts</p>
+                    <p class="mt-1 text-2xl font-semibold tracking-tight">8</p>
+                    <p class="text-xs text-white/45">0% spread</p>
+                </div>
+                <svg viewBox="0 0 100 32" preserveAspectRatio="none" class="h-8 w-24 text-white/40" aria-hidden="true">
+                    <polyline points="0,20 12,18 24,20 36,18 48,20 60,18 72,20 84,18 100,20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                </svg>
+            </div>
+            <div class="flex items-center justify-between gap-3">
+                <div>
+                    <p class="flex items-center gap-1.5 text-xs text-white/50"><Icon Name="bell" Title="Alerts" Class="size-3.5" /> Alerts</p>
+                    <p class="mt-1 text-2xl font-semibold tracking-tight">3</p>
+                    <p class="text-xs text-amber-300">Pending</p>
+                </div>
+                <svg viewBox="0 0 100 32" preserveAspectRatio="none" class="h-8 w-24 text-white/40" aria-hidden="true">
+                    <polyline points="0,26 12,24 24,26 36,18 48,20 60,12 72,14 84,8 100,10" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                </svg>
+            </div>
+        </div>
+
+        <div class="mt-4 flex flex-wrap items-center justify-between gap-2 border-t border-white/10 pt-4 text-xs">
+            <p class="text-white/50">488K events validated · 3 alert rules need review</p>
+            <a href="/live-demo" class="flex items-center gap-1 text-white/70 transition hover:text-white">
+                Open Report <Icon Name="chevron-right" Title="Open" Class="size-3.5" />
+            </a>
+        </div>
+    </div>
+
+    <div class="mt-4 rounded-2xl border border-white/10 bg-white/[0.02] p-5">
+        <div class="flex flex-wrap items-start justify-between gap-3">
+            <div>
+                <h2 class="text-base font-semibold tracking-tight">Segment Validation Reviews</h2>
+                <p class="mt-0.5 text-xs text-white/50">6 in review · Jun 10</p>
+            </div>
+            <div class="flex items-center gap-2">
+                <Select name="reviewer">
+                    <SelectItem Value="all">All reviewers</SelectItem>
+                    <SelectItem Value="mina">Mina Stone</SelectItem>
+                    <SelectItem Value="leo">Leo Grant</SelectItem>
+                </Select>
+                <Button Variant="default" Size="sm" Class="rounded-lg">Review</Button>
+            </div>
+        </div>
+
+        <div class="mt-4 grid gap-4 lg:grid-cols-5">
+            <div class="rounded-xl border border-white/10 bg-white/[0.02] p-3 lg:col-span-2">
+                <div class="flex items-center justify-between px-1 text-xs text-white/55">
+                    <button type="button" aria-label="Previous month" class="transition hover:text-white"><Icon Name="chevron-left" Title="Previous" Class="size-3.5" /></button>
+                    <span class="font-medium text-white/80">June 2026</span>
+                    <button type="button" aria-label="Next month" class="transition hover:text-white"><Icon Name="chevron-right" Title="Next" Class="size-3.5" /></button>
+                </div>
+                <div class="mt-2 grid grid-cols-7 text-center text-[11px] text-white/40">
+                    <span>Su</span><span>Mo</span><span>Tu</span><span>We</span><span>Th</span><span>Fr</span><span>Sa</span>
+                </div>
+                <div class="mt-1 grid grid-cols-7 gap-y-1 text-center text-xs">
+                    <span class="py-1 text-white/25">31</span>
+                    <span class="py-1 text-white/80">1</span><span class="py-1 text-white/80">2</span><span class="py-1 text-white/80">3</span><span class="py-1 text-white/80">4</span><span class="py-1 text-white/80">5</span><span class="py-1 text-white/80">6</span>
+                    <span class="py-1 text-white/80">7</span><span class="py-1 text-white/80">8</span><span class="py-1 text-white/80">9</span><span class="rounded-md bg-white py-1 font-semibold text-black">10</span><span class="py-1 text-white/80">11</span><span class="py-1 text-white/80">12</span><span class="py-1 text-white/80">13</span>
+                    <span class="py-1 text-white/80">14</span><span class="py-1 text-white/80">15</span><span class="py-1 text-white/80">16</span><span class="py-1 text-white/80">17</span><span class="py-1 text-white/80">18</span><span class="py-1 text-white/80">19</span><span class="py-1 text-white/80">20</span>
+                    <span class="py-1 text-white/80">21</span><span class="py-1 text-white/80">22</span><span class="py-1 text-white/80">23</span><span class="py-1 text-white/80">24</span><span class="py-1 text-white/80">25</span><span class="py-1 text-white/80">26</span><span class="py-1 text-white/80">27</span>
+                    <span class="py-1 text-white/80">28</span><span class="py-1 text-white/80">29</span><span class="py-1 text-white/80">30</span><span class="py-1 text-white/25">1</span><span class="py-1 text-white/25">2</span><span class="py-1 text-white/25">3</span><span class="py-1 text-white/25">4</span>
+                </div>
+            </div>
+
+            <div class="flex flex-col gap-2 lg:col-span-3">
+                <div class="flex items-center gap-3 rounded-xl border border-white/10 bg-white/[0.03] px-4 py-3">
+                    <span class="min-w-0 flex-1">
+                        <span class="block truncate text-sm font-medium">SEQ-307 Activation Review</span>
+                        <span class="mt-1 flex flex-wrap items-center gap-x-2 gap-y-1 text-xs text-white/50">
+                            <span class="rounded bg-sky-400/15 px-1.5 py-0.5 font-medium text-sky-300">Upcoming</span>
+                            <span class="flex -space-x-1.5">
+                                <Avatar Size="sm"><AvatarFallback Class="bg-violet-100 text-violet-700">MS</AvatarFallback></Avatar>
+                                <Avatar Size="sm"><AvatarFallback Class="bg-sky-100 text-sky-700">LG</AvatarFallback></Avatar>
+                            </span>
+                            <span>Jun 10 · 9:00 am</span>
+                            <span class="flex items-center gap-1"><Icon Name="map-pin" Title="Where" Class="size-3" /> Insights Room</span>
+                        </span>
+                    </span>
+                    <span class="text-white/35"><Icon Name="calendar-check" Title="Review" Class="size-4" /></span>
+                </div>
+                <div class="flex items-center gap-3 rounded-xl border border-white/10 bg-white/[0.03] px-4 py-3">
+                    <span class="min-w-0 flex-1">
+                        <span class="block truncate text-sm font-medium">CON-071 Cohort Replay</span>
+                        <span class="mt-1 flex flex-wrap items-center gap-x-2 gap-y-1 text-xs text-white/50">
+                            <span class="rounded bg-amber-400/15 px-1.5 py-0.5 font-medium text-amber-300">Pending</span>
+                            <span>Jun 10 · 11:30 am</span>
+                            <span class="flex items-center gap-1"><Icon Name="video" Title="Where" Class="size-3" /> Google Meet</span>
+                        </span>
+                    </span>
+                    <span class="text-white/35"><Icon Name="history" Title="Replay" Class="size-4" /></span>
+                </div>
+                <div class="flex items-center gap-3 rounded-xl border border-white/10 bg-white/[0.03] px-4 py-3">
+                    <span class="min-w-0 flex-1">
+                        <span class="block truncate text-sm font-medium">EXP-224 Checklist QA</span>
+                        <span class="mt-1 flex flex-wrap items-center gap-x-2 gap-y-1 text-xs text-white/50">
+                            <span class="rounded bg-sky-400/15 px-1.5 py-0.5 font-medium text-sky-300">Upcoming</span>
+                            <span>Jun 10 · 2:00 pm</span>
+                            <span class="flex items-center gap-1"><Icon Name="map-pin" Title="Where" Class="size-3" /> Remote</span>
+                        </span>
+                    </span>
+                    <span class="text-white/35"><Icon Name="list-checks" Title="Checklist" Class="size-4" /></span>
+                </div>
+                <div class="flex items-center gap-3 rounded-xl border border-white/10 bg-white/[0.03] px-4 py-3">
+                    <span class="min-w-0 flex-1">
+                        <span class="block truncate text-sm font-medium">SEQ-307 Holdout Check</span>
+                        <span class="mt-1 flex flex-wrap items-center gap-x-2 gap-y-1 text-xs text-white/50">
+                            <span class="rounded bg-sky-400/15 px-1.5 py-0.5 font-medium text-sky-300">Upcoming</span>
+                            <span class="flex -space-x-1.5">
+                                <Avatar Size="sm"><AvatarFallback Class="bg-emerald-100 text-emerald-700">NV</AvatarFallback></Avatar>
+                            </span>
+                            <span>Jun 11 · 9:30 am</span>
+                            <span class="flex items-center gap-1"><Icon Name="map-pin" Title="Where" Class="size-3" /> Insights Room</span>
+                        </span>
+                    </span>
+                    <span class="text-white/35"><Icon Name="pause" Title="Holdout" Class="size-4" /></span>
+                </div>
+                <div class="flex items-center gap-3 rounded-xl border border-white/10 bg-white/[0.03] px-4 py-3">
+                    <span class="min-w-0 flex-1">
+                        <span class="block truncate text-sm font-medium">COH-954 Retention Gate</span>
+                        <span class="mt-1 flex flex-wrap items-center gap-x-2 gap-y-1 text-xs text-white/50">
+                            <span class="rounded bg-amber-400/15 px-1.5 py-0.5 font-medium text-amber-300">Pending</span>
+                            <span>Jun 12 · 4:15 pm</span>
+                            <span class="flex items-center gap-1"><Icon Name="video" Title="Where" Class="size-3" /> Google Meet</span>
+                        </span>
+                    </span>
+                    <span class="text-white/35"><Icon Name="door-open" Title="Gate" Class="size-4" /></span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="mt-6 flex items-center justify-between border-t border-white/10 pt-4 text-xs text-white/45">
+        <span>Analytics</span>
+        <span>9 blocks</span>
+    </div>
+</div>
+
+<p class="doc-note">
+    Dịch từ ảnh: topbar Aster, Segment Health 4 chỉ số + sparkline SVG inline,
+    lịch tháng 6/2026 chọn ngày 10, 5 review items đúng pill/avatar/giờ/địa điểm.
+</p>

@@ -1,0 +1,53 @@
+@* Navbar — logo, links, search, and account on one bar. Desktop links are real links;
+   the phone menu is a <details>, not a state variable, so it works with scripting off
+   and the open/closed state never desyncs from anything. The search box is a GET form:
+   typing a query and pressing enter lands on a results URL that can be shared. The
+   account menu is a DropdownMenu, so it closes on outside click and escape for free. *@
+
+<header class="flex h-16 items-center gap-4 border-b px-4 sm:px-6">
+    <a href="/" class="flex items-center gap-2 font-semibold" aria-label="Acme home">
+        <span class="flex size-7 items-center justify-center rounded-md bg-primary text-sm font-bold text-primary-foreground">A</span>
+        <span class="hidden sm:inline">Acme Inc.</span>
+    </a>
+
+    <nav class="hidden items-center gap-1 md:flex" aria-label="Primary">
+        <Button Variant="ghost" Href="/blocks">Blocks</Button>
+        <Button Variant="ghost" Href="/components/button">Components</Button>
+        <Button Variant="ghost" Href="/blocks">Pricing</Button>
+        <Button Variant="ghost" Href="/blocks">Docs</Button>
+    </nav>
+
+    <div class="ml-auto hidden min-w-52 items-center md:flex">
+        <form method="get" action="/search" up-target="[data-results]" class="w-full">
+            <Input Type="search" name="q" placeholder="Search…" aria-label="Search" />
+        </form>
+    </div>
+
+    <div class="ml-auto flex items-center gap-2 md:ml-0">
+        <Button Variant="ghost" Href="/login" Class="hidden sm:inline-flex">Sign in</Button>
+        <Button Variant="default" Href="/signup">Get started</Button>
+        <DropdownMenu>
+            <DropdownMenuTrigger Target="nav-account" Variant="ghost" Size="icon" aria-label="Account">
+                <Avatar Size="sm"><AvatarFallback>MS</AvatarFallback></Avatar>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent Id="nav-account" Align="end">
+                <DropdownMenuLabel>My Account</DropdownMenuLabel>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem Href="/profile">Profile</DropdownMenuItem>
+                <DropdownMenuItem Href="/billing">Billing</DropdownMenuItem>
+                <DropdownMenuItem Href="/settings">Settings</DropdownMenuItem>
+            </DropdownMenuContent>
+        </DropdownMenu>
+        <details class="relative md:hidden">
+            <summary class="flex size-9 cursor-pointer items-center justify-center rounded-md transition hover:bg-accent" aria-label="Menu">
+                <Icon Name="menu" Title="Menu" />
+            </summary>
+            <nav class="absolute top-11 right-0 z-50 w-48 rounded-lg border bg-popover p-1 shadow-md" aria-label="Mobile">
+                <DropdownMenuItem Href="/blocks">Blocks</DropdownMenuItem>
+                <DropdownMenuItem Href="/components/button">Components</DropdownMenuItem>
+                <DropdownMenuItem Href="/blocks">Pricing</DropdownMenuItem>
+                <DropdownMenuItem Href="/blocks">Docs</DropdownMenuItem>
+            </nav>
+        </details>
+    </div>
+</header>

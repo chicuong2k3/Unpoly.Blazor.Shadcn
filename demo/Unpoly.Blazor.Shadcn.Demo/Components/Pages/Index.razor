@@ -2,17 +2,26 @@
 
 <PageTitle>Unpoly.Blazor.Shadcn</PageTitle>
 
-<h1 class="doc-h1">shadcn/ui for Blazor static SSR</h1>
-<p class="doc-lede">
-    The same tokens, the same class strings, the same <code>data-slot</code> on every root, the
-    same ARIA. Write the shadcn markup you already know; the translation is four rules long.
-</p>
-
-<div class="mt-8 flex flex-wrap gap-3">
-    <Button Href="/components/button">Browse components</Button>
-    <Button Variant="outline" Href="/blocks">Blocks</Button>
-    <Button Variant="outline" Href="/theming">Theming</Button>
-</div>
+<section class="mx-auto max-w-3xl py-12 text-center sm:py-16">
+    <Badge Variant="secondary" Class="mb-4">313 components · 56 blocks · 60+ themes</Badge>
+    <h1 class="text-4xl font-semibold tracking-tight text-balance sm:text-5xl">
+        shadcn/ui for Blazor static SSR
+    </h1>
+    <p class="mx-auto mt-4 max-w-2xl text-lg text-muted-foreground">
+        The same tokens, the same class strings, the same <code>data-slot</code> on every root,
+        the same ARIA. Write the shadcn markup you already know; the translation is four rules long.
+    </p>
+    <div class="mt-8 flex flex-wrap justify-center gap-3">
+        <Button Href="/components/button">Browse components</Button>
+        <Button Variant="outline" Href="/blocks">Blocks</Button>
+        <Button Variant="outline" Href="/theming">Theming</Button>
+    </div>
+    <div class="mt-8 flex flex-wrap items-center justify-center gap-x-8 gap-y-3 text-sm text-muted-foreground">
+        <span class="flex items-center gap-1.5"><Icon Name="check" Title="Parity" Class="size-4 text-emerald-600" /> Class parity, tested</span>
+        <span class="flex items-center gap-1.5"><Icon Name="zap" Title="SSR" Class="size-4 text-amber-500" /> Static SSR + Unpoly</span>
+        <span class="flex items-center gap-1.5"><Icon Name="palette" Title="Themes" Class="size-4 text-violet-500" /> Runtime token themes</span>
+    </div>
+</section>
 
 <h2 class="doc-h2">React to Razor</h2>
 <p class="doc-note">
@@ -20,13 +29,41 @@
     That splat is the whole Unpoly integration — no component here knows Unpoly exists.
 </p>
 
-<div class="doc-example">
-    <pre class="doc-source"><code>&lt;Button variant="destructive" size="sm"&gt;    →  &lt;Button Variant="destructive" Size="sm"&gt;
-className="w-full"                          →  Class="w-full"
-&lt;Button asChild&gt;&lt;Link href="/x"&gt;           →  &lt;Button Href="/x"&gt;
-&lt;Input name="email" value={v} /&gt;            →  &lt;Input name="email" value="@@v" /&gt;
-onClick={...}                               →  there are none — a form posts, a link navigates
-cn(...) resolves conflicts                  →  it does here too: ClassMerge is tailwind-merge</code></pre>
+<div class="mt-4 overflow-x-auto rounded-xl border">
+    <Table>
+        <TableHeader>
+            <TableRow>
+                <TableHead>React</TableHead>
+                <TableHead>Razor</TableHead>
+            </TableRow>
+        </TableHeader>
+        <TableBody>
+            <TableRow>
+                <TableCell><code>&lt;Button variant="destructive" size="sm"&gt;</code></TableCell>
+                <TableCell><code>&lt;Button Variant="destructive" Size="sm"&gt;</code></TableCell>
+            </TableRow>
+            <TableRow>
+                <TableCell><code>className="w-full"</code></TableCell>
+                <TableCell><code>Class="w-full"</code></TableCell>
+            </TableRow>
+            <TableRow>
+                <TableCell><code>&lt;Button asChild&gt;&lt;Link href="/x"&gt;</code></TableCell>
+                <TableCell><code>&lt;Button Href="/x"&gt;</code></TableCell>
+            </TableRow>
+            <TableRow>
+                <TableCell><code>&lt;Input name="email" value=@("{v}") /&gt;</code></TableCell>
+                <TableCell><code>&lt;Input name="email" value="@@v" /&gt;</code></TableCell>
+            </TableRow>
+            <TableRow>
+                <TableCell><code>onClick=...</code></TableCell>
+                <TableCell>there are none — a form posts, a link navigates</TableCell>
+            </TableRow>
+            <TableRow>
+                <TableCell><code>cn(...)</code> resolves conflicts</TableCell>
+                <TableCell>it does here too: ClassMerge is tailwind-merge</TableCell>
+            </TableRow>
+        </TableBody>
+    </Table>
 </div>
 
 <h2 class="doc-h2">What it is built on</h2>
@@ -34,7 +71,10 @@ cn(...) resolves conflicts                  →  it does here too: ClassMerge is
 <div class="mt-4 grid gap-4 md:grid-cols-3">
     <Card>
         <CardHeader>
-            <CardTitle Class="text-base">The platform, first</CardTitle>
+            <div class="flex size-10 items-center justify-center rounded-lg bg-violet-100 text-violet-700">
+                <Icon Name="monitor" Title="Platform" />
+            </div>
+            <CardTitle Class="mt-3 text-base">The platform, first</CardTitle>
         </CardHeader>
         <CardContent Class="text-sm text-muted-foreground">
             Dialog is <code>&lt;dialog&gt;</code>. Accordion is <code>&lt;details&gt;</code>.
@@ -46,7 +86,10 @@ cn(...) resolves conflicts                  →  it does here too: ClassMerge is
 
     <Card>
         <CardHeader>
-            <CardTitle Class="text-base">Parity you can check</CardTitle>
+            <div class="flex size-10 items-center justify-center rounded-lg bg-emerald-100 text-emerald-700">
+                <Icon Name="git-compare" Title="Parity" />
+            </div>
+            <CardTitle Class="mt-3 text-base">Parity you can check</CardTitle>
         </CardHeader>
         <CardContent Class="text-sm text-muted-foreground">
             Class lists are generated from shadcn's own source and compared against it by the
@@ -56,7 +99,10 @@ cn(...) resolves conflicts                  →  it does here too: ClassMerge is
 
     <Card>
         <CardHeader>
-            <CardTitle Class="text-base">Unpoly, by attribute</CardTitle>
+            <div class="flex size-10 items-center justify-center rounded-lg bg-sky-100 text-sky-700">
+                <Icon Name="ungroup" Title="Unpoly" />
+            </div>
+            <CardTitle Class="mt-3 text-base">Unpoly, by attribute</CardTitle>
         </CardHeader>
         <CardContent Class="text-sm text-muted-foreground">
             <code>up-target</code>, <code>up-poll</code>, <code>up-validate</code>,

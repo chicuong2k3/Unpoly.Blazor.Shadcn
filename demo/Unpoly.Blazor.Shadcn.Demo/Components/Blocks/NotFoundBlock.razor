@@ -1,0 +1,33 @@
+@* Not found — a 404 that gets the visitor back to work. The giant number is type, not
+   an image, so it loads instantly and reads aloud correctly. Two actions: Home for the lost,
+   Back for the misdirected (a link with href, never a button — Back must not resubmit).
+   Below, three link cards to the likeliest destinations, because analytics always shows the
+   same three pages absorbing mistyped URLs. No search box here: on a 404 people search for
+   what they lost, and a site search that returns nothing twice is worse than links. *@
+
+<div class="mx-auto flex min-h-[60vh] w-full max-w-3xl flex-col items-center justify-center px-4 py-16 text-center">
+    <p class="num text-8xl font-bold tracking-tight">404</p>
+    <h1 class="mt-4 text-2xl font-semibold tracking-tight">This page went missing</h1>
+    <p class="mt-2 max-w-md text-muted-foreground">
+        It may have moved, or the link may have a typo. Either way, you are two clicks from
+        somewhere useful.
+    </p>
+    <div class="mt-6 flex flex-wrap justify-center gap-2">
+        <Button Variant="default" Href="/">Go home</Button>
+        <Button Variant="outline" Href="/blocks">Browse blocks</Button>
+    </div>
+    <div class="mt-10 grid w-full gap-4 text-left sm:grid-cols-3">
+        <a href="/components/button" class="rounded-xl border p-4 transition hover:border-foreground/30">
+            <p class="font-semibold">Components</p>
+            <p class="mt-1 text-sm text-muted-foreground">Every primitive, with its source.</p>
+        </a>
+        <a href="/blocks" class="rounded-xl border p-4 transition hover:border-foreground/30">
+            <p class="font-semibold">Blocks</p>
+            <p class="mt-1 text-sm text-muted-foreground">Whole sections, ready to copy.</p>
+        </a>
+        <a href="/theming" class="rounded-xl border p-4 transition hover:border-foreground/30">
+            <p class="font-semibold">Theming</p>
+            <p class="mt-1 text-sm text-muted-foreground">Tokens, not overrides.</p>
+        </a>
+    </div>
+</div>

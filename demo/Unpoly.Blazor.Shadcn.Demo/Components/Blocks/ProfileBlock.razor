@@ -1,0 +1,63 @@
+@* Profile — cover, avatar, name, stats, and recent activity. The follow button is a
+   POST targeting itself (`up-target=":origin"`), so the count swaps without touching the
+   rest of the card; the message button is a link to a conversation route, not a dialog,
+   because a conversation is a URL worth sharing. Tabs below (posts / media / likes) are
+   links to filtered views of the same profile, never a client-side index. *@
+
+<div class="mx-auto w-full max-w-3xl">
+    <Card>
+        <div class="h-32 rounded-t-xl bg-muted" role="presentation"></div>
+        <CardContent>
+            <div class="flex flex-wrap items-end justify-between gap-4">
+                <div class="-mt-10 flex items-end gap-4">
+                    <Avatar Size="lg">
+                        <AvatarImage Src="https://github.com/shadcn.png" Alt="Mina Stone" />
+                        <AvatarFallback>MS</AvatarFallback>
+                    </Avatar>
+                    <div class="pb-1">
+                        <CardTitle>Mina Stone</CardTitle>
+                        <CardDescription>Product designer · @@minastone</CardDescription>
+                    </div>
+                </div>
+                <div class="flex gap-2 pb-1">
+                    <form method="post" action="/profile/minastone/follow" up-target=":origin">
+                        <Button Type="submit" Variant="default">Follow</Button>
+                    </form>
+                    <Button Variant="outline" Href="/messages/minastone">Message</Button>
+                </div>
+            </div>
+            <p class="mt-4 text-sm">Designing onboarding flows. Previously Figma, now full-time on design systems.</p>
+            <div class="mt-4 flex gap-6 border-t pt-4">
+                <div><p class="num text-xl font-semibold">248</p><p class="text-xs text-muted-foreground">Posts</p></div>
+                <div><p class="num text-xl font-semibold">12.4k</p><p class="text-xs text-muted-foreground">Followers</p></div>
+                <div><p class="num text-xl font-semibold">312</p><p class="text-xs text-muted-foreground">Following</p></div>
+            </div>
+        </CardContent>
+    </Card>
+
+    <Card Class="mt-4">
+        <CardHeader>
+            <CardTitle>Recent activity</CardTitle>
+        </CardHeader>
+        <CardContent>
+            <ItemGroup>
+                <Item>
+                    <ItemMedia><Avatar Size="sm"><AvatarFallback>MS</AvatarFallback></Avatar></ItemMedia>
+                    <ItemContent>
+                        <ItemTitle>Shipped the new paywall</ItemTitle>
+                        <ItemDescription>Conversion up 8% week over week.</ItemDescription>
+                    </ItemContent>
+                    <ItemActions><span class="text-xs text-muted-foreground">2h</span></ItemActions>
+                </Item>
+                <Item>
+                    <ItemMedia><Avatar Size="sm"><AvatarFallback>MS</AvatarFallback></Avatar></ItemMedia>
+                    <ItemContent>
+                        <ItemTitle>Published empty-state guidelines</ItemTitle>
+                        <ItemDescription>Design systems · 14 comments.</ItemDescription>
+                    </ItemContent>
+                    <ItemActions><span class="text-xs text-muted-foreground">1d</span></ItemActions>
+                </Item>
+            </ItemGroup>
+        </CardContent>
+    </Card>
+</div>

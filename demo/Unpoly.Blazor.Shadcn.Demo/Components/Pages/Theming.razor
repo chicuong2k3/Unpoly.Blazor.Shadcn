@@ -8,26 +8,96 @@
     this page change without a rebuild — nothing a theme sets is resolved by Tailwind.
 </p>
 
-<h2 class="doc-h2">The tokens</h2>
+<h2 class="doc-h2">The tokens, live</h2>
 <p class="doc-note">
-    shadcn's own, plus six this port adds so that another design language has somewhere to land.
-    All six are additive theme keys: they change no class string, so they cost nothing in parity.
+    Every swatch below reads its own variable (<code>style="background:var(--primary)"</code>),
+    so flipping the header switcher repaints this whole grid with zero rebuild. That is the
+    entire theming model: tokens, not overrides.
 </p>
 
-<div class="doc-example">
-    <pre class="doc-source"><code>/* shadcn's */
---background --foreground --card --popover --primary --secondary
---muted --accent --destructive --border --input --ring --radius
---chart-1..5  --sidebar-*
+<div class="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
+    <div class="rounded-xl border p-3"><span class="block h-12 rounded-lg" style="background:var(--primary)"></span><p class="mt-2 text-xs font-medium">--primary</p></div>
+    <div class="rounded-xl border p-3"><span class="block h-12 rounded-lg" style="background:var(--secondary)"></span><p class="mt-2 text-xs font-medium">--secondary</p></div>
+    <div class="rounded-xl border p-3"><span class="block h-12 rounded-lg" style="background:var(--muted)"></span><p class="mt-2 text-xs font-medium">--muted</p></div>
+    <div class="rounded-xl border p-3"><span class="block h-12 rounded-lg" style="background:var(--accent)"></span><p class="mt-2 text-xs font-medium">--accent</p></div>
+    <div class="rounded-xl border p-3"><span class="block h-12 rounded-lg" style="background:var(--destructive)"></span><p class="mt-2 text-xs font-medium">--destructive</p></div>
+    <div class="rounded-xl border p-3"><span class="block h-12 rounded-lg border" style="background:var(--card)"></span><p class="mt-2 text-xs font-medium">--card</p></div>
+    <div class="rounded-xl border p-3"><span class="block h-12 rounded-lg" style="background:var(--chart-1)"></span><p class="mt-2 text-xs font-medium">--chart-1</p></div>
+    <div class="rounded-xl border p-3"><span class="block h-12 rounded-lg" style="background:var(--chart-2)"></span><p class="mt-2 text-xs font-medium">--chart-2</p></div>
+    <div class="rounded-xl border p-3"><span class="block h-12 rounded-lg" style="background:var(--chart-3)"></span><p class="mt-2 text-xs font-medium">--chart-3</p></div>
+    <div class="rounded-xl border p-3"><span class="block h-12 rounded-lg" style="background:var(--ring)"></span><p class="mt-2 text-xs font-medium">--ring</p></div>
+</div>
 
-/* this port's */
---control-h        control height        (shadcn hardcodes h-9)
---control-text     control font size     (shadcn hardcodes text-sm)
---radius-control   control corner        (so pill buttons can sit beside 12px cards)
---elevation-1..4   shadow scale          (shadcn hardcodes shadow-xs/sm/md/lg)
---ease-ui          easing
---duration-ui      duration
---font-numeric     the face a column of figures is set in</code></pre>
+<p class="doc-note">
+    shadcn's own tokens, plus six this port adds so that another design language has somewhere
+    to land: <code>--control-h</code>, <code>--control-text</code>, <code>--radius-control</code>,
+    <code>--elevation-1..4</code>, <code>--ease-ui</code>, <code>--duration-ui</code>, plus
+    <code>--font-numeric</code>. All additive — they change no class string, so they cost nothing
+    in parity.
+</p>
+
+<h2 class="doc-h2">Six themes, one markup</h2>
+<p class="doc-note">
+    Each card sets <code>data-theme</code> on itself, so six themes render side by side from the
+    exact same components. This is also how an app ships one theme: put it on
+    <code>&lt;html&gt;</code> and ship one file.
+</p>
+
+<div class="mt-4 grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+    <div data-theme="supabase" class="rounded-xl border bg-background p-5 text-foreground">
+        <p class="num mb-3 text-xs text-muted-foreground">supabase</p>
+        <div class="flex flex-wrap items-center gap-2">
+            <Button Variant="default" Size="sm">Save</Button>
+            <Button Variant="outline" Size="sm">Cancel</Button>
+            <Badge Variant="secondary">New</Badge>
+        </div>
+        <Input Type="text" name="supabase-demo" placeholder="Email" Class="mt-3" />
+    </div>
+    <div data-theme="notebook" class="rounded-xl border bg-background p-5 text-foreground">
+        <p class="num mb-3 text-xs text-muted-foreground">notebook</p>
+        <div class="flex flex-wrap items-center gap-2">
+            <Button Variant="default" Size="sm">Save</Button>
+            <Button Variant="outline" Size="sm">Cancel</Button>
+            <Badge Variant="secondary">New</Badge>
+        </div>
+        <Input Type="text" name="notebook-demo" placeholder="Email" Class="mt-3" />
+    </div>
+    <div data-theme="dracula" class="rounded-xl border bg-background p-5 text-foreground">
+        <p class="num mb-3 text-xs text-muted-foreground">dracula</p>
+        <div class="flex flex-wrap items-center gap-2">
+            <Button Variant="default" Size="sm">Save</Button>
+            <Button Variant="outline" Size="sm">Cancel</Button>
+            <Badge Variant="secondary">New</Badge>
+        </div>
+        <Input Type="text" name="dracula-demo" placeholder="Email" Class="mt-3" />
+    </div>
+    <div data-theme="nord" class="rounded-xl border bg-background p-5 text-foreground">
+        <p class="num mb-3 text-xs text-muted-foreground">nord</p>
+        <div class="flex flex-wrap items-center gap-2">
+            <Button Variant="default" Size="sm">Save</Button>
+            <Button Variant="outline" Size="sm">Cancel</Button>
+            <Badge Variant="secondary">New</Badge>
+        </div>
+        <Input Type="text" name="nord-demo" placeholder="Email" Class="mt-3" />
+    </div>
+    <div data-theme="cupertino" class="rounded-xl border bg-background p-5 text-foreground">
+        <p class="num mb-3 text-xs text-muted-foreground">cupertino</p>
+        <div class="flex flex-wrap items-center gap-2">
+            <Button Variant="default" Size="sm">Save</Button>
+            <Button Variant="outline" Size="sm">Cancel</Button>
+            <Badge Variant="secondary">New</Badge>
+        </div>
+        <Input Type="text" name="cupertino-demo" placeholder="Email" Class="mt-3" />
+    </div>
+    <div data-theme="claymorphism" class="rounded-xl border bg-background p-5 text-foreground">
+        <p class="num mb-3 text-xs text-muted-foreground">claymorphism</p>
+        <div class="flex flex-wrap items-center gap-2">
+            <Button Variant="default" Size="sm">Save</Button>
+            <Button Variant="outline" Size="sm">Cancel</Button>
+            <Badge Variant="secondary">New</Badge>
+        </div>
+        <Input Type="text" name="claymorphism-demo" placeholder="Email" Class="mt-3" />
+    </div>
 </div>
 
 <h2 class="doc-h2">Can it become Material, Cupertino or Fluent?</h2>

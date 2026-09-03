@@ -13,7 +13,9 @@
     each block is for, what it composes, and the trap in it.
 </p>
 
-<h2 class="doc-h2">Sign in</h2>
+<h2 class="doc-h2">Auth</h2>
+
+<h3 class="mt-8 text-base font-semibold tracking-tight">Sign in</h3>
 <p class="doc-note">
     Two attributes here are load-bearing and routinely forgotten:
     <code>up-target="body"</code>, because signing in crosses the auth boundary and the whole
@@ -22,67 +24,35 @@
 </p>
 <Example Source="LoginBlock.razor"><LoginBlock /></Example>
 
-<h2 class="doc-h2">Page header</h2>
-<Example Source="PageHeaderBlock.razor"><PageHeaderBlock /></Example>
-
-<h2 class="doc-h2">Stat cards</h2>
-<Example Source="StatsBlock.razor"><StatsBlock /></Example>
-
-<h2 class="doc-h2">Data table with a toolbar</h2>
-<p class="doc-note">
-    The filters are a GET form and the URL is the state, so the result is bookmarkable and Back
-    works. No client-side filter state exists to get out of sync.
-</p>
-<Example Source="DataTableBlock.razor"><DataTableBlock /></Example>
-
-<h2 class="doc-h2">Settings</h2>
-<p class="doc-note">
-    One form per section. A single form across the whole screen makes "Save" mean "save
-    everything, including what I did not look at".
-</p>
-<Example Source="SettingsBlock.razor"><SettingsBlock /></Example>
-
-<h2 class="doc-h2">Empty state</h2>
-<Example Source="EmptyStateBlock.razor"><EmptyStateBlock /></Example>
-
-<h2 class="doc-h2">Sign up</h2>
+<h3 class="mt-8 text-base font-semibold tracking-tight">Sign up</h3>
 <p class="doc-note">The strength meter is rendered by the server from <code>[up-validate]</code>, not computed in the browser: the rule that decides it lives on the server anyway, and a second copy in JavaScript is a second copy to get wrong.</p>
 <Example Source="SignUpBlock.razor"><SignUpBlock /></Example>
 
-<h2 class="doc-h2">Reset password</h2>
+<h3 class="mt-8 text-base font-semibold tracking-tight">Reset password</h3>
 <p class="doc-note">The response is the same whether or not the address exists. Saying "no such account" turns the form into a way of asking whether someone has one.</p>
 <Example Source="ResetPasswordBlock.razor"><ResetPasswordBlock /></Example>
 
-<h2 class="doc-h2">Verify a code</h2>
+<h3 class="mt-8 text-base font-semibold tracking-tight">Verify a code</h3>
 <p class="doc-note">Six real inputs; the server sees one field. <code>autocomplete="one-time-code"</code> on the first box is what lets a phone offer the code it has just received.</p>
 <Example Source="OtpVerifyBlock.razor"><OtpVerifyBlock /></Example>
 
-<h2 class="doc-h2">Pricing</h2>
-<Example Source="PricingBlock.razor"><PricingBlock /></Example>
+<h3 class="mt-8 text-base font-semibold tracking-tight">Authentication tabs</h3>
+<p class="doc-note">Sign in and create account in one card with social providers. Both forms post to their own actions with <code>up-target="body"</code>.</p>
+<Example Source="AuthenticationBlock.razor"><AuthenticationBlock /></Example>
 
-<h2 class="doc-h2">Hero</h2>
-<Example Source="HeroBlock.razor"><HeroBlock /></Example>
+<h2 class="doc-h2">Dashboard</h2>
 
-<h2 class="doc-h2">Filters</h2>
-<p class="doc-note">The URL is the state, so a filtered view can be sent to a colleague and reached by the back button. Applied filters are chips, because a filter you cannot see is a filter you will blame the data for.</p>
-<Example Source="FiltersBlock.razor"><FiltersBlock /></Example>
+<h3 class="mt-8 text-base font-semibold tracking-tight">Dashboard</h3>
+<p class="doc-note">KPI cards, a table-drawn revenue chart beside an activity list, and a recent orders grid. Export and New report are links; live data replaces the static rows behind a GET endpoint.</p>
+<Example Source="DashboardBlock.razor"><DashboardBlock /></Example>
 
-<h2 class="doc-h2">Form wizard</h2>
-<p class="doc-note">Each step is a real URL and a real POST, not a client-side index — which is what makes the back button work, a refresh safe, and a half-finished application resumable from a link.</p>
-<Example Source="FormWizardBlock.razor"><FormWizardBlock /></Example>
+<h3 class="mt-8 text-base font-semibold tracking-tight">Page header</h3>
+<Example Source="PageHeaderBlock.razor"><PageHeaderBlock /></Example>
 
-<h2 class="doc-h2">Master and detail</h2>
-<p class="doc-note">The shape behind mail, chat and any inbox. Only the detail pane is swapped, so the list keeps its scroll and the address bar always names what is on screen.</p>
-<Example Source="MasterDetailBlock.razor"><MasterDetailBlock /></Example>
+<h3 class="mt-8 text-base font-semibold tracking-tight">Stat cards</h3>
+<Example Source="StatsBlock.razor"><StatsBlock /></Example>
 
-<h2 class="doc-h2">Notifications</h2>
-<Example Source="NotificationsBlock.razor"><NotificationsBlock /></Example>
-
-<h2 class="doc-h2">Checkout</h2>
-<p class="doc-note">The summary sits beside the form on a desktop and above it on a phone — never below, because the total is what someone checks before they commit.</p>
-<Example Source="CheckoutBlock.razor"><CheckoutBlock /></Example>
-
-<h2 class="doc-h2">Analytics</h2>
+<h3 class="mt-8 text-base font-semibold tracking-tight">Analytics</h3>
 <p class="doc-note">
     A chart drawn as a <code>&lt;table&gt;</code>: the numbers are in the DOM as numbers, so it is
     readable by a screen reader, selectable and correct with CSS off. Reach for a charting library
@@ -90,46 +60,33 @@
 </p>
 <Example Source="AnalyticsBlock.razor"><AnalyticsBlock /></Example>
 
-<h2 class="doc-h2">Calendar</h2>
-<p class="doc-note">
-    Also a table, for the same reason. Month navigation is two links to real URLs, so a month is
-    bookmarkable and Back moves through months. For picking a single date use
-    <code>DatePicker</code> instead — this one is for showing what is on.
-</p>
-<Example Source="CalendarBlock.razor"><CalendarBlock /></Example>
+<h2 class="doc-h2">Data</h2>
 
-<h2 class="doc-h2">Chat</h2>
+<h3 class="mt-8 text-base font-semibold tracking-tight">Data table with a toolbar</h3>
 <p class="doc-note">
-    The composer targets <code>.chat-thread:after</code> — append, not replace — so sending adds
-    one bubble instead of re-rendering the conversation and losing your scroll. The thread polls
-    with an <code>[up-etag]</code>, so a poll that finds nothing costs an empty 304.
+    The filters are a GET form and the URL is the state, so the result is bookmarkable and Back
+    works. No client-side filter state exists to get out of sync.
 </p>
-<Example Source="ChatBlock.razor"><ChatBlock /></Example>
+<Example Source="DataTableBlock.razor"><DataTableBlock /></Example>
 
-<h2 class="doc-h2">File manager</h2>
-<p class="doc-note">
-    Selection is real checkboxes sharing one name, and the bulk bar appears through
-    <code>:has(:checked)</code> — CSS reading the boxes rather than a second copy of the selection
-    that can drift from them.
-</p>
-<Example Source="FileManagerBlock.razor"><FileManagerBlock /></Example>
+<h3 class="mt-8 text-base font-semibold tracking-tight">Filters</h3>
+<p class="doc-note">The URL is the state, so a filtered view can be sent to a colleague and reached by the back button. Applied filters are chips, because a filter you cannot see is a filter you will blame the data for.</p>
+<Example Source="FiltersBlock.razor"><FiltersBlock /></Example>
 
-<h2 class="doc-h2">Board</h2>
-<p class="doc-note">
-    No drag-and-drop, deliberately. Dragging has no keyboard equivalent unless you build one, and
-    the accessible fallback everyone eventually bolts on is exactly this: a control on the card
-    saying which column it belongs in. So the fallback is the interface.
-</p>
-<Example Source="KanbanBlock.razor"><KanbanBlock /></Example>
+<h3 class="mt-8 text-base font-semibold tracking-tight">Listings</h3>
+<p class="doc-note">A three-column directory of mixed results. Filters are a GET form; each card links to its detail page.</p>
+<Example Source="ListingBlock.razor"><ListingBlock /></Example>
 
-<h2 class="doc-h2">Task tracker</h2>
-<p class="doc-note">
-    Ticking a box is a POST targeting <code>:origin</code>, so a list of two hundred tasks costs
-    one row per tick and nothing below you moves.
-</p>
-<Example Source="TaskTrackerBlock.razor"><TaskTrackerBlock /></Example>
+<h2 class="doc-h2">Commerce</h2>
 
-<h2 class="doc-h2">Product grid</h2>
+<h3 class="mt-8 text-base font-semibold tracking-tight">Checkout</h3>
+<p class="doc-note">The summary sits beside the form on a desktop and above it on a phone — never below, because the total is what someone checks before they commit.</p>
+<Example Source="CheckoutBlock.razor"><CheckoutBlock /></Example>
+
+<h3 class="mt-8 text-base font-semibold tracking-tight">Cart</h3>
+<Example Source="CartBlock.razor"><CartBlock /></Example>
+
+<h3 class="mt-8 text-base font-semibold tracking-tight">Product grid</h3>
 <p class="doc-note">
     Add-to-cart swaps the cart badge, not the grid — which means the badge lives in the chrome and
     <code>&lt;UpChrome Provides=".cart-badge"&gt;</code> is required. Leaving it out is the most
@@ -137,7 +94,156 @@
 </p>
 <Example Source="ProductGridBlock.razor"><ProductGridBlock /></Example>
 
-<h2 class="doc-h2">Social feed</h2>
+<h3 class="mt-8 text-base font-semibold tracking-tight">Product overview</h3>
+<Example Source="ProductOverviewBlock.razor"><ProductOverviewBlock /></Example>
+
+<h3 class="mt-8 text-base font-semibold tracking-tight">Product categories</h3>
+<Example Source="ProductCategoriesBlock.razor"><ProductCategoriesBlock /></Example>
+
+<h3 class="mt-8 text-base font-semibold tracking-tight">Order history</h3>
+<Example Source="OrderHistoryBlock.razor"><OrderHistoryBlock /></Example>
+
+<h3 class="mt-8 text-base font-semibold tracking-tight">Storefront hero</h3>
+<p class="doc-note">A product-led hero with a showcase image, a tagline, and a primary action that adds the product to the cart.</p>
+<Example Source="StorefrontHeroBlock.razor"><StorefrontHeroBlock /></Example>
+
+<h2 class="doc-h2">Marketing</h2>
+
+<h3 class="mt-8 text-base font-semibold tracking-tight">Hero</h3>
+<Example Source="HeroBlock.razor"><HeroBlock /></Example>
+
+<h3 class="mt-8 text-base font-semibold tracking-tight">Pricing</h3>
+<Example Source="PricingBlock.razor"><PricingBlock /></Example>
+
+<h3 class="mt-8 text-base font-semibold tracking-tight">Features</h3>
+<Example Source="FeaturesBlock.razor"><FeaturesBlock /></Example>
+
+<h3 class="mt-8 text-base font-semibold tracking-tight">Testimonials</h3>
+<Example Source="TestimonialsBlock.razor"><TestimonialsBlock /></Example>
+
+<h3 class="mt-8 text-base font-semibold tracking-tight">FAQ</h3>
+<Example Source="FaqBlock.razor"><FaqBlock /></Example>
+
+<h3 class="mt-8 text-base font-semibold tracking-tight">Team</h3>
+<Example Source="TeamBlock.razor"><TeamBlock /></Example>
+
+<h3 class="mt-8 text-base font-semibold tracking-tight">Reviews</h3>
+<Example Source="ReviewsBlock.razor"><ReviewsBlock /></Example>
+
+<h3 class="mt-8 text-base font-semibold tracking-tight">Blog</h3>
+<Example Source="BlogBlock.razor"><BlogBlock /></Example>
+
+<h3 class="mt-8 text-base font-semibold tracking-tight">Contact</h3>
+<Example Source="ContactBlock.razor"><ContactBlock /></Example>
+
+<h3 class="mt-8 text-base font-semibold tracking-tight">CTA</h3>
+<Example Source="CtaBlock.razor"><CtaBlock /></Example>
+
+<h3 class="mt-8 text-base font-semibold tracking-tight">Footer</h3>
+<Example Source="FooterBlock.razor"><FooterBlock /></Example>
+
+<h3 class="mt-8 text-base font-semibold tracking-tight">Logo cloud</h3>
+<Example Source="LogoCloudBlock.razor"><LogoCloudBlock /></Example>
+
+<h3 class="mt-8 text-base font-semibold tracking-tight">Statistics band</h3>
+<p class="doc-note">A headline, four large numbers, and a row of logos. The numbers are the credibility; the logos are who said it.</p>
+<Example Source="StatisticsBlock.razor"><StatisticsBlock /></Example>
+
+<h3 class="mt-8 text-base font-semibold tracking-tight">Newsletter</h3>
+<p class="doc-note">One field, one button, one honesty line. The form swaps itself on submit — no thank-you-page redirect that breaks Back.</p>
+<Example Source="NewsletterBlock.razor"><NewsletterBlock /></Example>
+
+<h3 class="mt-8 text-base font-semibold tracking-tight">Integrations</h3>
+<p class="doc-note">Connector cards link to setup routes; search is a GET form, so a query is a shareable URL. Brand marks are flat tiles — Lucide has no brand glyphs.</p>
+<Example Source="IntegrationsBlock.razor"><IntegrationsBlock /></Example>
+
+<h3 class="mt-8 text-base font-semibold tracking-tight">Bento grid</h3>
+<Example Source="BentoGridBlock.razor"><BentoGridBlock /></Example>
+
+<h2 class="doc-h2">App</h2>
+
+<h3 class="mt-8 text-base font-semibold tracking-tight">Settings</h3>
+<p class="doc-note">
+    One form per section. A single form across the whole screen makes "Save" mean "save
+    everything, including what I did not look at".
+</p>
+<Example Source="SettingsBlock.razor"><SettingsBlock /></Example>
+
+<h3 class="mt-8 text-base font-semibold tracking-tight">Navbar</h3>
+<p class="doc-note">Links, a GET search, and an account menu on one bar. The phone menu is a <code>&lt;details&gt;</code>, not state — it works with scripting off and never desyncs.</p>
+<Example Source="NavbarBlock.razor"><NavbarBlock /></Example>
+
+<h3 class="mt-8 text-base font-semibold tracking-tight">App shell</h3>
+<p class="doc-note">The shadcn dashboard frame: collapsible sidebar, trigger plus breadcrumb header, content well. Collapse is a server-read cookie, so the first paint already matches.</p>
+<Example Source="AppShellBlock.razor"><AppShellBlock /></Example>
+
+<h3 class="mt-8 text-base font-semibold tracking-tight">Onboarding</h3>
+<p class="doc-note">Three steps, three URLs — Back works, refresh keeps your place, and a half-finished signup resumes from a link in an email.</p>
+<Example Source="OnboardingBlock.razor"><OnboardingBlock /></Example>
+
+<h3 class="mt-8 text-base font-semibold tracking-tight">Profile</h3>
+<p class="doc-note">Follow posts to itself and swaps only the button; Message goes to a conversation route, because a conversation is a URL worth sharing.</p>
+<Example Source="ProfileBlock.razor"><ProfileBlock /></Example>
+
+<h3 class="mt-8 text-base font-semibold tracking-tight">Billing</h3>
+<p class="doc-note">Money is formatted by the server. Plan changes are one POST per tier; destructive actions sit behind an AlertDialog, never beside Save.</p>
+<Example Source="BillingBlock.razor"><BillingBlock /></Example>
+
+<h3 class="mt-8 text-base font-semibold tracking-tight">Timeline</h3>
+<p class="doc-note">Each entry is an <code>&lt;article&gt;</code> with a real <code>&lt;time&gt;</code>; filtering is a GET form, so a filtered timeline is a shareable URL.</p>
+<Example Source="TimelineBlock.razor"><TimelineBlock /></Example>
+
+<h3 class="mt-8 text-base font-semibold tracking-tight">Form wizard</h3>
+<p class="doc-note">Each step is a real URL and a real POST, not a client-side index — which is what makes the back button work, a refresh safe, and a half-finished application resumable from a link.</p>
+<Example Source="FormWizardBlock.razor"><FormWizardBlock /></Example>
+
+<h3 class="mt-8 text-base font-semibold tracking-tight">Master and detail</h3>
+<p class="doc-note">The shape behind mail, chat and any inbox. Only the detail pane is swapped, so the list keeps its scroll and the address bar always names what is on screen.</p>
+<Example Source="MasterDetailBlock.razor"><MasterDetailBlock /></Example>
+
+<h3 class="mt-8 text-base font-semibold tracking-tight">Notifications</h3>
+<Example Source="NotificationsBlock.razor"><NotificationsBlock /></Example>
+
+<h3 class="mt-8 text-base font-semibold tracking-tight">Board</h3>
+<p class="doc-note">
+    No drag-and-drop, deliberately. Dragging has no keyboard equivalent unless you build one, and
+    the accessible fallback everyone eventually bolts on is exactly this: a control on the card
+    saying which column it belongs in. So the fallback is the interface.
+</p>
+<Example Source="KanbanBlock.razor"><KanbanBlock /></Example>
+
+<h3 class="mt-8 text-base font-semibold tracking-tight">Task tracker</h3>
+<p class="doc-note">
+    Ticking a box is a POST targeting <code>:origin</code>, so a list of two hundred tasks costs
+    one row per tick and nothing below you moves.
+</p>
+<Example Source="TaskTrackerBlock.razor"><TaskTrackerBlock /></Example>
+
+<h3 class="mt-8 text-base font-semibold tracking-tight">File manager</h3>
+<p class="doc-note">
+    Selection is real checkboxes sharing one name, and the bulk bar appears through
+    <code>:has(:checked)</code> — CSS reading the boxes rather than a second copy of the selection
+    that can drift from them.
+</p>
+<Example Source="FileManagerBlock.razor"><FileManagerBlock /></Example>
+
+<h3 class="mt-8 text-base font-semibold tracking-tight">Calendar</h3>
+<p class="doc-note">
+    Also a table, for the same reason. Month navigation is two links to real URLs, so a month is
+    bookmarkable and Back moves through months. For picking a single date use
+    <code>DatePicker</code> instead — this one is for showing what is on.
+</p>
+<Example Source="CalendarBlock.razor"><CalendarBlock /></Example>
+
+<h3 class="mt-8 text-base font-semibold tracking-tight">Chat</h3>
+<p class="doc-note">
+    The composer targets <code>.chat-thread:after</code> — append, not replace — so sending adds
+    one bubble instead of re-rendering the conversation and losing your scroll. The thread polls
+    with an <code>[up-etag]</code>, so a poll that finds nothing costs an empty 304.
+</p>
+<Example Source="ChatBlock.razor"><ChatBlock /></Example>
+
+<h3 class="mt-8 text-base font-semibold tracking-tight">Social feed</h3>
 <p class="doc-note">
     Each post is an <code>&lt;article&gt;</code> with a real permalink. Optimistic UI is left out
     on purpose: the round trip is the truth here, and a counter that goes up and then back down is
@@ -145,7 +251,7 @@
 </p>
 <Example Source="SocialFeedBlock.razor"><SocialFeedBlock /></Example>
 
-<h2 class="doc-h2">Media player</h2>
+<h3 class="mt-8 text-base font-semibold tracking-tight">Media player</h3>
 <p class="doc-note">
     Built on <code>&lt;audio controls&gt;</code>, which already has seeking, volume, media keys and
     a lock-screen control on a phone. Hand-rolled scrubbers are where audio players lose their
@@ -153,7 +259,7 @@
 </p>
 <Example Source="MediaPlayerBlock.razor"><MediaPlayerBlock /></Example>
 
-<h2 class="doc-h2">Mobile shell</h2>
+<h3 class="mt-8 text-base font-semibold tracking-tight">Mobile shell</h3>
 <p class="doc-note">
     Three things make this feel like an app rather than a page, and all three are easy to leave
     out: <code>100dvh</code> rather than <code>100vh</code>, because a phone's browser chrome
@@ -163,3 +269,14 @@
     that can be shared and the back button works.
 </p>
 <Example Source="MobileShellBlock.razor"><MobileShellBlock /></Example>
+
+<h3 class="mt-8 text-base font-semibold tracking-tight">Changelog</h3>
+<p class="doc-note">Versions down the left with anchors, typed change chips down the right. Newest first — a changelog nobody can link into is a blog.</p>
+<Example Source="ChangelogBlock.razor"><ChangelogBlock /></Example>
+
+<h3 class="mt-8 text-base font-semibold tracking-tight">Empty state</h3>
+<Example Source="EmptyStateBlock.razor"><EmptyStateBlock /></Example>
+
+<h3 class="mt-8 text-base font-semibold tracking-tight">Not found</h3>
+<p class="doc-note">A 404 that gets visitors back to work: two actions (Home, and Back as a link — never a button that resubmits), plus the three pages mistyped URLs always land on.</p>
+<Example Source="NotFoundBlock.razor"><NotFoundBlock /></Example>

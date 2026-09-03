@@ -1,0 +1,54 @@
+@* Timeline — releases, incidents and hires on one vertical line. Each entry is an
+   <article> with a real <time datetime>, so readers and machines agree on when it
+   happened; the dot is pure decoration (aria-hidden) and carries no meaning alone.
+   Filtering by type is a GET form — a filtered timeline is a URL worth sending. *@
+
+<div class="mx-auto w-full max-w-2xl">
+    <form method="get" action="/timeline" up-target="[data-timeline]" up-autosubmit
+        class="flex flex-wrap items-center gap-2">
+        <Select name="kind" aria-label="Event type">
+            <SelectItem Value="">All events</SelectItem>
+            <SelectItem Value="release">Releases</SelectItem>
+            <SelectItem Value="incident">Incidents</SelectItem>
+            <SelectItem Value="team">Team</SelectItem>
+        </Select>
+    </form>
+
+    <div data-timeline class="mt-6">
+        <ol class="relative space-y-8 border-l pl-8">
+            <li class="relative">
+                <span aria-hidden="true" class="absolute top-1 -left-8 flex size-4 items-center justify-center rounded-full bg-emerald-500 ring-4 ring-emerald-500/20"></span>
+                <article>
+                    <div class="flex flex-wrap items-center gap-2">
+                        <h3 class="font-semibold">v3.4 released</h3>
+                        <Badge Variant="secondary">Release</Badge>
+                    </div>
+                    <time datetime="2026-06-10" class="mt-1 block text-xs text-muted-foreground">Jun 10, 2026</time>
+                    <p class="mt-2 text-sm text-muted-foreground">Canary at 10%, full rollout after the error budget check passes.</p>
+                </article>
+            </li>
+            <li class="relative">
+                <span aria-hidden="true" class="absolute top-1 -left-8 flex size-4 items-center justify-center rounded-full bg-destructive ring-4 ring-destructive/20"></span>
+                <article>
+                    <div class="flex flex-wrap items-center gap-2">
+                        <h3 class="font-semibold">Checkout latency spike</h3>
+                        <Badge Variant="destructive">Incident</Badge>
+                    </div>
+                    <time datetime="2026-06-07" class="mt-1 block text-xs text-muted-foreground">Jun 7, 2026</time>
+                    <p class="mt-2 text-sm text-muted-foreground">p99 crossed 800ms for eleven minutes; rolled back the flag, then the deploy.</p>
+                </article>
+            </li>
+            <li class="relative">
+                <span aria-hidden="true" class="absolute top-1 -left-8 flex size-4 items-center justify-center rounded-full bg-sky-500 ring-4 ring-sky-500/20"></span>
+                <article>
+                    <div class="flex flex-wrap items-center gap-2">
+                        <h3 class="font-semibold">Nora joined Safety</h3>
+                        <Badge Variant="outline">Team</Badge>
+                    </div>
+                    <time datetime="2026-06-01" class="mt-1 block text-xs text-muted-foreground">Jun 1, 2026</time>
+                    <p class="mt-2 text-sm text-muted-foreground">Owns guardrails review lane from this month.</p>
+                </article>
+            </li>
+        </ol>
+    </div>
+</div>

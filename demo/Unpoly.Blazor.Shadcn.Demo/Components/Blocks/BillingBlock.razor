@@ -1,0 +1,127 @@
+@* Billing — plan, metered usage, invoices, and payment method on one screen. Three
+   rules: money is formatted by the server (one total everywhere, not one per screen);
+   each destructive action (cancel, remove card) sits behind an AlertDialog, never beside
+   Save; and invoices are a table of real rows with download links, because a finance
+   person prints them. The plan change is a POST per tier — choosing is committing. *@
+
+<div class="mx-auto w-full max-w-4xl space-y-4">
+    <Card>
+        <CardHeader>
+            <CardTitle>Current plan</CardTitle>
+            <CardDescription>Renews Jul 1, 2026 · invoices go to billing@@acme.co.</CardDescription>
+        </CardHeader>
+        <CardContent>
+            <div class="grid gap-4 md:grid-cols-3">
+                <div class="rounded-lg border p-4">
+                    <p class="font-semibold">Starter</p>
+                    <p class="num mt-1 text-2xl font-semibold">$0</p>
+                    <p class="mt-1 text-xs text-muted-foreground">Up to 1k events/mo.</p>
+                    <form method="post" action="/billing/plan" up-target=":origin" class="mt-3">
+                        <input type="hidden" name="plan" value="starter" />
+                        <Button Type="submit" Variant="outline" Size="sm" Class="w-full">Downgrade</Button>
+                    </form>
+                </div>
+                <div class="rounded-lg border-2 border-primary p-4">
+                    <div class="flex items-center justify-between">
+                        <p class="font-semibold">Growth</p>
+                        <Badge Variant="default">Current</Badge>
+                    </div>
+                    <p class="num mt-1 text-2xl font-semibold">$49</p>
+                    <p class="mt-1 text-xs text-muted-foreground">Up to 100k events/mo.</p>
+                    <Button Variant="outline" Size="sm" Class="mt-3 w-full" Href="/billing">Manage</Button>
+                </div>
+                <div class="rounded-lg border p-4">
+                    <p class="font-semibold">Scale</p>
+                    <p class="num mt-1 text-2xl font-semibold">$199</p>
+                    <p class="mt-1 text-xs text-muted-foreground">Unlimited events, SSO.</p>
+                    <form method="post" action="/billing/plan" up-target=":origin" class="mt-3">
+                        <input type="hidden" name="plan" value="scale" />
+                        <Button Type="submit" Variant="default" Size="sm" Class="w-full">Upgrade</Button>
+                    </form>
+                </div>
+            </div>
+        </CardContent>
+    </Card>
+
+    <div class="grid gap-4 md:grid-cols-2">
+        <Card>
+            <CardHeader>
+                <CardTitle>Usage this cycle</CardTitle>
+                <CardDescription>Resets Jul 1.</CardDescription>
+            </CardHeader>
+            <CardContent class="space-y-4">
+                <div>
+                    <div class="flex justify-between text-sm"><span>Events</span><span class="num">62,400 / 100,000</span></div>
+                    <Progress Value="62" Class="mt-2" />
+                </div>
+                <div>
+                    <div class="flex justify-between text-sm"><span>Seats</span><span class="num">9 / 15</span></div>
+                    <Progress Value="60" Class="mt-2" />
+                </div>
+            </CardContent>
+        </Card>
+        <Card>
+            <CardHeader>
+                <CardTitle>Payment method</CardTitle>
+            </CardHeader>
+            <CardContent>
+                <div class="flex items-center justify-between rounded-lg border p-3">
+                    <div class="flex items-center gap-3">
+                        <Icon Name="credit-card" Title="Card" />
+                        <div>
+                            <p class="num text-sm font-medium">···· 4242</p>
+                            <p class="text-xs text-muted-foreground">Expires 08/28</p>
+                        </div>
+                    </div>
+                    <Badge Variant="secondary">Default</Badge>
+                </div>
+                <div class="mt-3 flex gap-2">
+                    <Button Variant="outline" Size="sm" Href="/billing/card">Replace</Button>
+                    <AlertDialogTrigger Target="remove-card" Variant="destructive" Size="sm">Remove</AlertDialogTrigger>
+                </div>
+                <AlertDialog Id="remove-card" Size="default" Dismissable="true">
+                    <AlertDialogHeader>
+                        <AlertDialogTitle>Remove this card?</AlertDialogTitle>
+                        <AlertDialogDescription>The plan renews on the backup method, or pauses if there is none.</AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                        <AlertDialogCancel Variant="outline" Size="sm">Keep</AlertDialogCancel>
+                        <AlertDialogAction Type="submit" Variant="destructive" Size="sm">Remove</AlertDialogAction>
+                    </AlertDialogFooter>
+                </AlertDialog>
+            </CardContent>
+        </Card>
+    </div>
+
+    <Card>
+        <CardHeader>
+            <CardTitle>Invoices</CardTitle>
+        </CardHeader>
+        <CardContent>
+            <Table>
+                <TableHeader>
+                    <TableRow>
+                        <TableHead>Period</TableHead>
+                        <TableHead>Amount</TableHead>
+                        <TableHead>Status</TableHead>
+                        <TableHead><span class="sr-only">Download</span></TableHead>
+                    </TableRow>
+                </TableHeader>
+                <TableBody>
+                    <TableRow>
+                        <TableCell>Jun 2026</TableCell>
+                        <TableCell Class="num">$49.00</TableCell>
+                        <TableCell><Badge Variant="secondary">Paid</Badge></TableCell>
+                        <TableCell><Button Variant="link" Size="sm" Href="/files/invoice-jun.pdf">PDF</Button></TableCell>
+                    </TableRow>
+                    <TableRow>
+                        <TableCell>May 2026</TableCell>
+                        <TableCell Class="num">$49.00</TableCell>
+                        <TableCell><Badge Variant="secondary">Paid</Badge></TableCell>
+                        <TableCell><Button Variant="link" Size="sm" Href="/files/invoice-may.pdf">PDF</Button></TableCell>
+                    </TableRow>
+                </TableBody>
+            </Table>
+        </CardContent>
+    </Card>
+</div>
