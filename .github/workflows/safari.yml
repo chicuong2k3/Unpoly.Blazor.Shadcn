@@ -28,16 +28,19 @@ jobs:
 
       # Jammy-updates carries newer WebKitGTK (16.x/17.x engine); pin the
       # 2.36 line when the archive still offers it, and report what ran.
+      # The pin must cover the whole WebKit family together — the runner image
+      # preinstalls a newer stack and apt refuses a partial downgrade.
       - name: Install WebKitGTK (pin 2.36 when available)
         run: |
           sudo apt-get update
-          sudo apt-get install -y apt-cache 2>/dev/null || true
           V=$(apt-cache madison libwebkit2gtk-4.0-37 | awk '$3 ~ /^2\.36/ {print $3; exit}')
           echo "webkit2gtk candidate: ${V:-<latest>}"
           if [ -n "$V" ]; then
-            sudo apt-get install -y \
+            sudo apt-get install -y --allow-downgrades \
               libwebkit2gtk-4.0-37="$V" \
+              libjavascriptcoregtk-4.0-18="$V" \
               gir1.2-webkit2-4.0="$V" \
+              libgirepository-1.0-1 \
               python3-gi python3-gi-cairo gir1.2-gtk-3.0 xvfb
           else
             sudo apt-get install -y \
