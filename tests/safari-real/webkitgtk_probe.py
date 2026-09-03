@@ -56,7 +56,7 @@ class Probe:
             "console.error = function(){ window.__errs.push(Array.prototype.join.call(arguments, ' ')); __e.apply(null, arguments); };"
             "window.addEventListener('error', function(ev){ window.__errs.push('pageerror: ' + ev.message); });",
             WebKit2.UserContentInjectedFrames.ALL_FRAMES,
-            WebKit2.UserScriptInjectBehavior.AT_DOCUMENT_START,
+            WebKit2.UserScriptInjectionTime.AT_DOCUMENT_START,
         ))
         self.win = Gtk.OffscreenWindow()
         self.win.add(self.view)
