@@ -4463,11 +4463,17 @@
     .sm\:flex {
       display: flex;
     }
+    .sm\:inline {
+      display: inline;
+    }
     .sm\:inline-flex {
       display: inline-flex;
     }
     .sm\:table-cell {
       display: table-cell;
+    }
+    .sm\:w-56 {
+      width: calc(var(--spacing) * 56);
     }
     .sm\:w-\[180px\] {
       width: 180px;
@@ -4504,6 +4510,9 @@
     .sm\:flex-row {
       flex-direction: row;
     }
+    .sm\:justify-between {
+      justify-content: space-between;
+    }
     .sm\:justify-end {
       justify-content: flex-end;
     }
@@ -4515,6 +4524,9 @@
     }
     .sm\:\!rounded-lg {
       border-radius: var(--radius) !important;
+    }
+    .sm\:px-3 {
+      padding-inline: calc(var(--spacing) * 3);
     }
     .sm\:px-16 {
       padding-inline: calc(var(--spacing) * 16);

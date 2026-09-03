@@ -7,9 +7,10 @@
    let the server answer instead, swapping <CommandList>. Both shapes are the same markup. *@
 
 <Button Variant="outline" Size="sm" Type="button" data-command-open="doc-search"
-        Class="w-56 justify-between text-muted-foreground">
-    <span class="flex items-center gap-2"><Icon Name="search" />Search…</span>
-    <KbdGroup><Kbd>⌘</Kbd><Kbd>K</Kbd></KbdGroup>
+        Class="size-9 justify-center px-0 sm:w-56 sm:justify-between sm:px-3"
+        aria-label="Search">
+    <span class="flex items-center gap-2"><Icon Name="search" /><span class="hidden sm:inline">Search…</span></span>
+    <KbdGroup Class="hidden sm:inline-flex"><Kbd>⌘</Kbd><Kbd>K</Kbd></KbdGroup>
 </Button>
 
 <CommandDialog Id="doc-search" Key="mod+k" Title="Search the documentation"
