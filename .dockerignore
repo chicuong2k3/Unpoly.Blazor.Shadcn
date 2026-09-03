@@ -1,0 +1,26 @@
+# Build outputs
+**/bin/
+**/obj/
+
+# Node
+**/node_modules/
+
+# Git
+**/.git/
+**/.gitignore
+
+# IDE
+**/.vs/
+**/.vscode/
+**/*.user
+**/*.suo
+
+# Test
+**/TestResults/
+
+# Local environment
+**/.env
+**/.env.local
+
+# Logs
+*.log

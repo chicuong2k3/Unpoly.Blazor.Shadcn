@@ -1,0 +1,10 @@
+services:
+  - type: web
+    name: unpoly-blazor-shadcn-demo
+    runtime: docker
+    dockerfilePath: ./demo/Unpoly.Blazor.Shadcn.Demo/Dockerfile
+    dockerContext: .
+    healthCheckPath: /
+    envVars:
+      - key: ASPNETCORE_ENVIRONMENT
+        value: Production
