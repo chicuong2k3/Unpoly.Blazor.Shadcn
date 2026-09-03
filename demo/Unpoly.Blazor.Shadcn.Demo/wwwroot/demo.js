@@ -14,15 +14,25 @@ const currentTheme = () => localStorage.getItem('demo-theme') || 'shadcn'
 up.compiler('[data-theme-picker]', (select) => {
   select.value = currentTheme()
 
-  const onChange = () => {
+  const faceSync = () => select.dispatchEvent(new Event('change', { bubbles: true }))
+
+  const onChange = (event) => {
     const value = select.value
+    // A synthetic change from faceSync only carries the stored value to the
+    // shadcn face (ui.js listener, registered earlier, runs first). It must
+    // not reset the customizer, or every page load would wipe saved tokens.
+    if (event && event.isTrusted === false &&
+        value === (localStorage.getItem('demo-theme') || 'shadcn')) return
     localStorage.setItem('demo-theme', value)
     if (value === 'shadcn') delete document.documentElement.dataset.theme
     else document.documentElement.dataset.theme = value
 
-    // The other picker, if it is on the page.
+    // The other picker, if it is on the page — its face syncs the same way.
     for (const other of document.querySelectorAll('[data-theme-picker]')) {
-      if (other !== select) other.value = value
+      if (other !== select) {
+        other.value = value
+        other.dispatchEvent(new Event('change', { bubbles: true }))
+      }
     }
     // A preset replaces whatever was tuned by hand; keeping both would show a panel that does
     // not describe the page.
@@ -30,6 +40,10 @@ up.compiler('[data-theme-picker]', (select) => {
   }
 
   select.addEventListener('change', onChange)
+  // The shadcn face snapshots select.value at its own compile time, which runs
+  // before this compiler (script order) — the stored value only reaches the
+  // face through an explicit change event.
+  faceSync()
   return () => select.removeEventListener('change', onChange)
 })
 

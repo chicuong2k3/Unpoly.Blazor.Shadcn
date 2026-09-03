@@ -33,6 +33,14 @@
       <SampleFile Include="Components/Examples/**/*.razor;Components/Blocks/**/*.razor" />
     </ItemGroup>
     <Copy SourceFiles="@(SampleFile)" DestinationFolder="$(OutDir)samples" SkipUnchangedFiles="true" />
+    <!-- dotnet publish does not carry loose OutDir files, so without this second
+         copy every code tab reads "sample not found" in production while working
+         locally. PublishDir is empty on a plain build, so the condition keeps
+         `dotnet build` to a single copy. -->
+    <Copy SourceFiles="@(SampleFile)"
+          DestinationFolder="$([System.IO.Path]::Combine('$(PublishDir)', 'samples'))"
+          SkipUnchangedFiles="true"
+          Condition="'$(PublishDir)' != ''" />
   </Target>
 
   <Target Name="NpmInstall" BeforeTargets="Tailwind"

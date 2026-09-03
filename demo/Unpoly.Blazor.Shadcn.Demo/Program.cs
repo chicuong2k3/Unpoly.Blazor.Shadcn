@@ -89,6 +89,13 @@ app.MapPost("/uploads", async (HttpRequest request) =>
     return Results.Ok(new { url });
 }).DisableAntiforgery();
 
+// The vendored Unpoly bundle ends with sourceMappingURL comments but its NuGet
+// package ships no .map files, so Safari logs a 404 for each on every load.
+// Answer empty: maps are a devtools-only aid and there is nothing to map to.
+// (The proper fix belongs upstream — ship the maps or strip the comments.)
+foreach (var map in new[] { "unpoly.min.js.map", "unpoly.min.css.map" })
+    app.MapGet($"_content/Unpoly.Blazor/{map}", () => Results.NoContent());
+
 app.Run();
 
 /// <summary>Named so the Playwright suite can boot this host as its fixture.</summary>

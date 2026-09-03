@@ -69,6 +69,16 @@
     };
   }
 
+  // window.reportError — Safari < 16. Unpoly 3.14 refuses to boot without it
+  // ("Unpoly cannot boot: Browser doesn't support the reportError API"), so
+  // every interaction dies, not just error reporting. Re-throwing on a timer
+  // surfaces the error as uncaught, which is the documented semantics.
+  if (typeof window !== 'undefined' && typeof window.reportError !== 'function') {
+    window.reportError = function reportError(error) {
+      window.setTimeout(function () { throw error; }, 0);
+    };
+  }
+
   // :popover-open selector translation — Safari < 17 (and the oddbird polyfill,
   // which patches show/hide/toggle but NOT the selector engines). A selector
   // engine that does not know :popover-open throws SyntaxError on it, which

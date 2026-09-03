@@ -46,6 +46,13 @@
     try { delete window.structuredClone; } catch (_e) { /* sealed */ }
   }
 
+  /* ---- reportError -----------------------------------------------------------
+     Unpoly 3.14 refuses to boot without window.reportError (Safari < 16):
+     deleting it forces the boot path through the library shim. ------------ */
+  if (typeof window !== 'undefined' && 'reportError' in window) {
+    try { delete window.reportError; } catch (_e) { window.reportError = undefined; }
+  }
+
   /* ---- Popover API --------------------------------------------------------- */
   delete HTMLElement.prototype.showPopover;
   delete HTMLElement.prototype.hidePopover;
@@ -61,7 +68,10 @@
      translates bare :popover-open to the polyfill's class check on engines
      without the API, so this path is covered by the code under test. ------ */
 
-  /* ---- Force :has() mismatch in JS ----------------------------------------- */
+  /* ---- Force :has() mismatch in JS -----------------------------------------
+     Real Safari 15.0-15.3 cannot match :has() from JS either; the library
+     boot (has-pseudo-boot.js) wraps this engine later, which is exactly the
+     production chain under test. ------------------------------------------ */
   var origMatches2 = Element.prototype.matches;
   Element.prototype.matches = function (selector) {
     if (typeof selector === 'string' && selector.indexOf(':has(') !== -1) {
@@ -69,6 +79,20 @@
     }
     return origMatches2.call(this, selector);
   };
+
+  /* ---- CSS.supports lies :has() is missing ---------------------------------
+     Unpoly 3.14 refuses to boot when CSS.supports('selector(:has(*))') is
+     false; the library boot corrects it after installing the runtime, the
+     same chain a real Safari 15 runs. -------------------------------------- */
+  if (window.CSS && typeof window.CSS.supports === 'function') {
+    var nativeSupports = window.CSS.supports.bind(window.CSS);
+    window.CSS.supports = function (property, value) {
+      var text = typeof property === 'string' && value === undefined ? property :
+        (typeof property === 'string' ? property + ': ' + value : '');
+      if (/:has\(/i.test(text)) return false;
+      return nativeSupports.apply(this, arguments);
+    };
+  }
 
   /* ---- Hide [popover] panels by default ------------------------------------
      Without the popover API, [popover] elements are not moved to the top

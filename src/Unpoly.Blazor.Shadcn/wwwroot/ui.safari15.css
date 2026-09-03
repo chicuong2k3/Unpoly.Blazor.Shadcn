@@ -55,6 +55,12 @@
   display: none;
 }
 
+/* Unpoly's own scroll lock (unpoly.min.css): html:has(>body.up-scrollbar-away).
+   Same treatment, emitted verbatim by css-has-pseudo 8.0.1 so the encoding and
+   specificity padding match what its runtime maintains. Without this the page
+   behind an open overlay keeps scrolling on Safari 15.0-15.3. */
+.js-has-pseudo [csstools-has-2w-38-31-30-1m-2w-2p-37-14-1q-2q-33-2s-3d-1a-39-34-19-37-2r-36-33-30-30-2q-2p-36-19-2p-3b-2p-3d-15]:not(does-not-exist):not(does-not-exist){overflow-y:hidden !important;}
+
 /* ==== generated :has() fallbacks — DO NOT EDIT (run: python tools/gen_has_fallback.py) ==== */
 @layer utilities {
 .js-has-pseudo .group-has-data-\[sidebar\=menu-action\]\/menu-item\:pe-8:is([csstools-has-1m-3b-2w-2t-36-2t-14-1a-2v-36-33-39-34-2k-1b-31-2t-32-39-19-2x-38-2t-31-15-1m-2w-2p-37-14-2j-2s-2p-38-2p-19-37-2x-2s-2t-2q-2p-36-1p-y-31-2t-32-39-19-2p-2r-38-2x-33-32-y-2l-15-w-16]) {
