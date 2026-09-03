@@ -3,7 +3,8 @@
     "demo": {
       "commandName": "Project",
       "applicationUrl": "http://localhost:5177",
-      "environmentVariables": { "ASPNETCORE_ENVIRONMENT": "Development" }
+      "environmentVariables": { "ASPNETCORE_ENVIRONMENT": "Development" },
+      "hotReloadEnabled": true
     }
   }
 }

@@ -76,9 +76,14 @@
 
 </html>
 
+@inject Microsoft.AspNetCore.Hosting.IWebHostEnvironment HostEnvironment
+
 @code {
-    // One value per build, so a bumped demo never runs on yesterday's stylesheet or script --
-    // the "component is broken" reports that were actually a cached app.css were this.
-    static readonly string Stamp =
-        typeof(App).Assembly.ManifestModule.ModuleVersionId.ToString("N")[..8];
+    // Production: một giá trị mỗi build để không bao giờ chạy trên stylesheet/script cached.
+    // Development (dotnet watch hot reload): hot reload không rebuild assembly nên
+    // ModuleVersionId đứng yên -> browser cache app.css/ui.js cũ và bạn tưởng "sửa không ăn".
+    // Dùng tick hiện tại để mỗi request hot-reload ép browser fetch lại file mới.
+    string Stamp => HostEnvironment.IsDevelopment()
+        ? DateTime.UtcNow.Ticks.ToString("x")
+        : typeof(App).Assembly.ManifestModule.ModuleVersionId.ToString("N")[..8];
 }

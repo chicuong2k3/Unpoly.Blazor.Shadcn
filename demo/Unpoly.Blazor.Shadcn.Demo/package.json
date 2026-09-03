@@ -2,7 +2,8 @@
   "name": "unpoly-blazor-shadcn-demo",
   "private": true,
   "scripts": {
-    "css": "tailwindcss -i ./Styles/app.css -o ./wwwroot/app.css && node ../../tools/postcss-oklab.cjs ./wwwroot/app.css"
+    "css": "tailwindcss -i ./Styles/app.css -o ./wwwroot/app.css && node ../../tools/postcss-oklab.cjs ./wwwroot/app.css",
+    "css:watch": "tailwindcss -i ./Styles/app.css -o ./wwwroot/app.css --watch"
   },
   "devDependencies": {
     "@tailwindcss/cli": "^4.1.0",

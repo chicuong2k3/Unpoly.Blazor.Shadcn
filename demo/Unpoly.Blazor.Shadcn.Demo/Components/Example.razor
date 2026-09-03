@@ -40,6 +40,8 @@
     </TabsContent>
 </Tabs>
 
+@inject Microsoft.AspNetCore.Hosting.IWebHostEnvironment HostEnvironment
+
 @code {
     /// <summary>File name of the sample, e.g. "ButtonVariants.razor".</summary>
     [Parameter, EditorRequired] public string Source { get; set; } = default!;
@@ -60,7 +62,26 @@
 
     protected override void OnParametersSet()
     {
-        var path = Path.Combine(AppContext.BaseDirectory, "samples", Source);
+        // Hot reload (`dotnet watch`) không chạy lại target CopySamples, nên đọc từ
+        // BaseDirectory/samples sẽ hiện source cũ dù preview đã đổi. Trong Development,
+        // đọc thẳng file nguồn để tab Code luôn khớp preview mà không cần rebuild.
+        // Production (publish) vẫn dùng samples/ đã copy như cũ.
+        string? devPath = null;
+        if (HostEnvironment.IsDevelopment())
+        {
+            var root = HostEnvironment.ContentRootPath;
+            var candidate = Path.Combine(root, "Components", "Examples", Source);
+            if (File.Exists(candidate))
+                devPath = candidate;
+            else
+            {
+                candidate = Path.Combine(root, "Components", "Blocks", Source);
+                if (File.Exists(candidate))
+                    devPath = candidate;
+            }
+        }
+
+        var path = devPath ?? Path.Combine(AppContext.BaseDirectory, "samples", Source);
         SourceText = File.Exists(path)
             ? Trim(File.ReadAllText(path))
             : $"(sample not found: samples/{Source} — is it under Components/Examples?)";

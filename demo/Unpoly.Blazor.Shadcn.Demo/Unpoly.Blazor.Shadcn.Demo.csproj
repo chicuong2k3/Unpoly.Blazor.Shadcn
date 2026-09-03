@@ -48,7 +48,10 @@
     <Exec Command="npm install" />
   </Target>
 
-  <Target Name="Tailwind" BeforeTargets="BeforeBuild" Condition="'$(SkipTailwind)' != 'true'">
+  <!-- Hot reload: khi `dotnet watch` chạy, Tailwind do `npm run css:watch` lo ở terminal
+       riêng. Chạy lại Tailwind trong mỗi lần watch rebuild vừa chậm vừa giật preview,
+       nên target này nghỉ khi DotNetWatchBuild=true. Build/publish thường vẫn chạy. -->
+  <Target Name="Tailwind" BeforeTargets="BeforeBuild" Condition="'$(SkipTailwind)' != 'true' And '$(DotNetWatchBuild)' != 'true'">
     <Exec Command="npm run css" />
   </Target>
 
