@@ -462,19 +462,19 @@
   }
   .container {
     width: 100%;
-    @media (width >= 40rem) {
+    @media (min-width: 40rem) {
       max-width: 40rem;
     }
-    @media (width >= 48rem) {
+    @media (min-width: 48rem) {
       max-width: 48rem;
     }
-    @media (width >= 64rem) {
+    @media (min-width: 64rem) {
       max-width: 64rem;
     }
-    @media (width >= 80rem) {
+    @media (min-width: 80rem) {
       max-width: 80rem;
     }
-    @media (width >= 96rem) {
+    @media (min-width: 96rem) {
       max-width: 96rem;
     }
   }
@@ -4408,7 +4408,7 @@
   .nth-last-2\:-mt-1:nth-last-child(2) {
     margin-top: calc(var(--spacing) * -1);
   }
-  @media (width >= 40rem) {
+  @media (min-width: 40rem) {
     .sm\:\!inset-auto {
       inset: auto !important;
     }
@@ -4516,7 +4516,7 @@
       max-width: var(--container-lg);
     }
   }
-  @media (width >= 48rem) {
+  @media (min-width: 48rem) {
     .md\:col-span-2 {
       grid-column: span 2 / span 2;
     }
@@ -4599,7 +4599,7 @@
       display: none;
     }
   }
-  @media (width >= 64rem) {
+  @media (min-width: 64rem) {
     .lg\:order-last {
       order: 9999;
     }

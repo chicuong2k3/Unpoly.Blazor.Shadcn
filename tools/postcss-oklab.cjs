@@ -26,7 +26,36 @@ if (!inFile) {
 }
 
 const css = fs.readFileSync(inFile, "utf8");
-postcss([oklab({ preserve: true })])
+
+// Safari 15 has no media-query range syntax (16.4+). Tailwind v4 emits
+// `@media (width >= 40rem)`, which old WebKit drops whole — every md:/lg:/
+// xl:/2xl: breakpoint dies and the page stops responding to screen width.
+// Tailwind's max-* variant would emit `width < X`; none are in the source
+// today, but the case is handled the same way lightningcss does: an open
+// bound becomes a max-width just under the value.
+const downlevelRanges = (text) =>
+  text
+    .replace(/\(\s*width\s*>=\s*([^\s)]+)\s*\)/g, "(min-width: $1)")
+    .replace(/\(\s*([^\s)]+)\s*<=\s*width\s*\)/g, "(min-width: $1)")
+    .replace(/\(\s*width\s*<\s*([^\s)]+)\s*\)/g, (match, value) => {
+      const parsed = parseFloat(value);
+      const unit = String(value).replace(/^-?[\d.]+/, "") || "px";
+      if (Number.isNaN(parsed)) return match;
+      return `(max-width: ${parsed - 0.02}${unit})`;
+    });
+
+postcss([
+  {
+    postcssPlugin: "safari15-media-ranges",
+    AtRule: {
+      media(atRule) {
+        const next = downlevelRanges(atRule.params);
+        if (next !== atRule.params) atRule.params = next;
+      },
+    },
+  },
+  oklab({ preserve: true }),
+])
   .process(css, { from: inFile })
   .then((result) => {
     for (const w of result.warnings()) {

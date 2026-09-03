@@ -90,11 +90,14 @@ app.MapPost("/uploads", async (HttpRequest request) =>
 }).DisableAntiforgery();
 
 // The vendored Unpoly bundle ends with sourceMappingURL comments but its NuGet
-// package ships no .map files, so Safari logs a 404 for each on every load.
-// Answer empty: maps are a devtools-only aid and there is nothing to map to.
-// (The proper fix belongs upstream — ship the maps or strip the comments.)
+// package ships no .map files. A 404 or an empty body both make the browser
+// log a warning, so serve a valid empty map instead: parses cleanly, maps
+// nothing, silences the noise. (The proper fix belongs upstream — ship the
+// maps or strip the comments.)
 foreach (var map in new[] { "unpoly.min.js.map", "unpoly.min.css.map" })
-    app.MapGet($"_content/Unpoly.Blazor/{map}", () => Results.NoContent());
+    app.MapGet($"_content/Unpoly.Blazor/{map}",
+        () => Results.Text("""{"version":3,"sources":[],"names":[],"mappings":""}""",
+            "application/json"));
 
 app.Run();
 

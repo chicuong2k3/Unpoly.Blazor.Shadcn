@@ -635,7 +635,7 @@
   }
 }
 
-@media (width >= 40rem) {
+@media (min-width: 40rem) {
 @layer utilities {
 .js-has-pseudo .sm\:group-data-\[size\=default\]\/alert-dialog-content\:group-has-data-\[slot\=alert-dialog-media\]\/alert-dialog-content\:col-start-2:is(:where(.group\/alert-dialog-content)[data-size="default"] *):is([csstools-has-1m-3b-2w-2t-36-2t-14-1a-2v-36-33-39-34-2k-1b-2p-30-2t-36-38-19-2s-2x-2p-30-33-2v-19-2r-33-32-38-2t-32-38-15-1m-2w-2p-37-14-2j-2s-2p-38-2p-19-37-30-33-38-1p-y-2p-30-2t-36-38-19-2s-2x-2p-30-33-2v-19-31-2t-2s-2x-2p-y-2l-15-w-16]) {
       grid-column-start: 2;
@@ -643,7 +643,7 @@
 }
 }
 
-@media (width >= 40rem) {
+@media (min-width: 40rem) {
 @layer utilities {
 .js-has-pseudo [csstools-has-1a-37-31-2k-1m-2v-36-33-39-34-19-2s-2p-38-2p-19-2k-2j-37-2x-3e-2t-2k-1p-2s-2t-2u-2p-39-30-38-2k-2l-2k-1b-2p-30-2t-36-38-19-2s-2x-2p-30-33-2v-19-2r-33-32-38-2t-32-38-2k-1m-2w-2p-37-19-2s-2p-38-2p-19-2k-2j-37-30-33-38-2k-1p-2p-30-2t-36-38-19-2s-2x-2p-30-33-2v-19-31-2t-2s-2x-2p-2k-2l-2k-1m-2v-36-2x-2s-19-36-33-3b-37-19-2k-2j-2p-39-38-33-2n-1d-2u-36-2k-2l-1m-2x-37-14-1m-3b-2w-2t-36-2t-14-1a-2v-36-33-39-34-2k-1b-2p-30-2t-36-38-19-2s-2x-2p-30-33-2v-19-2r-33-32-38-2t-32-38-15-2j-2s-2p-38-2p-19-37-2x-3e-2t-1p-y-2s-2t-2u-2p-39-30-38-y-2l-w-16-15-1m-2w-2p-37-14-2j-2s-2p-38-2p-19-37-30-33-38-1p-y-2p-30-2t-36-38-19-2s-2x-2p-30-33-2v-19-31-2t-2s-2x-2p-y-2l-15]:not(.does-not-exist):not(.does-not-exist) {
       grid-template-rows: auto 1fr;
