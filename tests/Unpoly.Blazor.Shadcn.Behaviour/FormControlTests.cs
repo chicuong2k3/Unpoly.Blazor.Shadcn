@@ -25,7 +25,7 @@ public class FormControlTests(DemoFixture fixture) : DemoPage(fixture)
         var box = await ShowAsync("preview-select-basic");
         await box.Locator("[data-slot=\"select-trigger\"]").ClickAsync();
         await Page.WaitForTimeoutAsync(300);
-        await Page.Locator("[data-slot=\"select-content\"]:popover-open [data-slot=\"select-item\"]").Nth(2).ClickAsync();
+        await OpenPopoverLocator("[data-slot=\"select-content\"]:popover-open [data-slot=\"select-item\"]").Nth(2).ClickAsync();
         await Page.WaitForTimeoutAsync(300);
 
         var state = await Page.EvaluateAsync<string>("""

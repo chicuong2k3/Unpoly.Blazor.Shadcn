@@ -1,11 +1,14 @@
 <!DOCTYPE html>
-<html lang="en">
+<!-- js-has-pseudo scopes the Safari 15 :has() fallbacks (see App.razor in the
+     web head for why it must stay). -->
+<html lang="en" class="js-has-pseudo">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
     <title>Unpoly.Blazor.Shadcn.Maui</title>
     <base href="/" />
     <link rel="stylesheet" href="app.css" />
+    <link rel="stylesheet" href="_content/Unpoly.Blazor.Shadcn/ui.safari15.css" />
     <link rel="stylesheet" href="_content/Unpoly.Blazor.Shadcn/toastify/toastify.css" />
     <link rel="stylesheet" href="_content/Unpoly.Blazor.Shadcn/airdatepicker/air-datepicker.css" />
     <link rel="stylesheet" href="_content/Unpoly.Blazor.Shadcn/prism/prism.css" />
@@ -23,6 +26,13 @@
             if (localStorage.getItem('demo-dark') === '1') document.documentElement.classList.add('dark');
         })();
     </script>
+
+    <!-- Safari 15 compat: ES2023 shims + Popover API polyfill, both feature-detected.
+         Must load BEFORE unpoly.min.js so the polyfilled APIs exist when Unpoly initialises. -->
+    <script src="_content/Unpoly.Blazor.Shadcn/compat/safari15-shim.js"></script>
+    <script src="_content/Unpoly.Blazor.Shadcn/compat/popover.iife.min.js"></script>
+    <script src="_content/Unpoly.Blazor.Shadcn/compat/css-has-pseudo.js"></script>
+    <script src="_content/Unpoly.Blazor.Shadcn/compat/has-pseudo-boot.js"></script>
 
     <!-- Unpoly is here for exactly one thing: `up.compiler`, which is the whole API surface
          ui.js uses (29 registrations plus two `up.on`). Its navigation is NOT wanted — Blazor's

@@ -314,7 +314,7 @@
         overflow: visible;
         position: fixed;
     }
-    [popover]:popover-open { animation: sh-dialog-in 120ms ease-out; }
+    [popover]:is(:popover-open, .\:popover-open) { animation: sh-dialog-in 120ms ease-out; }
 
     /* ---- Tooltip --------------------------------------------------------------------- */
     /* Visible when it is OPEN, not when one particular attribute says so. The tooltip
@@ -338,7 +338,7 @@
        zoom, sliding in from whichever side it ENDED UP on. */
     [data-slot="tooltip-content"] { opacity: 0; transition: opacity 120ms ease-out; }
     [data-slot="tooltip-content"][data-state="delayed-open"],
-    [data-slot="tooltip-content"]:popover-open {
+    [data-slot="tooltip-content"]:is(:popover-open, .\:popover-open) {
         opacity: 1;
         animation: sh-tip-in 150ms var(--ease-ui, cubic-bezier(0.16, 1, 0.3, 1));
     }
@@ -353,7 +353,7 @@
     }
 
     /* The hover card carries the same dead plugin classes, and the same keyframe answers them. */
-    [data-slot="hover-card-content"]:popover-open {
+    [data-slot="hover-card-content"]:is(:popover-open, .\:popover-open) {
         animation: sh-tip-in 150ms var(--ease-ui, cubic-bezier(0.16, 1, 0.3, 1));
     }
     [data-slot="hover-card-content"][data-placed-side="top"] { --sh-tip-from: 0 0.5rem; }

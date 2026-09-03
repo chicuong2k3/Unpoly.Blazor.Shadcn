@@ -3,7 +3,11 @@
    theme applied after first paint is a flash of the wrong one, and no amount of transition
    hides it. *@
 <!DOCTYPE html>
-<html lang="en">
+@* js-has-pseudo scopes the Safari 15 :has() fallbacks in ui.safari15.css: the
+   css-has-pseudo runtime maintains the attributes it watches, but only under
+   this ancestor. Inert everywhere else — modern engines never set those
+   attributes, so the fallback rules match nothing there. *@
+<html lang="en" class="js-has-pseudo">
 
 <head>
     <UpChrome>
@@ -23,6 +27,7 @@
         <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Architects+Daughter&family=Geist:wght@400;500;600&family=Geist+Mono&family=Inter:wght@400;500;600&family=JetBrains+Mono&family=Outfit:wght@400;500;600&display=swap" />
 
         <link rel="stylesheet" href="@($"app.css?v={Stamp}")" />
+        <link rel="stylesheet" href="_content/Unpoly.Blazor.Shadcn/ui.safari15.css" />
         <link rel="stylesheet" href="_content/Unpoly.Blazor.Shadcn/toastify/toastify.css" />
         <link rel="stylesheet" href="_content/Unpoly.Blazor.Shadcn/prism/prism.css" />
         <link rel="stylesheet" href="_content/Unpoly.Blazor.Shadcn/prism/prism-line-numbers.css" />
@@ -46,6 +51,17 @@
         <script src="@($"_content/Unpoly.Blazor.Shadcn.ECharts/echarts.js?v={Stamp}")" defer></script>
         <script src="@($"_content/Unpoly.Blazor.Shadcn.Maps/map/map.js?v={Stamp}")" defer></script>
         <script src="@($"demo.js?v={Stamp}")" defer></script>
+
+        @* Safari 15 compat: ES2023 shims + Popover API polyfill, both feature-detected.
+           Deliberately NOT deferred: <UnpolyHead /> emits unpoly.min.js as a parser-blocking
+           script, which executes before any deferred script. A deferred shim would run too
+           late — Unpoly calls .toReversed() during its own boot. These two are tiny (2.3KB +
+           11KB) and exit immediately on modern browsers, so blocking parse here costs nothing
+           measurable and guarantees the APIs exist before every other script runs. *@
+        <script src="@($"_content/Unpoly.Blazor.Shadcn/compat/safari15-shim.js?v={Stamp}")"></script>
+        <script src="@($"_content/Unpoly.Blazor.Shadcn/compat/popover.iife.min.js?v={Stamp}")"></script>
+        <script src="@($"_content/Unpoly.Blazor.Shadcn/compat/css-has-pseudo.js?v={Stamp}")"></script>
+        <script src="@($"_content/Unpoly.Blazor.Shadcn/compat/has-pseudo-boot.js?v={Stamp}")"></script>
 
         <UnpolyHead />
     </UpChrome>

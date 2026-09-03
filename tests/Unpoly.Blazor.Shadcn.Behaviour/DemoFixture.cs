@@ -69,6 +69,13 @@ public class DemoFixture : IAsyncLifetime
         {
             ViewportSize = new ViewportSize { Width = width, Height = height },
         });
+
+        if (Safari15Sim)
+        {
+            var stub = Safari15StubPath();
+            await page.AddInitScriptAsync(File.ReadAllText(stub));
+        }
+
         return page;
     }
 
@@ -185,6 +192,28 @@ public class DemoFixture : IAsyncLifetime
 
     static string? Env(string name) =>
         Environment.GetEnvironmentVariable(name) is { Length: > 0 } value ? value : null;
+
+    /// <summary>
+    /// Safari 15 simulation: the stub removes APIs the polyfill then restores,
+    /// so the suite exercises the compat path. Off by default; modern runs are
+    /// untouched.
+    /// </summary>
+    internal static bool Safari15Sim => Env("SAFARI15_SIM") is not null;
+
+    /// <summary>
+    /// Finds safari15-stub.js by walking up from the test assembly toward the repository root.
+    /// </summary>
+    static string Safari15StubPath()
+    {
+        var here = new DirectoryInfo(AppContext.BaseDirectory);
+        for (var dir = here; dir is not null; dir = dir.Parent)
+        {
+            var candidate = Path.Combine(dir.FullName, "safari15-stub.js");
+            if (File.Exists(candidate)) return candidate;
+        }
+        throw new FileNotFoundException(
+            "safari15-stub.js not found; ensure it exists beside the behaviour test sources");
+    }
 }
 
 /// <summary>

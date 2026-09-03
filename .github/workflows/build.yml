@@ -91,6 +91,14 @@ jobs:
       - name: Icons are current
         run: python tools/gen_icons.py --check
 
+      # The built CSS is committed, but regenerate it so the check always sees the
+      # actual output of the current source rather than a stale build artifact.
+      - name: Safari 15 CSS compatibility
+        run: |
+          npm run css --prefix demo/Unpoly.Blazor.Shadcn.Demo
+          python tools/safari15_check.py
+          python tools/gen_has_fallback.py --check
+
       - run: dotnet build --configuration Release
 
       # The behaviour suite drives a real browser against the real demo, and skips rather than

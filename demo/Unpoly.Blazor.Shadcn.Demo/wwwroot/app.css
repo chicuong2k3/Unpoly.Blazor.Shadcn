@@ -5659,14 +5659,14 @@
     overflow: visible;
     position: fixed;
   }
-  [popover]:popover-open {
+  [popover]:is(:popover-open, .\:popover-open) {
     animation: sh-dialog-in 120ms ease-out;
   }
   [data-slot="tooltip-content"] {
     opacity: 0;
     transition: opacity 120ms ease-out;
   }
-  [data-slot="tooltip-content"][data-state="delayed-open"], [data-slot="tooltip-content"]:popover-open {
+  [data-slot="tooltip-content"][data-state="delayed-open"], [data-slot="tooltip-content"]:is(:popover-open, .\:popover-open) {
     opacity: 1;
     animation: sh-tip-in 150ms var(--ease-ui, cubic-bezier(0.16, 1, 0.3, 1));
   }
@@ -5694,7 +5694,7 @@
       translate: 0 0;
     }
   }
-  [data-slot="hover-card-content"]:popover-open {
+  [data-slot="hover-card-content"]:is(:popover-open, .\:popover-open) {
     animation: sh-tip-in 150ms var(--ease-ui, cubic-bezier(0.16, 1, 0.3, 1));
   }
   [data-slot="hover-card-content"][data-placed-side="top"] {

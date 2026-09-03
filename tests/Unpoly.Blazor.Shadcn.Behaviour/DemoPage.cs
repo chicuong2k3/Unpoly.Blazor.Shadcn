@@ -60,6 +60,18 @@ public abstract class DemoPage(DemoFixture fixture) : IAsyncLifetime
         return box;
     }
 
+    /// <summary>
+    /// A locator over open popovers. Playwright evaluates locators in the native
+    /// selector engine, which never matches the polyfill's class fallback — so
+    /// under SAFARI15_SIM the bare pseudo-class is rewritten to it. Anywhere
+    /// else the selector passes through untouched.
+    /// </summary>
+    protected ILocator OpenPopoverLocator(string selector) =>
+        Page.Locator(DemoFixture.Safari15Sim
+            ? System.Text.RegularExpressions.Regex.Replace(
+                selector, @"(?<!\\):popover-open", @".\:popover-open")
+            : selector);
+
     /// <summary>Nothing in the console. Called by every test, last.</summary>
     protected void AssertQuiet()
     {
