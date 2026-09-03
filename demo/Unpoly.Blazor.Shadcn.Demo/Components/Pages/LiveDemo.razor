@@ -1,0 +1,244 @@
+@page "/live-demo"
+
+<PageTitle>Live Demo — Unpoly.Blazor.Shadcn</PageTitle>
+
+<Breadcrumb>
+    <BreadcrumbList>
+        <BreadcrumbItem>
+            <BreadcrumbLink Href="/">Home</BreadcrumbLink>
+        </BreadcrumbItem>
+        <BreadcrumbSeparator />
+        <BreadcrumbItem>
+            <BreadcrumbPage>Live Demo</BreadcrumbPage>
+        </BreadcrumbItem>
+    </BreadcrumbList>
+</Breadcrumb>
+
+<div class="mt-4 flex flex-wrap items-start justify-between gap-4">
+    <div>
+        <h1 class="doc-h1">Live Demo</h1>
+        <p class="doc-lede">
+            Trang mẫu dựng hoàn toàn từ component của thư viện, biên tập live qua hot reload.
+        </p>
+    </div>
+    <div class="flex items-center gap-2">
+        <DialogTrigger Target="live-dialog" Variant="default" Size="default">
+            Mở dialog
+        </DialogTrigger>
+        <DropdownMenu>
+            <DropdownMenuTrigger Target="live-menu" Variant="outline" Size="default">
+                Hành động
+            </DropdownMenuTrigger>
+            <DropdownMenuContent Id="live-menu" Align="end">
+                <DropdownMenuLabel>Tài liệu</DropdownMenuLabel>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem Href="/components/button">Button</DropdownMenuItem>
+                <DropdownMenuItem Href="/components/card">Card</DropdownMenuItem>
+                <DropdownMenuItem Href="/blocks">Blocks</DropdownMenuItem>
+            </DropdownMenuContent>
+        </DropdownMenu>
+    </div>
+</div>
+
+<Dialog Id="live-dialog" Size="default" Dismissable="true">
+    <DialogHeader>
+        <DialogTitle>Dialog chuẩn</DialogTitle>
+        <DialogDescription>
+            Thẻ &lt;dialog&gt; native, mở bằng compiler trong ui.js — không portal, không state client.
+        </DialogDescription>
+    </DialogHeader>
+    <DialogFooter>
+        <DialogClose Variant="outline" Size="default">Đóng</DialogClose>
+    </DialogFooter>
+</Dialog>
+
+<div class="mt-6 grid gap-4 md:grid-cols-3">
+    <Card>
+        <CardHeader>
+            <div class="flex items-center gap-3">
+                <div class="flex h-10 w-10 items-center justify-center rounded-lg bg-violet-100 text-violet-700">
+                    <Icon Name="layers" Title="Components" />
+                </div>
+                <div>
+                    <CardTitle>Components</CardTitle>
+                    <CardDescription>Metadata sinh từ source.</CardDescription>
+                </div>
+            </div>
+        </CardHeader>
+        <CardContent>
+            <p class="text-3xl font-semibold tracking-tight">301</p>
+            <p class="mt-1 text-sm font-medium text-emerald-600">+12 tuần này</p>
+        </CardContent>
+    </Card>
+    <Card>
+        <CardHeader>
+            <div class="flex items-center gap-3">
+                <div class="flex h-10 w-10 items-center justify-center rounded-lg bg-sky-100 text-sky-700">
+                    <Icon Name="layout-grid" Title="Blocks" />
+                </div>
+                <div>
+                    <CardTitle>Blocks</CardTitle>
+                    <CardDescription>Kèm wiring Unpoly.</CardDescription>
+                </div>
+            </div>
+        </CardHeader>
+        <CardContent>
+            <p class="text-3xl font-semibold tracking-tight">26</p>
+            <p class="mt-1 text-sm font-medium text-sky-600">Đủ dựng cả app</p>
+        </CardContent>
+    </Card>
+    <Card>
+        <CardHeader>
+            <div class="flex items-center gap-3">
+                <div class="flex h-10 w-10 items-center justify-center rounded-lg bg-amber-100 text-amber-700">
+                    <Icon Name="palette" Title="Themes" />
+                </div>
+                <div>
+                    <CardTitle>Themes</CardTitle>
+                    <CardDescription>Token runtime.</CardDescription>
+                </div>
+            </div>
+        </CardHeader>
+        <CardContent>
+            <p class="text-3xl font-semibold tracking-tight">50+</p>
+            <p class="mt-1 text-sm font-medium text-amber-600">Đổi không rebuild</p>
+        </CardContent>
+    </Card>
+</div>
+
+<div class="mt-6 grid gap-4 lg:grid-cols-5">
+    <Card Class="lg:col-span-3">
+        <CardHeader>
+            <CardTitle>Danh sách</CardTitle>
+            <CardDescription>Form GET, URL là state — đúng pattern DataTableBlock.</CardDescription>
+        </CardHeader>
+        <CardContent>
+            <form method="get" action="/live-demo" up-target="[data-live-list]" up-autosubmit>
+                <div class="flex flex-wrap items-center gap-3">
+                    <Input Type="search" name="q" placeholder="Tìm theo tên…" />
+                    <Select name="status">
+                        <SelectItem Value="all">Tất cả</SelectItem>
+                        <SelectItem Value="active">Đang chạy</SelectItem>
+                        <SelectItem Value="idle">Đang nghỉ</SelectItem>
+                    </Select>
+                    <Button Type="submit" Variant="default">Lọc</Button>
+                </div>
+            </form>
+            <div data-live-list class="mt-4">
+                <Table>
+                    <TableHeader>
+                        <TableRow>
+                            <TableHead>Công việc</TableHead>
+                            <TableHead>Trạng thái</TableHead>
+                            <TableHead>Tiến độ</TableHead>
+                        </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                        <TableRow>
+                            <TableCell>Hot reload</TableCell>
+                            <TableCell><Badge Variant="default">Đang chạy</Badge></TableCell>
+                            <TableCell><Progress Value="90" /></TableCell>
+                        </TableRow>
+                        <TableRow>
+                            <TableCell>Tailwind watch</TableCell>
+                            <TableCell><Badge Variant="secondary">Ổn định</Badge></TableCell>
+                            <TableCell><Progress Value="70" /></TableCell>
+                        </TableRow>
+                        <TableRow>
+                            <TableCell>Stitch bridge</TableCell>
+                            <TableCell><Badge Variant="outline">Sắp làm</Badge></TableCell>
+                            <TableCell><Progress Value="20" /></TableCell>
+                        </TableRow>
+                    </TableBody>
+                </Table>
+            </div>
+        </CardContent>
+    </Card>
+
+    <div class="flex flex-col gap-4 lg:col-span-2">
+        <Card>
+            <CardHeader>
+                <CardTitle>Hoạt động gần đây</CardTitle>
+                <CardDescription>ItemGroup + Avatar + Badge.</CardDescription>
+            </CardHeader>
+            <CardContent>
+                <ItemGroup>
+                    <Item>
+                        <ItemMedia>
+                            <Avatar Size="sm"><AvatarFallback Class="bg-violet-100 text-violet-700">HR</AvatarFallback></Avatar>
+                        </ItemMedia>
+                        <ItemContent>
+                            <ItemTitle>Hot reload pass</ItemTitle>
+                            <ItemDescription>Sửa razor, preview đổi không restart.</ItemDescription>
+                        </ItemContent>
+                        <ItemActions><Badge Variant="default">Mới</Badge></ItemActions>
+                    </Item>
+                    <Item>
+                        <ItemMedia>
+                            <Avatar Size="sm"><AvatarFallback Class="bg-emerald-100 text-emerald-700">TW</AvatarFallback></Avatar>
+                        </ItemMedia>
+                        <ItemContent>
+                            <ItemTitle>Tailwind tách watcher riêng</ItemTitle>
+                            <ItemDescription>css:watch chạy terminal riêng.</ItemDescription>
+                        </ItemContent>
+                        <ItemActions><Badge Variant="secondary">Xong</Badge></ItemActions>
+                    </Item>
+                    <Item>
+                        <ItemMedia>
+                            <Avatar Size="sm"><AvatarFallback Class="bg-amber-100 text-amber-700">ST</AvatarFallback></Avatar>
+                        </ItemMedia>
+                        <ItemContent>
+                            <ItemTitle>Stitch bridge</ItemTitle>
+                            <ItemDescription>Dịch mẫu Stitch sang component.</ItemDescription>
+                        </ItemContent>
+                        <ItemActions><Badge Variant="outline">Chờ</Badge></ItemActions>
+                    </Item>
+                </ItemGroup>
+            </CardContent>
+        </Card>
+
+        <Card>
+            <CardHeader>
+                <CardTitle>Tùy chọn xem</CardTitle>
+            </CardHeader>
+            <CardContent>
+                <div class="flex items-center justify-between gap-4 py-2">
+                    <Label>Hiện số liệu chi tiết</Label>
+                    <Switch name="show-stats" />
+                </div>
+                <Separator />
+                <div class="flex items-center justify-between gap-4 py-2">
+                    <Label>Tự reload khi có bản mới</Label>
+                    <Switch name="auto-reload" />
+                </div>
+                <Separator />
+                <div class="flex items-center justify-between gap-4 py-2">
+                    <Label>Chế độ tối</Label>
+                    <Switch name="dark" Size="sm" />
+                </div>
+            </CardContent>
+        </Card>
+    </div>
+</div>
+
+<h2 class="doc-h2">Tabs</h2>
+<Tabs Value="xem-truoc" Class="mt-4">
+    <TabsList>
+        <TabsTrigger Value="xem-truoc">Xem trước</TabsTrigger>
+        <TabsTrigger Value="ghi-chu">Ghi chú</TabsTrigger>
+    </TabsList>
+    <TabsContent Value="xem-truoc">
+        <Alert Variant="default">
+            <AlertTitle>Panel hidden vẫn post được</AlertTitle>
+            <AlertDescription>Tab không active dùng <code>hidden</code> nên field bên trong vẫn submit.</AlertDescription>
+        </Alert>
+    </TabsContent>
+    <TabsContent Value="ghi-chu" Hidden>
+        <div class="flex items-start gap-3 rounded-lg bg-sky-50 p-4 text-sky-900">
+            <Icon Name="info" Title="Info" />
+            <p class="text-sm">Màu bệt theo ngữ nghĩa: tím = xây dựng, xanh dương = thông tin, hổ phách = chờ đợi, lục = xong.</p>
+        </div>
+    </TabsContent>
+</Tabs>
+
+<Separator Class="my-8" />

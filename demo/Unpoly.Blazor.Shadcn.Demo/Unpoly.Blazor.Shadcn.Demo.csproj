@@ -49,9 +49,11 @@
   </Target>
 
   <!-- Hot reload: khi `dotnet watch` chạy, Tailwind do `npm run css:watch` lo ở terminal
-       riêng. Chạy lại Tailwind trong mỗi lần watch rebuild vừa chậm vừa giật preview,
-       nên target này nghỉ khi DotNetWatchBuild=true. Build/publish thường vẫn chạy. -->
-  <Target Name="Tailwind" BeforeTargets="BeforeBuild" Condition="'$(SkipTailwind)' != 'true' And '$(DotNetWatchBuild)' != 'true'">
+       riêng. Chạy lại Tailwind trong mỗi lần watch build vừa chậm vừa giật preview,
+       nên target này nghỉ dưới watch. `DotNetWatchBuild` là property watch truyền cho
+       mọi build nó kích hoạt; `DOTNET_WATCH` là env var watch đặt cho tiến trình con,
+       giữ lại làm dự phòng. Build/publish thường vẫn chạy. -->
+  <Target Name="Tailwind" BeforeTargets="BeforeBuild" Condition="'$(SkipTailwind)' != 'true' And '$(DotNetWatchBuild)' != 'true' And '$(DOTNET_WATCH)' != '1'">
     <Exec Command="npm run css" />
   </Target>
 
