@@ -79,8 +79,8 @@ jobs:
           done
           echo "demo did not start"; tail -40 demo.log; exit 1
 
-      - name: Run the real-engine probe
-        run: xvfb-run -a python3 tests/safari-real/webkitgtk_probe.py http://127.0.0.1:8080 results
+      - name: Run the real-engine probe (C#)
+        run: xvfb-run -a dotnet run --project tests/SafariReal/SafariReal.csproj -c Release --no-build -- http://127.0.0.1:8080 results
 
       - name: Show the verdict in the log
         if: always()
