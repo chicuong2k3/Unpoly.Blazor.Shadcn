@@ -99,7 +99,16 @@ jobs:
           dotnet run --project tools/Unpoly.Blazor.Shadcn.Tools --configuration Release --no-build -- safari15-check
           dotnet run --project tools/Unpoly.Blazor.Shadcn.Tools --configuration Release --no-build -- gen-has-fallback --check
 
-      - run: dotnet build --configuration Release
+      # MAUI builds on Windows only (see AGENTS.md): this runner has no MAUI
+      # workloads, so CI builds every project except the MAUI head here.
+      - name: Build libraries, web demo and tests
+        run: |
+          dotnet build src/Unpoly.Blazor.Shadcn/Unpoly.Blazor.Shadcn.csproj --configuration Release
+          dotnet build src/Unpoly.Blazor.Shadcn.ECharts/Unpoly.Blazor.Shadcn.ECharts.csproj --configuration Release
+          dotnet build src/Unpoly.Blazor.Shadcn.Maps/Unpoly.Blazor.Shadcn.Maps.csproj --configuration Release
+          dotnet build demo/Unpoly.Blazor.Shadcn.Demo/Unpoly.Blazor.Shadcn.Demo.csproj --configuration Release
+          dotnet build tests/Unpoly.Blazor.Shadcn.Tests/Unpoly.Blazor.Shadcn.Tests.csproj --configuration Release
+          dotnet build tests/Unpoly.Blazor.Shadcn.Behaviour/Unpoly.Blazor.Shadcn.Behaviour.csproj --configuration Release
 
       # The behaviour suite drives a real browser against the real demo, and skips rather than
       # fails when there is none — so without this step it would go green having run nothing.
