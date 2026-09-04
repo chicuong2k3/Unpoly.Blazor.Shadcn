@@ -71,22 +71,7 @@ if (args.Contains("ladder"))
     }
     try
     {
-        var full =
-            "(function () {" +
-            " function cs(el, p) { return el ? getComputedStyle(el).getPropertyValue(p) : null; }" +
-            " var btn = document.querySelector('[data-slot=\"button\"]');" +
-            " return JSON.stringify({" +
-            "  booted: (typeof up !== 'undefined') ? up.version : null," +
-            "  bodyBg: cs(document.body, 'background-color')," +
-            "  bodyFg: cs(document.body, 'color')," +
-            "  btnBg: cs(btn, 'background-color')," +
-            "  primary: getComputedStyle(document.documentElement).getPropertyValue('--primary').trim()," +
-            "  background: getComputedStyle(document.documentElement).getPropertyValue('--background').trim()," +
-            "  mq640: matchMedia('(min-width: 640px)').matches," +
-            "  scrollWidth: document.documentElement.scrollWidth," +
-            "  innerWidth: window.innerWidth" +
-            " });" +
-            "})()";
+        var full = FullStateScript();
         var r = Nat.RunJavascriptAsync(view0, full, 10).GetAwaiter().GetResult();
         Console.Out.WriteLine($"LADDER full-state ok ({full.Length} chars) => {r[..Math.Min(120, r.Length)]}");
     }
@@ -96,8 +81,8 @@ if (args.Contains("ladder"))
     }
     // Phase 2: replicate the probe's exact pre-State sequence (ready+up poll,
     // 2s settle) to see whether page age, rather than script text, decides it.
-    var dl = DateTime.UtcNow.AddSeconds(30);
-    while (DateTime.UtcNow < dl)
+    var dl2 = DateTime.UtcNow.AddSeconds(30);
+    while (DateTime.UtcNow < dl2)
     {
         Nat.GtkMainIterationDo(false);
         Thread.Sleep(50);
@@ -112,7 +97,7 @@ if (args.Contains("ladder"))
     while (DateTime.UtcNow < end2) { Nat.GtkMainIterationDo(false); Thread.Sleep(5); }
     try
     {
-        var r2 = Nat.RunJavascriptAsync(view0, full, 10).GetAwaiter().GetResult();
+        var r2 = Nat.RunJavascriptAsync(view0, FullStateScript(), 10).GetAwaiter().GetResult();
         Console.Out.WriteLine($"LADDER aged-state ok => {r2[..Math.Min(100, r2.Length)]}");
     }
     catch (Exception ex)
@@ -121,6 +106,23 @@ if (args.Contains("ladder"))
     }
     Environment.Exit(0);
 }
+
+static string FullStateScript() =>
+    "(function () {" +
+    " function cs(el, p) { return el ? getComputedStyle(el).getPropertyValue(p) : null; }" +
+    " var btn = document.querySelector('[data-slot=\"button\"]');" +
+    " return JSON.stringify({" +
+    "  booted: (typeof up !== 'undefined') ? up.version : null," +
+    "  bodyBg: cs(document.body, 'background-color')," +
+    "  bodyFg: cs(document.body, 'color')," +
+    "  btnBg: cs(btn, 'background-color')," +
+    "  primary: getComputedStyle(document.documentElement).getPropertyValue('--primary').trim()," +
+    "  background: getComputedStyle(document.documentElement).getPropertyValue('--background').trim()," +
+    "  mq640: matchMedia('(min-width: 640px)').matches," +
+    "  scrollWidth: document.documentElement.scrollWidth," +
+    "  innerWidth: window.innerWidth" +
+    " });" +
+    "})()";
 
 Nat.GtkInit();
 
@@ -137,22 +139,7 @@ string Eval(string js, int timeoutS = 20)
     return task.Result;
 }
 
-string StateJson() => Eval(
-    "(function () {" +
-    " function cs(el, p) { return el ? getComputedStyle(el).getPropertyValue(p) : null; }" +
-    " var btn = document.querySelector('[data-slot=\"button\"]');" +
-    " return JSON.stringify({" +
-    "  booted: (typeof up !== 'undefined') ? up.version : null," +
-    "  bodyBg: cs(document.body, 'background-color')," +
-    "  bodyFg: cs(document.body, 'color')," +
-    "  btnBg: cs(btn, 'background-color')," +
-    "  primary: getComputedStyle(document.documentElement).getPropertyValue('--primary').trim()," +
-    "  background: getComputedStyle(document.documentElement).getPropertyValue('--background').trim()," +
-    "  mq640: matchMedia('(min-width: 640px)').matches," +
-    "  scrollWidth: document.documentElement.scrollWidth," +
-    "  innerWidth: window.innerWidth" +
-    " });" +
-    "})()");
+string StateJson() => Eval(FullStateScript());
 
 void LoadPage(string path, int settleMs)
 {
