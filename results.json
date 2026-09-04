@@ -1,0 +1,63 @@
+{
+  "engine": "WebKitGTK 2.36.0 (Safari 15.4 family)",
+  "baseUrl": "http://127.0.0.1:8080",
+  "passed": 11,
+  "failed": 0,
+  "asserts": [
+    {
+      "name": "unpoly-booted",
+      "ok": true,
+      "detail": "up.version=3.14.3"
+    },
+    {
+      "name": "body-has-background",
+      "ok": true,
+      "detail": "rgb(255, 255, 255)"
+    },
+    {
+      "name": "body-has-foreground",
+      "ok": true,
+      "detail": "rgb(10, 10, 10)"
+    },
+    {
+      "name": "token--primary-resolves",
+      "ok": true,
+      "detail": "rgb(23, 23, 23)"
+    },
+    {
+      "name": "token--background-resolves",
+      "ok": true,
+      "detail": "rgb(255, 255, 255)"
+    },
+    {
+      "name": "button-painted",
+      "ok": true,
+      "detail": "rgb(255, 255, 255)"
+    },
+    {
+      "name": "desktop-mq-640-applies",
+      "ok": true,
+      "detail": "mq640=True"
+    },
+    {
+      "name": "select-page-booted",
+      "ok": true,
+      "detail": "up.version=3.14.3"
+    },
+    {
+      "name": "select-panel-opens",
+      "ok": true,
+      "detail": "{\u0022state\u0022:null,\u0022display\u0022:\u0022block\u0022,\u0022items\u0022:59}"
+    },
+    {
+      "name": "mobile-no-horizontal-overflow",
+      "ok": true,
+      "detail": "scrollWidth=390 innerWidth=390"
+    },
+    {
+      "name": "mobile-mq-correctly-inactive",
+      "ok": true,
+      "detail": "mq640=False"
+    }
+  ]
+}
