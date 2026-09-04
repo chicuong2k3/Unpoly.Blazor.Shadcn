@@ -105,8 +105,14 @@ bool NonTransparent(string? v)
     return true;
 }
 
-JsonElement State() =>
-    JsonDocument.Parse(Eval(StateJson())).RootElement;
+JsonElement State()
+{
+    var raw = Eval(StateJson());
+    var doc = JsonDocument.Parse(raw);
+    if (doc.RootElement.ValueKind != JsonValueKind.Object)
+        throw new InvalidOperationException("STATE did not evaluate to an object: " + raw[..Math.Min(300, raw.Length)]);
+    return doc.RootElement;
+}
 
 static string Prop(JsonElement el, string name) =>
     el.TryGetProperty(name, out var v) && v.ValueKind == JsonValueKind.String
