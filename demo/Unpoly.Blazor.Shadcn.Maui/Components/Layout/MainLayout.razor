@@ -104,10 +104,10 @@
     </div>
 </header>
 
-<div class="mx-auto flex max-w-[1400px] gap-8 px-6">
+<div class="mx-auto flex max-w-[1400px] flex-col gap-8 px-6 lg:flex-row">
     @* Sticky under the header, which is 4rem tall and sticky itself. Same reason as the web
        head: without this the nav scrolls away and a reader three screens in has no way back. *@
-    <div class="doc-nav sticky top-16 hidden h-[calc(100dvh-4rem)] lg:block">
+        <div class="doc-nav top-16 block w-full lg:sticky lg:h-[calc(100dvh-4rem)] lg:w-auto">
         <DocNav />
     </div>
 
