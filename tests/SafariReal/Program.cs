@@ -69,6 +69,24 @@ if (args.Contains("ladder"))
             Console.Out.WriteLine($"LADDER FAIL: {s} => {ex.GetType().Name}: {ex.Message[..Math.Min(160, ex.Message.Length)]}");
         }
     }
+    try
+    {
+        var full =
+            "(function () {" +
+            " function cs(el, p) { return el ? getComputedStyle(el).getPropertyValue(p) : null; }" +
+            " var btn = document.querySelector('[data-slot=\"button\"]');" +
+            " return JSON.stringify({" +
+            "  booted: (typeof up !== 'undefined') ? up.version : null," +
+            "  bodyBg: cs(document.body, 'background-color')" +
+            " });" +
+            "})()";
+        var r = Nat.RunJavascriptAsync(view0, full, 10).GetAwaiter().GetResult();
+        Console.Out.WriteLine($"LADDER full-state ok ({full.Length} chars) => {r[..Math.Min(120, r.Length)]}");
+    }
+    catch (Exception ex)
+    {
+        Console.Out.WriteLine($"LADDER full-state FAIL: {ex.GetType().Name}: {ex.Message[..Math.Min(200, ex.Message.Length)]}");
+    }
     Environment.Exit(0);
 }
 
