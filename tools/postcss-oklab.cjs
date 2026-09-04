@@ -44,7 +44,24 @@ const downlevelRanges = (text) =>
       return `(max-width: ${parsed - 0.02}${unit})`;
     });
 
+const staticSrgbMixFallback = (value) => value.replace(
+  /color-mix\(in srgb,\s*(#[0-9a-f]{3,8}|rgb\(\s*\d+\s*,\s*\d+\s*,\s*\d+\s*\))\s+(\d+(?:\.\d+)?)%\s*,\s*transparent\)/gi,
+  (_, color, percentage) => {
+    const channels = color.startsWith('#')
+      ? color.replace(/^#/, '').match(/.{1,2}/g).map((channel) => parseInt(channel.length === 1 ? channel + channel : channel, 16))
+      : color.match(/\d+/g).map(Number);
+    const alpha = Number(percentage) / 100;
+    return `rgba(${channels.slice(0, 3).join(', ')}, ${alpha})`;
+  },
+);
+
 postcss([
+  {
+    postcssPlugin: "safari15-static-color-mix",
+    Declaration(decl) {
+      decl.value = staticSrgbMixFallback(decl.value);
+    },
+  },
   {
     postcssPlugin: "safari15-media-ranges",
     AtRule: {

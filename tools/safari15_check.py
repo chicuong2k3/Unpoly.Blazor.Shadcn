@@ -39,6 +39,8 @@ COLOR_MIX_ALLOWLIST = [
     ".bg-black\\/60",
     ".dark\\:bg-amber-950\\/40",
     ".dark\\:bg-destructive\\/20",
+    ".bg-amber-400\\/15",
+    ".bg-sky-400\\/15",
 ]
 
 
