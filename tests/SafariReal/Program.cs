@@ -77,7 +77,14 @@ if (args.Contains("ladder"))
             " var btn = document.querySelector('[data-slot=\"button\"]');" +
             " return JSON.stringify({" +
             "  booted: (typeof up !== 'undefined') ? up.version : null," +
-            "  bodyBg: cs(document.body, 'background-color')" +
+            "  bodyBg: cs(document.body, 'background-color')," +
+            "  bodyFg: cs(document.body, 'color')," +
+            "  btnBg: cs(btn, 'background-color')," +
+            "  primary: getComputedStyle(document.documentElement).getPropertyValue('--primary').trim()," +
+            "  background: getComputedStyle(document.documentElement).getPropertyValue('--background').trim()," +
+            "  mq640: matchMedia('(min-width: 640px)').matches," +
+            "  scrollWidth: document.documentElement.scrollWidth," +
+            "  innerWidth: window.innerWidth" +
             " });" +
             "})()";
         var r = Nat.RunJavascriptAsync(view0, full, 10).GetAwaiter().GetResult();
