@@ -16,18 +16,13 @@
     [Parameter] public string? AriaLabel { get; set; }
 
     const string Base =
-        // text-center and size-control belong to the deviation, not to upstream: upstream's slot
-        // is a <div> centring a character with flex, and this is a real <input>, where
-        // justify-content does nothing to the value. Without it every digit sat hard against
-        // the start edge of its box. size-control keeps the box square when a head retunes the
-        // control height, which h-control w-9 does not.
-        "relative flex h-control w-9 items-center justify-center text-center border-y border-e " +
+        "relative flex h-control w-9 items-center justify-center border-y border-e " +
         "border-input text-control shadow-xs transition-all outline-none first:rounded-s-md " +
-        "first:border-s last:rounded-e-md aria-invalid:border-destructive " +
+        "first:border-s last:rounded-e-md aria-invalid:border-destructive dark:bg-input/30 " +
         "focus-visible:z-10 focus-visible:border-ring focus-visible:ring-[3px] " +
         "focus-visible:ring-ring/50 focus-visible:aria-invalid:border-destructive " +
-        "focus-visible:aria-invalid:ring-destructive/20 dark:bg-input/30 " +
-        "dark:focus-visible:aria-invalid:ring-destructive/40";
+        "focus-visible:aria-invalid:ring-destructive/20 " +
+        "dark:focus-visible:aria-invalid:ring-destructive/40 text-center";
 
     string Classes => Cn(Base, Class);
 }
