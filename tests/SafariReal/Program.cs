@@ -299,13 +299,15 @@ internal static class Nat
                 var jsResult = webkit_web_view_run_javascript_finish(source, res, ref err);
                 if (err != IntPtr.Zero)
                 {
-                    // Read-only peek at the GError message (no dealloc): the
-                    // text says whether the script failed to parse or threw.
+                    // GError is { guint32 domain, gint code, char* message }:
+                    // the pointer sits after two 4-byte fields, NOT after two
+                    // machine words (reading there yields garbage that looks
+                    // like mojibake). Read-only peek, no dealloc.
                     string detail;
                     try
                     {
                         detail = Marshal.PtrToStringUTF8(
-                            Marshal.ReadIntPtr(err, IntPtr.Size * 2)) ?? "?";
+                            Marshal.ReadIntPtr(err, sizeof(uint) + sizeof(int))) ?? "?";
                     }
                     catch
                     {

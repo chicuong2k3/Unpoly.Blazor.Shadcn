@@ -113,16 +113,17 @@ jobs:
       - name: Publish results to the safari-test-results branch
         if: always()
         run: |
-          git config --global user.email "actions@github.com"
-          git config --global user.name "safari-real-bot"
-          git fetch origin safari-test-results || true
-          git worktree add -f /tmp/res origin/safari-test-results 2>/dev/null \
-            || (mkdir -p /tmp/res && cd /tmp/res && git init -q -b safari-test-results)
+          rm -rf /tmp/res && mkdir -p /tmp/res
           cp -f results/* /tmp/res/ 2>/dev/null || true
           cd /tmp/res
+          git init -q -b safari-test-results
           git add -A
-          git diff --cached --quiet && echo "nothing new" && exit 0
-          git commit -m "safari-real results: run ${{ github.run_id }} (${GITHUB_SHA::7})"
+          if git diff --cached --quiet; then
+            echo "nothing new to publish"
+            exit 0
+          fi
+          git -c user.email=actions@github.com -c user.name=safari-real-bot \
+            commit -qm "safari-real results: run ${{ github.run_id }} (${GITHUB_SHA::7})"
           git push -q -f https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}.git safari-test-results
 
       - name: Fail the job on any failed assertion
