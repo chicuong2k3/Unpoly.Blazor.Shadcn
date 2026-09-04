@@ -192,7 +192,20 @@ bool NonTransparent(string? v)
 
 JsonElement State()
 {
-    var raw = Eval(StateJson());
+    string raw;
+    try
+    {
+        raw = Eval(FullStateScript());
+    }
+    catch (Exception first)
+    {
+        // One immediate retry with the byte-identical script: distinguishes a
+        // transient realm hiccup (Unpoly mid-boot) from a deterministic parse
+        // failure. The outcome of each attempt is logged either way.
+        Console.Out.WriteLine($"STATE first attempt failed: {first.GetType().Name}: {first.Message[..Math.Min(200, first.Message.Length)]}");
+        raw = Eval(FullStateScript());
+        Console.Out.WriteLine("STATE retry succeeded");
+    }
     var doc = JsonDocument.Parse(raw);
     if (doc.RootElement.ValueKind != JsonValueKind.Object)
         throw new InvalidOperationException("STATE did not evaluate to an object: " + raw[..Math.Min(300, raw.Length)]);
