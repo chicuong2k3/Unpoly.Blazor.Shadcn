@@ -58,7 +58,8 @@ RUNTIME_VARIANTS = {'button', 'badge', 'alert', 'pagination-link', 'sheet-conten
                     'input-group-button', 'marker', 'bubble',
                     'bubble-reactions', 'attachment', 'attachment-media',
                     'sidebar-container', 'sidebar-gap', 'sidebar-menu-button',
-                    'sidebar-menu-sub-button', 'button-group', 'item', 'item-media'}
+                     'sidebar-menu-sub-button', 'button-group', 'item', 'item-media'}
+INLINE_COMPOSED = {'Card', 'PaginationNext', 'PaginationPrevious'}
 
 
 def upstream_default(entry, slot):
@@ -160,6 +161,8 @@ def rewrite(path: pathlib.Path, classes, tokens, added, dropped, subject, by_cva
 
     inline = INLINE_CN.search(text)
     if inline:
+        if path.stem in INLINE_COMPOSED:
+            return text, slot
         return text[:inline.start(1)] + ' '.join(wanted) + text[inline.end(1):], slot
 
     return text, slot
