@@ -105,12 +105,12 @@
     </header>
 </UpChrome>
 
-<div class="mx-auto flex max-w-[1400px] gap-8 px-6">
+<div class="mx-auto flex max-w-[1400px] flex-col gap-8 px-6 lg:flex-row">
     <UpChrome>
         @* Sticky under the header, which is 4rem tall and sticky itself. Without this the nav
            scrolled away with the page and a reader three screens into a component page had no
            way back to the list without scrolling all the way up — shadcn's own docs pin it. *@
-        <div class="doc-nav sticky top-16 hidden h-[calc(100dvh-4rem)] lg:block">
+        <div class="doc-nav top-16 block w-full lg:sticky lg:h-[calc(100dvh-4rem)] lg:w-auto">
             <DocNav />
         </div>
     </UpChrome>
