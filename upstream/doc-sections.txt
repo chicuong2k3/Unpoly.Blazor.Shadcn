@@ -1,8 +1,8 @@
 # Every heading on every shadcn component docs page, in page order. Fetched by
-# tools/fetch_upstream.py and committed, so tools/check_sections.py needs no network.
+# the fetch-upstream command and committed, so check-sections needs no network.
 #
 # One line per page: <slug>: <heading> | <heading> | ...
-# tools/check_sections.py decides which of them are demos this port should have, which are
+# check-sections decides which of them are demos this port should have, which are
 # prose, and which cannot exist here — and says so for each.
 accordion: Installation | Usage | Composition | Basic | Multiple | Disabled | Borders | Card | RTL | API Reference
 alert: Installation | Usage | Composition | Basic | Destructive | Action | Custom Colors | RTL | API Reference

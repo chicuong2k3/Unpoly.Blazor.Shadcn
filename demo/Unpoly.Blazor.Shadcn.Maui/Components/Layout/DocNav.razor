@@ -4,7 +4,7 @@
    The component list is shadcn's own — upstream/doc-components.txt, fetched from its docs index
    and committed — in shadcn's own order, which is alphabetical with one page each. Someone who
    knows those docs can guess the URL here: /docs/components/alert-dialog becomes
-   /components/alert-dialog. tools/check_pages.py fails the build if the two ever disagree.
+    /components/alert-dialog. The check-pages .NET command fails the build if the two ever disagree.
 
    In the MAUI head there is no Unpoly, so no `[up-nav]` to add `.up-current`. Blazor's router
    owns navigation and the current URI is read from NavigationManager; the row whose href matches

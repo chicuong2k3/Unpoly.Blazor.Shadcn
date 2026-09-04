@@ -1,6 +1,6 @@
 # The components shadcn documents, in the order its own sidebar lists them — which is
 # alphabetical, one page each. Fetched from https://ui.shadcn.com/docs/components by
-# tools/fetch_upstream.py and committed, so tools/check_pages.py needs no network.
+# the fetch-upstream command and committed, so check-pages needs no network.
 #
 # The demo has one page per line, at /components/<slug>, in this order. Anyone who knows
 # shadcn's docs can guess the URL, which is the point.

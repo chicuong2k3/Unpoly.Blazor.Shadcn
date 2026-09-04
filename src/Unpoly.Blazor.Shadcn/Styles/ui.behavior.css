@@ -326,7 +326,7 @@
        The delay still lives in the timer that calls showPopover(). This rule only decides
        whether an open tooltip can be seen, and the answer is yes. */
     /* Upstream animates with tailwindcss-animate -- animate-in, zoom-in-95 and a slide per
-       side. That plugin is not installed here (it is listed in tools/check_compiled.py with the
+side. That plugin is not installed here (it is listed by the check-compiled .NET command with the
        reason), so those classes compile to nothing and the tip appeared with no motion at all.
 
        The arrow hangs off the panel with no `relative` on it, and deliberately: a [popover] is

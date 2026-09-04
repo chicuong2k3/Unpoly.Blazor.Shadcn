@@ -2,7 +2,7 @@
    ==========================================================================================
    CONVERTED from https://github.com/onesamket/shadcn-themes — src/constants/themes.ts
    Preset: notion. Colors from the real app palette.
-   Do not edit by hand; re-run convert_onesamket.py to refresh.
+   Do not edit by hand; re-run the gen-themes .NET command to refresh.
    Scoped to [data-theme] so several can be loaded at once.
    An app that ships one theme puts data-theme on <html>. */
 

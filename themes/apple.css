@@ -2,7 +2,7 @@
    ==========================================================================================
    CONVERTED from https://github.com/DaniAkash/stylecn — src/themes/brands.css
    Preset: apple. Brand colors, radius and type from the real apple product.
-   Do not edit by hand; re-run convert_all_stylecn.py to refresh.
+   Do not edit by hand; re-run the gen-themes .NET command to refresh.
 
    Scoped to [data-theme] so several can be loaded at once and switched by an attribute.
    An app that ships one theme puts data-theme on <html>.

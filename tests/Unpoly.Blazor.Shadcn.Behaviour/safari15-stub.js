@@ -25,7 +25,7 @@
  *     it would on a real Safari 15 engine.  Real CSS @rules with :popover-open
  *     still match in Chromium, which this stub cannot change.
  *   • Real color-mix() rendering – Chromium supports it; Safari 15/16 do not.
- *     The CI script (tools/safari15_check.py) checks the built CSS for bare
+ *     The safari15-check .NET command checks the built CSS for bare
  *     color-mix() outside @supports; the runtime simulation cannot intercept
  *     CSS colour computation.
  *   • Nested @supports parse behaviour – Safari 15 flattens or ignores nested
