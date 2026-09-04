@@ -5,16 +5,16 @@
    name is written on each item, as it is in plain HTML. *@
 
 @* Two-way binding via @bind / @bind-Checked. When the caller passes CheckedChanged, the input
-   renders checked="@Checked" with an @onchange that raises it. When it does not — a static
-   checked="..." or the splat — the unbound form is identical to shadcn, so the parity tests
-   see the same DOM. *@
+   renders checked="@Checked" with an @onchange that raises it. The unbound branch renders
+   checked="@Checked" as well: a bare `checked` binds to the Checked parameter and never
+   reaches the splat, so omitting it here silently drops the caller's value. *@
 @if (CheckedChanged.HasDelegate)
 {
     <input type="radio" data-slot="radio-group-item" checked="@Checked" @onchange="OnChange" class="@Classes" @attributes="AdditionalAttributes" />
 }
 else
 {
-    <input type="radio" data-slot="radio-group-item" class="@Classes" @attributes="AdditionalAttributes" />
+    <input type="radio" data-slot="radio-group-item" checked="@Checked" class="@Classes" @attributes="AdditionalAttributes" />
 }
 
 @code {

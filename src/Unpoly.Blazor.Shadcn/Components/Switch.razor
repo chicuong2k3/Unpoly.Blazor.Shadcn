@@ -5,9 +5,9 @@
    that merely looks unusual. The thumb is ::after in ui.behavior.css. *@
 
 @* Two-way binding via @bind / @bind-Checked. When the caller passes CheckedChanged, the input
-   renders checked="@Checked" with an @onchange that raises it. When it does not — a static
-   checked="..." or the splat — the unbound form is identical to shadcn, so the parity tests
-   see the same DOM. *@
+   renders checked="@Checked" with an @onchange that raises it. The unbound branch renders
+   checked="@Checked" as well: a bare `checked` binds to the Checked parameter and never
+   reaches the splat, so omitting it here silently drops the caller's value. *@
 @if (CheckedChanged.HasDelegate)
 {
     <input type="checkbox" role="switch" data-slot="switch" data-size="@Size" class="@Classes"
@@ -16,7 +16,7 @@
 else
 {
     <input type="checkbox" role="switch" data-slot="switch" data-size="@Size" class="@Classes"
-           @attributes="AdditionalAttributes" />
+           checked="@Checked" @attributes="AdditionalAttributes" />
 }
 
 @code {
