@@ -40,9 +40,9 @@ behave, which is the part that is easy to leave out and impossible to notice mis
 
 ## Parity, and how it is checked
 
-The class strings are not typed by hand. `tools/fetch_upstream.py` downloads shadcn's own source
-into `upstream/`, `tools/extract_upstream.py` reduces it to class sets, and
-`tools/sync_classes.py` writes them into the components. The parity tests then render every
+The class strings are not typed by hand. The `fetch-upstream` .NET command downloads shadcn's own
+source into `upstream/`, `extract-upstream` reduces it to class sets, and `sync-classes` writes
+them into the components. The parity tests then render every
 component and compare it with the same upstream data.
 
 That indirection is the point. Parity asserted against a class string someone retyped from the

@@ -4,7 +4,7 @@ namespace Unpoly.Blazor.Shadcn.Tests;
 
 /// <summary>
 /// The class sets shadcn/ui actually ships, read from <c>upstream-classes.json</c> — which
-/// <c>tools/extract_upstream.py</c> generates from the real .tsx files vendored under
+/// The <c>extract-upstream</c> .NET command generates from the real .tsx files vendored under
 /// <c>upstream/</c>.
 /// </summary>
 /// <remarks>
@@ -85,7 +85,7 @@ public static class Upstream
         Loaded.Value.TryGetValue(slot, out var s)
             ? s
             : throw new InvalidOperationException(
-                $"no upstream data for slot '{slot}' — add its component to tools/fetch_upstream.py");
+            $"no upstream data for slot '{slot}' — add its component to the fetch-upstream command");
 
     public static IEnumerable<string> Slots => Loaded.Value.Keys.OrderBy(k => k);
 

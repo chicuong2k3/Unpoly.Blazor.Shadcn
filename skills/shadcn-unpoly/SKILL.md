@@ -25,7 +25,7 @@ is the only honest way to show that the components are enough to build something
 **Its pages are shadcn's pages.** One component each, in shadcn's own order, at the same slug:
 `ui.shadcn.com/docs/components/alert-dialog` is `/components/alert-dialog` here. The list is
 `upstream/doc-components.txt`, fetched from shadcn's docs index and committed, and
-`tools/check_pages.py` fails the build if a page, a name or the sidebar order ever drifts from
+The `check-pages` .NET command fails the build if a page, a name or the sidebar order ever drifts from
 it. Four pages are this port's own — Icon, Code Block, Stepper, Tags Input — and they sit in a
 separate group called "Beyond shadcn", because pretending they are shadcn is the one thing this
 library must not do.
@@ -163,13 +163,13 @@ both are silent when missing — both were, for months:
   item and panel edge was a near-black hairline — which reads as "heavier than shadcn" rather
   than as a bug.
 
-`tools/check_globals.py` fails the build if either goes missing again.
+The `check-globals` .NET command fails the build if either goes missing again.
 
 ## Theming
 
 A theme is a `[data-theme="name"]` block of custom properties, or `:root` if the app ships one.
 `themes/` has six worked examples: `vercel`, `supabase`, `modern-minimal` and `notebook`
-(generated from the tweakcn registry by `tools/gen_themes.py`), plus hand-written `cupertino` and
+(generated from the tweakcn registry by the `gen-themes` .NET command), plus hand-written `cupertino` and
 `fluent`. `themes/README.md` states which parts of a foreign design language transfer and which
 cannot — colour, shape, elevation, motion and density are tokens and transfer; state layers,
 ripples and type scales live in component markup and do not.
@@ -210,7 +210,7 @@ every other class exactly as it is.
 
 ## Where a family is deliberately smaller than upstream
 
-Three, all listed with the reason in `tools/scaffold_components.py`:
+Three, all listed with the reason in the `scaffold-components` .NET command:
 
 - **`Slider` has one thumb.** A range with a lower and an upper bound is two inputs with two
   names — which is also what a server wants to read, so the honest shape and the useful one
@@ -245,7 +245,7 @@ Copy the class strings from ui.shadcn.com verbatim. Change exactly four things: 
 `h-control` and `text-sm` → `text-control` on controls, `data-slot` on the root, `@attributes`
 last so a caller can override, and `@inherits UiComponentBase`. Keep the ARIA identical — that is
 the part of shadcn this port reproduces exactly, and there is a test for every component that
-says so. Then run `python tools/gen_api.py` so `API.md` matches.
+says so. Then run the `gen-api` .NET command so `API.md` matches.
 
 ## Writing pages and blocks: components first
 
@@ -273,10 +273,10 @@ Three rules inside that:
   at runtime. Read the id back after writing it.
 - **`<Icon Name>` is a string, not a type.** A wrong name renders an empty box and says nothing;
   two invisible icons have shipped that way before. Never invent a name: grep `tools/icons.txt`
-  first, and run `python tools/check_icons.py` before pushing (CI runs it). A missing glyph is
-  added with `tools/gen_icons.py --add <name>`, not worked around.
+first, and run the `check-icons` .NET command before pushing (CI runs it). A missing glyph is
+added with `gen-icons --add <name>`, not worked around.
 
 **A new block is four edits, not one:** the file under `demo/…/Components/Blocks/`, an
 `<Example>` entry in the gallery page under the right category, a row plus its trap in
-`BLOCKS.md`, and `python tools/check_demo.py` to confirm coverage. A block merged without its
+`BLOCKS.md`, and the `check-demo` .NET command to confirm coverage. A block merged without its
 gallery entry is a block nobody reviews.

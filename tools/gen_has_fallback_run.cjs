@@ -1,5 +1,5 @@
 /**
- * Helper for tools/gen_has_fallback.py: run the reference css-has-pseudo
+ * Helper for the gen-has-fallback .NET command: run the reference css-has-pseudo
  * PostCSS plugin over built CSS and print ONLY the emitted fallback rules
  * (those scoped under .js-has-pseudo), preserving at-rule context.
  *

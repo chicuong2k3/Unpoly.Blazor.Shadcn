@@ -35,7 +35,7 @@ Port 5 Lumeo components to Blazor static SSR + Unpoly with minimal bundle, API l
 2. Vendor `maplibre-gl.js/css` stub + `img-comparison-slider` WC + create `Steps/Timeline` Razor (no JS)
 3. Create `ESparkline` + core `Sparkline` fallback SVG, reuse ECharts lazy path
 4. Implement `Map` + `ImageCompare` with `up.compiler` lazy loaders and theme-aware colors
-5. Demo pages `/components/steps|timeline|sparkline|map|image-compare` + update `DocNav.razor:58` + `tools/check_pages.py:28` OURS
+5. Demo pages `/components/steps|timeline|sparkline|map|image-compare` + update `DocNav.razor:58` + the `check-pages` .NET command OURS
 
 ## Edge Cases & Risks
 - Map without API key: MapLibre needs style URL; default `https://demotiles.maplibre.org/style.json` + provider switch via `AdditionalAttributes` and `window.lumeoCdn` self-host path — document in `/privacy`

@@ -2,7 +2,7 @@
   "$comment": [
     "Every place this port's classes differ from shadcn/ui, and why.",
     "",
-    "Read by BOTH tools/sync_classes.py (which writes the components) and the parity tests",
+    "Read by BOTH the sync-classes .NET command (which writes the components) and the parity tests",
     "(which check them), so the generator and the test can never disagree about what counts as",
     "a deviation. Anything not listed here must match shadcn exactly, and the test fails if it",
     "does not.",
@@ -846,7 +846,7 @@
   "subject": {
     "$comment": [
       "Components whose class-bearing element is not the first one they render, as component name",
-      "to the data-slot that carries the classes. Read by tools/sync_classes.py (which writes the",
+      "to the data-slot that carries the classes. Read by the sync-classes .NET command (which writes the",
       "class list) and by the tests (which check it), so both always look at the same element.",
       "Each entry exists because the platform needs a frame shadcn does not have."
     ],

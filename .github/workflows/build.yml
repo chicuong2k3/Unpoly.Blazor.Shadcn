@@ -15,89 +15,88 @@ jobs:
         with:
           dotnet-version: '10.0.x'
 
-      - uses: actions/setup-python@v5
-        with:
-          python-version: '3.12'
+      - name: Build repository tools
+        run: dotnet build tools/Unpoly.Blazor.Shadcn.Tools --configuration Release
 
       # The generated files are committed, so CI never needs the network — it only proves that
       # what is committed is what the generators produce. A stale API index or a component whose
       # classes were edited by hand fails here rather than being discovered by a reader.
       - name: Generated files are current
         run: |
-          python tools/extract_upstream.py --check
-          python tools/sync_classes.py --check
-          python tools/sync_variants.py --check
-          python tools/gen_api.py --check
-          python tools/fetch_upstream.py --check
-          python tools/fetch_examples.py --check
-          python tools/gen_themes.py --check
+          dotnet run --project tools/Unpoly.Blazor.Shadcn.Tools --configuration Release --no-build -- extract-upstream --check
+          dotnet run --project tools/Unpoly.Blazor.Shadcn.Tools --configuration Release --no-build -- sync-classes --check
+          dotnet run --project tools/Unpoly.Blazor.Shadcn.Tools --configuration Release --no-build -- sync-variants --check
+          dotnet run --project tools/Unpoly.Blazor.Shadcn.Tools --configuration Release --no-build -- gen-api --check
+          dotnet run --project tools/Unpoly.Blazor.Shadcn.Tools --configuration Release --no-build -- fetch-upstream --check
+          dotnet run --project tools/Unpoly.Blazor.Shadcn.Tools --configuration Release --no-build -- fetch-examples --check
+          dotnet run --project tools/Unpoly.Blazor.Shadcn.Tools --configuration Release --no-build -- gen-themes --check
 
       # Nothing left to scaffold, and nothing quietly unaccounted for.
       - name: Every upstream slot is ported or refused with a reason
-        run: python tools/scaffold_components.py --check
+        run: dotnet run --project tools/Unpoly.Blazor.Shadcn.Tools --configuration Release --no-build -- scaffold-components --check
 
       # Two rules in shadcn's globals that are not tokens, and are silent when missing.
       - name: ui.css reproduces shadcn's globals
-        run: python tools/check_globals.py --check
+        run: dotnet run --project tools/Unpoly.Blazor.Shadcn.Tools --configuration Release --no-build -- check-globals --check
 
       # A component that is mostly an icon, rendering no icon, passes class parity: the class
       # list of an element that draws nothing is still the right class list.
       - name: Every icon shadcn draws is drawn here
-        run: python tools/check_icons.py --check
+        run: dotnet run --project tools/Unpoly.Blazor.Shadcn.Tools --configuration Release --no-build -- check-icons --check
 
       # A <div> where shadcn writes a <span> looks fine in a screenshot and is wrong in a
       # paragraph: different box, different default role, different rules about what may go in it.
       - name: Every element matches shadcn
-        run: python tools/check_elements.py --check
+        run: dotnet run --project tools/Unpoly.Blazor.Shadcn.Tools --configuration Release --no-build -- check-elements --check
 
       # A class rule keyed off an attribute nobody renders matches nothing, in silence.
       - name: Every data- rule has an attribute to match
-        run: python tools/check_data_attributes.py --check
+        run: dotnet run --project tools/Unpoly.Blazor.Shadcn.Tools --configuration Release --no-build -- check-data-attributes --check
 
       # Not a --check with a target: the demo is being brought up to what shadcn documents,
       # section by section, and this reports the number and holds a floor under it.
       - name: The demo shows what shadcn shows
-        run: python tools/check_sections.py --check --floor=304
+        run: dotnet run --project tools/Unpoly.Blazor.Shadcn.Tools --configuration Release --no-build -- check-sections --check --floor=304
 
       # The demo's pages are named and ordered as shadcn documents them, so a URL is guessable.
       - name: The demo matches shadcn's docs index
-        run: python tools/check_pages.py --check
+        run: dotnet run --project tools/Unpoly.Blazor.Shadcn.Tools --configuration Release --no-build -- check-pages --check
 
       # A class that compiles to nothing. Upstream's own has-[>a,>button]:hover:bg-muted/50 did:
       # a comma ends the candidate, and Tailwind drops the whole thing without a warning.
       - name: Every class this library writes compiles to a rule
-        run: python tools/check_compiled.py --check
+        run: dotnet run --project tools/Unpoly.Blazor.Shadcn.Tools --configuration Release --no-build -- check-compiled --check
 
       # A side named by the screen rather than by the reading direction. AccordionTrigger said
       # text-left, which left-aligns Arabic, and it was one of forty.
       - name: Every side is named in reading order
-        run: python tools/check_rtl.py --check
+        run: dotnet run --project tools/Unpoly.Blazor.Shadcn.Tools --configuration Release --no-build -- check-rtl --check
 
       # A control that does nothing when clicked. AlertDialog shipped inert for as long as it
       # existed, because an attribute selector is exact and nothing said so.
       - name: Every interactive control is operated by something
-        run: python tools/check_wiring.py --check
+        run: dotnet run --project tools/Unpoly.Blazor.Shadcn.Tools --configuration Release --no-build -- check-wiring --check
 
       # A component nobody can look at is a component nobody reviews.
       - name: Every component is shown in the demo
-        run: python tools/check_demo.py --check
+        run: dotnet run --project tools/Unpoly.Blazor.Shadcn.Tools --configuration Release --no-build -- check-demo --check
 
       # Not a --check: it reports, and a gap is a decision rather than a build break.
       - name: API coverage report
-        run: python tools/audit_api.py
+        run: dotnet run --project tools/Unpoly.Blazor.Shadcn.Tools --configuration Release --no-build -- audit-api
 
       # gen_icons needs lucide-static, which is the one generator with a dependency.
       - run: npm ci
       - name: Icons are current
-        run: python tools/gen_icons.py --check
+        run: dotnet run --project tools/Unpoly.Blazor.Shadcn.Tools --configuration Release --no-build -- gen-icons --check
 
       # The built CSS is committed, but regenerate it so the check always sees the
       # actual output of the current source rather than a stale build artifact.
       - name: Safari 15 CSS compatibility
         run: |
           npm run css --prefix demo/Unpoly.Blazor.Shadcn.Demo
-          python tools/safari15_check.py
-          python tools/gen_has_fallback.py --check
+          dotnet run --project tools/Unpoly.Blazor.Shadcn.Tools --configuration Release --no-build -- safari15-check
+          dotnet run --project tools/Unpoly.Blazor.Shadcn.Tools --configuration Release --no-build -- gen-has-fallback --check
 
       - run: dotnet build --configuration Release
 

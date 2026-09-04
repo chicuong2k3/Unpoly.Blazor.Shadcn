@@ -25,16 +25,16 @@ dotnet build demo/Unpoly.Blazor.Shadcn.Maui/Unpoly.Blazor.Shadcn.Maui.csproj   #
 ## The class strings are generated. Do not type them.
 
 Every component's class list comes from `upstream/`, the real shadcn/ui source, via
-`tools/sync_classes.py` and `tools/sync_variants.py`. Editing a class literal by hand is a change
+the `sync-classes` and `sync-variants` .NET commands. Editing a class literal by hand is a change
 the next sync silently reverts, and CI fails on before that.
 
 ```bash
-python tools/fetch_upstream.py     # refresh upstream/ from ui.shadcn.com
-python tools/extract_upstream.py   # upstream/*.tsx  -> upstream-classes.json
-python tools/sync_classes.py       # write the components
-python tools/sync_variants.py      # write Button / Badge / Alert recipes
-python tools/gen_api.py            # regenerate the skill's API index
-python tools/gen_icons.py          # regenerate the Lucide glyphs
+dotnet run --project tools/Unpoly.Blazor.Shadcn.Tools -- fetch-upstream
+dotnet run --project tools/Unpoly.Blazor.Shadcn.Tools -- extract-upstream
+dotnet run --project tools/Unpoly.Blazor.Shadcn.Tools -- sync-classes
+dotnet run --project tools/Unpoly.Blazor.Shadcn.Tools -- sync-variants
+dotnet run --project tools/Unpoly.Blazor.Shadcn.Tools -- gen-api
+dotnet run --project tools/Unpoly.Blazor.Shadcn.Tools -- gen-icons
 ```
 
 Every one of them takes `--check`, and CI runs all six. A component that has drifted, an API
@@ -80,12 +80,12 @@ fails loudly rather than quietly opting out.
 
 ## Adding a component
 
-1. `python tools/fetch_upstream.py` with the registry name added to its `COMPONENTS` list.
+1. Run the `fetch-upstream` .NET command with the registry name added to its component list.
 2. Write the `.razor`: `@inherits UiComponentBase`, `data-slot` on the root, `@attributes` last.
    Leave the class literal empty — the generator fills it.
-3. `python tools/extract_upstream.py && python tools/sync_classes.py`.
+3. Run the `extract-upstream` and `sync-classes` .NET commands.
 4. Run the tests. Anything that fails is either a real difference or a deviation to declare.
-5. `python tools/gen_api.py`, and add the component to the skill if it has a trap worth naming.
+5. Run the `gen-api` .NET command, and add the component to the skill if it has a trap worth naming.
 
 Ask in this order before writing any JavaScript: does a native element already do it
 (`<dialog>`, `<details>`, `[popover]`, `<select>`), does an Unpoly attribute already do it

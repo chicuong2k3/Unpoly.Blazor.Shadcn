@@ -8,7 +8,7 @@ namespace Unpoly.Blazor.Shadcn.Tests;
 /// </summary>
 /// <remarks>
 /// <para>
-/// The same file drives <c>tools/sync_classes.py</c>, which writes the components. One source,
+/// The same file drives the <c>sync-classes</c> .NET command, which writes the components. One source,
 /// so the generator and the test cannot disagree about what counts as a deviation — if they read
 /// separate lists, the test would happily pass on whatever the generator produced.
 /// </para>
