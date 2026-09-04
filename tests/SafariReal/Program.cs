@@ -40,9 +40,9 @@ string Eval(string js, int timeoutS = 20)
 }
 
 string StateJson() => Eval(
-    "(() => {" +
-    " const cs = (el, p) => (el ? getComputedStyle(el).getPropertyValue(p) : null);" +
-    " const btn = document.querySelector('[data-slot=\"button\"]');" +
+    "(function () {" +
+    " function cs(el, p) { return el ? getComputedStyle(el).getPropertyValue(p) : null; }" +
+    " var btn = document.querySelector('[data-slot=\"button\"]');" +
     " return JSON.stringify({" +
     "  booted: (typeof up !== 'undefined') ? up.version : null," +
     "  bodyBg: cs(document.body, 'background-color')," +
@@ -139,7 +139,7 @@ try
         $"up.version={Prop(s, "booted")}");
 
     Eval(
-        "(() => { const t = document.querySelector('[data-slot=\"select-trigger\"]');" +
+        "(function () { var t = document.querySelector('[data-slot=\"select-trigger\"]');" +
         " if (t) t.click(); })()", 10);
     Nat.PumpFor(view, 1200);
 
@@ -148,7 +148,7 @@ try
     while (DateTime.UtcNow < openDeadline)
     {
         panel = Eval(
-            "(() => { const p = document.querySelector('[data-slot=\"select-content\"]');" +
+            "(function () { var p = document.querySelector('[data-slot=\"select-content\"]');" +
             " if (!p) return '{}';" +
             " return JSON.stringify({ state: p.getAttribute('data-state')," +
             "  display: getComputedStyle(p).display," +
