@@ -94,6 +94,31 @@ if (args.Contains("ladder"))
     {
         Console.Out.WriteLine($"LADDER full-state FAIL: {ex.GetType().Name}: {ex.Message[..Math.Min(200, ex.Message.Length)]}");
     }
+    // Phase 2: replicate the probe's exact pre-State sequence (ready+up poll,
+    // 2s settle) to see whether page age, rather than script text, decides it.
+    var dl = DateTime.UtcNow.AddSeconds(30);
+    while (DateTime.UtcNow < dl)
+    {
+        Nat.GtkMainIterationDo(false);
+        Thread.Sleep(50);
+        try
+        {
+            if (Nat.RunJavascriptAsync(view0, "document.readyState + '|' + (typeof up !== 'undefined')", 10).GetAwaiter().GetResult().StartsWith("complete|true"))
+                break;
+        }
+        catch { }
+    }
+    var end2 = DateTime.UtcNow.AddMilliseconds(2000);
+    while (DateTime.UtcNow < end2) { Nat.GtkMainIterationDo(false); Thread.Sleep(5); }
+    try
+    {
+        var r2 = Nat.RunJavascriptAsync(view0, full, 10).GetAwaiter().GetResult();
+        Console.Out.WriteLine($"LADDER aged-state ok => {r2[..Math.Min(100, r2.Length)]}");
+    }
+    catch (Exception ex)
+    {
+        Console.Out.WriteLine($"LADDER aged-state FAIL: {ex.GetType().Name}: {ex.Message[..Math.Min(200, ex.Message.Length)]}");
+    }
     Environment.Exit(0);
 }
 
