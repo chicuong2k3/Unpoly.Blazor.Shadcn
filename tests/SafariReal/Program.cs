@@ -24,6 +24,54 @@ void Assert(string name, bool ok, string detail = "")
     Console.Out.Flush();
 }
 
+if (args.Contains("ladder"))
+{
+    Nat.GtkInit();
+    var win0 = Nat.GtkOffscreenWindowNew();
+    var view0 = Nat.WebViewNew();
+    Nat.GtkContainerAdd(win0, view0);
+    Nat.GtkWidgetShowAll(win0);
+    Nat.WebViewLoadUri(view0, baseUrl + "/");
+    var dl = DateTime.UtcNow.AddSeconds(30);
+    while (DateTime.UtcNow < dl)
+    {
+        Nat.GtkMainIterationDo(false);
+        Thread.Sleep(50);
+        try
+        {
+            if (Nat.RunJavascriptAsync(view0, "document.readyState", 10).GetAwaiter().GetResult() == "\"complete\"")
+                break;
+        }
+        catch { }
+    }
+    string[] snippets =
+    [
+        "1+1",
+        "var ladderX = {a: 1}; ladderX.a",
+        "(function(){return 42})()",
+        "function ladderF(){return 7} ladderF()",
+        "typeof up",
+        "document.readyState",
+        "getComputedStyle(document.body).getPropertyValue('color')",
+        "JSON.stringify({a:1})",
+        "matchMedia('(min-width: 640px)').matches",
+        "var ladderBtn = document.querySelector('[data-slot=\"button\"]'); ladderBtn ? 1 : 0",
+    ];
+    foreach (var s in snippets)
+    {
+        try
+        {
+            var r = Nat.RunJavascriptAsync(view0, s, 10).GetAwaiter().GetResult();
+            Console.Out.WriteLine($"LADDER ok: {s} => {r[..Math.Min(80, r.Length)]}");
+        }
+        catch (Exception ex)
+        {
+            Console.Out.WriteLine($"LADDER FAIL: {s} => {ex.GetType().Name}: {ex.Message[..Math.Min(160, ex.Message.Length)]}");
+        }
+    }
+    return 0;
+}
+
 Nat.GtkInit();
 
 var win = Nat.GtkOffscreenWindowNew();
