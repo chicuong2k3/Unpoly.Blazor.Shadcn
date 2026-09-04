@@ -94,6 +94,7 @@ jobs:
       # actual output of the current source rather than a stale build artifact.
       - name: Safari 15 CSS compatibility
         run: |
+          npm ci --prefix demo/Unpoly.Blazor.Shadcn.Demo
           npm run css --prefix demo/Unpoly.Blazor.Shadcn.Demo
           dotnet run --project tools/Unpoly.Blazor.Shadcn.Tools --configuration Release --no-build -- safari15-check
           dotnet run --project tools/Unpoly.Blazor.Shadcn.Tools --configuration Release --no-build -- gen-has-fallback --check
