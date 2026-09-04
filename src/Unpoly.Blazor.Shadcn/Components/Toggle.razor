@@ -43,16 +43,15 @@
     [Parameter] public string Size { get; set; } = "default";
 
     const string Base =
-        "group/toggle inline-flex items-center justify-center gap-2 rounded-md text-control " +
-        "font-medium " +
+        "inline-flex items-center justify-center gap-2 rounded-md text-control font-medium " +
         "whitespace-nowrap transition-[color,box-shadow] outline-none hover:bg-muted " +
         "hover:text-muted-foreground focus-visible:border-ring focus-visible:ring-[3px] " +
-        "focus-visible:ring-ring/50 has-[:disabled]:pointer-events-none " +
-        "has-[:disabled]:opacity-50 " +
-        "aria-invalid:border-destructive aria-invalid:ring-destructive/20 " +
-        "has-[:checked]:bg-accent has-[:checked]:text-accent-foreground " +
-        "dark:aria-invalid:ring-destructive/40 [&_svg]:pointer-events-none [&_svg]:shrink-0 " +
-        "[&_svg:not([class*='size-'])]:size-4";
+        "focus-visible:ring-ring/50 aria-invalid:border-destructive " +
+        "aria-invalid:ring-destructive/20 has-[:checked]:bg-accent " +
+        "has-[:checked]:text-accent-foreground dark:aria-invalid:ring-destructive/40 " +
+        "[&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4 " +
+        "bg-transparent h-control min-w-9 px-2 group/toggle " +
+        "has-[:disabled]:pointer-events-none has-[:disabled]:opacity-50";
 
     // The variant and the size were both baked into the base — the default variant's
     // bg-transparent and the default size's h-9/min-w-9/px-2 — so Variant and Size were

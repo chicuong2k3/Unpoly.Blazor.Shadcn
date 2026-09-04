@@ -48,16 +48,16 @@
         "inline-flex items-center justify-center gap-2 rounded-md text-control font-medium " +
         "whitespace-nowrap transition-[color,box-shadow] outline-none hover:bg-muted " +
         "hover:text-muted-foreground focus-visible:border-ring focus-visible:ring-[3px] " +
-        "focus-visible:ring-ring/50 has-[:disabled]:pointer-events-none " +
-        "has-[:disabled]:opacity-50 " +
-        "aria-invalid:border-destructive aria-invalid:ring-destructive/20 " +
-        "has-[:checked]:bg-accent has-[:checked]:text-accent-foreground " +
-        "dark:aria-invalid:ring-destructive/40 [&_svg]:pointer-events-none [&_svg]:shrink-0 " +
-        "[&_svg:not([class*='size-'])]:size-4 w-auto min-w-0 shrink-0 px-3 focus:z-10 " +
-        "focus-visible:z-10 data-[spacing=0]:rounded-none data-[spacing=0]:shadow-none " +
+        "focus-visible:ring-ring/50 aria-invalid:border-destructive " +
+        "aria-invalid:ring-destructive/20 has-[:checked]:bg-accent " +
+        "has-[:checked]:text-accent-foreground dark:aria-invalid:ring-destructive/40 " +
+        "[&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4 " +
+        "w-auto min-w-0 shrink-0 px-3 focus:z-10 focus-visible:z-10 " +
+        "data-[spacing=0]:rounded-none data-[spacing=0]:shadow-none " +
         "data-[spacing=0]:first:rounded-s-md data-[spacing=0]:last:rounded-e-md " +
         "data-[spacing=0]:data-[variant=outline]:border-s-0 " +
-        "data-[spacing=0]:data-[variant=outline]:first:border-s";
+        "data-[spacing=0]:data-[variant=outline]:first:border-s bg-transparent h-control " +
+        "min-w-9 px-2 has-[:disabled]:pointer-events-none has-[:disabled]:opacity-50";
 
     // The same two tables Toggle was missing, and missing here for the same reason: the default
     // variant's bg-transparent and the default size's h-9/min-w-9/px-2 were written into the
