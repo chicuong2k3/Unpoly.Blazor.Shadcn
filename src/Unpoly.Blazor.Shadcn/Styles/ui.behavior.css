@@ -588,8 +588,19 @@
     button[data-slot="menubar-sub-trigger"],
     button[data-slot="command-item"],
     button[data-slot="combobox-item"],
-    button[data-slot="sidebar-menu-button"],
-    button[data-slot="sidebar-menu-sub-button"] { width: 100%; }
+button[data-slot="sidebar-menu-button"],
+button[data-slot="sidebar-menu-sub-button"] { width: 100%; }
+
+@media (max-width: 767.98px) {
+  [data-slot="sidebar"] { display: block !important; width: 100%; }
+  [data-slot="sidebar-gap"] { display: none !important; }
+  [data-slot="sidebar-container"] {
+    position: relative;
+    display: flex !important;
+    width: 100% !important;
+    height: auto !important;
+  }
+}
 
     /* ---- Slider ----------------------------------------------------------------------
        The three parts Radix builds out of divs are the three parts the input already has. The
