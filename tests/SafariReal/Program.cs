@@ -69,7 +69,7 @@ if (args.Contains("ladder"))
             Console.Out.WriteLine($"LADDER FAIL: {s} => {ex.GetType().Name}: {ex.Message[..Math.Min(160, ex.Message.Length)]}");
         }
     }
-    return 0;
+    Environment.Exit(0);
 }
 
 Nat.GtkInit();
