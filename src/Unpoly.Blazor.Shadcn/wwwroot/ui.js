@@ -2276,6 +2276,14 @@
 
   // The shortcut that opens a palette. `mod` is ⌘ on a Mac and Ctrl everywhere else, which is the
   // distinction every implementation gets wrong in one direction or the other.
+  shadcnCompiler('[data-command-open]', (trigger) => {
+    const dialog = document.getElementById(trigger.dataset.commandOpen || '')
+    if (!dialog || typeof dialog.showModal !== 'function') return
+    const onClick = () => dialog.open ? dialog.close() : dialog.showModal()
+    trigger.addEventListener('click', onClick)
+    return () => trigger.removeEventListener('click', onClick)
+  })
+
   shadcnCompiler('[data-command-key]', (dialog) => {
     const combo = (dialog.dataset.commandKey || 'mod+k').toLowerCase().split('+')
     const key = combo[combo.length - 1]
@@ -2701,6 +2709,7 @@
         // no sign of which row you were already on.
         entry.indicator.innerHTML = on ? CHECK : ''
       }
+      index = Math.max(0, items.findIndex((entry) => entry.option.value === select.value))
     }
 
     function active(i) {
@@ -2734,6 +2743,8 @@
       // object opening rather than a menu appearing near one.
       panel.style.minWidth = Math.round(trigger.getBoundingClientRect().width) + 'px'
       place(panel, trigger, 'start', 'bottom', 4)
+      alignItem()
+      requestAnimationFrame(alignItem)
       // Lock until the reader chooses — the list is the takeover, and the page must not run
       // off behind it. The lock is gutter-stable (see lockScroll), so hiding the scrollbar
       // does not shift the layout underneath.
