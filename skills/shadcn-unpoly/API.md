@@ -300,6 +300,7 @@ renders `<a>` · `data-slot="button"`
 | `Size` | `string` | `"default"` |  |
 | `Href` | `string?` | — |  |
 | `Type` | `string` | `"submit"` |  |
+| `OnClick` | `EventCallback<MouseEventArgs>` | — |  |
 
 ## `<ButtonGroup>`
 renders `<div>` · `data-slot="button-group"`
@@ -441,10 +442,13 @@ renders `<td>` · `data-slot="chart-tooltip"`
 ## `<Checkbox>`
 renders `<input>` · `data-slot="checkbox"`
 
-_No parameters of its own._
+| Parameter | Type | Default | |
+|---|---|---|---|
+| `Checked` | `bool` | — |  |
+| `CheckedChanged` | `EventCallback<bool>` | — |  |
 
 ## `<CodeBlock>`
-renders `<pre>` · `data-slot="code-block-copy"`
+renders `<div>` · `data-slot="code-block"`
 
 | Parameter | Type | Default | |
 |---|---|---|---|
@@ -453,6 +457,7 @@ renders `<pre>` · `data-slot="code-block-copy"`
 | `Language` | `string?` | — |  |
 | `ShowCopy` | `bool` | `true` |  |
 | `CopyLabel` | `string` | `"Copy"` |  |
+| `ShowLineNumbers` | `bool` | — |  |
 
 ## `<Collapsible>`
 renders `<details>` · `data-slot="collapsible"`
@@ -764,6 +769,7 @@ renders `<input>` · `data-slot="date-picker"`
 |---|---|---|---|
 | `Name` | `string?` | — |  |
 | `Value` | `string?` | — |  |
+| `ValueChanged` | `EventCallback<string?>` | — |  |
 
 ## `<Dialog>`
 renders `<dialog>` · `data-slot="dialog"`
@@ -1145,12 +1151,25 @@ renders `<svg>`
 | `Title` | `string?` | — | **required** |
 | `StrokeWidth` | `double` | `2` |  |
 
+## `<ImageCompare>`
+renders `<img-comparison-slider>` · `data-slot="image-compare"`
+
+| Parameter | Type | Default | |
+|---|---|---|---|
+| `BeforeSrc` | `string` | `default!` |  |
+| `AfterSrc` | `string` | `default!` | **required** |
+| `BeforeLabel` | `string` | `"Before"` | **required** |
+| `AfterLabel` | `string` | `"After"` |  |
+| `ShowLabels` | `bool` | `true` |  |
+
 ## `<Input>`
 renders `<input>` · `data-slot="input"`
 
 | Parameter | Type | Default | |
 |---|---|---|---|
 | `Type` | `string` | `"text"` |  |
+| `Value` | `string?` | — |  |
+| `ValueChanged` | `EventCallback<string?>` | — |  |
 
 ## `<InputGroup>`
 renders `<div>` · `data-slot="input-group"`
@@ -1477,6 +1496,8 @@ renders `<div>` · `data-slot="native-select-wrapper"`
 | Parameter | Type | Default | |
 |---|---|---|---|
 | `Size` | `string` | `"default"` |  |
+| `Value` | `string?` | — |  |
+| `ValueChanged` | `EventCallback<string?>` | — |  |
 
 ## `<NativeSelectOptgroup>`
 renders `<optgroup>` · `data-slot="native-select-optgroup"`
@@ -1642,6 +1663,21 @@ renders `<div>` · `data-slot="progress"`
 | `Value` | `double` | — |  |
 | `Max` | `double` | `100` |  |
 
+## `<QrCode>`
+renders `<div>` · `data-slot="qr-code"`
+
+| Parameter | Type | Default | |
+|---|---|---|---|
+| `Value` | `string` | `""` |  |
+| `Size` | `int` | `128` | **required** |
+| `ErrorCorrectionLevel` | `QrCodeErrorCorrection` | `QrCodeErrorCorrection.Medium` |  |
+| `CorrectLevel` | `string?` | — |  |
+| `ForegroundColor` | `string?` | — |  |
+| `BackgroundColor` | `string?` | — |  |
+| `Margin` | `int` | `4` |  |
+| `ShowMargin` | `bool` | `true` |  |
+| `AriaLabel` | `string?` | — |  |
+
 ## `<RadioGroup>`
 renders `<div>` · `data-slot="radio-group"`
 
@@ -1650,7 +1686,10 @@ _No parameters of its own._
 ## `<RadioGroupItem>`
 renders `<input>` · `data-slot="radio-group-item"`
 
-_No parameters of its own._
+| Parameter | Type | Default | |
+|---|---|---|---|
+| `Checked` | `bool` | — |  |
+| `CheckedChanged` | `EventCallback<bool>` | — |  |
 
 ## `<ResizableHandle>`
 renders `<div>` · `data-slot="resizable-handle"`
@@ -1689,6 +1728,8 @@ renders `<select>` · `data-slot="select"`
 |---|---|---|---|
 | `Size` | `string` | `"default"` |  |
 | `AlignItemWithTrigger` | `bool` | `true` |  |
+| `Value` | `string?` | — |  |
+| `ValueChanged` | `EventCallback<string?>` | — |  |
 
 ## `<SelectItem>`
 renders `<option>` · `data-slot="select-item"`
@@ -1922,12 +1963,28 @@ renders `<input>` · `data-slot="slider"`
 | `Max` | `double` | `100` |  |
 | `Step` | `string` | `"1"` |  |
 | `Value` | `double?` | — |  |
+| `ValueChanged` | `EventCallback<decimal>` | — |  |
 | `Values` | `double[]?` | — |  |
 | `Name` | `string?` | — |  |
 | `Labels` | `string[]?` | — |  |
 | `Id` | `string?` | — |  |
 | `Disabled` | `bool` | — |  |
 | `Orientation` | `string` | `"horizontal"` |  |
+
+## `<Sparkline>`
+renders `<svg>` · `data-slot="sparkline"`
+
+| Parameter | Type | Default | |
+|---|---|---|---|
+| `Data` | `double[]` | `[]` |  |
+| `Type` | `string` | `"line"` |  |
+| `ShowArea` | `bool` | — |  |
+| `ShowDots` | `bool` | — |  |
+| `StrokeWidth` | `double` | `1.5` |  |
+| `Color` | `string?` | — |  |
+| `Width` | `string?` | `"100px"` |  |
+| `Height` | `string?` | `"28px"` |  |
+| `AriaLabel` | `string?` | — |  |
 
 ## `<Spinner>`
 `data-slot="spinner"`
@@ -1941,12 +1998,35 @@ renders `<div>` · `data-slot="stepper"`
 
 _No parameters of its own._
 
+## `<Steps>`
+renders `<div>` · `data-slot="steps"`
+
+| Parameter | Type | Default | |
+|---|---|---|---|
+| `Orientation` | `string` | `"Horizontal"` |  |
+| `CurrentStep` | `int` | — |  |
+| `CurrentStepChanged` | `EventCallback<int>` | — |  |
+| `Clickable` | `bool` | — |  |
+| `Animated` | `bool` | — |  |
+
+## `<StepsItem>`
+renders `<div>` · `data-slot="steps-item"`
+
+| Parameter | Type | Default | |
+|---|---|---|---|
+| `Title` | `string?` | — |  |
+| `Description` | `string?` | — |  |
+| `Status` | `StepsItemStatus` | `StepsItemStatus.Default` |  |
+| `IconContent` | `RenderFragment?` | — |  |
+
 ## `<Switch>`
 renders `<input>` · `data-slot="switch"`
 
 | Parameter | Type | Default | |
 |---|---|---|---|
 | `Size` | `string` | `"default"` |  |
+| `Checked` | `bool` | — |  |
+| `CheckedChanged` | `EventCallback<bool>` | — |  |
 
 ## `<Table>`
 renders `<div>` · `data-slot="table-container"`
@@ -2018,20 +2098,33 @@ renders `<button>` · `data-slot="tabs-trigger"`
 |---|---|---|---|
 | `Value` | `string?` | — |  |
 
-## `<TagsInput>`
-renders `<select>` · `data-slot="tags-input"`
-
-| Parameter | Type | Default | |
-|---|---|---|---|
-| `Name` | `string?` | — |  |
-| `Placeholder` | `string` | `"Search…"` |  |
-
 ## `<Textarea>`
 renders `<textarea>` · `data-slot="textarea"`
 
 | Parameter | Type | Default | |
 |---|---|---|---|
 | `Value` | `string?` | — |  |
+| `ValueChanged` | `EventCallback<string?>` | — |  |
+
+## `<Timeline>`
+renders `<div>` · `data-slot="timeline"`
+
+| Parameter | Type | Default | |
+|---|---|---|---|
+| `ActiveIndex` | `int` | `-1` |  |
+| `ActiveIndexChanged` | `EventCallback<int>` | — |  |
+| `Animated` | `bool` | — |  |
+| `Alternate` | `bool` | — |  |
+
+## `<TimelineItem>`
+renders `<div>` · `data-slot="timeline-item"`
+
+| Parameter | Type | Default | |
+|---|---|---|---|
+| `Title` | `string?` | — |  |
+| `Description` | `string?` | — |  |
+| `Time` | `string?` | — |  |
+| `IconContent` | `RenderFragment?` | — |  |
 
 ## `<Toggle>`
 renders `<input>` · `data-slot="toggle"`
@@ -2041,6 +2134,7 @@ renders `<input>` · `data-slot="toggle"`
 | `Name` | `string?` | — |  |
 | `Value` | `string` | `"true"` |  |
 | `Checked` | `bool` | — |  |
+| `CheckedChanged` | `EventCallback<bool>` | — |  |
 | `Disabled` | `bool` | — |  |
 | `Variant` | `string` | `"default"` |  |
 | `Size` | `string` | `"default"` |  |
@@ -2062,6 +2156,7 @@ renders `<label>` · `data-slot="toggle-group-item"`
 | `Name` | `string?` | — |  |
 | `Value` | `string?` | — |  |
 | `Checked` | `bool` | — |  |
+| `CheckedChanged` | `EventCallback<bool>` | — |  |
 | `Disabled` | `bool` | — |  |
 | `Multiple` | `bool` | — |  |
 | `Variant` | `string` | `"default"` |  |

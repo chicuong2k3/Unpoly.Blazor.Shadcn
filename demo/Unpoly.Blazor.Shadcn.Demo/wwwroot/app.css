@@ -625,9 +625,6 @@
   .-left-8 {
     left: calc(var(--spacing) * -8);
   }
-  .left-0 {
-    left: 0px;
-  }
   .left-1\/2 {
     left: calc(1 / 2 * 100%);
   }
@@ -4777,6 +4774,12 @@
   .data-\[state\=open\]\:bg-accent[data-state="open"] {
     background-color: var(--accent);
   }
+  .data-\[state\=open\]\:bg-accent\/50[data-state="open"] {
+    background-color: var(--accent);
+    @supports (color: color-mix(in lab, red, red)) {
+      background-color: color-mix(in oklab, var(--accent) 50%, transparent);
+    }
+  }
   .data-\[state\=open\]\:text-accent-foreground[data-state="open"] {
     color: var(--accent-foreground);
   }
@@ -4791,12 +4794,18 @@
     transition-duration: 500ms;
   }
   @media (hover: hover) {
+    .data-\[state\=open\]\:hover\:bg-accent[data-state="open"]:hover {
+      background-color: var(--accent);
+    }
     .data-\[state\=open\]\:hover\:bg-sidebar-accent[data-state="open"]:hover {
       background-color: var(--sidebar-accent);
     }
     .data-\[state\=open\]\:hover\:text-sidebar-accent-foreground[data-state="open"]:hover {
       color: var(--sidebar-accent-foreground);
     }
+  }
+  .data-\[state\=open\]\:focus\:bg-accent[data-state="open"]:focus {
+    background-color: var(--accent);
   }
   .data-\[state\=selected\]\:bg-muted[data-state="selected"] {
     background-color: var(--muted);
@@ -4949,12 +4958,6 @@
     }
     .sm\:py-16 {
       padding-block: calc(var(--spacing) * 16);
-    }
-    .sm\:ps-2\.5 {
-      padding-inline-start: calc(var(--spacing) * 2.5);
-    }
-    .sm\:pe-2\.5 {
-      padding-inline-end: calc(var(--spacing) * 2.5);
     }
     .sm\:text-left {
       text-align: left;
