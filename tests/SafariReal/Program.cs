@@ -126,11 +126,34 @@ static string FullStateScript() =>
 
 Nat.GtkInit();
 
-var win = Nat.GtkOffscreenWindowNew();
+var win = Nat.GtkWindowNew();
 var view = Nat.WebViewNew();
 Nat.GtkContainerAdd(win, view);
 Nat.GtkWidgetShowAll(win);
-Nat.GtkWindowResize(win, 1280, 900);
+
+// An offscreen window never reports a trustworthy layout viewport here
+// (innerWidth came back 1px after resize), so this runs as a shown window:
+// under xvfb-run there is a real X server and no window manager takes
+// decorations off the top, making resizes deterministic.
+void ResizeViewport(int width, int height)
+{
+    Nat.GtkWindowResize(win, width, height);
+    var end = DateTime.UtcNow.AddSeconds(5);
+    while (DateTime.UtcNow < end)
+    {
+        Nat.GtkMainIterationDo(false);
+        Thread.Sleep(50);
+        try
+        {
+            if (Eval("window.innerWidth") == width.ToString())
+                return;
+        }
+        catch { }
+    }
+    throw new TimeoutException($"viewport did not reach {width}px");
+}
+
+ResizeViewport(1280, 900);
 
 string Eval(string js, int timeoutS = 20)
 {
@@ -263,7 +286,7 @@ try
     Assert("select-panel-opens", display is not (null or "none") && items > 0, panel);
     Snapshot("select-open");
 
-    Nat.GtkWindowResize(win, 390, 844);
+    ResizeViewport(390, 844);
     LoadPage("/", 2000);
     var m = State();
     var scroll = m.TryGetProperty("scrollWidth", out var sw) ? sw.GetInt32() : int.MaxValue;
@@ -505,6 +528,11 @@ internal static class Nat
 
     [DllImport(Gtk, CallingConvention = CallingConvention.Cdecl)]
     private static extern IntPtr gtk_offscreen_window_new();
+
+    [DllImport(Gtk, CallingConvention = CallingConvention.Cdecl)]
+    private static extern IntPtr gtk_window_new(int type);
+
+    public static IntPtr GtkWindowNew() => gtk_window_new(0);
 
     [DllImport(Gtk, CallingConvention = CallingConvention.Cdecl)]
     private static extern void gtk_container_add(IntPtr container, IntPtr widget);
