@@ -75,9 +75,20 @@ are eight, and four components with no upstream counterpart at all.
 
 ```razor
 @* App.razor *@
+<link rel="stylesheet" href="_content/Unpoly.Blazor.Shadcn/ui.safari15.css" />
+<script src="_content/Unpoly.Blazor.Shadcn/compat/safari15-shim.js"></script>
+<script src="_content/Unpoly.Blazor.Shadcn/compat/popover.iife.min.js"></script>
+<script src="_content/Unpoly.Blazor.Shadcn/compat/css-has-pseudo.js"></script>
+<script src="_content/Unpoly.Blazor.Shadcn/compat/has-pseudo-boot.js"></script>
 <script src="_content/Unpoly.Blazor.Shadcn/toastify/toastify.js" defer></script>
 <script src="_content/Unpoly.Blazor.Shadcn/ui.js" defer></script>
 ```
+
+The four compatibility assets must be loaded before `_content/Unpoly.Blazor/unpoly.min.js`.
+They are required for Safari 15: the shim supplies missing JavaScript APIs, the popover
+polyfill supplies the missing top-layer API, and the `:has()` assets cover Safari 15.0-15.3.
+Applications targeting Safari 16+ may omit them, except that `ui.safari15.css` is harmless
+and can be kept in a shared layout.
 
 **`ui.js` is wrapped in an IIFE, and must stay that way.** A classic `<script src>` shares one
 global scope with every other script on the page. `const el` here against `function el` in a
