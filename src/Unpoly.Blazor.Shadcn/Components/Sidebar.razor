@@ -57,7 +57,7 @@
     // root is written inline on the component as `group peer text-sidebar-foreground hidden
     // md:block`, which is what this is now.
     const string Base =
-        "group peer hidden text-sidebar-foreground md:block";
+        "text-sidebar-foreground group peer hidden md:block";
 
     string GapVariant => Variant switch
     {
@@ -76,7 +76,7 @@
     string ContainerSide => Side switch
     {
         "right" => "right-0 group-data-[collapsible=offcanvas]:right-[calc(var(--sidebar-width)*-1)]",
-        _ => "left-0 group-data-[collapsible=offcanvas]:left-[calc(var(--sidebar-width)*-1)]",
+        _ => "start-0 group-data-[collapsible=offcanvas]:left-[calc(var(--sidebar-width)*-1)]",
     };
 
     string Classes => Cn(Base, Class);
