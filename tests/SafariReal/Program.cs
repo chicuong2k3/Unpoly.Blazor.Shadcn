@@ -299,10 +299,19 @@ internal static class Nat
                 var jsResult = webkit_web_view_run_javascript_finish(source, res, ref err);
                 if (err != IntPtr.Zero)
                 {
-                    // Message pointer left unread on purpose (see above): the
-                    // probe only needs to know an error happened, and the
-                    // detail is already visible through the failed assertion.
-                    st.Completion.TrySetResult("\"<webkit error>\"");
+                    // Read-only peek at the GError message (no dealloc): the
+                    // text says whether the script failed to parse or threw.
+                    string detail;
+                    try
+                    {
+                        detail = Marshal.PtrToStringUTF8(
+                            Marshal.ReadIntPtr(err, IntPtr.Size * 2)) ?? "?";
+                    }
+                    catch
+                    {
+                        detail = "?";
+                    }
+                    st.Completion.TrySetResult("\"<webkit error: " + detail + ">\"");
                     return;
                 }
                 if (jsResult == IntPtr.Zero)
