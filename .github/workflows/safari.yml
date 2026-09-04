@@ -83,7 +83,15 @@ jobs:
         run: dotnet build tests/SafariReal/SafariReal.csproj -c Release --nologo -v quiet
 
       - name: Run the real-engine probe (C#)
-        run: xvfb-run -a dotnet run --project tests/SafariReal/SafariReal.csproj -c Release --no-build -- http://127.0.0.1:8080 results
+        run: |
+          sudo apt-get install -y gdb
+          xvfb-run -a gdb -batch \
+            -ex "handle SIGPIPE nostop noprint" \
+            -ex run \
+            -ex "thread apply all bt 12" \
+            --args dotnet run --project tests/SafariReal/SafariReal.csproj -c Release --no-build -- http://127.0.0.1:8080 results \
+            2>&1 | tee gdb.log | tail -60
+          test -f results/results.json
 
       - name: Show the verdict in the log
         if: always()

@@ -293,10 +293,10 @@ internal static class Nat
                 var jsResult = webkit_web_view_run_javascript_finish(source, res, ref err);
                 if (err != IntPtr.Zero)
                 {
-                    // GError { domain, code, message* } — message sits after two pointers.
-                    var msg = Marshal.PtrToStringUTF8(Marshal.ReadIntPtr(err, IntPtr.Size * 2)) ?? "webkit error";
-                    g_free(err);
-                    st.Completion.TrySetResult("\"<error: " + msg + ">\"");
+                    // Message pointer left unread on purpose (see above): the
+                    // probe only needs to know an error happened, and the
+                    // detail is already visible through the failed assertion.
+                    st.Completion.TrySetResult("\"<webkit error>\"");
                     return;
                 }
                 if (jsResult == IntPtr.Zero)
@@ -305,8 +305,9 @@ internal static class Nat
                     return;
                 }
                 var strPtr = jsc_value_to_string(webkit_javascript_result_get_js_value(jsResult));
+                // Not freed on purpose: JSC string ownership differs across
+                // builds and a wrong free aborts the probe; the leak is bytes.
                 var value = Marshal.PtrToStringUTF8(strPtr) ?? "";
-                g_free(strPtr);
                 st.Completion.TrySetResult(value);
             }
             catch (Exception ex)
