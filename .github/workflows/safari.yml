@@ -82,6 +82,11 @@ jobs:
       - name: Build the probe
         run: dotnet build tests/SafariReal/SafariReal.csproj -c Release --nologo -v quiet
 
+      # Syntax ladder first: tells us exactly which JS shapes the old
+      # JavaScriptCore refuses to parse, before the real assertions run.
+      - name: Run the syntax ladder
+        run: xvfb-run -a dotnet run --project tests/SafariReal/SafariReal.csproj -c Release --no-build -- http://127.0.0.1:8080 results ladder
+
       - name: Run the real-engine probe (C#)
         run: |
           sudo apt-get install -y gdb
