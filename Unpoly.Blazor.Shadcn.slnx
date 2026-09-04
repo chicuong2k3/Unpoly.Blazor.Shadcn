@@ -12,4 +12,7 @@
     <Project Path="tests/Unpoly.Blazor.Shadcn.Tests/Unpoly.Blazor.Shadcn.Tests.csproj" />
     <Project Path="tests/Unpoly.Blazor.Shadcn.Behaviour/Unpoly.Blazor.Shadcn.Behaviour.csproj" />
   </Folder>
+  <Folder Name="/tools/">
+    <Project Path="tools/Unpoly.Blazor.Shadcn.Tools/Unpoly.Blazor.Shadcn.Tools.csproj" />
+  </Folder>
 </Solution>
