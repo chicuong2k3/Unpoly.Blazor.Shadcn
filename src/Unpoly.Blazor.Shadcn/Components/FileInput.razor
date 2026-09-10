@@ -37,8 +37,10 @@
     [Parameter] public string? ControlClass { get; set; }
     [Parameter] public string? TriggerClass { get; set; }
 
+    [Parameter] public bool ShowSelectedFileName { get; set; } = true;
+
     private string? _chosenName;
-    private string DisplayText => SelectedFileName ?? _chosenName ?? Prompt;
+    private string DisplayText => SelectedFileName ?? (ShowSelectedFileName ? _chosenName : null) ?? Prompt;
 
     private string Classes => Cn("w-full", Class);
 
