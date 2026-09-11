@@ -3,9 +3,12 @@
 
 <div data-slot="file-input" data-disabled="@(Disabled ? "" : null)" class="@Classes" @attributes="AdditionalAttributes">
     <div data-slot="file-input-control" class="@ControlClasses">
-        <div data-slot="file-input-icon" class="@IconClasses">
-            <Icon Name="@Icon" Class="size-4" />
-        </div>
+        @if (ShowFileIcon)
+        {
+            <div data-slot="file-input-icon" class="@IconClasses">
+                <Icon Name="@Icon" Class="size-4" />
+            </div>
+        }
         <div data-slot="file-input-content" class="min-w-0 flex-1">
             <p data-slot="file-input-title" class="truncate text-sm font-medium text-foreground">@DisplayText</p>
             @if (!string.IsNullOrWhiteSpace(Hint))
@@ -38,6 +41,10 @@
     [Parameter] public string? TriggerClass { get; set; }
 
     [Parameter] public bool ShowSelectedFileName { get; set; } = true;
+
+    /// <summary>Whether the leading icon chip is rendered. Turn off when the control sits next
+    /// to its own preview/thumbnail, so the area does not show two icons.</summary>
+    [Parameter] public bool ShowFileIcon { get; set; } = true;
 
     private string? _chosenName;
     private string DisplayText => SelectedFileName ?? (ShowSelectedFileName ? _chosenName : null) ?? Prompt;
