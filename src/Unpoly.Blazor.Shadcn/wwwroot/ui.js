@@ -472,12 +472,23 @@
     }
   })
 
-  // Clicking the backdrop dismisses. The <dialog> element IS the backdrop area, so a click whose
-  // target is the dialog itself — rather than the panel inside it — landed outside.
+  // Dismissable is opt-in via data-dismissable (the component's Dismissable parameter). The
+  // <dialog> element IS the backdrop area, so a click whose target is the dialog itself — rather
+  // than the panel inside it — landed outside. A non-dismissable dialog must be answered: neither
+  // the backdrop nor Escape closes it, only its buttons.
   shadcnCompiler('dialog[data-dismissable]', (dialog) => {
-    const onClick = (event) => { if (event.target === dialog) dialog.close() }
+    const dismissable = () => {
+      const value = dialog.dataset.dismissable
+      return value === undefined || value === '' || value.toLowerCase() === 'true'
+    }
+    const onClick = (event) => { if (dismissable() && event.target === dialog) dialog.close() }
+    const onCancel = (event) => { if (!dismissable()) event.preventDefault() }
     dialog.addEventListener('click', onClick)
-    return () => dialog.removeEventListener('click', onClick)
+    dialog.addEventListener('cancel', onCancel)
+    return () => {
+      dialog.removeEventListener('click', onClick)
+      dialog.removeEventListener('cancel', onCancel)
+    }
   })
 
   // =============================================================================================

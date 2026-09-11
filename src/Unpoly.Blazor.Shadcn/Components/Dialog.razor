@@ -37,8 +37,9 @@
     /// <summary>What a <see cref="DialogTrigger"/> points its Target at. Required.</summary>
     [Parameter, EditorRequired] public string Id { get; set; } = default!;
 
-    /// <summary>Clicking the backdrop closes it. False for a dialog that must be answered.</summary>
-    [Parameter] public bool Dismissable { get; set; } = true;
+    /// <summary>Clicking the backdrop — or pressing Escape — closes it. False for a dialog that
+    /// must be answered: then only its Close/Cancel buttons can dismiss it.</summary>
+    [Parameter] public bool Dismissable { get; set; } = false;
 
     [Parameter] public bool ShowCloseButton { get; set; } = true;
 
