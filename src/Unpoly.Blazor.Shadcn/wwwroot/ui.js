@@ -472,15 +472,14 @@
     }
   })
 
-  // Dismissable is opt-in via data-dismissable (the component's Dismissable parameter). The
-  // <dialog> element IS the backdrop area, so a click whose target is the dialog itself — rather
-  // than the panel inside it — landed outside. A non-dismissable dialog must be answered: neither
+  // Dismissable rides on data-dismissable, which the component always renders as "true" or
+  // "false" (raw booleans cannot be used: Blazor drops a false attribute from the DOM, so an
+  // absent attribute would be indistinguishable from "attribute not supported"). The <dialog>
+  // element IS the backdrop area, so a click whose target is the dialog itself — rather than
+  // the panel inside it — landed outside. A non-dismissable dialog must be answered: neither
   // the backdrop nor Escape closes it, only its buttons.
   shadcnCompiler('dialog[data-dismissable]', (dialog) => {
-    const dismissable = () => {
-      const value = dialog.dataset.dismissable
-      return value === undefined || value === '' || value.toLowerCase() === 'true'
-    }
+    const dismissable = () => !/^false$/i.test(dialog.dataset.dismissable || '')
     const onClick = (event) => { if (dismissable() && event.target === dialog) dialog.close() }
     const onCancel = (event) => { if (!dismissable()) event.preventDefault() }
     dialog.addEventListener('click', onClick)

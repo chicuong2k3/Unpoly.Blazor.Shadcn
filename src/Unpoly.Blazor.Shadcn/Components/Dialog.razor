@@ -19,7 +19,7 @@
    this component for a dialog whose content the page already has; use up-layer when the content
    has to come from the server. *@
 
-<dialog id="@Id" data-slot="dialog" data-dismissable="@Dismissable">
+<dialog id="@Id" data-slot="dialog" data-dismissable="@(Dismissable ? "true" : "false")">
     <div data-slot="dialog-content" class="@Classes" @attributes="AdditionalAttributes">
         @ChildContent
         @if (ShowCloseButton)
