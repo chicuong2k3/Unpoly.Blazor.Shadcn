@@ -1,3 +1,22 @@
+/* Scrollbars: thin and light so dense controls stay readable, and the Chromium/WebView
+   up/down arrow buttons are always suppressed. `--scrollbar`/`--scrollbar-hover` come from
+the consumer theme when defined; the fallbacks keep a usable look without them. */
+* {
+    scrollbar-width: thin;
+    scrollbar-color: var(--scrollbar, #d0d0d0) transparent;
+}
+::-webkit-scrollbar { width: 10px; height: 10px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-button { display: none; height: 0; width: 0; }
+::-webkit-scrollbar-thumb {
+    background-color: var(--scrollbar, #d0d0d0);
+    border-radius: 999px;
+    border: 3px solid transparent;
+    background-clip: content-box;
+}
+::-webkit-scrollbar-thumb:hover { background-color: var(--scrollbar-hover, #b5b5b5); }
+::-webkit-scrollbar-corner { background: transparent; }
+
 /* shadcn/ui for Unpoly.Blazor — what Radix does in JavaScript, done by the platform instead.
    ------------------------------------------------------------------------------------------
    Radix ships `data-state="open|closed"` and animates on it. Native <dialog>, <details> and
