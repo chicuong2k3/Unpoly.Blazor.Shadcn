@@ -9,12 +9,7 @@
    raises it. When the caller does NOT bind — it splats a static `value="..."` like the docs do —
    the splat supplies the value and neither is emitted, so the two never conflict. *@
 
-@if (ValueChanged.HasDelegate && Immediate)
-{
-    <input type="@Type" data-slot="input" class="@Classes" value="@Value"
-           @oninput="OnChange" @attributes="AdditionalAttributes" />
-}
-else if (ValueChanged.HasDelegate)
+@if (ValueChanged.HasDelegate)
 {
     <input type="@Type" data-slot="input" class="@Classes" value="@Value"
            @onchange="OnChange" @attributes="AdditionalAttributes" />
@@ -33,9 +28,6 @@ else
     /// <summary>Raises on change when <c>@bind-Value</c> is used. Its presence decides whether the
     /// component renders the bound value/onchange or lets the <c>@attributes</c> splat do it.</summary>
     [Parameter] public EventCallback<string?> ValueChanged { get; set; }
-
-    /// <summary>Raises <see cref="ValueChanged"/> on every input event instead of waiting for blur/change.</summary>
-    [Parameter] public bool Immediate { get; set; }
 
     async Task OnChange(ChangeEventArgs e) =>
         await ValueChanged.InvokeAsync(e.Value?.ToString());
