@@ -2862,6 +2862,91 @@
   const isoDate = (d) =>
     `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`
 
+  shadcnCompiler('[data-slot="time-picker"]', (input) => {
+    if (typeof window.AirDatepicker !== 'function') return
+
+    const parseTime = (value) => {
+      const match = /^(\d{1,2}):(\d{2})$/.exec(value || '')
+      if (!match) return null
+      const hours = Number(match[1])
+      const minutes = Number(match[2])
+      if (hours < 0 || hours > 23 || minutes < 0 || minutes > 59) return null
+      const date = new Date()
+      date.setHours(hours, minutes, 0, 0)
+      return date
+    }
+    const formatTime = (date) =>
+      `${String(date.getHours()).padStart(2, '0')}:${String(date.getMinutes()).padStart(2, '0')}`
+
+    const seeded = parseTime(input.value)
+    const dp = new window.AirDatepicker(input, {
+      locale: { ...DEFAULT_DATE_LOCALE, ...(config().datePickerLocale || {}) },
+      timeFormat: config().datePickerLocale?.timeFormat || DEFAULT_DATE_LOCALE.timeFormat,
+      selectedDates: seeded ? [seeded] : [],
+      timepicker: true,
+      onlyTimepicker: true,
+      minutesStep: 5,
+      autoClose: false,
+      isMobile: false,
+      container: document.body,
+      onSelect: ({ date }) => {
+        const picked = Array.isArray(date) ? date[0] : date
+        input.value = picked ? formatTime(picked) : ''
+        input.dispatchEvent(new Event('change', { bubbles: true }))
+      },
+    })
+
+    input.setAttribute('inputmode', 'numeric')
+    input.setAttribute('maxlength', '5')
+    input.setAttribute('pattern', '[0-9]{2}:[0-9]{2}')
+    const normalizeTimeText = () => {
+      const raw = input.value.replace(/[^0-9:]/g, '').replace(/:+/g, ':')
+      input.value = raw.length > 5 ? raw.slice(0, 5) : raw
+    }
+    const blockInvalidText = (event) => {
+      if (event.data && /[^0-9:]/.test(event.data)) event.preventDefault()
+    }
+    const blockInvalidPaste = (event) => {
+      const text = event.clipboardData?.getData('text') || ''
+      if (/[^0-9:]/.test(text)) event.preventDefault()
+    }
+    const syncTypedTime = () => { normalizeTimeText(); input.dispatchEvent(new Event('change', { bubbles: true })) }
+    const blockPopupTextEntry = (event) => {
+      if (event.target?.closest?.('.air-datepicker-time--current')) event.preventDefault()
+    }
+    const blockPopupPrintableKey = (event) => {
+      if (event.key?.length === 1 && event.target?.closest?.('.air-datepicker-time--current')) event.preventDefault()
+    }
+    input.addEventListener('beforeinput', blockInvalidText)
+    input.addEventListener('paste', blockInvalidPaste)
+    input.addEventListener('drop', blockInvalidText)
+    input.addEventListener('input', syncTypedTime)
+    document.addEventListener('beforeinput', blockPopupTextEntry, true)
+    document.addEventListener('paste', blockPopupTextEntry, true)
+    document.addEventListener('drop', blockPopupTextEntry, true)
+    document.addEventListener('keydown', blockPopupPrintableKey, true)
+
+    const scroller = input.closest('up-modal-content, [data-overlay-scroll]')
+    const follow = () => { if (dp.visible) dp.hide() }
+    scroller?.addEventListener('scroll', follow, { passive: true })
+
+    return () => {
+      scroller?.removeEventListener('scroll', follow)
+      input.removeEventListener('beforeinput', blockInvalidText)
+      input.removeEventListener('paste', blockInvalidPaste)
+      input.removeEventListener('drop', blockInvalidText)
+      input.removeEventListener('input', syncTypedTime)
+      document.removeEventListener('beforeinput', blockPopupTextEntry, true)
+      document.removeEventListener('paste', blockPopupTextEntry, true)
+      document.removeEventListener('drop', blockPopupTextEntry, true)
+      document.removeEventListener('keydown', blockPopupPrintableKey, true)
+      dp.destroy()
+      input.removeAttribute('inputmode')
+      input.removeAttribute('maxlength')
+      input.removeAttribute('pattern')
+    }
+  })
+
   shadcnCompiler('[data-slot="date-picker"]', (input) => {
     if (typeof window.AirDatepicker !== 'function') return
 

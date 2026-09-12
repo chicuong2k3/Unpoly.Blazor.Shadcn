@@ -904,7 +904,8 @@ button[data-slot="sidebar-menu-sub-button"] { width: 100%; }
     /* A column of figures reads digit over digit, and the spinner — a different shape in every
        engine, and money never needs it — is gone. */
     input[type="number"][data-slot="input"],
-    [data-slot="date-picker"] { font-family: var(--font-numeric); }
+    [data-slot="date-picker"],
+[data-slot="time-picker"] { font-family: var(--font-numeric); }
     input[type="number"][data-slot="input"] { -moz-appearance: textfield; appearance: textfield; }
     input[type="number"][data-slot="input"]::-webkit-outer-spin-button,
     input[type="number"][data-slot="input"]::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
