@@ -1040,6 +1040,9 @@
   .h-140 {
     height: calc(var(--spacing) * 140);
   }
+  .h-\[1\.625rem\] {
+    height: 1.625rem;
+  }
   .h-\[100dvh\] {
     height: 100dvh;
   }
@@ -3844,8 +3847,19 @@
         border-color: color-mix(in oklab, var(--foreground) 30%, transparent);
       }
     }
+    .hover\:border-primary:hover {
+      border-color: var(--primary);
+    }
     .hover\:bg-accent:hover {
       background-color: var(--accent);
+    }
+    .hover\:bg-accent\/30:hover {
+      background-color: var(--accent);
+    }
+    @supports (color: color-mix(in lab, red, red)) {
+      .hover\:bg-accent\/30:hover {
+        background-color: color-mix(in oklab, var(--accent) 30%, transparent);
+      }
     }
     .hover\:bg-accent\/40:hover {
       background-color: var(--accent);
@@ -3880,6 +3894,14 @@
     @supports (color: color-mix(in lab, red, red)) {
       .hover\:bg-muted\/50:hover {
         background-color: color-mix(in oklab, var(--muted) 50%, transparent);
+      }
+    }
+    .hover\:bg-primary\/5:hover {
+      background-color: var(--primary);
+    }
+    @supports (color: color-mix(in lab, red, red)) {
+      .hover\:bg-primary\/5:hover {
+        background-color: color-mix(in oklab, var(--primary) 5%, transparent);
       }
     }
     .hover\:bg-primary\/90:hover {
@@ -4959,6 +4981,12 @@
     .sm\:py-16 {
       padding-block: calc(var(--spacing) * 16);
     }
+    .sm\:ps-2\.5 {
+      padding-inline-start: calc(var(--spacing) * 2.5);
+    }
+    .sm\:pe-2\.5 {
+      padding-inline-end: calc(var(--spacing) * 2.5);
+    }
     .sm\:text-left {
       text-align: left;
     }
@@ -6015,6 +6043,34 @@
   form:has(:checked) > .\[form\:has\(\:checked\)\>\&\]\:flex {
     display: flex;
   }
+}
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--scrollbar, #d0d0d0) transparent;
+}
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-button {
+  display: none;
+  height: 0;
+  width: 0;
+}
+::-webkit-scrollbar-thumb {
+  background-color: var(--scrollbar, #d0d0d0);
+  border-radius: 999px;
+  border: 3px solid transparent;
+  background-clip: content-box;
+}
+::-webkit-scrollbar-thumb:hover {
+  background-color: var(--scrollbar-hover, #b5b5b5);
+}
+::-webkit-scrollbar-corner {
+  background: transparent;
 }
 @layer components {
   [data-slot="dialog"][open], [data-slot="alert-dialog"][open] {

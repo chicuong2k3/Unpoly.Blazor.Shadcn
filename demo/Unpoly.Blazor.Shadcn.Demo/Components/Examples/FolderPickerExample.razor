@@ -1,0 +1,9 @@
+<Field>
+    <FieldLabel For="folder-picker-web">Backup folder</FieldLabel>
+    <FolderPicker Id="folder-picker-web" Value="C:\Backups"
+                  Disabled="true" BrowseLabel="Browse" AriaLabel="Selected backup folder" />
+    <FieldDescription>
+        Browsers cannot reveal an absolute local folder path. Native and hybrid hosts provide
+        <code>PickAsync</code>; web hosts should keep the picker disabled or supply a server flow.
+    </FieldDescription>
+</Field>

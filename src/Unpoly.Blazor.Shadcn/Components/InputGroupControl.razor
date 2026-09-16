@@ -13,7 +13,7 @@
 }
 else
 {
-    <Input data-slot="input-group-control" Type="@Type" value="@Value" Class="@Classes"
+    <Input data-slot="input-group-control" Type="@Type" Value="@Value" ValueChanged="@ValueChanged" Class="@Classes"
            @attributes="AdditionalAttributes" />
 }
 
@@ -30,6 +30,7 @@ else
     /// empty while the markup plainly said otherwise.
     /// </summary>
     [Parameter] public string? Value { get; set; }
+    [Parameter] public EventCallback<string?> ValueChanged { get; set; }
 
     const string Base =
         "flex-1 rounded-none border-0 bg-transparent shadow-none focus-visible:ring-0 " +

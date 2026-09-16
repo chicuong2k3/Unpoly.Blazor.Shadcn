@@ -777,7 +777,7 @@ renders `<dialog>` · `data-slot="dialog"`
 | Parameter | Type | Default | |
 |---|---|---|---|
 | `Id` | `string` | `default!` |  |
-| `Dismissable` | `bool` | `true` | **required** |
+| `Dismissable` | `bool` | `false` | **required** |
 | `ShowCloseButton` | `bool` | `true` |  |
 | `CloseLabel` | `string` | `"Close"` |  |
 
@@ -1065,6 +1065,28 @@ renders `<div>` · `data-slot="field-label"`
 
 _No parameters of its own._
 
+## `<FileInput>`
+renders `<div>` · `data-slot="file-input"`
+
+| Parameter | Type | Default | |
+|---|---|---|---|
+| `Id` | `string` | `$"file-{Guid.NewGuid():N}"` |  |
+| `OnChange` | `EventCallback<InputFileChangeEventArgs>` | — |  |
+| `Accept` | `string?` | — |  |
+| `Multiple` | `bool` | — |  |
+| `Disabled` | `bool` | — |  |
+| `Prompt` | `string` | `"Choose a file"` |  |
+| `Hint` | `string?` | — |  |
+| `SelectedFileName` | `string?` | — |  |
+| `ChooseLabel` | `string` | `"Browse"` |  |
+| `Icon` | `string` | `"upload"` |  |
+| `AriaLabel` | `string?` | — |  |
+| `AriaInvalid` | `string?` | — |  |
+| `ControlClass` | `string?` | — |  |
+| `TriggerClass` | `string?` | — |  |
+| `ShowSelectedFileName` | `bool` | `true` |  |
+| `ShowFileIcon` | `bool` | `true` |  |
+
 ## `<FileUpload>`
 renders `<div>` · `data-slot="file-upload"`
 
@@ -1081,6 +1103,26 @@ renders `<div>` · `data-slot="file-upload"`
 | `PreviewBase` | `string?` | — |  |
 | `ClearLabel` | `string` | `"Remove"` |  |
 | `Disabled` | `bool` | — |  |
+
+## `<FolderPicker>`
+renders `<div>` · `data-slot="folder-picker"`
+
+| Parameter | Type | Default | |
+|---|---|---|---|
+| `Id` | `string` | `$"folder-{Guid.NewGuid():N}"` |  |
+| `Name` | `string?` | — |  |
+| `Value` | `string?` | — |  |
+| `ValueChanged` | `EventCallback<string?>` | — |  |
+| `PickAsync` | `Func<Task<string?>>?` | — |  |
+| `OnError` | `EventCallback<Exception>` | — |  |
+| `Disabled` | `bool` | — |  |
+| `Invalid` | `bool` | — |  |
+| `Placeholder` | `string` | `"No folder selected"` |  |
+| `BrowseLabel` | `string` | `"Browse"` |  |
+| `BusyLabel` | `string` | `"Opening"` |  |
+| `BrowseAriaLabel` | `string` | `"Choose folder"` |  |
+| `AriaLabel` | `string?` | — |  |
+| `ErrorMessage` | `string` | `"The folder picker could not be opened. Try again."` |  |
 
 ## `<FormDescription>`
 renders `<p>` · `data-slot="form-description"`
@@ -1200,6 +1242,7 @@ renders `<button>` · `data-slot="input-group-button"`
 | `Multiline` | `bool` | — |  |
 | `Type` | `string` | `"text"` |  |
 | `Value` | `string?` | — |  |
+| `ValueChanged` | `EventCallback<string?>` | — |  |
 
 ## `<InputOtp>`
 renders `<div>` · `data-slot="input-otp"`

@@ -1,0 +1,16 @@
+<Field>
+    <FieldLabel For="folder-picker-maui">Backup folder</FieldLabel>
+    <FolderPicker Id="folder-picker-maui" @bind-Value="_folder" PickAsync="ChooseDemoFolderAsync"
+                  BrowseLabel="Browse" BusyLabel="Opening" AriaLabel="Selected backup folder" />
+    <FieldDescription>The host owns the native folder dialog; the component owns its accessible state and presentation.</FieldDescription>
+</Field>
+
+@code {
+    private string? _folder = @"C:\Backups";
+
+    private static async Task<string?> ChooseDemoFolderAsync()
+    {
+        await Task.Delay(250);
+        return @"C:\Backups\Daily";
+    }
+}
