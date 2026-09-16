@@ -3,14 +3,26 @@
     <FolderPicker Id="folder-picker-maui" @bind-Value="_folder" PickAsync="ChooseDemoFolderAsync"
                   BrowseLabel="Browse" BusyLabel="Opening" AriaLabel="Selected backup folder" />
     <FieldDescription>The host owns the native folder dialog; the component owns its accessible state and presentation.</FieldDescription>
+    <div class="flex items-center justify-between gap-3">
+        <span class="text-sm text-muted-foreground">@_backupStatus</span>
+        <Button Type="button" Disabled="@string.IsNullOrWhiteSpace(_folder)" @onclick="RunManualBackupAsync"><Icon Name="upload" />Run manual backup</Button>
+    </div>
 </Field>
 
 @code {
     private string? _folder = @"C:\Backups";
+    private string _backupStatus = "Ready to back up.";
 
     private static async Task<string?> ChooseDemoFolderAsync()
     {
         await Task.Delay(250);
         return @"C:\Backups\Daily";
+    }
+
+    private async Task RunManualBackupAsync()
+    {
+        _backupStatus = "Creating backup...";
+        await Task.Delay(300);
+        _backupStatus = $"Backup saved to {_folder}.";
     }
 }
