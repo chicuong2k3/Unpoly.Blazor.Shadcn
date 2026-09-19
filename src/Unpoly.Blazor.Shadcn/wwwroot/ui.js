@@ -267,13 +267,15 @@
       text,
       duration: options.duration ?? 4000,
       close: true,
-      gravity: 'bottom',
+      // Keep transient feedback clear of the Windows taskbar and checkout controls.
+      gravity: 'top',
       position: 'right',
       // Theme comes from CSS, not inline style, so every token stays in one place.
       className: 'sonner-toast',
       style: { background: '' },
       stopOnFocus: true,
       escapeMarkup: true,
+      ariaLive: type === 'error' ? 'assertive' : 'polite',
       callback: undefined,
       onClick: options.onClick,
     }).showToast()
