@@ -2831,6 +2831,16 @@
     // The native select is still the value. A reset, a fragment swap or another script can move
     // it, and the drawn face has to follow rather than claim a value the form does not have.
     select.addEventListener('change', sync)
+    // Blazor can update a bound <select> during a component render without dispatching change.
+    // Its native value is then correct while this drawn trigger keeps showing the old/first row.
+    // Watching the rendered value/selected attributes keeps both faces of the same control in sync.
+    const renderedValue = new MutationObserver(sync)
+    renderedValue.observe(select, {
+      attributes: true,
+      childList: true,
+      subtree: true,
+      attributeFilter: ['value', 'selected', 'disabled']
+    })
 
     sync()
     select.before(wrap)
@@ -2840,6 +2850,7 @@
     return () => {
       if (isOpen()) lockScroll(false)
       panel.remove()
+      renderedValue.disconnect()
       select.removeEventListener('change', sync)
       select.classList.remove('sr-only')
       select.tabIndex = 0

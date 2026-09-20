@@ -41,6 +41,30 @@ public class FormControlTests(DemoFixture fixture) : DemoPage(fixture)
         AssertQuiet();
     }
 
+    [SkippableFact]
+    public async Task A_rendered_value_change_refreshes_the_drawn_trigger_without_a_change_event()
+    {
+        RequireDemo();
+        await GoAsync("/components/select");
+        await ShowAsync("preview-select-basic");
+
+        await Page.EvaluateAsync("""
+            () => {
+              const select = document.querySelector('#kind');
+              select.querySelector('option[value="top"]').removeAttribute('selected');
+              select.querySelector('option[value="shoes"]').setAttribute('selected', '');
+              select.value = 'shoes';
+            }
+            """);
+
+        await Page.WaitForFunctionAsync("""
+            () => document.querySelector('#kind').parentElement
+              .querySelector('[data-slot="select-value"]').textContent.trim() === 'Shoes'
+            """);
+        Assert.Equal("shoes", await Page.Locator("#kind").InputValueAsync());
+        AssertQuiet();
+    }
+
     /// <summary>Radix locks it; the platform does not — a popover's background is inert to
     /// clicks and to the keyboard, but the wheel still reaches it.</summary>
     [SkippableFact]
