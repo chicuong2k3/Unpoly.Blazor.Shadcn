@@ -110,7 +110,9 @@
       for (const { addedNodes, removedNodes } of mutations) {
         for (const node of addedNodes) scan(node)
         for (const node of removedNodes) {
-          if (!(node instanceof Element)) continue
+          // A node moved within the document (for example a wrapped select) is not
+          // disposed. Unwrapping it here creates an infinite mutation/recompile loop.
+          if (!(node instanceof Element) || node.isConnected) continue
           const teardown = node.__shadcnTeardown
           if (typeof teardown === 'function') { teardown(); delete node.__shadcnTeardown }
           compiledElements.delete(node)
