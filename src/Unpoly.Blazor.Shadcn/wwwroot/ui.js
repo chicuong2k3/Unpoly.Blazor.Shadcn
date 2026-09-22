@@ -2115,6 +2115,13 @@
 
       el.innerHTML = ''
       new QRCode(el, { text, width: size, height: size, colorDark, colorLight, correctLevel })
+
+      // qrcodejs may append both a canvas and a fallback <img>. The labelled wrapper is
+      // the single semantic image, so generated renderers must stay decorative.
+      for (const renderer of el.querySelectorAll('canvas, img')) {
+        renderer.setAttribute('aria-hidden', 'true')
+        if (renderer.tagName === 'IMG') renderer.setAttribute('alt', '')
+      }
     }
 
     const init = () => {
