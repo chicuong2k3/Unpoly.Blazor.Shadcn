@@ -142,7 +142,7 @@
                                             <input type="@(Mode == "range" ? "checkbox" : "radio")"
                                                    name="@Name" value="@d.ToString("yyyy-MM-dd")"
                                                    class="sr-only peer" checked="@IsChecked(d)"
-                                                   disabled="@disabled" />
+                                                   disabled="@disabled" @onchange="@(() => DateSelected.InvokeAsync(d))" />
                                             <span class="num">@d.Day</span>
                                             @DayContent?.Invoke(d)
                                         </label>
@@ -171,6 +171,9 @@
     [Parameter] public string? Name { get; set; }
 
     [Parameter] public DateOnly? Selected { get; set; }
+
+    /// <summary>Called when a selectable day is chosen in an interactive Blazor host.</summary>
+    [Parameter] public EventCallback<DateOnly> DateSelected { get; set; }
 
     /// <summary>The first day of the range, when Mode is range.</summary>
     [Parameter] public DateOnly? From { get; set; }
