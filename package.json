@@ -7,16 +7,20 @@
     "test": "tests"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build:shiki": "esbuild tools/shiki-entry.js --bundle --format=iife --platform=browser --target=es2022 --minify --legal-comments=linked --outfile=src/Unpoly.Blazor.Shadcn/wwwroot/shiki/shiki.js"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "type": "commonjs",
   "devDependencies": {
+    "@csstools/postcss-oklab-function": "5.0.10",
+    "@shikijs/transformers": "^3.13.0",
+    "css-has-pseudo": "8.0.1",
+    "esbuild": "^0.25.12",
     "lucide-static": "^1.34.0",
     "postcss": "8.4.49",
-    "css-has-pseudo": "8.0.1",
-    "@csstools/postcss-oklab-function": "5.0.10"
+    "shiki": "^3.13.0"
   }
 }

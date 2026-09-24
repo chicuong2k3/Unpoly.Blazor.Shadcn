@@ -230,10 +230,10 @@ Three, all listed with the reason in the `scaffold-components` .NET command:
 - **`CodeBlock`** accepts a `Code` string for a single file, or `Files` (`CodeBlockFile`
   filename/language/code records) for a multi-file block. `DefaultFile` selects the initial
   filename. Never put literal code in `ChildContent`: Razor interprets markup like `<Button>`
-  as a component. Prism is lazy-loaded for syntax colouring. `ShowFileLineNumbers` and
+  as a component. Shiki is lazy-loaded for syntax colouring. `ShowFileLineNumbers` and
   `SyntaxHighlighting` control the multi-file display; `HighlightNotations` interprets
   `[!code highlight]`, `[!code ++]`, `[!code --]`, `[!code focus]` and `[!code word:term]`.
-  Copy reads the selected file's original source, not Prism's decorated DOM.
+  Copy reads the selected file's original source, not Shiki's decorated DOM.
 - **`Snippet`** accepts `IReadOnlyList<SnippetItem>` with unique labels. `TabContent` and
   `PanelContent` let callers customize the display; copying still uses `SnippetItem.Code`.
   `DefaultValue` selects the initial tab. The browser emits `snippet:copy` with `detail.value`

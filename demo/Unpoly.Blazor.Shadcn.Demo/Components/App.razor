@@ -30,9 +30,6 @@
         <link rel="stylesheet" href="_content/Unpoly.Blazor.Shadcn/ui.safari15.css" />
         <link rel="stylesheet" href="_content/Unpoly.Blazor.Shadcn/cropperjs/cropper.min.css" />
         <link rel="stylesheet" href="_content/Unpoly.Blazor.Shadcn/toastify/toastify.css" />
-        <link rel="stylesheet" href="_content/Unpoly.Blazor.Shadcn/prism/prism.css" />
-        <link rel="stylesheet" href="_content/Unpoly.Blazor.Shadcn/prism/prism-line-numbers.css" />
-        <link rel="stylesheet" href="_content/Unpoly.Blazor.Shadcn/prism/prism-shadcn.css" />
 
         <script>
             // Inline and synchronous on purpose. Anything deferred paints the default theme first.
@@ -43,7 +40,7 @@
             })();
         </script>
 
-        @* Prism, QRCode, ECharts are lazy-loaded by up.compiler inside ui.js / echarts.js
+        @* Shiki, QRCode, ECharts are lazy-loaded by the platform compilers inside ui.js / echarts.js
            only when a [data-slot="code-block"], [data-slot="qr-code"] or [data-echarts] is actually
            on the page. No request for those ~1.1MB on a landing page that ships no chart or code. *@
         <script src="_content/Unpoly.Blazor.Shadcn/airdatepicker/air-datepicker.js" defer></script>

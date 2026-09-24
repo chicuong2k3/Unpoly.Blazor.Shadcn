@@ -126,8 +126,8 @@
   }
 
   // ---- lazy assets — only when a component that needs them is actually on the page -----------
-  // SSR + Unpoly renders HTML on the server. The old wiring loaded prism.js / qrcode.js for
-  // *every* request even when the page had no <CodeBlock> or <QrCode>. That is 80 KB + 20 KB
+  // SSR + Unpoly renders HTML on the server. CodeBlock's Shiki bundle and QRCode
+  // are requested only when their components are present on the page.
   // of blocking download on a marketing page that ships no code at all. Each compiler below
   // calls `loadScript` on first use and caches the promise, so a request that never renders the
   // component never fetches the file — and a request that renders ten blocks fetches it once.
@@ -152,16 +152,7 @@
     loading.set(src, promise)
     return promise
   }
-  const ensurePrism = () => {
-    if (typeof Prism !== 'undefined' && Prism.highlightElement) return Promise.resolve()
-    window.Prism = window.Prism || {}; window.Prism.manual = true
-    // core prism.js must load first; languages are bundled via explicit script tags in the page
-    // when the app opts in, otherwise autoloader fetches the single language needed for this block
-    return loadScript('_content/Unpoly.Blazor.Shadcn/prism/prism.js')
-      .then(() => loadScript('_content/Unpoly.Blazor.Shadcn/prism/prism-normalize-whitespace.min.js'))
-      .then(() => loadScript('_content/Unpoly.Blazor.Shadcn/prism/prism-line-numbers.min.js'))
-      .catch(() => {})
-  }
+  const ensureShiki = () => loadScript('_content/Unpoly.Blazor.Shadcn/shiki/shiki.js')
   const ensureQrcode = () => {
     if (typeof QRCode !== 'undefined') return Promise.resolve()
     return loadScript('_content/Unpoly.Blazor.Shadcn/qrcodejs/qrcode.min.js').catch(() => {})
@@ -2067,84 +2058,44 @@
   })
 
   // =============================================================================================
-  // CodeBlock — Prism highlight (https://prismjs.com)
-  // =============================================================================================
-  // Static SSR renders <pre><code class="language-xxxx"> as text. Unpoly swaps fragments underneath,
-  // so highlighting must run on every insertion (first load AND every fragment swap) via up.compiler.
-  // Prism is loaded `data-manual` so it does not auto-highlight on DOMContentLoaded; this compiler
-  // calls highlightElement per block. No destructor needed — Prism writes spans inside <code> and
-  // Unpoly removes the whole block on the next swap.
-  // `prism-normalize-whitespace` trims, `prism-line-numbers` adds the gutter when <pre> has
-  // `line-numbers`. Autoloader lazily fetches missing languages from the CDN or from ./components/
-  // relative to prism.js when self-hosted.
+  // CodeBlock — Shiki with Kibo's themes and notation transformers, lazy-loaded.
+  // A plain escaped <code> stays usable while the bundle loads or if loading fails.
   let codeBlockSeq = 0
   shadcnCompiler('[data-slot="code-block"]', (root) => {
     const codes = [...root.querySelectorAll('[data-slot="code-block-code"]')]
     if (!codes.length) return
     let disposed = false
     for (const code of codes) {
-      if (!code.className.match(/\blanguage-/)) code.classList.add('language-none')
       const original = code.textContent ?? ''
       code.dataset.copySource = original
-      const render = () => {
-        if (disposed || !root.isConnected || typeof Prism === 'undefined') return
+      if (code.dataset.highlight === 'false') {
         const pre = code.closest('[data-slot="code-block-pre"]')
-        const annotated = code.dataset.notations !== 'false' && original.includes('[!code ')
-        if (!pre?.dataset.lineNumbers && !annotated) {
-          if (code.dataset.highlight !== 'false') Prism.highlightElement(code)
-          return
+        if (pre?.dataset.lineNumbers) {
+          code.classList.add('shiki-code', 'shiki-line-numbers')
+          const lines = original.replace(/\r\n/g, '\n').split('\n')
+          if (lines.length > 1 && lines.at(-1) === '') lines.pop()
+          code.replaceChildren(...lines.map(text => {
+            const line = document.createElement('span')
+            line.className = 'line'
+            line.textContent = text || '\u200b'
+            return line
+          }))
         }
-        const lang = code.className.match(/\blanguage-([\w-]+)\b/)?.[1]
-        const grammar = code.dataset.highlight === 'false' ? null : Prism.languages[lang]
-        const lines = original.replace(/\r\n/g, '\n').split('\n')
-        if (lines.at(-1) === '' && lines.length > 1) lines.pop()
-        const fragment = document.createDocumentFragment()
-        const marker = /\s*(?:\/\/|#|<!--)\s*\[!code\s+(highlight|focus|\+\+|--|error|warning|word:[^\]]+)\](?:\s*-->)?\s*$/
-        lines.forEach((text, index) => {
-          const match = annotated ? text.match(marker) : null
-          if (match) text = text.slice(0, match.index)
-          const line = document.createElement('span')
-          line.dataset.codeLine = ''
-          if (pre.dataset.lineNumbers) line.dataset.number = String(index + 1)
-          if (match) {
-            const type = match[1]
-            line.dataset.annotation = type.startsWith('word:') ? 'word' : type === '++' ? 'add' : type === '--' ? 'remove' : type
-          }
-          if (grammar) line.innerHTML = Prism.highlight(text, grammar, lang)
-          else line.textContent = text
-          // Highlight a matching text node without crossing syntax-token boundaries.
-          if (match?.[1].startsWith('word:')) {
-            const word = match[1].slice(5)
-            const walker = document.createTreeWalker(line, NodeFilter.SHOW_TEXT)
-            for (let node; (node = walker.nextNode());) {
-              const at = node.textContent.indexOf(word)
-              if (at < 0) continue
-              const range = document.createRange()
-              range.setStart(node, at); range.setEnd(node, at + word.length)
-              const highlight = document.createElement('mark')
-              highlight.dataset.codeWord = ''
-              range.surroundContents(highlight)
-              break
-            }
-          }
-          fragment.append(line)
-        })
-        code.replaceChildren(fragment)
-        if (code.querySelector('[data-annotation="focus"]')) code.dataset.hasFocus = ''
+        continue
       }
-      const run = () => {
-        if (disposed || typeof Prism === 'undefined' || !Prism.highlightElement) return
-        try { render() } catch (error) { console.error(error) }
-      }
-      const highlight = () => {
-        const m = code.className.match(/\blanguage-([\w-]+)\b/)
-        const lang = m && m[1] !== 'none' ? m[1] : null
-        if (lang && !Prism.languages[lang])
-          loadScript(`_content/Unpoly.Blazor.Shadcn/prism/prism-${lang}.min.js`).then(run).catch(run)
-        else run()
-      }
-      if (typeof Prism !== 'undefined' && Prism.highlightElement) highlight()
-      else ensurePrism().then(highlight).catch(console.error)
+      const lang = code.dataset.language || 'typescript'
+      ensureShiki().then(() => window.shadcnShikiHighlight(
+        original, lang, code.dataset.notations !== 'false'
+      )).then(html => {
+        if (disposed || !root.isConnected) return
+        const doc = new DOMParser().parseFromString(html, 'text/html')
+        const pre = code.closest('[data-slot="code-block-pre"]')
+        const shiki = doc.querySelector('pre.shiki')
+        if (!shiki || !pre) return
+        code.replaceChildren(...shiki.querySelector('code').childNodes)
+        code.classList.add('shiki-code')
+        if (pre.dataset.lineNumbers) code.classList.add('shiki-line-numbers')
+      }).catch(error => console.error('CodeBlock Shiki:', error))
     }
     const tabs = [...root.querySelectorAll('[data-slot="code-block-file"]')]
     const panels = [...root.querySelectorAll('[data-slot="code-block-pre"]')]

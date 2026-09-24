@@ -1,7 +1,7 @@
 @inherits UiComponentBase
 
 @* CodeBlock: single Code string (legacy) or Kibo-style named Files. Code stays text so
-   Razor never parses sample markup as components. Prism loads on demand; the platform
+   Razor never parses sample markup as components. Shiki loads on demand; the platform
    compiler handles file tabs, clipboard and inline [!code] notations on both hosts.
    Copy reads original source, before highlighting or annotation decoration. *@
 
@@ -49,7 +49,7 @@
     }
     else
     {
-        <pre data-slot="code-block-pre" data-line-numbers="@(CustomLineNumbers ? "true" : null)" class="@PreClasses" tabindex="0"><code data-slot="code-block-code"
+        <pre data-slot="code-block-pre" data-line-numbers="@(ShowLineNumbers ? "true" : null)" class="@PreClasses" tabindex="0"><code data-slot="code-block-code"
                             data-language="@Language" data-notations="@(HighlightNotations ? "true" : "false")" data-highlight="@(SyntaxHighlighting ? "true" : "false")"
                             class="@CodeClasses">@Code</code></pre>
     }
@@ -62,7 +62,7 @@
     /// <summary>Shown in the header, usually a file name.</summary>
     [Parameter] public string? Title { get; set; }
 
-    /// <summary>Prism language: csharp, cshtml, razor, javascript, typescript, css, html, json, bash, yaml, sql, diff, docker, etc.</summary>
+    /// <summary>Shiki language: csharp, razor, javascript, typescript, css, html, json, bash, yaml, sql, diff, etc.</summary>
     [Parameter] public string? Language { get; set; }
 
     /// <summary>Optional named files; when supplied, the active file is highlighted and copied.</summary>
@@ -77,7 +77,7 @@
     /// <summary>Interpret Shiki-style inline [!code] highlight, diff, focus and word markers.</summary>
     [Parameter] public bool HighlightNotations { get; set; } = true;
 
-    /// <summary>Turn off Prism token colouring while keeping line annotations.</summary>
+    /// <summary>Disable Shiki syntax highlighting and show escaped source text instead.</summary>
     [Parameter] public bool SyntaxHighlighting { get; set; } = true;
 
     int InitialFile => Math.Max(0, Files.ToList().FindIndex(f => f.Filename == DefaultFile));
@@ -86,7 +86,7 @@
 
     [Parameter] public string CopyLabel { get; set; } = "Copy";
 
-    /// <summary>When true, adds Prism line-numbers (requires prism-line-numbers.css/js).</summary>
+    /// <summary>Show line numbers alongside Shiki-highlighted lines.</summary>
     [Parameter] public bool ShowLineNumbers { get; set; }
 
     const string Base =
@@ -94,7 +94,7 @@
 
     string Classes => Cn(Base, Class);
 
-    // Normalize Language for Prism: `razor` → `cshtml`, `cs` → `csharp`, `js` → `javascript`, `ts` → `typescript`, `sh` → `bash`, `yml` → `yaml`.
+    // Normalize common aliases for Shiki. Keep legacy DOM language classes for tests.
     string? NormalizedLanguage => Language?.Trim().ToLowerInvariant() switch
     {
         "razor" => "cshtml",
@@ -117,10 +117,8 @@
 
     string CodeClasses => NormalizedLanguage is null ? "" : $"language-{NormalizedLanguage}";
 
-    bool CustomLineNumbers => ShowLineNumbers && (!SyntaxHighlighting || HighlightNotations && Code.Contains("[!code ", StringComparison.Ordinal));
-
     string PreClasses => Cn(
         "overflow-x-auto p-4 text-[12.5px] leading-relaxed",
         NormalizedLanguage is not null ? $"language-{NormalizedLanguage}" : null,
-        ShowLineNumbers && !CustomLineNumbers ? "line-numbers" : null);
+        ShowLineNumbers ? "line-numbers" : null);
 }

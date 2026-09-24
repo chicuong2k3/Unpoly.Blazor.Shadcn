@@ -4,113 +4,104 @@
 
 <h1 class="doc-h1">Theming</h1>
 <p class="doc-lede">
-    A theme is a block of custom properties. Switch it in the header and watch every component on
-    this page change without a rebuild — nothing a theme sets is resolved by Tailwind.
+    A theme is a set of CSS custom properties. Choose one in the header to recolour this page
+    without rebuilding; components read the same tokens in both Web and MAUI.
 </p>
 
-<h2 class="doc-h2">The tokens</h2>
+<h2 class="doc-h2">Live tokens</h2>
+<p class="doc-note">These swatches read CSS variables directly. Try the header's theme and dark-mode controls.</p>
+<div class="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
+    @foreach (var token in Tokens)
+    {
+        <div class="rounded-xl border bg-card p-3 text-card-foreground">
+            <span class="block h-12 rounded-lg border" style="@($"background:var(--{token})")"></span>
+            <p class="mt-2 text-xs font-medium">--@token</p>
+        </div>
+    }
+</div>
 <p class="doc-note">
-    shadcn's own, plus six this port adds so that another design language has somewhere to land.
-    All six are additive theme keys: they change no class string, so they cost nothing in parity.
+    In addition to shadcn's colour, chart, sidebar and radius tokens, this port provides
+    <code>--control-h</code>, <code>--control-text</code>, <code>--radius-control</code>,
+    <code>--elevation-1..4</code>, <code>--ease-ui</code>, <code>--duration-ui</code> and
+    <code>--font-numeric</code>. These are additive; class recipes stay in sync with upstream.
 </p>
 
-<div class="doc-example">
-    <pre class="doc-source"><code>/* shadcn's */
---background --foreground --card --popover --primary --secondary
---muted --accent --destructive --border --input --ring --radius
---chart-1..5  --sidebar-*
-
-/* this port's */
---control-h        control height        (shadcn hardcodes h-9)
---control-text     control font size     (shadcn hardcodes text-sm)
---radius-control   control corner        (so pill buttons can sit beside 12px cards)
---elevation-1..4   shadow scale          (shadcn hardcodes shadow-xs/sm/md/lg)
---ease-ui          easing
---duration-ui      duration
---font-numeric     the face a column of figures is set in</code></pre>
+<h2 class="doc-h2">One component tree, six themes</h2>
+<p class="doc-note">
+    Each card sets <code>data-theme</code> on its wrapper. To theme the whole app, set it on
+    <code>&lt;html&gt;</code> instead. The controls below have identical markup in every card.
+</p>
+<div class="mt-4 grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+    @foreach (var theme in PreviewThemes)
+    {
+        <div data-theme="@theme" class="rounded-xl border bg-background p-5 text-foreground">
+            <p class="num mb-3 text-xs text-muted-foreground">@theme</p>
+            <div class="flex flex-wrap items-center gap-2">
+                <Button Variant="default" Size="sm">Save</Button>
+                <Button Variant="outline" Size="sm">Cancel</Button>
+                <Badge Variant="secondary">New</Badge>
+            </div>
+            <Input Type="text" name="@($"theme-{theme}")" placeholder="Email" Class="mt-3" />
+        </div>
+    }
 </div>
 
-<h2 class="doc-h2">Can it become Material, Cupertino or Fluent?</h2>
+<h2 class="doc-h2">Use a theme</h2>
+<p class="doc-note">Switch tabs to copy the import or the attribute. Import the CSS before your own overrides.</p>
+<Snippet Items="@Setup" />
+
+<h2 class="doc-h2">Write your own</h2>
 <p class="doc-note">
-    Partly, and the boundary is sharp. A design language is not a palette: the parts that live in
-    <b>tokens</b> transfer completely, and the parts that live in <b>component markup</b> do not
-    transfer at all. The three themes in the switcher are real attempts, with the gaps named.
+    Define the light and dark palettes under the same name. The filename tabs and copy button
+    below are the library's <code>CodeBlock</code>; copying always uses the selected file.
 </p>
-
-<div class="doc-example">
-    <div class="doc-preview block">
-        <Table>
-            <TableHeader>
-                <TableRow>
-                    <TableHead>What</TableHead>
-                    <TableHead>Material 3</TableHead>
-                    <TableHead>Cupertino</TableHead>
-                    <TableHead>Fluent 2</TableHead>
-                </TableRow>
-            </TableHeader>
-            <TableBody>
-                @foreach (var (what, md3, cup, flu) in Rows)
-                {
-                    <TableRow>
-                        <TableCell Class="font-medium">@what</TableCell>
-                        <TableCell>@md3</TableCell>
-                        <TableCell>@cup</TableCell>
-                        <TableCell>@flu</TableCell>
-                    </TableRow>
-                }
-            </TableBody>
-        </Table>
-    </div>
-</div>
-
+<CodeBlock Files="@ThemeFiles" ShowFileLineNumbers="false" />
 <p class="doc-note">
-    <b>Cupertino is the one that essentially works</b> — Apple's system is colour, radius,
-    spacing and type, with no state-layer model and almost no shadow, so very little of it needs
-    to live in markup. <b>Material gets close enough to read as Material and is not Material</b>:
-    its colour and shape map cleanly, its state layer is approximated with a pseudo-element, and
-    the ripple has no honest substitute. <b>Fluent</b> is mostly colour and its very small radii,
-    which change the character more than you would expect; the reveal highlight and acrylic are
-    out of reach.
-</p>
-
-<h2 class="doc-h2">Writing one</h2>
-<div class="doc-example">
-    <pre class="doc-source"><code>/* themes/mine.css — then set data-theme="mine" on &lt;html&gt; */
-[data-theme="mine"] {
-    --background: oklch(98% 0 0);
-    --foreground: oklch(15% 0 0);
-    --primary: oklch(55% 0.2 265);
-    --primary-foreground: oklch(100% 0 0);
-    --accent: oklch(95% 0.01 265);        /* the hover ground — easy to forget */
-    --border: oklch(90% 0 0);
-    --radius: 0.75rem;
-    --radius-control: 0.5rem;
-    --control-h: 2.5rem;
-}
-[data-theme="mine"].dark { /* … */ }</code></pre>
-</div>
-
-<p class="doc-note">
-    Six things decide most of how a theme reads, in roughly this order:
-    <code>--radius</code> and <code>--radius-control</code>; <code>--control-h</code> and
-    <code>--control-text</code>; whether <code>--card</code> differs from
-    <code>--background</code>; <code>--elevation-*</code>; <code>--primary</code> and
-    <code>--accent</code>; and <code>--border</code>. Then check every component, not only the
-    ones you changed — <code>--accent</code> is the hover ground for ghost buttons, menu rows,
-    table rows and the select panel at once.
+    Start with radius and control height, then the background/card relationship, elevation,
+    primary, accent and border. <code>--accent</code> also colours ghost buttons, menu rows and
+    selection surfaces. A palette cannot replace markup-specific behaviour such as a Material
+    ripple or Fluent acrylic.
 </p>
 
 @code {
-    static readonly (string, string, string, string)[] Rows =
-    [
-        ("Colour roles", "yes", "yes", "yes"),
-        ("Corner shape", "yes, needs --radius-control", "yes", "yes"),
-        ("Elevation", "yes", "yes (barely used, which is the look)", "yes"),
-        ("Motion", "yes", "yes", "yes"),
-        ("Density", "yes, 40dp", "yes, 44pt", "yes, 32px"),
-        ("State model", "approximated with ::before", "nothing to reproduce", "focus bar added as a rule"),
-        ("Signature interaction", "no ripple", "n/a", "no reveal, no acrylic"),
-        ("Type scale", "no, 15 named roles", "tracking only", "no, 9 ramps"),
-        ("Corner curve", "—", "no squircle in CSS anywhere", "—"),
+    static readonly string[] Tokens = [
+        "primary", "secondary", "muted", "accent", "destructive",
+        "card", "chart-1", "chart-2", "chart-3", "ring"
+    ];
+
+    static readonly string[] PreviewThemes = [
+        "supabase", "notebook", "dracula", "nord", "cupertino", "claymorphism"
+    ];
+
+    static readonly IReadOnlyList<SnippetItem> Setup = [
+        new("CSS", "@import \"./themes/mine.css\";"),
+        new("HTML", "<html data-theme=\"mine\">"),
+        new("Dark mode", "<html data-theme=\"mine\" class=\"dark\">")
+    ];
+
+    static readonly IReadOnlyList<CodeBlockFile> ThemeFiles = [
+        new("mine.css", "css", """
+            [data-theme="mine"] {
+              --background: oklch(98% 0 0);
+              --foreground: oklch(15% 0 0);
+              --primary: oklch(55% 0.2 265);
+              --primary-foreground: oklch(100% 0 0);
+              --accent: oklch(95% 0.01 265);
+              --border: oklch(90% 0 0);
+              --radius: 0.75rem;
+              --radius-control: 0.5rem;
+              --control-h: 2.5rem;
+            }
+            """),
+        new("mine.dark.css", "css", """
+            [data-theme="mine"].dark {
+              --background: oklch(18% 0.02 265);
+              --foreground: oklch(97% 0 0);
+              --primary: oklch(75% 0.14 265);
+              --primary-foreground: oklch(18% 0.02 265);
+              --accent: oklch(30% 0.04 265);
+              --border: oklch(35% 0.02 265);
+            }
+            """)
     ];
 }
