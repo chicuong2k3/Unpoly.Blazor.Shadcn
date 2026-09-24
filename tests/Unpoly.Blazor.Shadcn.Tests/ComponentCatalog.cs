@@ -68,6 +68,7 @@ public static class ComponentCatalog
         ["QrCode"] = new() { ["Value"] = "https://example.com" },
         ["ImageCompare"] = new() { ["BeforeSrc"] = "/a.jpg", ["AfterSrc"] = "/b.jpg" },
         ["Snippet"] = new() { ["Items"] = new List<SnippetItem> { new("npm", "npm install") } },
+        ["TableOfContents"] = new() { ["Items"] = new[] { new TableOfContentsEntry("intro", "Intro") } },
     };
 
     public static IEnumerable<Type> All =>
