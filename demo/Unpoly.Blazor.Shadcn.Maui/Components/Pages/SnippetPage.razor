@@ -1,0 +1,12 @@
+@page "/components/snippet"
+<PageTitle>Snippet — Unpoly.Blazor.Shadcn</PageTitle>
+<h1 class="doc-h1">Snippet</h1>
+<p class="doc-lede">Switch commands and copy the selected one from the WebView.</p>
+<Snippet Items="@Commands" />
+@code {
+    readonly IReadOnlyList<SnippetItem> Commands = [
+        new("npm", "npm install unpoly-blazor-shadcn"),
+        new("pnpm", "pnpm add unpoly-blazor-shadcn"),
+        new("bun", "bun add unpoly-blazor-shadcn")
+    ];
+}

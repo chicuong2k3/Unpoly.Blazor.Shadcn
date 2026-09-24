@@ -1,0 +1,28 @@
+@inherits UiComponentBase
+
+<div data-slot="snippet" class="@Class" @attributes="AdditionalAttributes">
+    <Tabs Value="@Items.FirstOrDefault()?.Label">
+        <div data-slot="snippet-header">
+            <TabsList>
+                @foreach (var item in Items)
+                {
+                    <TabsTrigger Value="@item.Label">@item.Label</TabsTrigger>
+                }
+            </TabsList>
+            <button type="button" data-slot="snippet-copy" aria-label="Copy command" title="Copy command">
+                <Icon Name="copy" />
+            </button>
+        </div>
+        @foreach (var item in Items)
+        {
+            <TabsContent Value="@item.Label" Hidden="@(item != Items[0])">
+                <pre data-slot="snippet-code"><code>@item.Code</code></pre>
+            </TabsContent>
+        }
+    </Tabs>
+</div>
+
+@code {
+    /// <summary>At least one command. Labels must be unique within a snippet.</summary>
+    [Parameter, EditorRequired] public IReadOnlyList<SnippetItem> Items { get; set; } = [];
+}

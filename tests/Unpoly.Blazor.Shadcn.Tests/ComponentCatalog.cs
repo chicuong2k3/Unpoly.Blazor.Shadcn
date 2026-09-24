@@ -67,6 +67,7 @@ public static class ComponentCatalog
         ["AttachmentAction"] = new() { ["AriaLabel"] = "Remove rate-card.xlsx" },
         ["QrCode"] = new() { ["Value"] = "https://example.com" },
         ["ImageCompare"] = new() { ["BeforeSrc"] = "/a.jpg", ["AfterSrc"] = "/b.jpg" },
+        ["Snippet"] = new() { ["Items"] = new List<SnippetItem> { new("npm", "npm install") } },
     };
 
     public static IEnumerable<Type> All =>

@@ -1,13 +1,13 @@
-/* Scrollbars: thin and light so dense controls stay readable, and the Chromium/WebView
-   up/down arrow buttons are always suppressed. `--scrollbar`/`--scrollbar-hover` come from
-the consumer theme when defined; the fallbacks keep a usable look without them. */
-* {
-    scrollbar-width: thin;
-    scrollbar-color: var(--scrollbar, #d0d0d0) transparent;
-}
+/* Chromium/WebView: a non-auto scrollbar-width/color overrides ::-webkit-scrollbar,
+   bringing back the Windows arrow buttons. Use the pseudo-elements in Blink; retain
+   thin native scrollbars in Firefox. */
 ::-webkit-scrollbar { width: 10px; height: 10px; }
 ::-webkit-scrollbar-track { background: transparent; }
-::-webkit-scrollbar-button { display: none; height: 0; width: 0; }
+::-webkit-scrollbar-button,
+::-webkit-scrollbar-button:single-button { display: none; width: 0; height: 0; }
+@supports (-moz-appearance: none) {
+    * { scrollbar-width: thin; scrollbar-color: var(--scrollbar, #d0d0d0) transparent; }
+}
 ::-webkit-scrollbar-thumb {
     background-color: var(--scrollbar, #d0d0d0);
     border-radius: 999px;
@@ -184,9 +184,6 @@ the consumer theme when defined; the fallbacks keep a usable look without them. 
     }
 
     /* Put it back where it is the point. */
-    [data-slot="scroll-area-viewport"] {
-        scrollbar-width: thin;
-    }
     [data-slot="scroll-area-viewport"]::-webkit-scrollbar {
         display: initial;
     }
@@ -309,9 +306,14 @@ the consumer theme when defined; the fallbacks keep a usable look without them. 
     /* ScrollArea: the platform's own thin scrollbar, in the theme's colours. Radix draws its own
        with a resize observer and a computed thumb; this is most of the look for none of the
        script, and it still works with the wheel, a trackpad, the keyboard and a touch screen. */
-    [data-slot="scroll-area-viewport"] {
-        scrollbar-width: thin;
-        scrollbar-color: var(--border) transparent;
+    [data-slot="scroll-area-viewport"]::-webkit-scrollbar-thumb {
+        background-color: var(--border);
+    }
+    @supports (-moz-appearance: none) {
+        [data-slot="scroll-area-viewport"] {
+            scrollbar-width: thin;
+            scrollbar-color: var(--border) transparent;
+        }
     }
     [data-slot="accordion-item"][open] [data-chevron] { rotate: 180deg; }
     [data-slot="accordion-item"][open] [data-slot="accordion-content"] { animation: sh-accordion-down 200ms ease-out; }
@@ -576,6 +578,23 @@ side. That plugin is not installed here (it is listed by the check-compiled .NET
         mask: var(--sh-check) center / contain no-repeat;
     }
 
+
+    /* Kibo Snippet and multi-file CodeBlock: presentation for their data-slot anatomy.
+       These are not shadcn upstream class recipes. */
+    [data-slot="snippet"] { width: 100%; overflow: hidden; border: 1px solid var(--border); border-radius: 0.375rem; }
+    [data-slot="snippet"] > [data-slot="tabs"] { gap: 0; }
+    [data-slot="snippet-header"] { display: flex; align-items: center; justify-content: space-between; padding: 0.25rem; background: var(--secondary); border-bottom: 1px solid var(--border); }
+    [data-slot="snippet-header"] [data-slot="tabs-list"] { max-width: calc(100% - 3rem); overflow-x: auto; }
+    [data-slot="snippet-copy"] { display: grid; place-items: center; flex: none; width: 2rem; height: 2rem; border-radius: 0.375rem; cursor: pointer; }
+    [data-slot="snippet-copy"]:hover { background: var(--accent); }
+    [data-slot="snippet-copy"][data-copied] svg { display: none; }
+    [data-slot="snippet-copy"][data-copied]::before { content: "✓"; }
+    [data-slot="snippet"] [data-slot="tabs-content"] { min-width: 0; padding: 1rem; background: var(--background); font-size: 0.875rem; }
+    [data-slot="snippet-code"] { overflow-x: auto; font-family: var(--font-mono); }
+    [data-slot="code-block-files"] { display: flex; gap: 0.25rem; overflow-x: auto; }
+    [data-slot="code-block-file"] { padding: 0.375rem 0.75rem; border-radius: 0.25rem; color: var(--muted-foreground); cursor: pointer; }
+    [data-slot="code-block-file"][aria-selected="true"] { background: var(--accent); color: var(--foreground); }
+    [data-slot="code-block-pre"][hidden], [data-slot="snippet"] [data-slot="tabs-content"][hidden] { display: none; }
 
     /* ---- Command ---------------------------------------------------------------------
        Nothing to draw here: the compiler sets data-selected="true" on the highlighted row, which

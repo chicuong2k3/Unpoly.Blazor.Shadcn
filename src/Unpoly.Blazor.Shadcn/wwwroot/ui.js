@@ -2003,6 +2003,25 @@
   })
 
   // =============================================================================================
+  // Snippet — tabs are driven by the shared tabs compiler; copy reads the visible panel.
+  shadcnCompiler('[data-slot="snippet"]', (root) => {
+    const button = root.querySelector('[data-slot="snippet-copy"]')
+    if (!button) return
+    if (!navigator.clipboard?.writeText) { button.hidden = true; return }
+    let revert
+    const copy = async () => {
+      const code = [...root.querySelectorAll('[data-slot="tabs-content"]')]
+        .find(panel => !panel.hidden)?.querySelector('[data-slot="snippet-code"] code')?.textContent
+      if (!code) return
+      try { await navigator.clipboard.writeText(code) } catch { return }
+      button.dataset.copied = ''
+      clearTimeout(revert)
+      revert = setTimeout(() => delete button.dataset.copied, 2000)
+    }
+    button.addEventListener('click', copy)
+    return () => { clearTimeout(revert); button.removeEventListener('click', copy) }
+  })
+
   // CodeBlock — copy
   // =============================================================================================
   // The button ships hidden and this reveals it. A copy button that silently does nothing because
@@ -2013,12 +2032,15 @@
     if (!navigator.clipboard?.writeText) return
     button.hidden = false
 
-    const code = button.closest('[data-slot="code-block"]')?.querySelector('[data-slot="code-block-code"]')
-    if (!code) return
+    const root = button.closest('[data-slot="code-block"]')
+    if (!root?.querySelector('[data-slot="code-block-code"]')) return
 
     let revert
     const onClick = async () => {
       try {
+        const code = [...root.querySelectorAll('[data-slot="code-block-pre"]')]
+          .find(pre => !pre.hidden)?.querySelector('[data-slot="code-block-code"]')
+        if (!code) return
         await navigator.clipboard.writeText(code.textContent ?? '')
       } catch {
         // Denied, or no permission. Say nothing rather than claiming success.
@@ -2050,28 +2072,55 @@
   // `line-numbers`. Autoloader lazily fetches missing languages from the CDN or from ./components/
   // relative to prism.js when self-hosted.
   shadcnCompiler('[data-slot="code-block"]', (root) => {
-    const code = root.querySelector('[data-slot="code-block-code"]')
-    if (!code) return
-    if (!code.className.match(/\blanguage-/)) code.classList.add('language-none')
-    const run = () => {
-      if (typeof Prism === 'undefined' || !Prism.highlightElement) return
-      try { Prism.highlightElement(code) } catch (_) {}
-    }
-    if (typeof Prism !== 'undefined' && Prism.highlightElement) {
-      const m = code.className.match(/\blanguage-([\w-]+)\b/)
-      const lang = m && m[1] !== 'none' ? m[1] : null
-      if (lang && !Prism.languages[lang]) {
-        loadScript(`_content/Unpoly.Blazor.Shadcn/prism/prism-${lang}.min.js`).then(run).catch(run)
-      } else run()
-    } else {
-      ensurePrism().then(() => {
+    const codes = [...root.querySelectorAll('[data-slot="code-block-code"]')]
+    if (!codes.length) return
+    let disposed = false
+    for (const code of codes) {
+      if (!code.className.match(/\blanguage-/)) code.classList.add('language-none')
+      const run = () => {
+        if (disposed || typeof Prism === 'undefined' || !Prism.highlightElement) return
+        try { Prism.highlightElement(code) } catch (_) {}
+      }
+      const highlight = () => {
         const m = code.className.match(/\blanguage-([\w-]+)\b/)
         const lang = m && m[1] !== 'none' ? m[1] : null
-        if (lang && Prism.languages && !Prism.languages[lang]) {
-          return loadScript(`_content/Unpoly.Blazor.Shadcn/prism/prism-${lang}.min.js`).catch(()=>{}).then(run)
-        }
-        run()
+        if (lang && !Prism.languages[lang])
+          loadScript(`_content/Unpoly.Blazor.Shadcn/prism/prism-${lang}.min.js`).then(run).catch(run)
+        else run()
+      }
+      if (typeof Prism !== 'undefined' && Prism.highlightElement) highlight()
+      else ensurePrism().then(highlight).catch(console.error)
+    }
+    const tabs = [...root.querySelectorAll('[data-slot="code-block-file"]')]
+    const panels = [...root.querySelectorAll('[data-slot="code-block-pre"]')]
+    const show = (index) => {
+      tabs.forEach((tab, i) => {
+        tab.setAttribute('aria-selected', String(i === index))
+        tab.tabIndex = i === index ? 0 : -1
       })
+      panels.forEach((panel, i) => { panel.hidden = i !== index; panel.tabIndex = i === index ? 0 : -1 })
+    }
+    const onClick = (event) => {
+      const tab = event.target.closest('[data-slot="code-block-file"]')
+      if (tab && root.contains(tab)) show(tabs.indexOf(tab))
+    }
+    const onKey = (event) => {
+      const tab = event.target.closest('[data-slot="code-block-file"]')
+      if (!tab || !root.contains(tab)) return
+      const delta = event.key === 'ArrowRight' ? 1 : event.key === 'ArrowLeft' ? -1 : 0
+      if (!delta && event.key !== 'Home' && event.key !== 'End') return
+      event.preventDefault()
+      const index = event.key === 'Home' ? 0 : event.key === 'End' ? tabs.length - 1
+        : (tabs.indexOf(tab) + delta + tabs.length) % tabs.length
+      show(index)
+      tabs[index].focus()
+    }
+    root.addEventListener('click', onClick)
+    root.addEventListener('keydown', onKey)
+    return () => {
+      disposed = true
+      root.removeEventListener('click', onClick)
+      root.removeEventListener('keydown', onKey)
     }
   })
 
@@ -2159,6 +2208,66 @@
   // Static SSR renders <img-comparison-slider> with two <img slot="first/second">. This compiler
   // lazy-loads the WC definition only when [data-slot="image-compare"] is on the page, so a landing
   // page with no compare never fetches the 11KB script.
+  // The bundled media-chrome IIFE registers custom elements once. The browser upgrades
+  // connected controllers automatically; removing one leaves no per-instance listeners here.
+  shadcnCompiler('[data-slot="video-player"]', () => {
+    if (!customElements.get('media-controller')) {
+      loadScript('_content/Unpoly.Blazor.Shadcn/media-chrome/index.js').catch(console.error)
+    }
+  })
+
+  shadcnCompiler('[data-slot="image-crop"]', (root) => {
+    const image = root.querySelector('img')
+    if (!image) return
+    let disposed = false
+    let cropper = null
+    const controller = new AbortController()
+    const start = () => {
+      if (disposed || !root.isConnected || cropper || !window.Cropper) return
+      const ratio = Number(root.dataset.aspectRatio)
+      cropper = new window.Cropper(image, {
+        aspectRatio: root.dataset.circular === 'true' ? 1 : (root.dataset.aspectRatio ? ratio : NaN),
+        viewMode: 1, autoCropArea: 0.9, background: false,
+        ready() {
+          if (root.dataset.circular === 'true') {
+            const box = root.querySelector('.cropper-view-box')
+            const face = root.querySelector('.cropper-face')
+            if (box) box.style.borderRadius = '50%'
+            if (face) face.style.borderRadius = '50%'
+          }
+        }
+      })
+    }
+    if (window.Cropper) start()
+    else loadScript('_content/Unpoly.Blazor.Shadcn/cropperjs/cropper.min.js').then(start).catch(console.error)
+    const emitCrop = (canvas) => {
+      const dataUrl = canvas.toDataURL('image/png')
+      const max = Number(root.dataset.maxImageSize) || 0
+      if (max && Math.ceil((dataUrl.length - dataUrl.indexOf(',') - 1) * 3 / 4) > max) {
+        root.dispatchEvent(new CustomEvent('image-crop:error', { bubbles: true, detail: { reason: 'size' } }))
+        return
+      }
+      root.dispatchEvent(new CustomEvent('image-crop:apply', { bubbles: true, detail: { dataUrl } }))
+    }
+    root.querySelector('[data-slot="image-crop-apply"]')?.addEventListener('click', () => {
+      if (!cropper) return
+      const canvas = cropper.getCroppedCanvas()
+      if (!canvas) return
+      if (root.dataset.circular === 'true') {
+        const circle = document.createElement('canvas')
+        circle.width = canvas.width; circle.height = canvas.height
+        const ctx = circle.getContext('2d')
+        ctx.beginPath(); ctx.ellipse(circle.width / 2, circle.height / 2, circle.width / 2, circle.height / 2, 0, 0, Math.PI * 2)
+        ctx.clip(); ctx.drawImage(canvas, 0, 0)
+        emitCrop(circle)
+      } else {
+        emitCrop(canvas)
+      }
+    }, { signal: controller.signal })
+    root.querySelector('[data-slot="image-crop-reset"]')?.addEventListener('click', () => cropper?.reset(), { signal: controller.signal })
+    return () => { disposed = true; controller.abort(); cropper?.destroy() }
+  })
+
   shadcnCompiler('[data-slot="image-compare"][data-image-compare]', (el) => {
     const slider = el.querySelector('img-comparison-slider')
     if (!slider) return

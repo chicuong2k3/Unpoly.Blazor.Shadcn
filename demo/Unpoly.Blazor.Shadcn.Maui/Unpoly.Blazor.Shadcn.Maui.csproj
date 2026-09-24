@@ -129,7 +129,7 @@
     <!-- Inputs/Outputs are not premature here: four target frameworks would otherwise run the
          same CLI four times over one unchanged input. -->
     <Target Name="Tailwind" BeforeTargets="ResolveStaticWebAssetsInputs"
-            Inputs="Styles/app.css;@(RazorComponent)" Outputs="wwwroot/app.css">
+            Inputs="Styles/app.css;../../src/Unpoly.Blazor.Shadcn/Styles/ui.css;../../src/Unpoly.Blazor.Shadcn/Styles/ui.behavior.css;@(RazorComponent)" Outputs="wwwroot/app.css">
         <Exec Command="npm run css" />
         <!-- Only on a first build. Adding it unconditionally gives Windows two sources for
              one file and the PRI compiler refuses:

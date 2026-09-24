@@ -455,6 +455,7 @@ renders `<div>` · `data-slot="code-block"`
 | `Code` | `string` | `""` |  |
 | `Title` | `string?` | — | **required** |
 | `Language` | `string?` | — |  |
+| `Files` | `IReadOnlyList<CodeBlockFile>` | `[]` |  |
 | `ShowCopy` | `bool` | `true` |  |
 | `CopyLabel` | `string` | `"Copy"` |  |
 | `ShowLineNumbers` | `bool` | — |  |
@@ -1203,6 +1204,17 @@ renders `<img-comparison-slider>` · `data-slot="image-compare"`
 | `BeforeLabel` | `string` | `"Before"` | **required** |
 | `AfterLabel` | `string` | `"After"` |  |
 | `ShowLabels` | `bool` | `true` |  |
+
+## `<ImageCrop>`
+renders `<div>` · `data-slot="image-crop"`
+
+| Parameter | Type | Default | |
+|---|---|---|---|
+| `Src` | `string?` | — |  |
+| `Alt` | `string` | `"Image to crop"` |  |
+| `AspectRatio` | `double?` | — |  |
+| `Circular` | `bool` | — |  |
+| `MaxImageSize` | `long` | — |  |
 
 ## `<Input>`
 renders `<input>` · `data-slot="input"`
@@ -2014,6 +2026,13 @@ renders `<input>` · `data-slot="slider"`
 | `Disabled` | `bool` | — |  |
 | `Orientation` | `string` | `"horizontal"` |  |
 
+## `<Snippet>`
+renders `<div>` · `data-slot="snippet"`
+
+| Parameter | Type | Default | |
+|---|---|---|---|
+| `Items` | `IReadOnlyList<SnippetItem>` | `[]` |  |
+
 ## `<Sparkline>`
 renders `<svg>` · `data-slot="sparkline"`
 
@@ -2229,3 +2248,15 @@ renders `<button>` · `data-slot="tooltip-trigger"`
 | `Delay` | `int` | — | **required** |
 | `Variant` | `string?` | — |  |
 | `Size` | `string` | `"default"` |  |
+
+## `<VideoPlayer>`
+renders `<media-controller>` · `data-slot="video-player"`
+
+| Parameter | Type | Default | |
+|---|---|---|---|
+| `Src` | `string?` | — |  |
+| `Poster` | `string?` | — |  |
+| `Autoplay` | `bool` | — |  |
+| `Loop` | `bool` | — |  |
+| `Muted` | `bool` | — |  |
+| `Preload` | `string` | `"metadata"` |  |

@@ -28,7 +28,16 @@
 <h2 class="doc-h2">Long block (scrollable)</h2>
 <CodeBlock Language="yaml" Title="yaml — scroll" Code="@yamlSample" />
 
+<h2 class="doc-h2">Multiple files (Kibo)</h2>
+<p class="doc-note">Select a filename to switch code. Copy uses the selected file.</p>
+<CodeBlock Code="" Files="@files" />
+
 @code {
+    readonly IReadOnlyList<CodeBlockFile> files = [
+        new("Program.cs", "csharp", "Console.WriteLine(\"Hello, world!\");"),
+        new("package.json", "json", "{\"name\":\"demo\"}")
+    ];
+
     const string csharpSample = """
         // Prism manual + Unpoly — highlight per fragment
         up.compiler(''[data-slot="code-block"]'', root => {
