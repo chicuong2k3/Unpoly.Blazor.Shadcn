@@ -30,12 +30,23 @@
 
 <h2 class="doc-h2">Multiple files (Kibo)</h2>
 <p class="doc-note">Select a filename to switch code. Copy uses the selected file.</p>
-<CodeBlock Code="" Files="@files" />
+<CodeBlock Files="@files" DefaultFile="package.json" />
+
+<h2 class="doc-h2">Inline annotations</h2>
+<p class="doc-note">Diff, line highlight, focus and word highlight rendered in the WebView.</p>
+<CodeBlock Files="@annotatedFiles" />
+
+<h2 class="doc-h2">Without syntax colouring</h2>
+<CodeBlock Files="@files" SyntaxHighlighting="false" ShowFileLineNumbers="false" />
 
 @code {
     readonly IReadOnlyList<CodeBlockFile> files = [
         new("Program.cs", "csharp", "Console.WriteLine(\"Hello, world!\");"),
         new("package.json", "json", "{\"name\":\"demo\"}")
+    ];
+
+    readonly IReadOnlyList<CodeBlockFile> annotatedFiles = [
+        new("changes.js", "javascript", "const total = 1; // [!code --]\nconst total = 2; // [!code ++]\nconsole.log(total); // [!code highlight]\nreturn total; // [!code focus]\nconst label = 'total'; // [!code word:total]")
     ];
 
     const string csharpSample = """

@@ -1,24 +1,9 @@
 @inherits UiComponentBase
 
-@* CodeBlock — now with Prism.js (https://prismjs.com).
-
-   Shadcn''s docs use MDX and export nothing; this component is the docs site itself.
-   Previously it rendered raw text with no highlighting ("colour comes back the day
-   someone wants it enough to pay for it"). That day is now: Prism core + autoloader +
-   normalize-whitespace + line-numbers, vendored under wwwroot/prism/ and highlighted
-   via up.compiler(''[data-slot="code-block"]'') so it survives Unpoly fragment swaps.
-
-   Decisions:
-   - Code is still a string, not ChildContent — Razor would parse `<Button>` as a component.
-   - Language is a Prism language (`csharp`, `cshtml`/`razor`, `javascript`, `typescript`,
-     `css`, `html`, `json`, `bash`, `yaml`, `sql`, …). Class `language-xxxx` is added to
-     both <pre> and <code> as Prism recommends; `data-language` is kept for parity/tests.
-   - `ShowLineNumbers` adds `line-numbers` to <pre> (prism-line-numbers.css). Off by default.
-   - Copy button is unchanged — compiler in ui.js reveals it when navigator.clipboard exists.
-     Prism''s own copy plugin is not used to avoid duplicate buttons.
-   - Prism is loaded `data-manual` so it does not auto-highlight on DOMContentLoaded;
-     the compiler calls `Prism.highlightElement` per block and re-runs on every Unpoly swap.
-*@
+@* CodeBlock: single Code string (legacy) or Kibo-style named Files. Code stays text so
+   Razor never parses sample markup as components. Prism loads on demand; the platform
+   compiler handles file tabs, clipboard and inline [!code] notations on both hosts.
+   Copy reads original source, before highlighting or annotation decoration. *@
 
 <div data-slot="code-block" class="@Classes" @attributes="AdditionalAttributes">
     @if (Title is not null || ShowCopy || Files.Count > 0)
@@ -32,7 +17,7 @@
                     {
                         var file = Files[i];
                         <button type="button" role="tab" data-slot="code-block-file" data-index="@i"
-                                aria-selected="@(i == 0 ? "true" : "false")" tabindex="@(i == 0 ? "0" : "-1")">@file.Filename</button>
+                                aria-selected="@(i == InitialFile ? "true" : "false")" tabindex="@(i == InitialFile ? "0" : "-1")">@file.Filename</button>
                     }
                 </div>
             }
@@ -56,21 +41,23 @@
         @for (var i = 0; i < Files.Count; i++)
         {
             var file = Files[i];
-            <pre data-slot="code-block-pre" data-index="@i" hidden="@(i != 0)"
-                 class="@PreClasses" tabindex="@(i == 0 ? "0" : "-1")"><code data-slot="code-block-code"
-                     data-language="@file.Language" class="@LanguageClass(file.Language)">@file.Code</code></pre>
+            <pre data-slot="code-block-pre" data-index="@i" data-line-numbers="@(ShowFileLineNumbers ? "true" : null)"
+                 hidden="@(i != InitialFile)" class="@PreClasses" tabindex="@(i == InitialFile ? "0" : "-1")"><code data-slot="code-block-code"
+                     data-language="@file.Language" data-notations="@(HighlightNotations ? "true" : "false")" data-highlight="@(SyntaxHighlighting ? "true" : "false")"
+                     class="@LanguageClass(file.Language)">@file.Code</code></pre>
         }
     }
     else
     {
-        <pre data-slot="code-block-pre" class="@PreClasses" tabindex="0"><code data-slot="code-block-code"
-                            data-language="@Language" class="@CodeClasses">@Code</code></pre>
+        <pre data-slot="code-block-pre" data-line-numbers="@(CustomLineNumbers ? "true" : null)" class="@PreClasses" tabindex="0"><code data-slot="code-block-code"
+                            data-language="@Language" data-notations="@(HighlightNotations ? "true" : "false")" data-highlight="@(SyntaxHighlighting ? "true" : "false")"
+                            class="@CodeClasses">@Code</code></pre>
     }
 </div>
 
 @code {
-    /// <summary>The snippet. A string, not markup — Razor would otherwise parse it.</summary>
-    [Parameter, EditorRequired] public string Code { get; set; } = "";
+    /// <summary>Single-file code. Omit when Files is supplied; never pass sample markup as ChildContent.</summary>
+    [Parameter] public string Code { get; set; } = "";
 
     /// <summary>Shown in the header, usually a file name.</summary>
     [Parameter] public string? Title { get; set; }
@@ -80,6 +67,20 @@
 
     /// <summary>Optional named files; when supplied, the active file is highlighted and copied.</summary>
     [Parameter] public IReadOnlyList<CodeBlockFile> Files { get; set; } = [];
+
+    /// <summary>Filename selected on first render; defaults to the first file.</summary>
+    [Parameter] public string? DefaultFile { get; set; }
+
+    /// <summary>Show a line-number gutter for multi-file blocks. Single blocks use ShowLineNumbers.</summary>
+    [Parameter] public bool ShowFileLineNumbers { get; set; } = true;
+
+    /// <summary>Interpret Shiki-style inline [!code] highlight, diff, focus and word markers.</summary>
+    [Parameter] public bool HighlightNotations { get; set; } = true;
+
+    /// <summary>Turn off Prism token colouring while keeping line annotations.</summary>
+    [Parameter] public bool SyntaxHighlighting { get; set; } = true;
+
+    int InitialFile => Math.Max(0, Files.ToList().FindIndex(f => f.Filename == DefaultFile));
 
     [Parameter] public bool ShowCopy { get; set; } = true;
 
@@ -116,8 +117,10 @@
 
     string CodeClasses => NormalizedLanguage is null ? "" : $"language-{NormalizedLanguage}";
 
+    bool CustomLineNumbers => ShowLineNumbers && (!SyntaxHighlighting || HighlightNotations && Code.Contains("[!code ", StringComparison.Ordinal));
+
     string PreClasses => Cn(
         "overflow-x-auto p-4 text-[12.5px] leading-relaxed",
         NormalizedLanguage is not null ? $"language-{NormalizedLanguage}" : null,
-        ShowLineNumbers ? "line-numbers" : null);
+        ShowLineNumbers && !CustomLineNumbers ? "line-numbers" : null);
 }

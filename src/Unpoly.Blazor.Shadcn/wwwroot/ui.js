@@ -2007,16 +2007,22 @@
   shadcnCompiler('[data-slot="snippet"]', (root) => {
     const button = root.querySelector('[data-slot="snippet-copy"]')
     if (!button) return
-    if (!navigator.clipboard?.writeText) { button.hidden = true; return }
+    if (!navigator.clipboard?.writeText) return
+    button.hidden = false
     let revert
     const copy = async () => {
       const code = [...root.querySelectorAll('[data-slot="tabs-content"]')]
-        .find(panel => !panel.hidden)?.querySelector('[data-slot="snippet-code"] code')?.textContent
+        .find(panel => !panel.hidden)?.querySelector('[data-slot="snippet-copy-value"]')?.textContent
       if (!code) return
-      try { await navigator.clipboard.writeText(code) } catch { return }
+      try { await navigator.clipboard.writeText(code) }
+      catch (error) {
+        root.dispatchEvent(new CustomEvent('snippet:error', { bubbles: true, detail: { error } }))
+        return
+      }
       button.dataset.copied = ''
+      root.dispatchEvent(new CustomEvent('snippet:copy', { bubbles: true, detail: { value: code } }))
       clearTimeout(revert)
-      revert = setTimeout(() => delete button.dataset.copied, 2000)
+      revert = setTimeout(() => delete button.dataset.copied, Math.max(0, Number(button.dataset.timeout) || 2000))
     }
     button.addEventListener('click', copy)
     return () => { clearTimeout(revert); button.removeEventListener('click', copy) }
@@ -2041,7 +2047,7 @@
         const code = [...root.querySelectorAll('[data-slot="code-block-pre"]')]
           .find(pre => !pre.hidden)?.querySelector('[data-slot="code-block-code"]')
         if (!code) return
-        await navigator.clipboard.writeText(code.textContent ?? '')
+        await navigator.clipboard.writeText(code.dataset.copySource ?? code.textContent ?? '')
       } catch {
         // Denied, or no permission. Say nothing rather than claiming success.
         return
@@ -2071,15 +2077,64 @@
   // `prism-normalize-whitespace` trims, `prism-line-numbers` adds the gutter when <pre> has
   // `line-numbers`. Autoloader lazily fetches missing languages from the CDN or from ./components/
   // relative to prism.js when self-hosted.
+  let codeBlockSeq = 0
   shadcnCompiler('[data-slot="code-block"]', (root) => {
     const codes = [...root.querySelectorAll('[data-slot="code-block-code"]')]
     if (!codes.length) return
     let disposed = false
     for (const code of codes) {
       if (!code.className.match(/\blanguage-/)) code.classList.add('language-none')
+      const original = code.textContent ?? ''
+      code.dataset.copySource = original
+      const render = () => {
+        if (disposed || !root.isConnected || typeof Prism === 'undefined') return
+        const pre = code.closest('[data-slot="code-block-pre"]')
+        const annotated = code.dataset.notations !== 'false' && original.includes('[!code ')
+        if (!pre?.dataset.lineNumbers && !annotated) {
+          if (code.dataset.highlight !== 'false') Prism.highlightElement(code)
+          return
+        }
+        const lang = code.className.match(/\blanguage-([\w-]+)\b/)?.[1]
+        const grammar = code.dataset.highlight === 'false' ? null : Prism.languages[lang]
+        const lines = original.replace(/\r\n/g, '\n').split('\n')
+        if (lines.at(-1) === '' && lines.length > 1) lines.pop()
+        const fragment = document.createDocumentFragment()
+        const marker = /\s*(?:\/\/|#|<!--)\s*\[!code\s+(highlight|focus|\+\+|--|error|warning|word:[^\]]+)\](?:\s*-->)?\s*$/
+        lines.forEach((text, index) => {
+          const match = annotated ? text.match(marker) : null
+          if (match) text = text.slice(0, match.index)
+          const line = document.createElement('span')
+          line.dataset.codeLine = ''
+          if (pre.dataset.lineNumbers) line.dataset.number = String(index + 1)
+          if (match) {
+            const type = match[1]
+            line.dataset.annotation = type.startsWith('word:') ? 'word' : type === '++' ? 'add' : type === '--' ? 'remove' : type
+          }
+          if (grammar) line.innerHTML = Prism.highlight(text, grammar, lang)
+          else line.textContent = text
+          // Highlight a matching text node without crossing syntax-token boundaries.
+          if (match?.[1].startsWith('word:')) {
+            const word = match[1].slice(5)
+            const walker = document.createTreeWalker(line, NodeFilter.SHOW_TEXT)
+            for (let node; (node = walker.nextNode());) {
+              const at = node.textContent.indexOf(word)
+              if (at < 0) continue
+              const range = document.createRange()
+              range.setStart(node, at); range.setEnd(node, at + word.length)
+              const highlight = document.createElement('mark')
+              highlight.dataset.codeWord = ''
+              range.surroundContents(highlight)
+              break
+            }
+          }
+          fragment.append(line)
+        })
+        code.replaceChildren(fragment)
+        if (code.querySelector('[data-annotation="focus"]')) code.dataset.hasFocus = ''
+      }
       const run = () => {
         if (disposed || typeof Prism === 'undefined' || !Prism.highlightElement) return
-        try { Prism.highlightElement(code) } catch (_) {}
+        try { render() } catch (error) { console.error(error) }
       }
       const highlight = () => {
         const m = code.className.match(/\blanguage-([\w-]+)\b/)
@@ -2093,6 +2148,14 @@
     }
     const tabs = [...root.querySelectorAll('[data-slot="code-block-file"]')]
     const panels = [...root.querySelectorAll('[data-slot="code-block-pre"]')]
+    const seq = ++codeBlockSeq
+    tabs.forEach((tab, index) => {
+      tab.id ||= `${root.id || 'code-block-' + seq}-tab-${index}`
+      panels[index].id ||= `${root.id || 'code-block-' + seq}-panel-${index}`
+      tab.setAttribute('aria-controls', panels[index].id)
+      panels[index].setAttribute('role', 'tabpanel')
+      panels[index].setAttribute('aria-labelledby', tab.id)
+    })
     const show = (index) => {
       tabs.forEach((tab, i) => {
         tab.setAttribute('aria-selected', String(i === index))

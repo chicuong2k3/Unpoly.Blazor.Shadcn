@@ -26,6 +26,30 @@ public class KiboCodeTests : BunitContext
     }
 
     [Fact]
+    public void Snippet_selects_the_requested_initial_tab()
+    {
+        var root = Render<Snippet>(p => p
+            .Add(x => x.Items, new List<SnippetItem> { new("npm", "npm install"), new("pnpm", "pnpm add") })
+            .Add(x => x.DefaultValue, "pnpm")).Find("[data-slot=snippet]");
+
+        Assert.True(root.QuerySelectorAll("[data-slot=tabs-content]")[0].HasAttribute("hidden"));
+        Assert.False(root.QuerySelectorAll("[data-slot=tabs-content]")[1].HasAttribute("hidden"));
+    }
+
+    [Fact]
+    public void Code_block_selects_the_requested_initial_file()
+    {
+        var root = Render<CodeBlock>(p => p
+            .Add(x => x.Files, new List<CodeBlockFile> {
+                new("a.cs", "csharp", "class A {}"), new("b.json", "json", "{}")
+            })
+            .Add(x => x.DefaultFile, "b.json")).Find("[data-slot=code-block]");
+
+        Assert.True(root.QuerySelectorAll("[data-slot=code-block-pre]")[0].HasAttribute("hidden"));
+        Assert.False(root.QuerySelectorAll("[data-slot=code-block-pre]")[1].HasAttribute("hidden"));
+    }
+
+    [Fact]
     public void Code_block_renders_each_file_with_a_separate_language()
     {
         var root = Render<CodeBlock>(p => p.Add(x => x.Code, "")

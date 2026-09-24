@@ -453,9 +453,13 @@ renders `<div>` · `data-slot="code-block"`
 | Parameter | Type | Default | |
 |---|---|---|---|
 | `Code` | `string` | `""` |  |
-| `Title` | `string?` | — | **required** |
+| `Title` | `string?` | — |  |
 | `Language` | `string?` | — |  |
 | `Files` | `IReadOnlyList<CodeBlockFile>` | `[]` |  |
+| `DefaultFile` | `string?` | — |  |
+| `ShowFileLineNumbers` | `bool` | `true` |  |
+| `HighlightNotations` | `bool` | `true` |  |
+| `SyntaxHighlighting` | `bool` | `true` |  |
 | `ShowCopy` | `bool` | `true` |  |
 | `CopyLabel` | `string` | `"Copy"` |  |
 | `ShowLineNumbers` | `bool` | — |  |
@@ -2032,6 +2036,10 @@ renders `<div>` · `data-slot="snippet"`
 | Parameter | Type | Default | |
 |---|---|---|---|
 | `Items` | `IReadOnlyList<SnippetItem>` | `[]` |  |
+| `DefaultValue` | `string?` | — | **required** |
+| `CopyTimeout` | `int` | `2000` |  |
+| `TabContent` | `RenderFragment<SnippetItem>?` | — |  |
+| `PanelContent` | `RenderFragment<SnippetItem>?` | — |  |
 
 ## `<Sparkline>`
 renders `<svg>` · `data-slot="sparkline"`

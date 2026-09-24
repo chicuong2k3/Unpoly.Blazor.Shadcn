@@ -2,7 +2,11 @@
 <PageTitle>Snippet — Unpoly.Blazor.Shadcn</PageTitle>
 <h1 class="doc-h1">Snippet</h1>
 <p class="doc-lede">Switch commands and copy the selected one from the WebView.</p>
-<Snippet Items="@Commands" />
+<Snippet Items="@Commands" DefaultValue="pnpm" CopyTimeout="1200">
+    <TabContent Context="item"><span aria-hidden="true">⌘</span> @item.Label</TabContent>
+    <PanelContent Context="item">@item.Code</PanelContent>
+</Snippet>
+<p class="doc-note">Switch tabs and copy in the WebView. The active command is exposed by <code>snippet:copy</code>.</p>
 @code {
     readonly IReadOnlyList<SnippetItem> Commands = [
         new("npm", "npm install unpoly-blazor-shadcn"),

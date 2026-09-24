@@ -2,7 +2,11 @@
 <PageTitle>Snippet — Unpoly.Blazor.Shadcn</PageTitle>
 <h1 class="doc-h1">Snippet</h1>
 <p class="doc-lede">Switch package-manager commands and copy the currently selected command.</p>
-<Snippet Items="@Commands" />
+<Snippet Items="@Commands" DefaultValue="pnpm" CopyTimeout="1200">
+    <TabContent Context="item"><span aria-hidden="true">⌘</span> @item.Label</TabContent>
+    <PanelContent Context="item">@item.Code</PanelContent>
+</Snippet>
+<p class="doc-note">Try another tab, then copy: <code>snippet:copy</code> carries the active command in <code>detail.value</code>; <code>snippet:error</code> reports clipboard failures.</p>
 @code {
     readonly IReadOnlyList<SnippetItem> Commands = [
         new("npm", "npm install unpoly-blazor-shadcn"),

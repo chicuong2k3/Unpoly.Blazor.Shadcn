@@ -586,6 +586,7 @@ side. That plugin is not installed here (it is listed by the check-compiled .NET
     [data-slot="snippet-header"] { display: flex; align-items: center; justify-content: space-between; padding: 0.25rem; background: var(--secondary); border-bottom: 1px solid var(--border); }
     [data-slot="snippet-header"] [data-slot="tabs-list"] { max-width: calc(100% - 3rem); overflow-x: auto; }
     [data-slot="snippet-copy"] { display: grid; place-items: center; flex: none; width: 2rem; height: 2rem; border-radius: 0.375rem; cursor: pointer; }
+    [data-slot="snippet-copy"][hidden] { display: none; }
     [data-slot="snippet-copy"]:hover { background: var(--accent); }
     [data-slot="snippet-copy"][data-copied] svg { display: none; }
     [data-slot="snippet-copy"][data-copied]::before { content: "✓"; }
@@ -595,6 +596,16 @@ side. That plugin is not installed here (it is listed by the check-compiled .NET
     [data-slot="code-block-file"] { padding: 0.375rem 0.75rem; border-radius: 0.25rem; color: var(--muted-foreground); cursor: pointer; }
     [data-slot="code-block-file"][aria-selected="true"] { background: var(--accent); color: var(--foreground); }
     [data-slot="code-block-pre"][hidden], [data-slot="snippet"] [data-slot="tabs-content"][hidden] { display: none; }
+    [data-slot="code-block-code"]:has(> [data-code-line]) { display: block; }
+    [data-code-line] { display: block; position: relative; min-height: 1lh; padding-inline: 3rem 1rem; margin-inline: -1rem; white-space: pre; }
+    [data-code-line][data-number]::before { content: attr(data-number); position: absolute; inset-inline-start: 0.5rem; inline-size: 1.5rem; text-align: end; color: var(--muted-foreground); user-select: none; }
+    [data-code-line]:not([data-number]) { padding-inline-start: 1rem; }
+    [data-code-line][data-annotation="highlight"], [data-code-line][data-annotation="word"] { background: color-mix(in srgb, #3b82f6 12%, transparent); }
+    [data-code-line][data-annotation="add"] { background: color-mix(in srgb, #10b981 14%, transparent); border-inline-start: 2px solid #10b981; }
+    [data-code-line][data-annotation="remove"], [data-code-line][data-annotation="error"] { background: color-mix(in srgb, #f43f5e 14%, transparent); border-inline-start: 2px solid #f43f5e; }
+    [data-code-line][data-annotation="warning"] { background: color-mix(in srgb, #f59e0b 14%, transparent); border-inline-start: 2px solid #f59e0b; }
+    [data-slot="code-block-code"][data-has-focus] [data-code-line]:not([data-annotation="focus"]) { filter: blur(2px); opacity: .6; }
+    [data-code-word] { color: inherit; background: color-mix(in srgb, #3b82f6 22%, transparent); }
 
     /* ---- Command ---------------------------------------------------------------------
        Nothing to draw here: the compiler sets data-selected="true" on the highlighted row, which

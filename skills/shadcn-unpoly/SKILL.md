@@ -225,19 +225,20 @@ Three, all listed with the reason in the `scaffold-components` .NET command:
   `<table>` with a percentage height per bar reads to a screen reader, prints, and needs nothing
   loaded — the demo's Analytics block is the worked example.
 
-## The two components shadcn does not have
+## Kibo-inspired code presentation
 
-Everything else in this library is upstream shadcn, name for name. These two are not, and are
-marked as such in `API.md`:
-
-- **`CodeBlock`** — a `<pre>` with a title bar and a copy button. shadcn's docs draw code with a
-  bespoke MDX pipeline and export nothing, so a port whose own documentation is built from itself
-  had to have one. `Code` is a **string** parameter, not `ChildContent`: Razor parses markup
-  inside `<pre>` as components, so a snippet containing `<Button>` would render a button rather
-  than show one. There is no syntax highlighting — that would mean shipping a second copy of a
-  language grammar per page.
-- **`Kbd` / `KbdGroup`** — upstream has these; listed here only because they are what a `Command`
-  trigger pairs with.
+- **`CodeBlock`** accepts a `Code` string for a single file, or `Files` (`CodeBlockFile`
+  filename/language/code records) for a multi-file block. `DefaultFile` selects the initial
+  filename. Never put literal code in `ChildContent`: Razor interprets markup like `<Button>`
+  as a component. Prism is lazy-loaded for syntax colouring. `ShowFileLineNumbers` and
+  `SyntaxHighlighting` control the multi-file display; `HighlightNotations` interprets
+  `[!code highlight]`, `[!code ++]`, `[!code --]`, `[!code focus]` and `[!code word:term]`.
+  Copy reads the selected file's original source, not Prism's decorated DOM.
+- **`Snippet`** accepts `IReadOnlyList<SnippetItem>` with unique labels. `TabContent` and
+  `PanelContent` let callers customize the display; copying still uses `SnippetItem.Code`.
+  `DefaultValue` selects the initial tab. The browser emits `snippet:copy` with `detail.value`
+  or `snippet:error` when writing to the clipboard fails. Native focus/arrow-key tab handling
+  comes from the shared `Tabs` compiler.
 
 ## Adding a component
 
