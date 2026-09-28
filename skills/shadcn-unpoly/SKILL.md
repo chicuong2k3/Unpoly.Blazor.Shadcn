@@ -11,7 +11,7 @@ then apply the translation rules below. Do not invent a Blazor-flavoured API; th
 
 Two files next to this one, both worth opening before you write markup:
 
-- **`API.md`** — generated from the components, every parameter of all 301. Read it rather than
+- **`API.md`** — generated from the components, every parameter of all 319. Read it rather than
   guessing a name.
 - **`BLOCKS.md`** — 26 ready-made sections (sign in, data table, checkout, chat, board, file
   manager, calendar, feed and the rest) and the trap in each. Building a login form or a list
@@ -21,6 +21,13 @@ There is a runnable demo at `demo/` — every component with its source, all 26 
 switcher, a live Customizer and a ⌘K search: `dotnet run --project demo/Unpoly.Blazor.Shadcn.Demo`.
 It is built entirely from this library, including its own code blocks and command palette, which
 is the only honest way to show that the components are enough to build something.
+
+**Tailwind 3 is the default demo CSS.** The Web and MAUI demos build and load `app.v3.css` through
+`tools/build-tailwind3-probe.cjs --preview`; `app.css` is retained only for `?demo-css=v4` rollback
+comparison. Do not tell a consuming app to ship Tailwind 4-only CSS as the release path. For
+Tailwind 3 builds, make the config `content` include the app Razor/C#, the library component
+Razor files, and `src/Unpoly.Blazor.Shadcn/wwwroot/ui.js`; the JS file is where Select panels,
+dropdowns and confirm dialogs expose their runtime-only class strings.
 
 **Its pages are shadcn's pages.** One component each, in shadcn's own order, at the same slug:
 `ui.shadcn.com/docs/components/alert-dialog` is `/components/alert-dialog` here. The list is
@@ -126,9 +133,10 @@ Two consequences worth knowing before you reach for a component:
   `const el` here against a `function el` in the app's own script is a redeclaration, and the
   browser throws a SyntaxError that kills the entire file before one compiler registers — no
   server error, nothing at the call site, every dialog and dropdown simply absent.
-- **`@source ".../ui.js"` must be in the consuming app's CSS.** Tailwind emits only classes it can
-  see, and the Select panel, the dropdown and the confirm dialog are built in JavaScript. Without
-  it those three render unstyled, silently, in production only.
+- **`ui.js` must be included in the CSS build scan.** In Tailwind 3, add it to `content`; in a
+  legacy Tailwind 4 stylesheet that still uses directives, keep `@source ".../ui.js"`. Tailwind
+  emits only classes it can see, and the Select panel, the dropdown and the confirm dialog are
+  built in JavaScript. Without it those three render unstyled, silently, in production only.
 - **Component attributes cannot mix C# and markup.** `id="row-@item.Id"` is fine on a plain
   `<input>` and a compile error on `<Input>`. Write `id="@($"row-{item.Id}")"`. The same holds
   for `@@`: `placeholder="you@@acme.co"` renders a literal `@` on a plain element and fails
@@ -154,16 +162,16 @@ Two consequences worth knowing before you reach for a component:
 `ui.css` is this port's `globals.css`, and most of it is variables. Two rules in it are not, and
 both are silent when missing — both were, for months:
 
-- **`@custom-variant dark (&:where(.dark, .dark *))`.** Tailwind v4's stock `dark:` compiles to
-  a `prefers-color-scheme` query. Without redefining it against the class, the palette follows
-  the class (those are plain `.dark { … }` blocks) and every `dark:` *utility* follows the
-  operating system. On a machine whose OS matches the page that is invisible.
+- **Class-based dark mode.** Tailwind 3 builds must set `darkMode: 'class'`. Legacy Tailwind 4
+  inputs that still compile directly from `ui.css` need `@custom-variant dark (&:where(.dark,
+  .dark *))`. Without class-based dark utilities, the palette follows `.dark` while `dark:`
+  utilities follow the operating system. On a machine whose OS matches the page that is invisible.
 - **`@layer base { * { border-color: var(--border) } }`.** Preflight leaves `currentColor`, so
   `border-b` with no colour class draws a line in the *text* colour. Every table row, accordion
   item and panel edge was a near-black hairline — which reads as "heavier than shadcn" rather
   than as a bug.
 
-The `check-globals` .NET command fails the build if either goes missing again.
+The `check-globals` .NET command fails the build if either global contract goes missing again.
 
 ## Theming
 
