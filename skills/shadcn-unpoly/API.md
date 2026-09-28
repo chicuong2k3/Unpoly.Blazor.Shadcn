@@ -326,6 +326,7 @@ renders `<div>` · `data-slot="calendar"`
 | `Mode` | `string` | `"single"` |  |
 | `Name` | `string?` | — |  |
 | `Selected` | `DateOnly?` | — |  |
+| `DateSelected` | `EventCallback<DateOnly>` | — |  |
 | `From` | `DateOnly?` | — |  |
 | `To` | `DateOnly?` | — |  |
 | `Today` | `DateOnly?` | `DateOnly.FromDateTime(DateTime.Today)` |  |
@@ -2132,6 +2133,15 @@ _No parameters of its own._
 renders `<thead>` · `data-slot="table-header"`
 
 _No parameters of its own._
+
+## `<TableOfContents>`
+renders `<nav>` · `data-slot="table-of-contents"`
+
+| Parameter | Type | Default | |
+|---|---|---|---|
+| `Items` | `IReadOnlyList<TableOfContentsEntry>` | `Array.Empty<TableOfContentsEntry>()` |  |
+| `Title` | `string?` | — |  |
+| `AriaLabel` | `string` | `"Mục lục"` |  |
 
 ## `<TableRow>`
 renders `<tr>` · `data-slot="table-row"`
