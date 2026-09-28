@@ -76,6 +76,22 @@ public class DemoFixture : IAsyncLifetime
             await page.AddInitScriptAsync(File.ReadAllText(stub));
         }
 
+        // Test-only v4 rollback substitution against the default v3 demo host.
+        if (PreviewCss)
+        {
+            var preview = Path.GetFullPath(Path.Combine(Path.GetDirectoryName(DemoAssembly())!,
+                "..", "..", "..", "wwwroot", "app.css"));
+            if (!File.Exists(preview) || new FileInfo(preview).Length < 100_000)
+                throw new FileNotFoundException("Build the Web demo before running the v4 rollback behaviour probe", preview);
+            var css = await File.ReadAllTextAsync(preview) + "\n:root { --behaviour-preview-css: \"v4\" }\n";
+            await page.RouteAsync("**/app.v3.css?*", async route =>
+                await route.FulfillAsync(new RouteFulfillOptions
+                {
+                    Body = css,
+                    ContentType = "text/css",
+                }));
+        }
+
         return page;
     }
 
@@ -199,6 +215,14 @@ public class DemoFixture : IAsyncLifetime
     /// untouched.
     /// </summary>
     internal static bool Safari15Sim => Env("SAFARI15_SIM") is not null;
+
+    // Intentionally one supported value, so typos cannot silently test v3.
+    internal static bool PreviewCss => Env("BEHAVIOUR_CSS") switch
+    {
+        null => false,
+        "v4" => true,
+        var value => throw new InvalidOperationException($"Unsupported BEHAVIOUR_CSS={value}; expected v4"),
+    };
 
     /// <summary>
     /// Finds safari15-stub.js by walking up from the test assembly toward the repository root.

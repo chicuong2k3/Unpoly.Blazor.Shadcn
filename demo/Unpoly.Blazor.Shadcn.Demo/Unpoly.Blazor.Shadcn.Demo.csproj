@@ -43,9 +43,38 @@
           Condition="'$(PublishDir)' != ''" />
   </Target>
 
+  <!-- Build the v3 stylesheet for the demo by default; v4 remains available for rollback. -->
+  <PropertyGroup>
+    <Tailwind3Preview Condition="'$(Tailwind3Preview)' == ''">true</Tailwind3Preview>
+  </PropertyGroup>
+  <Target Name="RequireTailwind3DemoCss" BeforeTargets="PrepareForBuild" Condition="'$(Tailwind3Preview)' != 'true'">
+    <Error Text="The demo host links app.v3.css by default; Tailwind3Preview=false would create a broken build. Use ?demo-css=v4 for runtime comparison." />
+  </Target>
+  <Target Name="RemoveTailwind3Preview" BeforeTargets="PrepareForBuild"
+          Condition="'$(Tailwind3Preview)' != 'true'">
+    <!-- Switching back to v4 must not leave a stale opt-in asset in an
+         incremental build output (especially after a preview publish). -->
+    <Delete Files="wwwroot/app.v3.css;$(OutDir)wwwroot/app.v3.css;wwwroot/container-fallback.v3.js;$(OutDir)wwwroot/container-fallback.v3.js" />
+  </Target>
+  <ItemGroup Condition="'$(Tailwind3Preview)' != 'true'">
+    <Content Remove="wwwroot/app.v3.css;wwwroot/container-fallback.v3.js" />
+  </ItemGroup>
+  <!-- Include before SDK static-asset evaluation; target-time Include is too late
+       for Web's endpoint manifest on a fresh profile. -->
+  <ItemGroup Condition="'$(Tailwind3Preview)' == 'true'">
+    <Content Include="wwwroot/app.v3.css" Condition="!Exists('wwwroot/app.v3.css')" />
+    <Content Include="wwwroot/container-fallback.v3.js" Condition="!Exists('wwwroot/container-fallback.v3.js')" />
+  </ItemGroup>
+  <Target Name="Tailwind3PreviewBuild" BeforeTargets="PrepareForBuild"
+          DependsOnTargets="NpmInstall" Condition="'$(Tailwind3Preview)' == 'true'">
+    <Exec Command="node ../../tools/build-tailwind3-probe.cjs --preview web" />
+  </Target>
+
   <Target Name="NpmInstall" BeforeTargets="Tailwind"
-          Condition="!Exists('node_modules') And '$(SkipTailwind)' != 'true'">
-    <Exec Command="npm install" />
+          Condition="'$(SkipTailwind)' != 'true'">
+    <Exec Command="npm ci" Condition="!Exists('node_modules')" />
+    <!-- The postprocessor resolves modules relative to tools/, not to the demo cwd. -->
+    <Exec Command="npm ci --prefix ../../tools" Condition="!Exists('../../tools/node_modules')" />
   </Target>
 
   <!-- Hot reload: khi `dotnet watch` chạy, Tailwind do `npm run css:watch` lo ở terminal

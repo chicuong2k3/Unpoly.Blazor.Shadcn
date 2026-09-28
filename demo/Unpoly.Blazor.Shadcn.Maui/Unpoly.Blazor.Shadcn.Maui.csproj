@@ -95,9 +95,37 @@
         <_AppCssWasMissing Condition="!Exists('wwwroot/app.css')">true</_AppCssWasMissing>
     </PropertyGroup>
 
+    <!-- Build the v3 stylesheet for the demo by default; keep v4 for rollback. -->
+    <PropertyGroup>
+        <Tailwind3Preview Condition="'$(Tailwind3Preview)' == ''">true</Tailwind3Preview>
+    </PropertyGroup>
+    <Target Name="RequireTailwind3DemoCss" BeforeTargets="PrepareForBuild" Condition="'$(Tailwind3Preview)' != 'true'">
+        <Error Text="The demo host links app.v3.css by default; Tailwind3Preview=false would create a broken build. Use ?demo-css=v4 for runtime comparison." />
+    </Target>
+    <Target Name="RemoveTailwind3Preview" BeforeTargets="PrepareForBuild"
+            Condition="'$(Tailwind3Preview)' != 'true'">
+        <Delete Files="wwwroot/app.v3.css;$(OutDir)wwwroot/app.v3.css;wwwroot/container-fallback.v3.js;$(OutDir)wwwroot/container-fallback.v3.js" />
+    </Target>
+    <ItemGroup Condition="'$(Tailwind3Preview)' != 'true'">
+        <Content Remove="wwwroot/app.v3.css;wwwroot/container-fallback.v3.js" />
+    </ItemGroup>
+    <PropertyGroup>
+        <_PreviewCssWasMissing Condition="!Exists('wwwroot/app.v3.css') Or !Exists('wwwroot/container-fallback.v3.js')">true</_PreviewCssWasMissing>
+    </PropertyGroup>
+    <Target Name="Tailwind3PreviewBuild" BeforeTargets="PrepareForBuild"
+            DependsOnTargets="NpmInstall" Condition="'$(Tailwind3Preview)' == 'true'">
+        <Exec Command="node ../../tools/build-tailwind3-probe.cjs --preview maui" />
+        <ItemGroup Condition="'$(_PreviewCssWasMissing)' == 'true'">
+            <Content Include="wwwroot/app.v3.css" />
+            <Content Include="wwwroot/container-fallback.v3.js" />
+        </ItemGroup>
+    </Target>
+
     <!-- Tailwind v4 through its npm CLI. `dotnet build` stays the only command you run. -->
-    <Target Name="NpmInstall" BeforeTargets="Tailwind" Condition="!Exists('node_modules')">
-        <Exec Command="npm install" />
+    <Target Name="NpmInstall" BeforeTargets="Tailwind">
+        <Exec Command="npm ci" Condition="!Exists('node_modules')" />
+        <!-- The shared postprocessor resolves modules relative to tools/. -->
+        <Exec Command="npm ci --prefix ../../tools" Condition="!Exists('../../tools/node_modules')" />
     </Target>
 
     <!-- Every example is rendered AND shown as source, from the same file. In the web head the
@@ -126,10 +154,11 @@
         </ItemGroup>
     </Target>
 
-    <!-- Inputs/Outputs are not premature here: four target frameworks would otherwise run the
-         same CLI four times over one unchanged input. -->
-    <Target Name="Tailwind" BeforeTargets="ResolveStaticWebAssetsInputs"
-            Inputs="Styles/app.css;../../src/Unpoly.Blazor.Shadcn/Styles/ui.css;../../src/Unpoly.Blazor.Shadcn/Styles/ui.behavior.css;@(RazorComponent)" Outputs="wwwroot/app.css">
+    <!-- Always rebuild: the previous incremental Inputs omitted the CLI/postprocessor config,
+         imported themes and other transitive CSS. A stale MAUI v4 asset silently lacked behavior
+         slots; minification also hoisted a ring fallback above its layered /50 rule.
+         This Windows-only demo has one target framework, so a subsecond CLI run is safer. -->
+    <Target Name="Tailwind" BeforeTargets="ResolveStaticWebAssetsInputs">
         <Exec Command="npm run css" />
         <!-- Only on a first build. Adding it unconditionally gives Windows two sources for
              one file and the PRI compiler refuses:

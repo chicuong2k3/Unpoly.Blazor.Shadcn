@@ -19,7 +19,7 @@ deviations.json            every difference from shadcn, with its reason
 tools/                     the generators; all six take --check and CI runs them
 skills/shadcn-unpoly/      SKILL.md, a generated API index and BLOCKS.md, for coding agents
 themes/                    Material 3, Cupertino and Fluent 2, and what each cannot reproduce
-demo/                      every component with its source, the blocks, a theme switcher
+demo/                      every component with its source, the blocks, a three-palette theme switcher
 ```
 
 ## The demo
@@ -37,6 +37,25 @@ make that class of drift impossible.
 table with a toolbar, settings, and an empty state. Each carries the Unpoly wiring that makes it
 behave, which is the part that is easy to leave out and impossible to notice missing —
 `skills/shadcn-unpoly/BLOCKS.md` names the trap in each.
+
+### Tailwind 3 demo default (consumer migration pending)
+
+Both demos now build and load `app.v3.css` by default, including with JavaScript disabled.
+They also build Tailwind 4 `app.css` for comparison: visit `/?demo-css=v4` to switch
+for the current tab (the choice persists across navigation), or `/?demo-css=v3` to return.
+Do not build with `-p:Tailwind3Preview=false`: the build fails rather than ship a missing
+stylesheet. POS and Portal now reference this tracked vendored library for their binaries, static assets and CSS sources, but still compile/load **v4** `app.css`; no consumer v3 host switch has shipped.
+For Windows MAUI, `node tools/maui-webview-smoke.cjs` starts a disposable real WebView2
+profile and checks selected interactions; use `--baseline` for v4 or `--inventory-only`
+for the two standalone selection primitives. `node tools/web-inventory-browser.cjs
+<chromium.exe>` checks both Web host stylesheets and compares eight light/dark,
+narrow/wide example screenshots. The demo inventory (`node tools/audit-demo-components.cjs`)
+now reports zero unreferenced component sources in both heads, but composition and
+direct example tags are not full per-component state/interaction coverage. Add
+`--keep-open --review-only` to leave a v3 MAUI window open for inspection.
+The demo stylesheet is not Safari 15 certification or a POS/Portal stylesheet; real Safari 15
+is owner-waived (NOT RUN), and full component coverage remains a release gate. See
+`tools/README.md` for build and probe details.
 
 ## Parity, and how it is checked
 
@@ -112,7 +131,7 @@ the state, or an `up.compiler` that rebuilds after every swap and tears itself d
 | `Accordion` | reducer, `data-state` | `<details>` / `<summary>`; `Name` gives you `type="single"` |
 | `DropdownMenu` | Popper + portal | `[popover]` for the top layer, `ui.js` for the position |
 | `Select` | listbox of divs + hidden input | real `<select>` + a shadcn panel drawn beside it |
-| `Checkbox`, `Switch`, `RadioGroupItem` | `<button role=…>` + hidden input | the real input, styled |
+| `Checkbox`, `Switch`, `RadioGroupItem` | `<button role=…>` + hidden input | the real input, styled; demo select-all derives a real mixed state from children, and each radio example needs its own `name` |
 | `Tabs` | React state | `ui.js`, panels hidden with `hidden` so their fields still post |
 | `Sonner` | its own renderer | Toastify-js, same `toast()` / `toast.error()` call shape |
 | `Form` | react-hook-form `Controller` | `<FormField>` takes Label/Description/Message as parameters |

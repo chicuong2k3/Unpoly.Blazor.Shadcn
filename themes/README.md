@@ -8,8 +8,11 @@ A theme is a `:root` block. Import one after `ui.css`:
 @import ".../themes/cupertino.css";
 ```
 
-Or ship several and switch at runtime by scoping each to `[data-theme="…"]` — the demo does
-exactly that, and it costs nothing because every token is a runtime custom property.
+Or ship several and switch at runtime by scoping each to `[data-theme="…"]`.
+The Web and MAUI demos bundle only Apple and Dracula alongside the built-in shadcn palette;
+all other theme files remain available here for apps that explicitly import them. Runtime
+switching needs no rebuild, but bundling every optional palette increases demo CSS and
+verification scope.
 
 ## What is here
 

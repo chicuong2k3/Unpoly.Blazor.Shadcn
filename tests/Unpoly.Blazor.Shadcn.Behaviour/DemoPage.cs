@@ -43,6 +43,11 @@ public abstract class DemoPage(DemoFixture fixture) : IAsyncLifetime
     protected async Task GoAsync(string path)
     {
         await Page.GotoAsync(Fixture.BaseUrl + path, new() { WaitUntil = WaitUntilState.NetworkIdle });
+        if (DemoFixture.PreviewCss)
+        {
+            var marker = await Page.EvaluateAsync<string>("() => getComputedStyle(document.documentElement).getPropertyValue('--behaviour-preview-css').trim()");
+            Assert.Equal("\"v4\"", marker); // fail, never silently credit a v3-only run
+        }
     }
 
     /// <summary>

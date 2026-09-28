@@ -29,6 +29,14 @@ public class FileUploadTests(DemoFixture fixture) : DemoPage(fixture)
         }
         """, previewId);
 
+    Task UploadedAsync(string previewId) => Page.WaitForFunctionAsync("""
+        id => {
+          const box = document.getElementById(id)?.previousElementSibling;
+          return box?.querySelector('[data-slot="file-upload-value"]')?.value.startsWith('data:image/png')
+            && box?.querySelector('[data-slot="file-upload-zone"]')?.dataset.filled === 'true';
+        }
+        """, previewId, new() { Timeout = 15000 });
+
     async Task<string> StateAsync(string previewId) => await Page.EvaluateAsync<string>("""
         preview => {
           const b = document.getElementById(preview).previousElementSibling;
@@ -62,7 +70,7 @@ public class FileUploadTests(DemoFixture fixture) : DemoPage(fixture)
         var box = await ShowAsync("preview-file-upload-example");
 
         await box.Locator("[data-slot=\"file-upload-input\"]").SetInputFilesAsync(Png());
-        await Page.WaitForTimeoutAsync(1200);
+        await UploadedAsync("preview-file-upload-example");
 
         var url = await ValueAsync("preview-file-upload-example");
         Assert.StartsWith("data:image/png", url);
@@ -77,7 +85,7 @@ public class FileUploadTests(DemoFixture fixture) : DemoPage(fixture)
         var box = await ShowAsync("preview-file-upload-example");
 
         await box.Locator("[data-slot=\"file-upload-input\"]").SetInputFilesAsync(Png());
-        await Page.WaitForTimeoutAsync(1200);
+        await UploadedAsync("preview-file-upload-example");
 
         var state = await StateAsync("preview-file-upload-example");
         Assert.Equal("true|true|false|true", state);
@@ -91,7 +99,7 @@ public class FileUploadTests(DemoFixture fixture) : DemoPage(fixture)
         await GoAsync("/components/file-upload");
         var box = await ShowAsync("preview-file-upload-example");
         await box.Locator("[data-slot=\"file-upload-input\"]").SetInputFilesAsync(Png());
-        await Page.WaitForTimeoutAsync(1200);
+        await UploadedAsync("preview-file-upload-example");
 
         await box.Locator("[data-slot=\"file-upload-clear\"]").ClickAsync();
         await Page.WaitForTimeoutAsync(400);

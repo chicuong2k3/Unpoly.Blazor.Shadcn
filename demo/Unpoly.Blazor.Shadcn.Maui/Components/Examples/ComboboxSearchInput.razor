@@ -1,0 +1,18 @@
+@* Unlike the select-like trigger example, this text input filters a posted value. *@
+<div class="w-64">
+    <Field>
+        <FieldLabel For="cb-search-example-input">Search frameworks</FieldLabel>
+        <Combobox Target="cb-search-example-list">
+            <input type="hidden" name="search-framework" value="" data-combobox-value />
+            <ComboboxInput Id="cb-search-example-input" Target="cb-search-example-list" Placeholder="Select a framework" />
+            <ComboboxContent Id="cb-search-example-list">
+                <ComboboxEmpty>No items found.</ComboboxEmpty>
+                <ComboboxList>
+                    <ComboboxItem Value="sveltekit">SvelteKit</ComboboxItem>
+                    <ComboboxItem Value="nuxtjs">Nuxt.js</ComboboxItem>
+                    <ComboboxItem Value="astro">Astro</ComboboxItem>
+                </ComboboxList>
+            </ComboboxContent>
+        </Combobox>
+    </Field>
+</div>

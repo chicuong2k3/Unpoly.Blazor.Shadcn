@@ -118,7 +118,34 @@ public class MessageScrollerTests(DemoFixture fixture) : DemoPage(fixture)
         await Page.WaitForTimeoutAsync(400);
 
         await box.Locator("[data-slot=\"message-scroller-button\"][data-direction=\"end\"]").ClickAsync();
-        await Page.WaitForTimeoutAsync(1400);
+        // Smooth scrolling and content-visibility estimates settle on different frames under
+        // load. Wait for the observable contract, not a fixed 1.4-second wall-clock delay.
+        try
+        {
+            await Page.WaitForFunctionAsync("""
+                () => {
+                  const root = document.getElementById('preview-conversation-example')
+                    ?.previousElementSibling?.querySelector('[data-slot="message-scroller"]');
+                  const v = root?.querySelector('[data-slot="message-scroller-viewport"]');
+                  return v && Math.round(v.scrollTop) >= Math.round(v.scrollHeight - v.clientHeight) - 2
+                    && root.dataset.following === 'true';
+                }
+                """, null, new() { Timeout = 15000 });
+        }
+        catch (TimeoutException ex)
+        {
+            var details = await Page.EvaluateAsync<string>("""
+                () => {
+                  const r = document.getElementById('preview-conversation-example')
+                    ?.previousElementSibling?.querySelector('[data-slot="message-scroller"]');
+                  const v = r?.querySelector('[data-slot="message-scroller-viewport"]');
+                  return JSON.stringify({ exists: !!v, top: v?.scrollTop, height: v?.scrollHeight,
+                    client: v?.clientHeight, following: r?.dataset.following,
+                    autoscrolling: v?.dataset.autoscrolling });
+                }
+                """);
+            throw new Xunit.Sdk.XunitException($"Jump did not reach the end: {details}; {ex.Message}");
+        }
 
         var state = await ReadAsync("preview-conversation-example");
         Assert.True(state.AtMax, "it stopped short of the end");

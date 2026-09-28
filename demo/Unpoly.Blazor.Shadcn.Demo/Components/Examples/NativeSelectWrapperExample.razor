@@ -1,0 +1,21 @@
+@* NativeSelectWrapper is the optional outer layout/disabled-state primitive. NativeSelect
+   keeps the real OS picker; the outer wrapper intentionally surrounds its own frame. *@
+<div class="flex flex-wrap gap-4">
+    <Field>
+        <FieldLabel For="ns-wrapper-enabled">Region</FieldLabel>
+        <NativeSelectWrapper>
+            <NativeSelect id="ns-wrapper-enabled" name="wrapper-region">
+                <NativeSelectOption Value="north" Selected>North</NativeSelectOption>
+                <NativeSelectOption Value="south">South</NativeSelectOption>
+            </NativeSelect>
+        </NativeSelectWrapper>
+    </Field>
+    <Field>
+        <FieldLabel For="ns-wrapper-disabled">Unavailable region</FieldLabel>
+        <NativeSelectWrapper>
+            <NativeSelect id="ns-wrapper-disabled" name="wrapper-unavailable" disabled>
+                <NativeSelectOption Value="none" Selected>Not available</NativeSelectOption>
+            </NativeSelect>
+        </NativeSelectWrapper>
+    </Field>
+</div>

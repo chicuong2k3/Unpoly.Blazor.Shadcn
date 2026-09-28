@@ -17,16 +17,29 @@
         <base href="/" />
 
         <link rel="stylesheet" href="_content/Unpoly.Blazor.Shadcn/airdatepicker/air-datepicker.css" />
-        @* A theme names its typefaces; loading them is the application's job, and this demo
-           ships four themes that between them ask for five faces. Unloaded, each family falls
-           back and the theme is the same palette in the wrong voice — which is exactly how these
-           themes looked before. preconnect first, because the stylesheet and the font files come
-           from two different hosts and the second round trip is the expensive one. *@
+        @* Keep font loading for the documentation/Customizer; themes can name their own faces. *@
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
         <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Architects+Daughter&family=Geist:wght@400;500;600&family=Geist+Mono&family=Inter:wght@400;500;600&family=JetBrains+Mono&family=Outfit:wght@400;500;600&display=swap" />
 
-        <link rel="stylesheet" href="@($"app.css?v={Stamp}")" />
+        @* v3 also loads without JavaScript; ?demo-css=v4 provides rollback comparison. *@
+        <link id="demo-app-css" rel="stylesheet" href="@($"app.v3.css?v={Stamp}")" />
+        <script>
+            (function () {
+                var css = new URL(location.href).searchParams.get('demo-css');
+                if (css === 'v3' || css === 'v4') sessionStorage.setItem('demo-css', css);
+                var link = document.getElementById('demo-app-css');
+                if (sessionStorage.getItem('demo-css') === 'v4') link.href = 'app.css?v=@Stamp';
+                link.dataset.demoCss = sessionStorage.getItem('demo-css') === 'v4' ? 'v4' : 'v3';
+            })();
+        </script>
+        @* The v3 stylesheet needs the named-container fallback on browsers
+           without native container queries. Parser-blocking keeps it available before body paint. *@
+        <script>
+            if (document.getElementById('demo-app-css').dataset.demoCss === 'v3' &&
+                !(window.CSS && CSS.supports && CSS.supports('container-type', 'inline-size')))
+                document.write('\x3cscript src="container-fallback.v3.js?v=@Stamp">\x3c/script>');
+        </script>
         <link rel="stylesheet" href="_content/Unpoly.Blazor.Shadcn/ui.safari15.css" />
         <link rel="stylesheet" href="_content/Unpoly.Blazor.Shadcn/cropperjs/cropper.min.css" />
         <link rel="stylesheet" href="_content/Unpoly.Blazor.Shadcn/toastify/toastify.css" />
@@ -35,7 +48,8 @@
             // Inline and synchronous on purpose. Anything deferred paints the default theme first.
             (function () {
                 var t = localStorage.getItem('demo-theme');
-                if (t && t !== 'shadcn') document.documentElement.dataset.theme = t;
+                if (t === 'apple' || t === 'dracula') document.documentElement.dataset.theme = t;
+                else if (t && t !== 'shadcn') localStorage.removeItem('demo-theme');
                 if (localStorage.getItem('demo-dark') === '1') document.documentElement.classList.add('dark');
             })();
         </script>

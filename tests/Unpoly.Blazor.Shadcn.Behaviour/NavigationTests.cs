@@ -10,6 +10,19 @@ namespace Unpoly.Blazor.Shadcn.Behaviour;
 [Trait("Module", "Navigation")]
 public class NavigationTests(DemoFixture fixture) : DemoPage(fixture)
 {
+    [SkippableFact]
+    public async Task Leaving_context_menu_cleans_up_without_page_errors()
+    {
+        RequireDemo();
+        await GoAsync("/components/context-menu");
+        var box = await ShowAsync("preview-context-menu-basic");
+        await box.Locator("[data-slot=context-menu-trigger]").ClickAsync(new() { Button = MouseButton.Right });
+        await Page.Keyboard.PressAsync("Escape");
+        await Page.Locator("a[data-slot=item][href='/components/data-table']").First.ClickAsync();
+        await Page.GetByRole(AriaRole.Heading, new() { Name = "Data Table", Exact = true }).WaitForAsync();
+        AssertQuiet();
+    }
+
     // ---- Tabs ---------------------------------------------------------------------------------
 
     [SkippableFact]

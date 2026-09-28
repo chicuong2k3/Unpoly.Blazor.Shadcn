@@ -1,0 +1,15 @@
+@* This is the public visual primitive, not an <option> child: an option cannot contain
+   markup. The enhanced Select builds its own indicator in ui.js. *@
+<div class="flex flex-col gap-3">
+    <Field Class="w-[220px]">
+        <FieldLabel For="si-indicator-example">Product type</FieldLabel>
+        <Select id="si-indicator-example" name="indicator-product">
+            <SelectItem Value="top" Selected>Top</SelectItem>
+            <SelectItem Value="shoes">Shoes</SelectItem>
+        </Select>
+    </Field>
+    <div class="relative w-[220px] rounded-md border border-border px-3 py-2 pe-9 text-control">
+        <span>Indicator preview</span>
+        <SelectItemIndicator aria-hidden="true"><Icon Name="check" Class="size-3.5" /></SelectItemIndicator>
+    </div>
+</div>

@@ -15,6 +15,41 @@ namespace Unpoly.Blazor.Shadcn.Behaviour;
 [Trait("Module", "Forms")]
 public class FormControlTests(DemoFixture fixture) : DemoPage(fixture)
 {
+    // ---- Native selection states ---------------------------------------------------------------
+
+    [SkippableFact]
+    public async Task Checkbox_example_derives_mixed_state_from_its_children()
+    {
+        RequireDemo();
+        await GoAsync("/components/checkbox");
+        var box = await ShowAsync("preview-checkbox-checked-state");
+        await Page.WaitForFunctionAsync("() => document.querySelector('#c-mixed')?.indeterminate === true");
+        Assert.True(await box.Locator("#c-on").IsCheckedAsync());
+        Assert.False(await box.Locator("#c-off").IsCheckedAsync());
+
+        await box.Locator("label[for=c-off]").ClickAsync();
+        await Page.WaitForFunctionAsync("() => document.querySelector('#c-mixed')?.checked === true && !document.querySelector('#c-mixed')?.indeterminate");
+        await box.Locator("label[for=c-mixed]").ClickAsync();
+        await Page.WaitForFunctionAsync("() => ['c-on','c-off','c-mixed'].every(id => !document.getElementById(id)?.checked)");
+        AssertQuiet();
+    }
+
+    [SkippableFact]
+    public async Task Radio_example_keeps_its_group_independent_of_other_examples()
+    {
+        RequireDemo();
+        await GoAsync("/components/radio-group");
+        var box = await ShowAsync("preview-radio-group-example");
+        var radios = box.Locator("input[name=plan-basic]");
+        Assert.True(await radios.Nth(0).IsCheckedAsync());
+        Assert.False(await radios.Nth(1).IsCheckedAsync());
+        Assert.True(await radios.Nth(2).IsDisabledAsync());
+        await box.Locator("label").Nth(1).ClickAsync();
+        Assert.False(await radios.Nth(0).IsCheckedAsync());
+        Assert.True(await radios.Nth(1).IsCheckedAsync());
+        AssertQuiet();
+    }
+
     // ---- Select -------------------------------------------------------------------------------
 
     [SkippableFact]
@@ -157,10 +192,25 @@ public class FormControlTests(DemoFixture fixture) : DemoPage(fixture)
         var box = await ShowAsync("preview-toggle-outline");
 
         var border = await box.Locator("[data-slot=\"toggle\"]").First
-            .EvaluateAsync<string>("t => getComputedStyle(t).borderTopWidth + ' ' + getComputedStyle(t).borderTopColor");
+            .EvaluateAsync<int[]>("""
+                t => {
+                  const css = getComputedStyle(t);
+                  const canvas = document.createElement('canvas');
+                  canvas.width = canvas.height = 1;
+                  const ctx = canvas.getContext('2d');
+                  const rgb = color => {
+                    ctx.fillStyle = color; ctx.fillRect(0, 0, 1, 1);
+                    return [...ctx.getImageData(0, 0, 1, 1).data].slice(0, 3);
+                  };
+                  const border = rgb(css.borderTopColor);
+                  const token = rgb(getComputedStyle(document.documentElement).getPropertyValue('--input').trim());
+                  return [Math.round(parseFloat(css.borderTopWidth)),
+                    ...border.map((channel, index) => Math.abs(channel - token[index]))];
+                }
+                """);
 
-        Assert.DoesNotContain("0px", border);
-        Assert.Contains("oklch", border);
+        Assert.Equal(1, border[0]);
+        Assert.All(border.Skip(1), difference => Assert.InRange(difference, 0, 2));
         AssertQuiet();
     }
 
@@ -217,7 +267,8 @@ public class FormControlTests(DemoFixture fixture) : DemoPage(fixture)
     // ---- Slider -------------------------------------------------------------------------------
 
     /// <summary>Logical properties turn with the writing mode: once the box is vertical,
-    /// inline-size IS the height and the gradient's "to right" runs across six pixels.</summary>
+    /// inline-size IS the height. The slider must fill its parent when taller
+    /// than the minimum; an unlayered behavior rule masked h-full in v3.</summary>
     [SkippableFact]
     public async Task A_vertical_slider_is_taller_than_it_is_wide()
     {
@@ -226,10 +277,11 @@ public class FormControlTests(DemoFixture fixture) : DemoPage(fixture)
         await ShowAsync("preview-slider-vertical");
 
         var shape = await Page.Locator("[data-slot=\"slider\"][data-orientation=\"vertical\"]").First
-            .EvaluateAsync<int[]>("s => [Math.round(s.getBoundingClientRect().width), Math.round(s.getBoundingClientRect().height)]");
+            .EvaluateAsync<int[]>("s => [Math.round(s.getBoundingClientRect().width), Math.round(s.getBoundingClientRect().height), Math.round(s.parentElement.getBoundingClientRect().height)]");
 
         Assert.Equal(16, shape[0]);
-        Assert.True(shape[1] > 100, $"it is only {shape[1]}px tall");
+        Assert.True(shape[2] > 100, $"parent is only {shape[2]}px tall");
+        Assert.Equal(Math.Max(shape[2], 176), shape[1]);
         AssertQuiet();
     }
 

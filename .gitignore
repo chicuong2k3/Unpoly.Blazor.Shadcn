@@ -8,3 +8,6 @@ __pycache__/
 # can fetch them in the WebView. Duplicates Components/Examples + Components/Blocks, so it is
 # never committed.
 **/wwwroot/samples/
+# Opt-in Tailwind 3 preview asset; app.css stays the tracked v4 baseline.
+**/wwwroot/app.v3.css
+**/wwwroot/container-fallback.v3.js

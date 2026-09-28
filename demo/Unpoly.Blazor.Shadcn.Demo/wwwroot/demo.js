@@ -9,7 +9,11 @@
 // in the header and the one in the Customizer — so the compiler keeps them in step rather than
 // letting the second one lie about which theme is on.
 
-const currentTheme = () => localStorage.getItem('demo-theme') || 'shadcn'
+const allowedThemes = ['shadcn', 'apple', 'dracula']
+const currentTheme = () => {
+  const saved = localStorage.getItem('demo-theme')
+  return allowedThemes.includes(saved) ? saved : 'shadcn'
+}
 
 up.compiler('[data-theme-picker]', (select) => {
   select.value = currentTheme()
@@ -18,11 +22,12 @@ up.compiler('[data-theme-picker]', (select) => {
 
   const onChange = (event) => {
     const value = select.value
+    if (!allowedThemes.includes(value)) return
     // A synthetic change from faceSync only carries the stored value to the
     // shadcn face (ui.js listener, registered earlier, runs first). It must
     // not reset the customizer, or every page load would wipe saved tokens.
     if (event && event.isTrusted === false &&
-        value === (localStorage.getItem('demo-theme') || 'shadcn')) return
+        value === currentTheme()) return
     localStorage.setItem('demo-theme', value)
     if (value === 'shadcn') delete document.documentElement.dataset.theme
     else document.documentElement.dataset.theme = value

@@ -1,0 +1,11 @@
+@* FieldTitle is a heading for a grouped control, not the slider's accessible label.
+   The two thumbs have their own labels and update the live output values. *@
+<Field Class="w-full max-w-xs">
+    <FieldTitle>Price range</FieldTitle>
+    <FieldDescription>
+        Set your budget range ($<output for="fsl-maui-price-0" class="font-medium tabular-nums">200</output>
+        &ndash; $<output for="fsl-maui-price-1" class="font-medium tabular-nums">800</output>).
+    </FieldDescription>
+    <Slider Id="fsl-maui-price" Name="price" Min="0" Max="1000" Step="10" Values="new double[] { 200, 800 }"
+            Labels=@(new[] { "Lowest price", "Highest price" }) Class="mt-2 w-full" />
+</Field>

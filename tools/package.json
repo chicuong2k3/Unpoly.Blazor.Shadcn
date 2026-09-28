@@ -1,0 +1,16 @@
+{
+  "name": "unpoly-blazor-shadcn-css-tools",
+  "private": true,
+  "devDependencies": {
+    "@csstools/postcss-oklab-function": "5.0.13",
+    "@tailwindcss/container-queries": "0.1.1",
+    "autoprefixer": "10.4.21",
+    "css-has-pseudo": "8.0.1",
+    "culori": "4.0.2",
+    "playwright-core": "1.58.2",
+    "postcss": "8.5.28",
+    "postcss-import": "16.1.1",
+    "postcss-selector-parser": "6.1.4",
+    "tailwindcss": "3.4.19"
+  }
+}

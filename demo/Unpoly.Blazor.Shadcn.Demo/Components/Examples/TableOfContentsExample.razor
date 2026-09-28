@@ -1,0 +1,20 @@
+@* The links and headings share IDs, so this is a usable in-page navigation example. *@
+<div class="flex flex-col gap-3">
+    <TableOfContents Title="On this page" AriaLabel="Example sections" Items="Sections" />
+    <section>
+        <h3 id="toc-intro" class="font-medium">Introduction</h3>
+        <p>Start with the overview.</p>
+    </section>
+    <section>
+        <h3 id="toc-details" class="font-medium">Details</h3>
+        <p>Continue to the details.</p>
+    </section>
+</div>
+
+@code {
+    private static readonly TableOfContentsEntry[] Sections =
+    [
+        new("toc-intro", "Introduction"),
+        new("toc-details", "Details"),
+    ];
+}

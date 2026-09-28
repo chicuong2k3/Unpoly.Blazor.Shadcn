@@ -26,7 +26,7 @@
     <code>--font-numeric</code>. These are additive; class recipes stay in sync with upstream.
 </p>
 
-<h2 class="doc-h2">One component tree, six themes</h2>
+<h2 class="doc-h2">One component tree, two optional palettes</h2>
 <p class="doc-note">
     Each card sets <code>data-theme</code> on its wrapper. To theme the whole app, set it on
     <code>&lt;html&gt;</code> instead. The controls below have identical markup in every card.
@@ -70,7 +70,7 @@
     ];
 
     static readonly string[] PreviewThemes = [
-        "supabase", "notebook", "dracula", "nord", "cupertino", "claymorphism"
+        "apple", "dracula"
     ];
 
     static readonly IReadOnlyList<SnippetItem> Setup = [

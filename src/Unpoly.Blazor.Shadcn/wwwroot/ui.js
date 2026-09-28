@@ -107,8 +107,21 @@
           for (const m of node.querySelectorAll(selector)) for (const c of set) runCompiler(m, c, selector)
         }
       }
-      for (const { addedNodes, removedNodes } of mutations) {
-        for (const node of addedNodes) scan(node)
+      // Blazor can report a parent and hundreds of its descendants in the same batch.
+      // Scanning each one walks that subtree once per compiler per descendant (quadratic
+      // on a page of calendar day inputs). A live added ancestor already covers its children.
+      const added = new Set()
+      for (const { addedNodes } of mutations)
+        for (const node of addedNodes)
+          if (node instanceof Element && node.isConnected) added.add(node)
+      for (const node of added) {
+        let covered = false
+        for (let parent = node.parentElement; parent; parent = parent.parentElement) {
+          if (added.has(parent)) { covered = true; break }
+        }
+        if (!covered) scan(node)
+      }
+      for (const { removedNodes } of mutations) {
         for (const node of removedNodes) {
           // A node moved within the document (for example a wrapped select) is not
           // disposed. Unwrapping it here creates an infinite mutation/recompile loop.
@@ -508,6 +521,27 @@
     if (edge.left !== undefined) panel.style.left = `${Math.round(edge.left)}px`
     if (edge.right !== undefined) panel.style.right = `${Math.round(edge.right)}px`
     panel.style.top = `${Math.round(top)}px`
+
+    // The native top layer uses the viewport as the fixed-position containing block.
+    // On Safari 15 the popover polyfill marks the open panel with this class but
+    // leaves it in the DOM: a transformed ancestor can then become its containing
+    // block. CSS left/top still report the requested viewport coordinates while
+    // the actual rectangle is offset by that ancestor (sidebar previews do this).
+    // Correct the measured displacement only on the polyfilled path, preserving
+    // native positioning and the existing left/right alignment logic.
+    if (panel.classList.contains(':popover-open')) {
+      const actual = panel.getBoundingClientRect()
+      const wantedLeft = edge.left !== undefined
+        ? Math.round(edge.left)
+        : document.documentElement.clientWidth - Math.round(edge.right) - actual.width
+      const dx = actual.left - wantedLeft
+      const dy = actual.top - Math.round(top)
+      if (Math.abs(dx) > 0.5) {
+        if (edge.left !== undefined) panel.style.left = `${Math.round(edge.left - dx)}px`
+        else panel.style.right = `${Math.round(edge.right + dx)}px`
+      }
+      if (Math.abs(dy) > 0.5) panel.style.top = `${Math.round(top - dy)}px`
+    }
   }
 
   let tabsSeq = 0
@@ -1203,7 +1237,6 @@
     return () => {
       trigger.removeEventListener('contextmenu', onContextMenu)
       panel.removeEventListener('toggle', onToggle)
-      panel.removeEventListener('pointerover', onHighlight)
     }
   })
 
@@ -1819,14 +1852,51 @@
     //
     // So a scroll that asked for the end checks when it settles, and finishes the job.
     let settle
+    let chaseTimer
+    let chaseStop
+    let chasing = false
+    const cancelChase = () => {
+      clearInterval(chaseTimer)
+      clearTimeout(chaseStop)
+      chaseTimer = chaseStop = undefined
+      chasing = false
+    }
+    // A reader who takes control must not be pulled back down by a pending jump.
+    const interruptChase = () => {
+      if (!chasing) return
+      clearTimeout(settle)
+      cancelChase()
+      delete viewport.dataset.autoscrolling
+      sync()
+    }
+    viewport.addEventListener('wheel', interruptChase, { passive: true })
+    viewport.addEventListener('touchstart', interruptChase, { passive: true })
     const glide = (top, behavior = 'smooth', chase = false) => {
+      cancelChase()
+      chasing = chase
       viewport.dataset.autoscrolling = 'true'
       viewport.scrollTo({ top, behavior })
       clearTimeout(settle)
       settle = setTimeout(() => {
-        if (chase && !atEnd()) viewport.scrollTop = viewport.scrollHeight
-        delete viewport.dataset.autoscrolling
-        sync()
+        if (chase) {
+          // Revealing an estimated content-visibility item can change scrollHeight
+          // *after* the first correction. Follow the target briefly until layout
+          // settles, rather than chasing once at a guessed 400 ms mark.
+          const finish = () => {
+            viewport.scrollTop = viewport.scrollHeight
+            sync()
+          }
+          finish()
+          chaseTimer = setInterval(finish, 100)
+          chaseStop = setTimeout(() => {
+            cancelChase()
+            delete viewport.dataset.autoscrolling
+            sync()
+          }, 1600)
+        } else {
+          delete viewport.dataset.autoscrolling
+          sync()
+        }
       }, 400)
     }
 
@@ -1906,6 +1976,9 @@
     return () => {
       watch.disconnect()
       clearTimeout(settle)
+      cancelChase()
+      viewport.removeEventListener('wheel', interruptChase)
+      viewport.removeEventListener('touchstart', interruptChase)
       viewport.removeEventListener('scroll', onScroll)
       root.removeEventListener('click', onButton)
       document.removeEventListener('click', onJump)
