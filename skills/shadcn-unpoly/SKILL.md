@@ -164,7 +164,9 @@ Two consequences worth knowing before you reach for a component:
 - **A local called `code` is a Razor directive.** `@code` at the start of an expression opens a
   code block wherever it appears, so `<TableCell>@code</TableCell>` is a compile error with a
   message about the `code` directive rather than about your variable. Same for `@functions`,
-  `@using`, `@inherits`. It has cost two afternoons here; call it `number`.
+  `@using`, `@inherits` — and `@page`: a pattern variable called `page` (`@if (x is { } page)`)
+  makes every `@page.Total` in the markup a misplaced page directive. It has cost three
+  afternoons here; call it `number`, `found`, `result`.
 - **A `<button>` inside a `<form>` submits.** Every non-submitting button needs `type="button"` —
   `TabsTrigger`, `DialogClose` and `DropdownMenuItem` already set it.
 
