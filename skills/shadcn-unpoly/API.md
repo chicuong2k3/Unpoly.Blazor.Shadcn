@@ -525,6 +525,7 @@ renders `<div>` · `data-slot="combobox"`
 |---|---|---|---|
 | `Target` | `string` | `default!` |  |
 | `Multiple` | `bool` | — | **required** |
+| `Creatable` | `bool` | — |  |
 
 ## `<ComboboxChip>`
 renders `<span>` · `data-slot="combobox-chip"`

@@ -1445,6 +1445,9 @@
     if (!panel) return
 
     const multiple = root.dataset.multiple === 'true'
+    // Free-form tags: text that matches no row becomes a chip of its own. Only meaningful with
+    // chips, so a creatable root without Multiple is read as an ordinary combobox.
+    const creatable = multiple && root.dataset.creatable === 'true'
     const input = root.querySelector('[data-slot="combobox-chip-input"], input[type="text"]')
     const trigger = root.querySelector('[data-slot="combobox-trigger"]')
     const value = root.querySelector('[data-slot="combobox-value"]')
@@ -1553,27 +1556,75 @@
         syncClear()
         return
       }
-      const existing = chips.querySelector(`[data-slot="combobox-chip"][data-value="${item.dataset.value}"]`)
+      const existing = chipFor(item.dataset.value)
       if (existing) { existing.remove(); delete item.dataset.selected; syncClear(); return }
+      if (!addChip(chips, item.dataset.value, label(item))) return
       item.dataset.selected = 'true'
-
-      // Cloned from the template the component renders, not built here. Built here it wore
-      // whatever class name the call site remembered to pass — usually none — so a chip added
-      // by clicking was bare text next to a server-rendered one that was a proper badge with a
-      // remove button. The template has all of it, including the button and its label.
-      const template = chips.querySelector('[data-combobox-chip-template]')
-      const chip = template?.content.firstElementChild?.cloneNode(true)
-      if (!chip) return
-      chip.dataset.value = item.dataset.value
-      const post = chip.querySelector('input[type="hidden"]')
-      if (post) post.value = item.dataset.value
-      const remove = chip.querySelector('[data-slot="combobox-chip-remove"]')
-      if (remove) remove.setAttribute('aria-label', `Remove ${label(item)}`)
-      chip.insertBefore(document.createTextNode(label(item)), chip.firstChild)
-      chips.insertBefore(chip, input)
       if (input) input.value = ''
       syncClear()
       filter()
+    }
+
+    // Found by comparing values rather than by an attribute selector: a created tag is whatever
+    // the reader typed, and a quote or a bracket in it would make `[data-value="…"]` a syntax
+    // error. Case-folded only when asked — a row's value is exact, a typed duplicate is not.
+    const chipFor = (v, anyCase = false) => [...root.querySelectorAll('[data-slot="combobox-chip"]')]
+      .find((chip) => anyCase ? chip.dataset.value?.toLowerCase() === v.toLowerCase() : chip.dataset.value === v)
+
+    // Cloned from the template the component renders, not built here. Built here it wore
+    // whatever class name the call site remembered to pass — usually none — so a chip added
+    // by clicking was bare text next to a server-rendered one that was a proper badge with a
+    // remove button. The template has all of it, including the button and its label. A created
+    // tag goes through the same path, so it posts under the same name and looks the same.
+    const addChip = (chips, v, text) => {
+      const template = chips.querySelector('[data-combobox-chip-template]')
+      const chip = template?.content.firstElementChild?.cloneNode(true)
+      if (!chip) return false
+      chip.dataset.value = v
+      const post = chip.querySelector('input[type="hidden"]')
+      if (post) post.value = v
+      const remove = chip.querySelector('[data-slot="combobox-chip-remove"]')
+      if (remove) remove.setAttribute('aria-label', `Remove ${text}`)
+      chip.insertBefore(document.createTextNode(text), chip.firstChild)
+      chips.insertBefore(chip, input && input.parentNode === chips ? input : null)
+      return true
+    }
+
+    // Creatable: Enter or a comma turns the typed text into a chip, Backspace in an empty box
+    // takes the last one back. Text that names a visible row chooses that row instead, so typing
+    // "react" and pressing Enter gives the catalogue's React chip rather than a lookalike.
+    const onCreateKey = (event) => {
+      if (event.isComposing) return
+      const chips = root.querySelector('[data-slot="combobox-chips"]')
+      if (!chips) return
+      const text = input.value.trim()
+      if (event.key === 'Enter' || event.key === ',') {
+        // A comma is a separator, never part of a tag; Enter here means "add", and letting it
+        // through would submit the form with the tag still sitting in the box.
+        if (event.key === ',' || text) event.preventDefault()
+        if (!text) return
+        const needle = text.toLowerCase()
+        const match = shown().find((i) => !i.disabled
+          && (label(i).toLowerCase() === needle || (i.dataset.value || '').toLowerCase() === needle))
+        if (match) {
+          // choose() toggles, and a reader typing a name that is already a chip means "add it",
+          // not "remove it" — so an existing chip only clears the box.
+          if (!chipFor(match.dataset.value)) choose(match)
+        } else if (!chipFor(text, true)) {
+          addChip(chips, text, text)
+        }
+        input.value = ''
+        syncClear()
+        filter()
+      } else if (event.key === 'Backspace' && !input.value) {
+        const chip = [...chips.querySelectorAll('[data-slot="combobox-chip"]')].pop()
+        if (!chip) return
+        event.preventDefault()
+        const item = items().find((i) => i.dataset.value === chip.dataset.value)
+        if (item) { delete item.dataset.selected; item.setAttribute('aria-selected', 'false') }
+        chip.remove()
+        syncClear()
+      }
     }
 
     const onClick = (event) => {
@@ -1674,6 +1725,7 @@
     root.addEventListener('keydown', onKey)
     panel.addEventListener('keydown', onKey)
     input?.addEventListener('input', onInput)
+    if (creatable) input?.addEventListener('keydown', onCreateKey)
     input?.addEventListener('focus', onFocus)
     // click, not pointerdown: opening on pointerdown puts the panel in the top layer before the
     // click completes, and the browser's own light-dismiss then sees a click outside it and
@@ -1697,10 +1749,12 @@
       root.removeEventListener('keydown', onKey)
       panel.removeEventListener('keydown', onKey)
       input?.removeEventListener('input', onInput)
+      input?.removeEventListener('keydown', onCreateKey)
       input?.removeEventListener('focus', onFocus)
       input?.removeEventListener('click', onFocus)
       clear?.removeEventListener('click', onClear)
       panel.removeEventListener('toggle', onToggle)
+      panel.removeEventListener('pointerover', onHighlight)
     }
   })
 

@@ -105,6 +105,12 @@ catalogue rather than a menu, put `up-autosubmit` and `up-target` on `<CommandIn
 server answer — `<CommandList>` is the fragment it swaps, and the markup is otherwise identical.
 `<CommandDialog Key="mod+k">` binds the shortcut; `mod` is ⌘ on a Mac and Ctrl everywhere else.
 
+`<Combobox Multiple Creatable>` is the free-form tag field: Enter or a comma in the
+`<ComboboxChipInput>` makes a chip of the typed text (or chooses the row it names), posted under
+the `<ComboboxChips Name>` like any other chip. The chip is made by script, so give the chip input
+the same `name` too — with scripting off the typed `a, b` then still posts, and the server must
+split every value of that name on commas, trim, and drop blanks and duplicates.
+
 `Select` has **no** `<SelectTrigger>` / `<SelectValue>` / `<SelectContent>`: the native element is
 all three. Write `<Select name="kind"><SelectItem Value="a">A</SelectItem></Select>`.
 
