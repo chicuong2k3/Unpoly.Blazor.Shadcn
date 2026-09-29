@@ -3620,6 +3620,155 @@
     }
   })
 
+  // =============================================================================================
+  // NumberTicker — the count-up, and only the count-up
+  // =============================================================================================
+  // The final value is already in the markup, because the server wrote it there and a reader with
+  // scripting off is owed a real number rather than a zero waiting for a script. This is therefore
+  // strictly an enhancement: it rewrites the same text node, once, from the start value to the end
+  // value, when the figure first comes into view — and it puts the end value back if it is torn
+  // down half way through.
+  //
+  // `IntersectionObserver` is the platform's own "has this been seen" test, which is all
+  // `useInView` is here: no scroll listener, no per-frame hit test, and no work at all for a ticker
+  // the reader never scrolls to.
+  //
+  // The motion is a spring integrated by hand rather than a CSS transition, because what moves
+  // here is TEXT. There is no box to transition and no element to animate — writing the number each
+  // frame is the whole of it. Upstream's constants are kept, so the timing is the one this
+  // component has always had.
+
+  shadcnCompiler('[data-slot="number-ticker"]', (root) => {
+    // Re-read at the moment it is needed, never captured once. Blazor re-renders this span's text
+    // and its data attributes without telling the compiler, and one that remembered the figure it
+    // saw at compile time would count to the OLD number and write it back over the new one on its
+    // last frame — so a figure the server changed would visibly go backwards.
+    const read = () => {
+      const target = Number(root.dataset.tickerValue)
+      if (!Number.isFinite(target)) return null
+      const start = Number(root.dataset.tickerStart)
+      return {
+        target,
+        from: Number.isFinite(start) ? start : 0,
+        places: Number(root.dataset.tickerDecimals) || 0,
+        prefix: root.dataset.tickerPrefix || '',
+        suffix: root.dataset.tickerSuffix || '',
+        down: root.dataset.tickerDirection === 'down',
+        delayMs: Math.max(0, (Number(root.dataset.tickerDelay) || 0) * 1000),
+      }
+    }
+
+    // Fixed decimals and commas spelled out here rather than handed to Intl, because this string
+    // reaches the DOM: under a locale whose group separator is a narrow no-break space, a
+    // formatter puts a character in the text node that the server never wrote, and nothing anyone
+    // copies out of it ever matches. Rounds half away from zero, which is what `toFixed` does and
+    // therefore what the C# side does too — so the final frame is character-for-character the
+    // number the server had already put there.
+    const format = (value, places) => {
+      const digits = Math.max(0, Math.min(15, Math.trunc(places) || 0))
+      const [whole, fraction] = Math.abs(value).toFixed(digits).split('.')
+      return (value < 0 ? '-' : '')
+        + whole.replace(/\B(?=(\d{3})+(?!\d))/g, ',')
+        + (fraction ? '.' + fraction : '')
+    }
+
+    const write = (state, value) => {
+      root.textContent = state.prefix + format(value, state.places) + state.suffix
+    }
+
+    let frame = 0
+    let delayTimer = 0
+    let capTimer = 0
+    let stopped = false
+
+    // The one thing this element can ever end up saying. Reduced motion, a delay of zero, a
+    // figure that is already at its start, an observer that never fired and a teardown all land
+    // on the same number.
+    const finish = (state) => {
+      if (stopped) return
+      stopped = true
+      // Re-read rather than trust the figure the count started from: a Value the server changed
+      // while the spring was still running would otherwise be overwritten by the old one on the
+      // last frame, so the number would finish counting to something nobody asked for.
+      const fresh = read() || state
+      write(fresh, fresh.target)
+    }
+
+    const run = (state) => {
+      let position = state.from
+      let velocity = 0
+      const stiffness = 100
+      const damping = 60
+      let last = performance.now()
+
+      const tick = (now) => {
+        if (stopped) return
+        // Clamped, because a tab that was in the background hands back one enormous dt, and an
+        // unclamped integration step that size goes straight past the target and never returns.
+        const dt = Math.min(64, now - last) / 1000
+        last = now
+        // Semi-implicit Euler on x'' = -k(x - target) - c·x'. Damping well above critical, so the
+        // figure eases in and stops rather than overshooting — a number that wobbles past its
+        // value and comes back reads as a number that was guessed.
+        velocity += (-stiffness * (position - state.target) - damping * velocity) * dt
+        position += velocity * dt
+        const epsilon = Math.max(1e-4, Math.abs(state.target) * 1e-5)
+        if (Math.abs(state.target - position) < epsilon && Math.abs(velocity) < epsilon) {
+          finish(state)
+          return
+        }
+        write(state, position)
+        frame = requestAnimationFrame(tick)
+      }
+
+      frame = requestAnimationFrame(tick)
+      // A spring on a surface that never paints — a hidden tab, a backgrounded WebView — never
+      // settles, because requestAnimationFrame is paused and the loop is not running at all. The
+      // cap is what makes the end state certain rather than probable.
+      capTimer = setTimeout(() => finish(state), 4000)
+    }
+
+    const begin = () => {
+      if (stopped) return
+      const state = read()
+      if (!state) return
+      const reduce = window.matchMedia?.('(prefers-reduced-motion: reduce)')
+      if (reduce?.matches || state.down || state.target === state.from) { finish(state); return }
+      run(state)
+    }
+
+    // An engine with no IntersectionObserver still gets the number, and still gets a teardown so
+    // the element is owned rather than recompiled on every mutation. A missing observer is a
+    // platform gap, not a bail to retry.
+    if (typeof IntersectionObserver !== 'function') {
+      const state = read()
+      if (state) write(state, state.target)
+      return () => {}
+    }
+
+    const seen = new IntersectionObserver((entries) => {
+      if (!entries.some((entry) => entry.isIntersecting)) return
+      seen.disconnect()                 // upstream's `once: true`, as an explicit stop
+      const state = read()
+      if (!state) return
+      if (state.delayMs > 0) delayTimer = setTimeout(begin, state.delayMs)
+      else begin()
+    })
+    seen.observe(root)
+
+    return () => {
+      stopped = true
+      seen.disconnect()
+      clearTimeout(delayTimer)
+      clearTimeout(capTimer)
+      cancelAnimationFrame(frame)
+      // Never carry a half-counted number out of a fragment swap: "7,4…" arriving on the next
+      // page reads as though that were the value.
+      const state = read()
+      if (state) write(state, state.target)
+    }
+  })
+
   // Anything outside Unpoly's world — a head's own app.js, a page script — reaches these.
   // `toast` is global on purpose: that is sonner's API, and the call sites read the same.
   window.toast = toast

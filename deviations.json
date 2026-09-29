@@ -978,14 +978,21 @@
       "size": "default"
     }
   },
-  "composed": {
-    "$comment": [
-      "Slots that render another component of this library, as upstream does. Its classes appear",
-      "in the output but belong to it, so the parity test subtracts them — and the generator must",
-      "NOT write them into the component, or they would land after the slot's own classes and win",
-      "the merge, which is exactly backwards."
-    ],
-    "item-separator": {
+    "composed": {
+      "$comment": [
+        "Slots that render another component of this library, as upstream does. Its classes appear",
+        "in the output but belong to it, so the parity test subtracts them — and the generator must",
+        "NOT write them into the component, or they would land after the slot's own classes and win",
+        "the merge, which is exactly backwards."
+      ],
+      "card": {
+        "classes": [
+          "h-full"
+        ],
+        "component": "BentoCard",
+        "why": "BentoCard composes Card and adds h-full so the card fills its bento grid cell; the class belongs to the composition, not to Card itself."
+      },
+      "item-separator": {
       "classes": [
         "bg-border",
         "shrink-0",
