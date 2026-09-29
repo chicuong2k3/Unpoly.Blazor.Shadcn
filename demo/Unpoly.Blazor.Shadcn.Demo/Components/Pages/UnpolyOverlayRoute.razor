@@ -1,0 +1,31 @@
+@page "/examples/unpoly-overlay"
+
+@* A real route, which is the whole point: the Dialog page's "Unpoly overlays" sample opens it with
+   up-layer="new modal" and up-layer="new drawer", and it is also a page in its own right — open
+   the URL directly and it renders in the docs layout, bookmarkable, with no overlay at all.
+
+   Nothing here styles the frame. The box, border, radius, scrim and the × are ui.behavior.css
+   dressing Unpoly's own <up-modal>/<up-drawer> elements; the content is the same Dialog parts a
+   <Dialog> would hold. It is not in the sidebar: it is a sample's target, not a docs page. *@
+
+<PageTitle>Unpoly overlay — Unpoly.Blazor.Shadcn</PageTitle>
+
+<div data-overlay-route class="grid gap-4">
+    <DialogHeader>
+        <DialogTitle>Rendered by the server</DialogTitle>
+        <DialogDescription>
+            This is <code>/examples/unpoly-overlay</code>, fetched and placed in an Unpoly layer.
+            Its frame comes from the library's stylesheet, on the same tokens as &lt;Dialog&gt;.
+        </DialogDescription>
+    </DialogHeader>
+
+    <FormField For="overlay-name" Label="Name">
+        <Input id="overlay-name" name="name" placeholder="Marta Ruiz" />
+    </FormField>
+
+    <DialogFooter>
+        @* up-dismiss closes the layer this sits in; on the standalone page there is no layer,
+           and Unpoly ignores it. *@
+        <Button Type="button" Variant="outline" up-dismiss>Close</Button>
+    </DialogFooter>
+</div>

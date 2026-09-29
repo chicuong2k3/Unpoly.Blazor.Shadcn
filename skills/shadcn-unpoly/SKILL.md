@@ -129,6 +129,11 @@ Two consequences worth knowing before you reach for a component:
 
 - **An Unpoly overlay beats `<Dialog>` when the content comes from the server.** `up-layer="new"`
   renders a real, bookmarkable route into a modal. `<Dialog>` is for content the page already has.
+  Overlays opened with `up-layer` are dressed like `<Dialog>`/`<Sheet>`/`<PopoverContent>`
+  automatically: `ui.behavior.css` styles Unpoly's `up-modal`, `up-drawer`, `up-popup` and
+  `up-cover` on the same tokens (radius, `--popover`, `--surface-border`, elevation, scrim, the ×),
+  keeps `up-size` for width, and turns a modal into a bottom sheet below 640px. Write no overlay
+  CSS of your own; only override a token.
 - **A `<Skeleton>` the server renders is never seen.** Static SSR finishes `OnInitializedAsync`
   before a byte exists. The skeleton a user sees comes from `[up-placeholder]`, so skeletons live
   in `<template>` in the layout, not in the page they stand in for.
