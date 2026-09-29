@@ -178,6 +178,14 @@ renders `<a>` · `data-slot="attachment-trigger"`
 | `Dialog` | `string?` | — |  |
 | `Type` | `string` | `"submit"` |  |
 
+## `<AuroraBackground>`
+renders `<div>` · `data-slot="aurora-background"`
+
+| Parameter | Type | Default | |
+|---|---|---|---|
+| `Animated` | `bool` | `true` |  |
+| `Third` | `bool` | — |  |
+
 ## `<Avatar>`
 renders `<span>` · `data-slot="avatar"`
 
@@ -220,6 +228,19 @@ renders `<a>` · `data-slot="badge"`
 |---|---|---|---|
 | `Variant` | `string` | `"default"` |  |
 | `Href` | `string?` | — |  |
+
+## `<BentoCard>`
+`data-slot="card"`
+
+_No parameters of its own._
+
+## `<BentoGrid>`
+renders `<div>` · `data-slot="bento-grid"`
+
+| Parameter | Type | Default | |
+|---|---|---|---|
+| `Columns` | `int` | `3` |  |
+| `RowClass` | `string` | `"auto-rows-[180px]"` |  |
 
 ## `<Breadcrumb>`
 renders `<nav>` · `data-slot="breadcrumb"`
@@ -827,6 +848,16 @@ renders `<button>` · `data-slot="dialog-trigger"`
 | `Variant` | `string` | `"default"` | **required** |
 | `Size` | `string` | `"default"` |  |
 
+## `<DotPattern>`
+renders `<div>` · `data-slot="dot-pattern"`
+
+| Parameter | Type | Default | |
+|---|---|---|---|
+| `DotRadius` | `int` | `1` |  |
+| `Spacing` | `int` | `20` |  |
+| `Fill` | `string?` | `"currentColor"` |  |
+| `Opacity` | `string?` | — |  |
+
 ## `<Drawer>`
 renders `<dialog>` · `data-slot="drawer"`
 
@@ -1164,6 +1195,36 @@ renders `<p>` · `data-slot="form-message"`
 | Parameter | Type | Default | |
 |---|---|---|---|
 | `Message` | `string?` | — |  |
+
+## `<GradientBorder>`
+renders `<div>` · `data-slot="gradient-border"`
+
+| Parameter | Type | Default | |
+|---|---|---|---|
+| `Surface` | `string?` | — |  |
+
+## `<GridPattern>`
+renders `<div>` · `data-slot="grid-pattern"`
+
+| Parameter | Type | Default | |
+|---|---|---|---|
+| `CellSize` | `int` | `24` |  |
+| `Stroke` | `string?` | `"currentColor"` |  |
+| `StrokeWidth` | `double` | `1` |  |
+
+## `<Heatmap>`
+renders `<div>` · `data-slot="heatmap"`
+
+| Parameter | Type | Default | |
+|---|---|---|---|
+| `Values` | `IReadOnlyList<int>` | `Array.Empty<int>()` |  |
+| `Title` | `string?` | — |  |
+| `AriaLabel` | `string?` | `"Activity"` |  |
+| `Columns` | `int` | `7` |  |
+| `CellSize` | `int` | `12` |  |
+| `ColorRamp` | `string?` | — |  |
+| `ShowLegend` | `bool` | `true` |  |
+| `ValueLabel` | `string?` | `"items"` |  |
 
 ## `<HoverCard>`
 renders `<div>` · `data-slot="hover-card"`
@@ -1619,6 +1680,19 @@ renders `<button>` · `data-slot="navigation-menu-trigger"`
 |---|---|---|---|
 | `Target` | `string` | `default!` |  |
 
+## `<NumberTicker>`
+renders `<span>` · `data-slot="number-ticker"`
+
+| Parameter | Type | Default | |
+|---|---|---|---|
+| `Value` | `double` | — |  |
+| `StartValue` | `double` | — |  |
+| `Direction` | `string` | `"up"` |  |
+| `Delay` | `double` | — |  |
+| `DecimalPlaces` | `int` | — |  |
+| `Prefix` | `string?` | — |  |
+| `Suffix` | `string?` | — |  |
+
 ## `<Pagination>`
 renders `<nav>` · `data-slot="pagination"`
 
@@ -1722,6 +1796,20 @@ renders `<div>` · `data-slot="progress"`
 |---|---|---|---|
 | `Value` | `double` | — |  |
 | `Max` | `double` | `100` |  |
+
+## `<ProgressRing>`
+renders `<div>` · `data-slot="progress-ring"`
+
+| Parameter | Type | Default | |
+|---|---|---|---|
+| `Value` | `double` | — |  |
+| `Max` | `double` | `100` |  |
+| `Size` | `int` | `48` |  |
+| `StrokeWidth` | `double` | `4` |  |
+| `Color` | `string?` | — |  |
+| `ShowLabel` | `bool` | — |  |
+| `Label` | `string?` | — |  |
+| `AriaLabel` | `string?` | — |  |
 
 ## `<QrCode>`
 renders `<div>` · `data-slot="qr-code"`
@@ -2063,6 +2151,13 @@ renders `<svg>` · `data-slot="sparkline"`
 | Parameter | Type | Default | |
 |---|---|---|---|
 | `AriaLabel` | `string` | `"Loading"` |  |
+
+## `<Spotlight>`
+renders `<svg>` · `data-slot="spotlight"`
+
+| Parameter | Type | Default | |
+|---|---|---|---|
+| `Fill` | `string` | `"currentColor"` |  |
 
 ## `<Stepper>`
 renders `<div>` · `data-slot="stepper"`
