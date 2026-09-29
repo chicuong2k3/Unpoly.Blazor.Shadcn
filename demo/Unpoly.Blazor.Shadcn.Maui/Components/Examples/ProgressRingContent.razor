@@ -1,0 +1,12 @@
+@* ChildContent is a custom centre, overlaid exactly where the label goes — an icon, or a count
+   with its unit on two lines. Pass it instead of ShowLabel, not with it. The track is the arc's
+   own colour faded, so a custom Color gets a matching groove. *@
+<div class="flex flex-wrap items-center gap-6">
+    <ProgressRing Value="18" Max="25" Size="72" StrokeWidth="6" AriaLabel="18 of 25 cards reviewed">
+        <span class="text-sm font-semibold tabular-nums leading-none">18</span>
+        <span class="text-[10px] leading-none text-muted-foreground">of 25</span>
+    </ProgressRing>
+    <ProgressRing Value="100" Size="56" StrokeWidth="5" Color="var(--chart-2)" AriaLabel="Deck complete">
+        <Icon Name="check" Class="size-5" />
+    </ProgressRing>
+</div>

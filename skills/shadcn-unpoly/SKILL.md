@@ -105,6 +105,12 @@ catalogue rather than a menu, put `up-autosubmit` and `up-target` on `<CommandIn
 server answer — `<CommandList>` is the fragment it swaps, and the markup is otherwise identical.
 `<CommandDialog Key="mod+k">` binds the shortcut; `mod` is ⌘ on a Mac and Ctrl everywhere else.
 
+`<Combobox Multiple Creatable>` is the free-form tag field: Enter or a comma in the
+`<ComboboxChipInput>` makes a chip of the typed text (or chooses the row it names), posted under
+the `<ComboboxChips Name>` like any other chip. The chip is made by script, so give the chip input
+the same `name` too — with scripting off the typed `a, b` then still posts, and the server must
+split every value of that name on commas, trim, and drop blanks and duplicates.
+
 `Select` has **no** `<SelectTrigger>` / `<SelectValue>` / `<SelectContent>`: the native element is
 all three. Write `<Select name="kind"><SelectItem Value="a">A</SelectItem></Select>`.
 
@@ -123,6 +129,11 @@ Two consequences worth knowing before you reach for a component:
 
 - **An Unpoly overlay beats `<Dialog>` when the content comes from the server.** `up-layer="new"`
   renders a real, bookmarkable route into a modal. `<Dialog>` is for content the page already has.
+  Overlays opened with `up-layer` are dressed like `<Dialog>`/`<Sheet>`/`<PopoverContent>`
+  automatically: `ui.behavior.css` styles Unpoly's `up-modal`, `up-drawer`, `up-popup` and
+  `up-cover` on the same tokens (radius, `--popover`, `--surface-border`, elevation, scrim, the ×),
+  keeps `up-size` for width, and turns a modal into a bottom sheet below 640px. Write no overlay
+  CSS of your own; only override a token.
 - **A `<Skeleton>` the server renders is never seen.** Static SSR finishes `OnInitializedAsync`
   before a byte exists. The skeleton a user sees comes from `[up-placeholder]`, so skeletons live
   in `<template>` in the layout, not in the page they stand in for.
@@ -153,7 +164,9 @@ Two consequences worth knowing before you reach for a component:
 - **A local called `code` is a Razor directive.** `@code` at the start of an expression opens a
   code block wherever it appears, so `<TableCell>@code</TableCell>` is a compile error with a
   message about the `code` directive rather than about your variable. Same for `@functions`,
-  `@using`, `@inherits`. It has cost two afternoons here; call it `number`.
+  `@using`, `@inherits` — and `@page`: a pattern variable called `page` (`@if (x is { } page)`)
+  makes every `@page.Total` in the markup a misplaced page directive. It has cost three
+  afternoons here; call it `number`, `found`, `result`.
 - **A `<button>` inside a `<form>` submits.** Every non-submitting button needs `type="button"` —
   `TabsTrigger`, `DialogClose` and `DropdownMenuItem` already set it.
 
@@ -232,6 +245,13 @@ Three, all listed with the reason in the `scaffold-components` .NET command:
   library, when you need one, renders inside it and reads the same properties. Until then a
   `<table>` with a percentage height per bar reads to a screen reader, prints, and needs nothing
   loaded — the demo's Analytics block is the worked example.
+
+  **`BarChart` is that table's one-series case, packaged** — labelled bars as a list with a
+  percentage height each, a highlight, a value per bar as text. Pick by what the reader does:
+  reads individual bars → `BarChart`; reads only the shape, in a cell or KPI strip →
+  `Sparkline`; needs axes, tooltips, stacking or a second series → `Chart` with a library in
+  it; a long calendar-shaped series → `Heatmap`. `Heatmap.CellRadius` and `BentoGrid.RowClass`
+  take a literal class written at the call site — an interpolated one is never generated.
 
 ## Kibo-inspired code presentation
 

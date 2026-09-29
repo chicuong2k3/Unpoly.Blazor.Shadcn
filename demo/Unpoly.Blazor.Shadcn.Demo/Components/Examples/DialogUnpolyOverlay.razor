@@ -1,0 +1,12 @@
+@* Server content in an Unpoly layer instead of a <Dialog>. Each link is an ordinary GET to a real
+   route (/examples/unpoly-overlay); up-layer asks Unpoly to put the response in a new overlay
+   rather than replace the page. The frame — box, radius, border, scrim, the × — is ui.behavior.css
+   dressing Unpoly's own <up-modal>/<up-drawer> on the library's tokens, so nothing here styles it.
+   Below 640px the modal becomes a bottom sheet.
+
+   Web head only. The MAUI head has no server to render the route: it is interactive Blazor in a
+   WebView and loads Unpoly just for up.compiler, so an up-layer link there would fetch a page that
+   does not exist. Use <Dialog>/<Sheet> in MAUI; the same stylesheet still dresses a layer if an
+   app opens one with up.layer.open({ content }). *@
+<Button Variant="outline" Href="/examples/unpoly-overlay" up-layer="new modal">Open as modal</Button>
+<Button Variant="outline" Href="/examples/unpoly-overlay" up-layer="new drawer" up-position="right">Open as drawer</Button>

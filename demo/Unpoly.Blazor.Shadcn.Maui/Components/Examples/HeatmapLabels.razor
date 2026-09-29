@@ -1,0 +1,42 @@
+@* Labels name each cell, so the tooltip and the screen reader say "Mon 5 Jan: 8 reviews." instead
+   of "Day 1". Flow="columns" fills top to bottom — seven days to a column, a week per column —
+   the contribution layout where the weeks read left to right. Gap is a pixel number, so a label
+   row can be laid out at exactly one column's pitch (CellSize + Gap). Both grids share Max, so
+   the quiet term looks quiet next to the busy one instead of being stretched to the same shades. *@
+<div class="flex flex-wrap items-start gap-8">
+    <Heatmap Values="@Busy"
+             Labels="@Dates"
+             Title="Spring term"
+             AriaLabel="Daily reviews, spring term"
+             Columns="7"
+             CellSize="12"
+             Gap="3"
+             Flow="columns"
+             Max="12"
+             ValueLabel="reviews" />
+
+    <Heatmap Values="@Quiet"
+             Labels="@Dates"
+             Title="Summer term"
+             AriaLabel="Daily reviews, summer term"
+             Columns="7"
+             CellSize="12"
+             Gap="3"
+             Flow="columns"
+             Max="12"
+             CellRadius="rounded-full"
+             ValueLabel="reviews" />
+</div>
+
+@code {
+    // Twelve weeks from a fixed Monday, formatted in invariant culture so the demo reads the same
+    // on every machine. The component never parses these — they are just the cells' names.
+    static readonly string[] Dates = Enumerable.Range(0, 84)
+        .Select(day => new DateOnly(2026, 1, 5).AddDays(day)
+            .ToString("ddd d MMM", System.Globalization.CultureInfo.InvariantCulture))
+        .ToArray();
+
+    static readonly int[] Busy = Enumerable.Range(0, 84).Select(day => (day * 7 + 3) % 13).ToArray();
+
+    static readonly int[] Quiet = Enumerable.Range(0, 84).Select(day => day % 5 == 0 ? (day % 4) + 1 : 0).ToArray();
+}

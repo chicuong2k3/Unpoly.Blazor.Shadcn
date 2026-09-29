@@ -1,4 +1,3 @@
-
   :where([data-slot="card"][data-size="sm"]) {
     --card-spacing: calc(var(--spacing) * 4);
   }
@@ -552,6 +551,9 @@
   .bottom-4 {
     bottom: calc(var(--spacing) * 4);
   }
+  .bottom-full {
+    bottom: 100%;
+  }
   .-left-24 {
     left: calc(var(--spacing) * -24);
   }
@@ -737,6 +739,9 @@
   }
   .-mb-\(--card-spacing\) {
     margin-bottom: calc(var(--card-spacing) * -1);
+  }
+  .mb-0\.5 {
+    margin-bottom: calc(var(--spacing) * 0.5);
   }
   .mb-1\.5 {
     margin-bottom: calc(var(--spacing) * 1.5);
@@ -1097,6 +1102,9 @@
   }
   .min-h-16 {
     min-height: calc(var(--spacing) * 16);
+  }
+  .min-h-\[2px\] {
+    min-height: 2px;
   }
   .min-h-\[60vh\] {
     min-height: 60vh;

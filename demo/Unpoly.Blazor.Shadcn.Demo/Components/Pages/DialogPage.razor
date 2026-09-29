@@ -41,3 +41,16 @@
 
 <h2 class="doc-h2">RTL</h2>
 <Example Source="DialogRtl.razor"><DialogRtl /></Example>
+
+<h2 class="doc-h2">Unpoly overlays</h2>
+<p class="doc-note">
+    A link with <code>up-layer="new modal"</code> (or <code>new drawer</code>) opens a real route
+    in an Unpoly overlay. The library's stylesheet dresses Unpoly's own
+    <code>&lt;up-modal&gt;</code> and <code>&lt;up-drawer&gt;</code> like
+    <code>&lt;Dialog&gt;</code> and <code>&lt;Sheet&gt;</code> — same radius, surface, scrim and
+    close button, in every theme — and below 640px the modal becomes a bottom sheet. Unpoly's
+    <code>up-size</code> (<code>small</code>, <code>medium</code>, <code>large</code>,
+    <code>grow</code>, <code>full</code>) still sets the width. Web head only: the MAUI head has no
+    server to render the route.
+</p>
+<Example Source="DialogUnpolyOverlay.razor"><DialogUnpolyOverlay /></Example>

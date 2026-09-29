@@ -48,4 +48,11 @@
     .doc-nav-item.up-current {
         @apply bg-accent font-medium text-accent-foreground;
     }
+
+    /* A route opened in an Unpoly layer arrives as the whole .doc-main, page padding included.
+       The overlay box already pads its content (ui.behavior.css), so the page's py-8 would be
+       a second, larger margin inside the dialog. One element more specific than .py-8. */
+    :is(up-modal-content, up-drawer-content) > .doc-main {
+        padding-block: 0;
+    }
 }

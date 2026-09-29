@@ -11,9 +11,11 @@ internal static partial class RepositoryChecks
         "ComboboxTriggerIcon", "ComboboxItemIndicator", "ComboboxChipRemove"
     ];
 
+    // AuroraBackground places decorative blobs hanging off opposite corners of an aria-hidden
+    // layer; there is no reading order to follow, and a mirrored wash is no more correct.
     private static readonly HashSet<string> ApprovedPhysicalDirectionComponents =
     [
-        "AlertAction.razor", "AvatarBadge.razor", "CarouselNext.razor", "CarouselPrevious.razor",
+        "AlertAction.razor", "AuroraBackground.razor", "AvatarBadge.razor", "CarouselNext.razor", "CarouselPrevious.razor",
         "ContextMenu.razor", "ContextMenuTrigger.razor", "ImageCompare.razor",
         "SelectItemIndicator.razor", "Sheet.razor", "Sidebar.razor", "Timeline.razor",
         "TimelineItem.razor"

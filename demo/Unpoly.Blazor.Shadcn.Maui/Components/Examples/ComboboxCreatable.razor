@@ -1,0 +1,29 @@
+@* Creatable tags. Type anything and press Enter or a comma: text that names a row chooses that
+   row, anything else becomes a chip of its own, a duplicate is ignored, and Backspace in the
+   empty box takes the last chip back. Every chip posts under "tags", exactly like a chosen row.
+
+   The chip input carries name="tags" too, which is the no-script path: without JavaScript the
+   typed "rust, go" still posts, and the server splits every "tags" value on commas, trims, and
+   drops blanks and duplicates. With JavaScript the box is emptied as each chip is made. *@
+<div class="w-80">
+    <Field>
+        <FieldLabel For="cb-creatable-input">Tags</FieldLabel>
+        <Combobox Target="cb-creatable-list" Multiple Creatable>
+            <ComboboxChips Name="tags">
+                <ComboboxChip Value="blazor" Name="tags" Label="Blazor">Blazor</ComboboxChip>
+                <ComboboxChipInput id="cb-creatable-input" name="tags"
+                                   Placeholder="Add a tag…" AriaLabel="Tags" />
+            </ComboboxChips>
+
+            <ComboboxContent Id="cb-creatable-list">
+                <ComboboxList>
+                    <ComboboxEmpty>Press Enter to add it as a new tag.</ComboboxEmpty>
+                    <ComboboxItem Value="blazor" Selected>Blazor</ComboboxItem>
+                    <ComboboxItem Value="unpoly">Unpoly</ComboboxItem>
+                    <ComboboxItem Value="tailwind">Tailwind</ComboboxItem>
+                    <ComboboxItem Value="dotnet">.NET</ComboboxItem>
+                </ComboboxList>
+            </ComboboxContent>
+        </Combobox>
+    </Field>
+</div>

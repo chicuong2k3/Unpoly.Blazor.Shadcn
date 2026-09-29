@@ -1,0 +1,32 @@
+@page "/components/bar-chart"
+
+<PageTitle>BarChart — Unpoly.Blazor.Shadcn</PageTitle>
+
+<h1 class="doc-h1">BarChart</h1>
+<p class="doc-lede">
+    A row of vertical bars, one per value, each as tall as its share of the largest. The bars are
+    list items with a percentage height — no SVG, no script — so the chart reads to a screen
+    reader as a list, prints, and follows the theme in light and dark.
+</p>
+
+<h2 class="doc-h2">Basic</h2>
+<p class="doc-note">
+    <code>Labels</code> name the bars, <code>Highlight</code> draws one at full strength and the
+    rest at 45%, and <code>ValueSuffix</code> finishes each bar's sentence — "Tue: 9 reviews".
+</p>
+<Example Source="BarChartExample.razor"><BarChartExample /></Example>
+
+<h2 class="doc-h2">Values, height &amp; colour</h2>
+<p class="doc-note">
+    <code>ShowValues</code> prints each figure above its bar, <code>Height</code> is the plot area
+    in pixels, and <code>Color</code> takes any CSS colour.
+</p>
+<Example Source="BarChartValues.razor"><BarChartValues /></Example>
+
+<h2 class="doc-h2">When not to use it</h2>
+<p class="doc-note">
+    A trend in a table cell is a <code>Sparkline</code>: the shape is the message and no single
+    point is read. Axes, tooltips, stacking or a second series are a <code>Chart</code> with a
+    charting library inside it. A long calendar-shaped series — a year of days — is a
+    <code>Heatmap</code>; 365 bars are too thin to see.
+</p>

@@ -2,7 +2,10 @@
 
 @* ProgressRing — circular determinate progress, a real role="progressbar" shaped like a dial.
    No JS — pure SVG from Value. For a linear bar use Progress; for indeterminate/spinner or
-   unknown-duration work, use Loader or a Button's IsLoading instead. *@
+   unknown-duration work, use Loader or a Button's IsLoading instead.
+
+   ChildContent is a custom centre: it is overlaid on the ring exactly where the label goes, so
+   pass it INSTEAD of ShowLabel, not with it — both at once draw two texts on top of each other. *@
 
 <div data-slot="progress-ring"
      class="@Classes"
@@ -22,9 +25,17 @@
     </svg>
     @if (ShowLabel)
     {
-        <span data-slot="progress-ring-label" class="@LabelClasses">@Label ?? PercentText</span>
+        <span data-slot="progress-ring-label" class="@LabelClasses">@(Label ?? PercentText)</span>
     }
-    @ChildContent
+    @if (ChildContent is not null)
+    {
+        @* A custom centre — an icon, a count with its unit, two lines of text. It gets the same
+           absolute overlay as the label rather than landing after the svg in the flex row,
+           where it would push the ring sideways instead of sitting inside it. The wrapper is
+           only written when there is something to wrap, so an empty ring renders no empty
+           span on top of itself. *@
+        <span data-slot="progress-ring-content" class="@ContentClasses">@ChildContent</span>
+    }
 </div>
 
 @code {
@@ -41,7 +52,8 @@
     /// spills outside <see cref="Size"/>.</summary>
     [Parameter] public double StrokeWidth { get; set; } = 4;
 
-    /// <summary>Any CSS colour for the indicator arc. Defaults to the theme's primary.</summary>
+    /// <summary>Any CSS colour for the indicator arc. Defaults to the theme's primary. The track
+    /// behind the arc is the same colour at 18%, so a custom colour gets a matching groove.</summary>
     [Parameter] public string? Color { get; set; }
 
     /// <summary>Draw the value as centred text over the ring.</summary>
@@ -89,10 +101,17 @@
     // computed stroke was 'none': the ring drew nothing at all. Alpha comes from
     // color-mix, the same construct Tailwind generates for bg-primary/20.
     string EffectiveColor => Color ?? "var(--primary)";
-    string TrackColor => "color-mix(in oklab, var(--primary) 20%, transparent)";
+    // The track is the arc's own colour, faded — not always --primary. A ring given a custom
+    // Color used to sit on a primary-tinted track, so a destructive arc ran over a blue groove
+    // and read as two unrelated signals.
+    string TrackColor => $"color-mix(in oklab, {EffectiveColor} 18%, transparent)";
 
     // relative on the root is what anchors the label overlay, and the overlay is what makes the
     // ring readable at a glance without a screen reader.
     string Classes => Cn("relative inline-flex shrink-0 items-center justify-center", Class);
     string LabelClasses => "pointer-events-none absolute inset-0 flex items-center justify-center text-xs font-medium tabular-nums";
+
+    // Not pointer-events-none, unlike the label: a caller's centre may hold a link or a button,
+    // and one that cannot be clicked is a bug rather than a style.
+    string ContentClasses => "absolute inset-0 flex flex-col items-center justify-center text-center";
 }
