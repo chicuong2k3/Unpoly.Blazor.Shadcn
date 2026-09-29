@@ -233,6 +233,13 @@ Three, all listed with the reason in the `scaffold-components` .NET command:
   `<table>` with a percentage height per bar reads to a screen reader, prints, and needs nothing
   loaded — the demo's Analytics block is the worked example.
 
+  **`BarChart` is that table's one-series case, packaged** — labelled bars as a list with a
+  percentage height each, a highlight, a value per bar as text. Pick by what the reader does:
+  reads individual bars → `BarChart`; reads only the shape, in a cell or KPI strip →
+  `Sparkline`; needs axes, tooltips, stacking or a second series → `Chart` with a library in
+  it; a long calendar-shaped series → `Heatmap`. `Heatmap.CellRadius` and `BentoGrid.RowClass`
+  take a literal class written at the call site — an interpolated one is never generated.
+
 ## Kibo-inspired code presentation
 
 - **`CodeBlock`** accepts a `Code` string for a single file, or `Files` (`CodeBlockFile`

@@ -24,6 +24,14 @@
 </p>
 <Example Source="HeatmapCustom.razor"><HeatmapCustom /></Example>
 
+<h2 class="doc-h2">Labels, column flow &amp; a shared scale</h2>
+<p class="doc-note">
+    <code>Labels</code> names each cell, <code>Flow="columns"</code> fills a week per column,
+    <code>Gap</code> sets the pixel spacing, <code>Max</code> fixes the ceiling so two grids share
+    one scale, and <code>CellRadius</code> takes a literal Tailwind class.
+</p>
+<Example Source="HeatmapLabels.razor"><HeatmapLabels /></Example>
+
 <h2 class="doc-h2">When not to use it</h2>
 <p class="doc-note">
     A grid spends a whole column of pixels to say what one number says in a word, so a handful of

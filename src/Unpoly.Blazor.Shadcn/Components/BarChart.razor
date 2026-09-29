@@ -1,0 +1,215 @@
+@inherits UiComponentBase
+
+@* BarChart — a row of vertical bars, one per value, each as tall as its share of the busiest one.
+   No JS and no SVG: the bars are list items with a percentage height, so the chart reads to a
+   screen reader as "list, 7 items", prints, and needs nothing loaded. It is the worked example
+   the Chart section of the skill describes, packaged.
+
+   Which one to reach for:
+   - BarChart when each bar is a figure someone will read — reviews per day, sign-ups per week —
+     and the labels under it matter. Every bar carries its own label and value as text.
+   - Sparkline for a trend in a table cell or a KPI strip, where the shape is the message and no
+     single point is read.
+   - Chart (with ECharts or another library inside it) when the reader needs axes, a tooltip,
+     stacking, a second series or zoom. This component deliberately draws none of those.
+   - Heatmap when the series is long and calendar-shaped — a year of days is 365 bars too thin
+     to see.
+
+   Colour is never the only carrier: the highlighted bar is marked with data-highlight as well as
+   drawn at full strength, and each bar's text says what it is. *@
+
+<figure data-slot="bar-chart"
+        class="@Classes"
+        role="group"
+        aria-label="@EffectiveAriaLabel"
+        @attributes="AdditionalAttributes">
+    <ol data-slot="bar-chart-bars" class="flex items-end gap-1" style="@BarsStyle">
+        @for (var index = 0; index < Count; index++)
+        {
+            var value = ValueAt(index);
+            var text = BarText(index, value);
+            <li data-slot="bar-chart-bar"
+                data-highlight="@(IsHighlighted(index) ? "true" : null)"
+                class="flex h-full min-w-0 flex-1 flex-col justify-end"
+                title="@text">
+                <span data-slot="bar-chart-fill"
+                      class="@FillClasses(value)"
+                      style="@FillStyle(index, value)">
+                    @if (ShowValues)
+                    {
+                        @* aria-hidden because the sr-only text below already says the value, with
+                           its label and unit; reading the bare number first would say it twice. *@
+                        <span aria-hidden="true"
+                              class="absolute inset-x-0 bottom-full mb-0.5 text-center text-[10px] leading-none tabular-nums text-muted-foreground">@N(value)</span>
+                    }
+                </span>
+                <span class="sr-only">@text</span>
+            </li>
+        }
+    </ol>
+    @if (ShowLabels && Labels is { Count: > 0 })
+    {
+        @* aria-hidden: each bar's sr-only text already carries its label, so the row is for the
+           eye only. One cell per bar — not per label — so a short list still lines up under the
+           bars it names. *@
+        <div data-slot="bar-chart-labels" aria-hidden="true" class="mt-1 flex gap-1">
+            @for (var index = 0; index < Count; index++)
+            {
+                <span class="min-w-0 flex-1 truncate text-center text-[10px] text-muted-foreground">@LabelAt(index)</span>
+            }
+        </div>
+    }
+    @ChildContent
+</figure>
+
+@code {
+    /// <summary>The series, in the order the bars are drawn. Each bar's height is its share of the
+    /// largest value. Zero, negatives, NaN and infinities are all drawn as zero — a stub, not a
+    /// gap — because a bar chart of counts has no honest way to show a negative count, and a
+    /// missing bar would hide the day rather than show that nothing happened on it.</summary>
+    [Parameter] public IReadOnlyList<double> Values { get; set; } = Array.Empty<double>();
+
+    /// <summary>The x-axis names, one per value — "Mon", "W12", "Mar". They are printed under the
+    /// bars and lead each bar's screen-reader text. Past the end of the list a bar is called
+    /// "Bar N".</summary>
+    [Parameter] public IReadOnlyList<string>? Labels { get; set; }
+
+    /// <summary>Height of the plot area in pixels — the height of the tallest bar. The value text
+    /// of <see cref="ShowValues"/> and the label row are added outside it, not carved out of
+    /// it.</summary>
+    [Parameter] public int Height { get; set; } = 120;
+
+    /// <summary>The index of the bar to draw at full strength — today, the current week. Every
+    /// other bar is drawn at 45%. -1, or any index outside the series, highlights nothing and
+    /// draws every bar at full strength.</summary>
+    [Parameter] public int Highlight { get; set; } = -1;
+
+    /// <summary>Any CSS colour for the bars. Defaults to the theme's primary; the dimmed bars are
+    /// this colour mixed towards transparent, so a custom colour dims with it.</summary>
+    [Parameter] public string? Color { get; set; }
+
+    /// <summary>Written straight after each value in the bar's text and tooltip, leading space
+    /// included — <c>" reviews"</c> reads "Mon: 12 reviews", <c>"%"</c> reads "Mon: 12%".</summary>
+    [Parameter] public string? ValueSuffix { get; set; }
+
+    /// <summary>What the chart shows, for anything that cannot see it. The figure is a group, so
+    /// without this a screen reader announces an unnamed list of numbers.</summary>
+    [Parameter] public string? AriaLabel { get; set; } = "Bar chart";
+
+    /// <summary>Print <see cref="Labels"/> under the bars. Off, the labels still reach a screen
+    /// reader and the tooltip; only the visible row goes.</summary>
+    [Parameter] public bool ShowLabels { get; set; } = true;
+
+    /// <summary>Print each value in small text above its bar. Off by default: past a dozen bars the
+    /// numbers collide, and the tooltip already carries them.</summary>
+    [Parameter] public bool ShowValues { get; set; }
+
+    static System.Globalization.CultureInfo Inv => System.Globalization.CultureInfo.InvariantCulture;
+
+    /// <summary>Every number that reaches the DOM is written in invariant culture. Under a locale
+    /// that separates decimals with a comma, <c>height: 62,5%</c> is an invalid declaration the
+    /// browser drops without a word — every bar collapses to its minimum and the chart is a row
+    /// of stubs.</summary>
+    static string N(double value) => value.ToString("0.##", Inv);
+
+    // The value text sits above the tallest bar, outside the plot area, so the list grows by the
+    // text's line rather than squeezing every bar shorter than Height promised.
+    const int ValueLine = 14;
+
+    int Count => Values?.Count ?? 0;
+
+    int SafeHeight => Math.Max(1, Height);
+
+    /// <summary>Reads one value defensively, zero for anything that is not a real positive
+    /// number. NaN in particular has to be caught here: it compares false with everything, so it
+    /// would slip past a <c>&lt;= 0</c> test and write <c>height: NaN%</c>.</summary>
+    double ValueAt(int index)
+    {
+        var values = Values;
+        if (values is null || index >= values.Count)
+        {
+            return 0;
+        }
+
+        var value = values[index];
+        return double.IsFinite(value) && value > 0 ? value : 0;
+    }
+
+    /// <summary>The tallest bar, which every other is a share of. Zero when the series is empty or
+    /// all zero, and then every bar is a stub rather than a division by zero.</summary>
+    double MaxValue
+    {
+        get
+        {
+            var max = 0.0;
+            for (var index = 0; index < Count; index++)
+            {
+                max = Math.Max(max, ValueAt(index));
+            }
+
+            return max;
+        }
+    }
+
+    bool HasHighlight => Highlight >= 0 && Highlight < Count;
+
+    bool IsHighlighted(int index) => HasHighlight && index == Highlight;
+
+    string LabelAt(int index)
+    {
+        var labels = Labels;
+        return labels is not null && index < labels.Count ? labels[index] ?? string.Empty : string.Empty;
+    }
+
+    /// <summary>The bar's whole reading — label, value and unit. It is the <c>title</c> a pointer
+    /// user sees on hover and the text a screen reader reads, which is what keeps the chart from
+    /// being a picture of rectangles.</summary>
+    string BarText(int index, double value)
+    {
+        var label = LabelAt(index);
+        var name = string.IsNullOrWhiteSpace(label) ? $"Bar {N(index + 1)}" : label;
+        return $"{name}: {N(value)}{ValueSuffix}";
+    }
+
+    // var() resolves inside an inline style, and the themes write --primary in oklch — so the
+    // colour is used bare and the dimming comes from color-mix, the same construct Tailwind
+    // generates for bg-primary/45, rather than an hsl() wrapper that would be invalid.
+    string EffectiveColor => string.IsNullOrWhiteSpace(Color) ? "var(--primary)" : Color;
+
+    string BarColor(int index) =>
+        !HasHighlight || index == Highlight
+            ? EffectiveColor
+            : $"color-mix(in oklab, {EffectiveColor} 45%, transparent)";
+
+    // The height and colour are inline styles rather than classes, and that is deliberate:
+    // Tailwind only emits classes it can read in a scanned file, so a percentage-height class
+    // assembled at render time would never reach the stylesheet. A zero bar is a fixed 2px stub in
+    // the muted token instead of a share of the maximum — the day still exists, it just had nothing
+    // in it.
+    string FillStyle(int index, double value)
+    {
+        var max = MaxValue;
+        if (value <= 0 || max <= 0)
+        {
+            return "height: 2px";
+        }
+
+        return $"height: {N(value / max * 100)}%; background: {BarColor(index)}";
+    }
+
+    // min-h-[2px] keeps a bar that is a sliver of the maximum visible at all; relative anchors the
+    // value text to the top of its own bar, wherever that is.
+    string FillClasses(double value) => value <= 0 || MaxValue <= 0
+        ? "relative block min-h-[2px] w-full rounded-t-[4px] bg-muted"
+        : "relative block min-h-[2px] w-full rounded-t-[4px]";
+
+    string BarsStyle => ShowValues
+        ? $"height: {N(SafeHeight + ValueLine)}px; padding-top: {N(ValueLine)}px"
+        : $"height: {N(SafeHeight)}px";
+
+    string EffectiveAriaLabel => string.IsNullOrWhiteSpace(AriaLabel) ? "Bar chart" : AriaLabel;
+
+    // w-full because a bar chart is sized by its container — the bars are flex-1 and share
+    // whatever width they are given — and flex-col stacks the bars over their labels.
+    string Classes => Cn("flex w-full flex-col", Class);
+}

@@ -1,0 +1,14 @@
+@* A week of reviews, today highlighted. Every bar carries its day and count as text — the
+   tooltip on hover and the screen-reader line are the same sentence — so the colour only says
+   which bar is today. Wednesday's zero is a stub, not a gap: the day happened, nothing was in it. *@
+<BarChart Values="@Reviews"
+          Labels="@Days"
+          Highlight="6"
+          ValueSuffix=" reviews"
+          AriaLabel="Reviews per day, last 7 days"
+          Class="max-w-sm" />
+
+@code {
+    static readonly double[] Reviews = [12, 18, 0, 7, 22, 15, 9];
+    static readonly string[] Days = ["Wed", "Thu", "Fri", "Sat", "Sun", "Mon", "Tue"];
+}

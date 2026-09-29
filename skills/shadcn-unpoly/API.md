@@ -229,6 +229,21 @@ renders `<a>` · `data-slot="badge"`
 | `Variant` | `string` | `"default"` |  |
 | `Href` | `string?` | — |  |
 
+## `<BarChart>`
+renders `<figure>` · `data-slot="bar-chart"`
+
+| Parameter | Type | Default | |
+|---|---|---|---|
+| `Values` | `IReadOnlyList<double>` | `Array.Empty<double>()` |  |
+| `Labels` | `IReadOnlyList<string>?` | — |  |
+| `Height` | `int` | `120` |  |
+| `Highlight` | `int` | `-1` |  |
+| `Color` | `string?` | — |  |
+| `ValueSuffix` | `string?` | — |  |
+| `AriaLabel` | `string?` | `"Bar chart"` |  |
+| `ShowLabels` | `bool` | `true` |  |
+| `ShowValues` | `bool` | — |  |
+
 ## `<BentoCard>`
 `data-slot="card"`
 
@@ -1221,10 +1236,15 @@ renders `<div>` · `data-slot="heatmap"`
 | `Title` | `string?` | — |  |
 | `AriaLabel` | `string?` | `"Activity"` |  |
 | `Columns` | `int` | `7` |  |
+| `Flow` | `string` | `"rows"` |  |
+| `Gap` | `int` | `2` |  |
 | `CellSize` | `int` | `12` |  |
 | `ColorRamp` | `string?` | — |  |
 | `ShowLegend` | `bool` | `true` |  |
 | `ValueLabel` | `string?` | `"items"` |  |
+| `Labels` | `IReadOnlyList<string>?` | — |  |
+| `Max` | `int?` | — |  |
+| `CellRadius` | `string` | `"rounded-[2px]"` |  |
 
 ## `<HoverCard>`
 renders `<div>` · `data-slot="hover-card"`
