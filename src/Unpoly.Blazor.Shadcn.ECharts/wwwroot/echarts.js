@@ -37,6 +37,27 @@
     return cssVar('--border', 'rgba(0,0,0,0.08)')
   }
 
+  // ECharts draws grid lines, axis lines and ticks in fixed light-theme greys, which glare on a
+  // dark theme. Give each cartesian axis the theme's border and muted text, unless the caller
+  // styled that part itself.
+  function themeAxes(axes) {
+    if (!axes) return
+    var list = Array.isArray(axes) ? axes : [axes]
+    var border = normalizeColor(shadcnBorderColor())
+    var muted = normalizeColor(cssVar('--muted-foreground', '#64748b'))
+    for (var i = 0; i < list.length; i++) {
+      var a = list[i]
+      if (!a || typeof a !== 'object') continue
+      ;['splitLine', 'axisLine', 'axisTick'].forEach(function (part) {
+        a[part] = a[part] || {}
+        a[part].lineStyle = a[part].lineStyle || {}
+        if (!a[part].lineStyle.color) a[part].lineStyle.color = border
+      })
+      a.axisLabel = a.axisLabel || {}
+      if (!a.axisLabel.color) a.axisLabel.color = muted
+    }
+  }
+
   // ECharts wants real colours, not `var(--chart-1)`. Reading a custom
   // property with getComputedStyle returns its raw value — in the shipped
   // themes that is `oklch(...)` — so resolving here gives the colour, not
@@ -273,6 +294,8 @@
       if (Array.isArray(opts.color)) opts.color = opts.color.map(normalizeColor)
       else if (typeof opts.color === 'string') opts.color = normalizeColor(opts.color)
       if (opts.textStyle && typeof opts.textStyle.color === 'string') opts.textStyle.color = normalizeColor(opts.textStyle.color)
+      themeAxes(opts.xAxis)
+      themeAxes(opts.yAxis)
       if (opts.series) normalizeColorTree(opts.series, 0)
       if (opts.visualMap) normalizeColorTree(opts.visualMap, 0)
       try {

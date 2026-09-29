@@ -229,21 +229,6 @@ renders `<a>` · `data-slot="badge"`
 | `Variant` | `string` | `"default"` |  |
 | `Href` | `string?` | — |  |
 
-## `<BarChart>`
-renders `<figure>` · `data-slot="bar-chart"`
-
-| Parameter | Type | Default | |
-|---|---|---|---|
-| `Values` | `IReadOnlyList<double>` | `Array.Empty<double>()` |  |
-| `Labels` | `IReadOnlyList<string>?` | — |  |
-| `Height` | `int` | `120` |  |
-| `Highlight` | `int` | `-1` |  |
-| `Color` | `string?` | — |  |
-| `ValueSuffix` | `string?` | — |  |
-| `AriaLabel` | `string?` | `"Bar chart"` |  |
-| `ShowLabels` | `bool` | `true` |  |
-| `ShowValues` | `bool` | — |  |
-
 ## `<BentoCard>`
 `data-slot="card"`
 

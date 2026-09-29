@@ -509,18 +509,42 @@
   // Arabic, and aligning it left there is the same bug as writing ml-auto in a stylesheet.
   const rtl = (element) => getComputedStyle(element).direction === 'rtl'
 
+  // The box position:fixed is laid out in, in viewport coordinates. Measured, because nothing
+  // reports it: clientWidth and innerWidth both still count the reserved scrollbar gutter.
+  function fixedBox() {
+    const probe = document.createElement('div')
+    probe.style.cssText = 'position:fixed;inset:0;visibility:hidden;pointer-events:none'
+    document.body.appendChild(probe)
+    const box = probe.getBoundingClientRect()
+    probe.remove()
+    return box
+  }
+
+  // A panel's laid-out size. Not getBoundingClientRect(): an opening panel is mid-animation,
+  // scaled from 0.96, so its rectangle is four percent short — a menu opening upward covered
+  // the bottom of its own trigger by exactly that much, and one aligned by subtracting its
+  // width came out short by the same amount on the other side.
+  const sizeOf = (panel) => ({ width: panel.offsetWidth, height: panel.offsetHeight })
+
   // A [popover] gets `inset: 0; margin: auto` from the UA stylesheet, so setting only `left`
   // leaves it over-constrained — and which of the two the browser then ignores depends on the
   // writing direction. In LTR it drops `right` and the panel lands where you asked; in RTL it
   // drops LEFT, and every menu in the library sat against the far edge of the window instead of
   // against its trigger. Releasing the other three insets is what makes the number mean
   // something. This was invisible in English, which is why it survived.
+  //
+  // Every caller works in viewport coordinates — the numbers getBoundingClientRect() gives — and
+  // passes a left edge. put() moves them into the box position:fixed is measured against, which
+  // is not the viewport: scrollbar-gutter:stable (set above, for the scroll lock) takes the
+  // gutter out of it, on the right in LTR and on the left in RTL. A panel pinned by `right`
+  // against clientWidth landed a gutter's width short of its trigger.
   function put(panel, edge, top) {
+    const box = fixedBox()
     panel.style.insetInline = 'auto'
     panel.style.insetBlock = 'auto'
-    if (edge.left !== undefined) panel.style.left = `${Math.round(edge.left)}px`
+    if (edge.left !== undefined) panel.style.left = `${Math.round(edge.left - box.left)}px`
     if (edge.right !== undefined) panel.style.right = `${Math.round(edge.right)}px`
-    panel.style.top = `${Math.round(top)}px`
+    panel.style.top = `${Math.round(top - box.top)}px`
 
     // The native top layer uses the viewport as the fixed-position containing block.
     // On Safari 15 the popover polyfill marks the open panel with this class but
@@ -537,10 +561,10 @@
       const dx = actual.left - wantedLeft
       const dy = actual.top - Math.round(top)
       if (Math.abs(dx) > 0.5) {
-        if (edge.left !== undefined) panel.style.left = `${Math.round(edge.left - dx)}px`
-        else panel.style.right = `${Math.round(edge.right + dx)}px`
+        if (edge.left !== undefined) panel.style.left = `${Math.round(parseFloat(panel.style.left) - dx)}px`
+        else panel.style.right = `${Math.round(parseFloat(panel.style.right) + dx)}px`
       }
-      if (Math.abs(dy) > 0.5) panel.style.top = `${Math.round(top - dy)}px`
+      if (Math.abs(dy) > 0.5) panel.style.top = `${Math.round(parseFloat(panel.style.top) - dy)}px`
     }
   }
 
@@ -652,14 +676,16 @@
     // `max-h-(--available-height)`; Base UI's positioner supplies those, and nothing here did —
     // so the class resolved to nothing, the list kept whatever width it happened to have, and it
     // stood out past the side of the box it belongs to.
+    const viewport = fixedBox()
+    const room = viewport.right
     panel.style.setProperty('--anchor-width', `${Math.round(a.width)}px`)
-    panel.style.setProperty('--available-width', `${document.documentElement.clientWidth - 16}px`)
+    panel.style.setProperty('--available-width', `${Math.round(viewport.width) - 16}px`)
     panel.style.setProperty('--available-height',
       `${Math.max(120, Math.round(Math.max(a.top, window.innerHeight - a.bottom) - offset - 8))}px`)
 
-    const p = panel.getBoundingClientRect()
+    const p = sizeOf(panel)
     const flip = rtl(anchor)
-    const room = document.documentElement.clientWidth
+    const floor = viewport.left
 
     // inline-start and inline-end are sides too. They fell through to the bottom branch in
     // silence, which is what the RTL samples ask for and what they were not getting.
@@ -674,14 +700,11 @@
       let top = Math.max(8, Math.min(a.top + (a.height - p.height) / 2,
                                      window.innerHeight - p.height - 8))
       // Flip to the other side when the chosen one has no room, as every popover library does.
-      const fitsLeft = a.left - p.width - offset >= 8
+      const fitsLeft = a.left - p.width - offset >= floor + 8
       const fitsRight = a.right + p.width + offset <= room - 8
       const left = (wantsLeft && fitsLeft) || (!wantsLeft && !fitsRight)
       panel.dataset.placedSide = left ? 'left' : 'right'
-      // Pin the edge that meets the trigger, never `left minus my own width`: the width is
-      // measured before the panel has settled at its final size, and the gap comes out wrong by
-      // the difference -- four pixels here, every time, on the left side only.
-      put(panel, left ? { right: room - (a.left - offset) } : { left: a.right + offset }, top)
+      put(panel, { left: left ? a.left - offset - p.width : a.right + offset }, top)
       return
     }
 
@@ -700,25 +723,15 @@
       panel.dataset.placedSide = 'bottom'
     }
 
-    // Pin the edge that has to line up, rather than deriving it by subtracting the panel's own
-    // width from the other edge. That subtraction was wrong by however much the measured width
-    // differed from the final one — twelve pixels in RTL, every time, because the panel's width
-    // comes from --anchor-width and is not settled when this runs. An edge needs no measurement.
-    if (align === 'center') {
-      const left = Math.max(8, Math.min(a.left + (a.width - p.width) / 2, room - p.width - 8))
-      put(panel, { left }, top)
-      return
-    }
-
-    const toStart = flip ? { right: room - a.right } : { left: a.left }
-    const toEnd = flip ? { left: a.left } : { right: room - a.right }
-    const edge = align === 'end' ? toEnd : toStart
+    // The width is the laid-out one (see sizeOf), with --anchor-width already applied above, so
+    // an end-aligned edge can be derived from it: the right edge of the trigger, less the panel.
+    const toStart = flip ? a.right - p.width : a.left
+    const toEnd = flip ? a.left : a.right - p.width
+    const want = align === 'center' ? a.left + (a.width - p.width) / 2
+      : align === 'end' ? toEnd : toStart
 
     // Stay on screen. A menu half off an edge is a menu with unreachable items.
-    if (edge.left !== undefined) edge.left = Math.max(8, Math.min(edge.left, room - p.width - 8))
-    else edge.right = Math.max(8, Math.min(edge.right, room - p.width - 8))
-
-    put(panel, edge, top)
+    put(panel, { left: Math.max(floor + 8, Math.min(want, room - p.width - 8)) }, top)
   }
 
   // Every trigger that opens a panel anchored to itself: a dropdown, a popover, a submenu row,
@@ -856,12 +869,13 @@
   // Arabic puts the submenu on top of the menu it came from.
   function placeBeside(panel, row) {
     const a = row.getBoundingClientRect()
-    const p = panel.getBoundingClientRect()
+    const p = sizeOf(panel)
+    const room = fixedBox().right
     const flip = rtl(row)
     let left = flip ? a.left - p.width + 4 : a.right - 4
     if (flip) {
-      if (left < 8) left = Math.min(a.right - 4, window.innerWidth - p.width - 8)
-    } else if (left + p.width > window.innerWidth - 8) {
+      if (left < 8) left = Math.min(a.right - 4, room - p.width - 8)
+    } else if (left + p.width > room - 8) {
       left = Math.max(8, a.left - p.width + 4)
     }
     put(panel, { left }, Math.min(a.top - 4, window.innerHeight - p.height - 8))
@@ -1172,7 +1186,8 @@
 
       // The keyboard route carries no pointer position, and 0,0 from a key press would put the
       // menu in the corner of the screen rather than on the thing it belongs to.
-      const box = panel.getBoundingClientRect()
+      const box = sizeOf(panel)
+      const room = fixedBox().right
       const side = panel.dataset.side
 
       if (side) {
@@ -1192,19 +1207,16 @@
         // already chosen is a menu one twitch away from choosing it.
         let at = side
         if (at === 'left' && px - box.width - gap < 8) at = 'right'
-        else if (at === 'right' && px + box.width + gap > window.innerWidth - 8) at = 'left'
+        else if (at === 'right' && px + box.width + gap > room - 8) at = 'left'
         else if (at === 'top' && py - box.height - gap < 8) at = 'bottom'
         else if (at === 'bottom' && py + box.height + gap > window.innerHeight - 8) at = 'top'
 
-        // Opening to the LEFT pins the panel's right edge rather than subtracting its own width
-        // from the cursor: the width is measured before the panel has settled, and the gap came
-        // out as zero — the panel touching the pointer, which is the whole thing being avoided.
         const across = at === 'left' || at === 'right'
         const top = across ? Math.max(8, Math.min(py - box.height / 2, window.innerHeight - box.height - 8))
           : at === 'top' ? py - box.height - gap : py + gap
-        const edge = at === 'left' ? { right: window.innerWidth - (px - gap) }
+        const edge = at === 'left' ? { left: px - gap - box.width }
           : at === 'right' ? { left: px + gap }
-          : { left: Math.max(8, Math.min(px - box.width / 2, window.innerWidth - box.width - 8)) }
+          : { left: Math.max(8, Math.min(px - box.width / 2, room - box.width - 8)) }
         put(panel, edge, top)
         panel.dataset.placedSide = at
         trigger.setAttribute('aria-expanded', 'true')
@@ -1218,7 +1230,7 @@
       const y = at ? at.bottom : event.clientY
 
       const left = rtl(trigger) ? x - box.width - 2 : x + 2
-      put(panel, { left: Math.max(8, Math.min(left, window.innerWidth - box.width - 8)) },
+      put(panel, { left: Math.max(8, Math.min(left, room - box.width - 8)) },
           Math.min(y + 2, window.innerHeight - box.height - 8))
       trigger.setAttribute('aria-expanded', 'true')
       panel.focus({ preventScroll: true })
@@ -3062,13 +3074,15 @@
       const chosen = items[Math.max(0, index)]
       if (!chosen) return
       const box = trigger.getBoundingClientRect()
-      const row = chosen.item.getBoundingClientRect()
-      const panelBox = panel.getBoundingClientRect()
-      const lift = row.top - box.top
+      const offsetTop = fixedBox().top
+      const panelTop = parseFloat(panel.style.top) + offsetTop
+      // Where the row sits inside the panel, from layout rather than from its rectangle, which
+      // is scaled with the panel while it opens.
+      const lift = panelTop + chosen.item.offsetTop - panel.scrollTop - box.top
       const top = Math.min(
-        Math.max(8, panelBox.top - lift),
-        Math.max(8, window.innerHeight - panelBox.height - 8))
-      panel.style.top = Math.round(top) + 'px'
+        Math.max(8, panelTop - lift),
+        Math.max(8, window.innerHeight - panel.offsetHeight - 8))
+      panel.style.top = Math.round(top - offsetTop) + 'px'
       panel.style.bottom = 'auto'
     }
 
@@ -3788,13 +3802,22 @@
         if (stopped) return
         // Clamped, because a tab that was in the background hands back one enormous dt, and an
         // unclamped integration step that size goes straight past the target and never returns.
-        const dt = Math.min(64, now - last) / 1000
+        let dt = Math.min(64, now - last) / 1000
         last = now
         // Semi-implicit Euler on x'' = -k(x - target) - c·x'. Damping well above critical, so the
         // figure eases in and stops rather than overshooting — a number that wobbles past its
         // value and comes back reads as a number that was guessed.
-        velocity += (-stiffness * (position - state.target) - damping * velocity) * dt
-        position += velocity * dt
+        //
+        // In steps of at most 8ms, whatever the frame took. The update multiplies the velocity by
+        // (1 - c·dt), which flips sign and grows once c·dt passes 2 — at this damping, any frame
+        // slower than 33ms. A phone under load, or a headless browser, then swung the figure
+        // through six-digit and negative values before the cap put it right.
+        while (dt > 0) {
+          const step = Math.min(dt, 0.008)
+          velocity += (-stiffness * (position - state.target) - damping * velocity) * step
+          position += velocity * step
+          dt -= step
+        }
         const epsilon = Math.max(1e-4, Math.abs(state.target) * 1e-5)
         if (Math.abs(state.target - position) < epsilon && Math.abs(velocity) < epsilon) {
           finish(state)
