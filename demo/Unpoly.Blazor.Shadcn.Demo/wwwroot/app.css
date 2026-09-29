@@ -1,3 +1,4 @@
+
   :where([data-slot="card"][data-size="sm"]) {
     --card-spacing: calc(var(--spacing) * 4);
   }
@@ -199,42 +200,50 @@
     --default-mono-font-family: var(--font-mono);
     --height-control: var(--control-h);
   }
+
 @supports (color: color(display-p3 0 0 0%)) {
 :root, :host {
     --color-amber-50: color(display-p3 0.9978 0.98505 0.92631);
   }
 }
+
 @supports (color: oklab(0% 0 0%)) {
 :root, :host {
     --color-amber-50: oklch(98.7% 0.022 95.277);
     --color-amber-200: oklch(92.4% 0.12 95.746);
   }
 }
+
 @supports (color: color(display-p3 0 0 0%)) {
 :root, :host {
     --color-amber-300: color(display-p3 0.97433 0.83063 0.33298);
   }
 }
+
 @supports (color: oklab(0% 0 0%)) {
 :root, :host {
     --color-amber-300: oklch(87.9% 0.169 91.605);
   }
 }
+
 @supports (color: color(display-p3 0 0 0%)) {
 :root, :host {
     --color-amber-400: color(display-p3 0.95919 0.73852 0.11827);
   }
 }
+
 @supports (color: oklab(0% 0 0%)) {
 :root, :host {
     --color-amber-400: oklch(82.8% 0.189 84.429);
   }
 }
+
 @supports (color: color(display-p3 0 0 0%)) {
 :root, :host {
     --color-amber-500: color(display-p3 0.93994 0.62058 0.05854);
   }
 }
+
 @supports (color: oklab(0% 0 0%)) {
 :root, :host {
     --color-amber-500: oklch(76.9% 0.188 70.08);
@@ -243,104 +252,124 @@
     --color-emerald-100: oklch(95% 0.052 163.051);
   }
 }
+
 @supports (color: color(display-p3 0 0 0%)) {
 :root, :host {
     --color-emerald-400: color(display-p3 0.3347 0.8196 0.59158);
   }
 }
+
 @supports (color: oklab(0% 0 0%)) {
 :root, :host {
     --color-emerald-400: oklch(76.5% 0.177 163.223);
   }
 }
+
 @supports (color: color(display-p3 0 0 0%)) {
 :root, :host {
     --color-emerald-500: color(display-p3 0.26711 0.72685 0.5084);
   }
 }
+
 @supports (color: oklab(0% 0 0%)) {
 :root, :host {
     --color-emerald-500: oklch(69.6% 0.17 162.48);
   }
 }
+
 @supports (color: color(display-p3 0 0 0%)) {
 :root, :host {
     --color-emerald-600: color(display-p3 0.20656 0.58906 0.41396);
   }
 }
+
 @supports (color: oklab(0% 0 0%)) {
 :root, :host {
     --color-emerald-600: oklch(59.6% 0.145 163.225);
   }
 }
+
 @supports (color: color(display-p3 0 0 0%)) {
 :root, :host {
     --color-emerald-700: color(display-p3 0.16404 0.47023 0.34351);
   }
 }
+
 @supports (color: oklab(0% 0 0%)) {
 :root, :host {
     --color-emerald-700: oklch(50.8% 0.118 165.612);
     --color-sky-100: oklch(95.1% 0.026 236.824);
   }
 }
+
 @supports (color: color(display-p3 0 0 0%)) {
 :root, :host {
     --color-sky-300: color(display-p3 0.54636 0.82256 0.99058);
   }
 }
+
 @supports (color: oklab(0% 0 0%)) {
 :root, :host {
     --color-sky-300: oklch(82.8% 0.111 230.318);
   }
 }
+
 @supports (color: color(display-p3 0 0 0%)) {
 :root, :host {
     --color-sky-400: color(display-p3 0.30598 0.72501 0.98017);
   }
 }
+
 @supports (color: oklab(0% 0 0%)) {
 :root, :host {
     --color-sky-400: oklch(74.6% 0.16 232.661);
   }
 }
+
 @supports (color: color(display-p3 0 0 0%)) {
 :root, :host {
     --color-sky-500: color(display-p3 0.21911 0.63903 0.93148);
   }
 }
+
 @supports (color: oklab(0% 0 0%)) {
 :root, :host {
     --color-sky-500: oklch(68.5% 0.169 237.323);
   }
 }
+
 @supports (color: color(display-p3 0 0 0%)) {
 :root, :host {
     --color-sky-700: color(display-p3 0.13031 0.40457 0.64085);
   }
 }
+
 @supports (color: oklab(0% 0 0%)) {
 :root, :host {
     --color-sky-700: oklch(50% 0.134 242.749);
     --color-violet-100: oklch(94.3% 0.029 294.588);
   }
 }
+
 @supports (color: color(display-p3 0 0 0%)) {
 :root, :host {
     --color-violet-500: color(display-p3 0.52337 0.3296 0.99088);
   }
 }
+
 @supports (color: oklab(0% 0 0%)) {
 :root, :host {
     --color-violet-500: oklch(60.6% 0.25 292.717);
     --color-violet-700: oklch(49.1% 0.27 292.581);
   }
 }
+
 @supports (color: color(display-p3 0 0 0%)) {
 :root, :host {
     --color-rose-300: color(display-p3 0.96017 0.6477 0.68372);
   }
 }
+
 @supports (color: oklab(0% 0 0%)) {
 :root, :host {
     --color-rose-300: oklch(81% 0.117 11.638);
@@ -3211,11 +3240,13 @@
       --tw-ring-color: color-mix(in oklab, var(--color-emerald-500) 20%, transparent);
     }
   }
+
 @supports (color: color(display-p3 0 0 0%)) and (color: color-mix(in lch, red, blue)) {
 .ring-emerald-500\/20 {
     --tw-ring-color: color-mix(in srgb, color(display-p3 0.26711 0.72685 0.5084) 20%, transparent)
   }
 }
+
 @supports (color: color-mix(in lch, red, blue)) and (color: oklab(0% 0 0%)) {
 .ring-emerald-500\/20 {
     --tw-ring-color: color-mix(in srgb, oklch(69.6% 0.17 162.48) 20%, transparent)
@@ -3233,11 +3264,13 @@
       --tw-ring-color: color-mix(in oklab, var(--color-sky-500) 20%, transparent);
     }
   }
+
 @supports (color: color(display-p3 0 0 0%)) and (color: color-mix(in lch, red, blue)) {
 .ring-sky-500\/20 {
     --tw-ring-color: color-mix(in srgb, color(display-p3 0.21911 0.63903 0.93148) 20%, transparent)
   }
 }
+
 @supports (color: color-mix(in lch, red, blue)) and (color: oklab(0% 0 0%)) {
 .ring-sky-500\/20 {
     --tw-ring-color: color-mix(in srgb, oklch(68.5% 0.169 237.323) 20%, transparent)
@@ -7316,6 +7349,7 @@
   --sh-minus: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='3' stroke-linecap='round'%3E%3Cpath d='M6 12h12'/%3E%3C/svg%3E");
   --sh-chevron-down: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
 }
+
 @supports (color: oklab(0% 0 0%)) {
 :root {
   --background: oklch(1 0 0);
@@ -7334,11 +7368,13 @@
   --accent-foreground: oklch(0.205 0 0);
 }
 }
+
 @supports (color: color(display-p3 0 0 0%)) {
 :root {
   --destructive: color(display-p3 0.83032 0.14038 0.1332);
 }
 }
+
 @supports (color: oklab(0% 0 0%)) {
 :root {
   --destructive: oklch(0.577 0.245 27.325);
@@ -7348,42 +7384,50 @@
   --ring: oklch(0.708 0 0);
 }
 }
+
 @supports (color: color(display-p3 0 0 0%)) {
 :root {
   --chart-1: color(display-p3 0.88747 0.34166 0.022);
 }
 }
+
 @supports (color: oklab(0% 0 0%)) {
 :root {
   --chart-1: oklch(0.646 0.222 41.116);
 }
 }
+
 @supports (color: color(display-p3 0 0 0%)) {
 :root {
   --chart-2: color(display-p3 0.20711 0.57958 0.53668);
 }
 }
+
 @supports (color: oklab(0% 0 0%)) {
 :root {
   --chart-2: oklch(0.6 0.118 184.704);
   --chart-3: oklch(0.398 0.07 227.392);
 }
 }
+
 @supports (color: color(display-p3 0 0 0%)) {
 :root {
   --chart-4: color(display-p3 0.95919 0.73852 0.11827);
 }
 }
+
 @supports (color: oklab(0% 0 0%)) {
 :root {
   --chart-4: oklch(0.828 0.189 84.429);
 }
 }
+
 @supports (color: color(display-p3 0 0 0%)) {
 :root {
   --chart-5: color(display-p3 0.93994 0.62058 0.05854);
 }
 }
+
 @supports (color: oklab(0% 0 0%)) {
 :root {
   --chart-5: oklch(0.769 0.188 70.08);
@@ -7426,6 +7470,7 @@
   --sidebar-border: rgba(255, 255, 255, 0.1);
   --sidebar-ring: rgb(115, 115, 115);
 }
+
 @supports (color: oklab(0% 0 0%)) {
 .dark {
   --background: oklch(0.145 0 0);
@@ -7444,11 +7489,13 @@
   --accent-foreground: oklch(0.985 0 0);
 }
 }
+
 @supports (color: color(display-p3 0 0 0%)) {
 .dark {
   --destructive: color(display-p3 0.93353 0.43168 0.42349);
 }
 }
+
 @supports (color: oklab(0% 0 0%)) {
 .dark {
   --destructive: oklch(0.704 0.191 22.216);
@@ -7549,6 +7596,7 @@
   --elevation-4: 0 16px 32px -8px rgb(0 0 0 / 0.14);
   font-family: var(--font-sans);
 }
+
 @supports (color: oklab(0% 0 0%)) {
 [data-theme="apple"] {
   --destructive-foreground: oklch(100% 0 0);
@@ -7643,6 +7691,7 @@
   --chart-5: rgb(104, 108, 160);
   font-family: var(--font-sans);
 }
+
 @supports (color: oklab(0% 0 0%)) {
 [data-theme="dracula"] {
   --background: oklch(0.2 0.03 270);
@@ -7653,11 +7702,13 @@
   --popover-foreground: oklch(0.92 0.01 270);
 }
 }
+
 @supports (color: color(display-p3 0 0 0%)) {
 [data-theme="dracula"] {
   --primary: color(display-p3 0.57835 0.54247 1);
 }
 }
+
 @supports (color: oklab(0% 0 0%)) {
 [data-theme="dracula"] {
   --primary: oklch(0.7 0.18 285);
@@ -7674,11 +7725,13 @@
   --input: oklch(0.3 0.03 270);
 }
 }
+
 @supports (color: color(display-p3 0 0 0%)) {
 [data-theme="dracula"] {
   --ring: color(display-p3 0.57835 0.54247 1);
 }
 }
+
 @supports (color: oklab(0% 0 0%)) {
 [data-theme="dracula"] {
   --ring: oklch(0.7 0.18 285);
@@ -7686,11 +7739,13 @@
   --sidebar-foreground: oklch(0.75 0.01 270);
 }
 }
+
 @supports (color: color(display-p3 0 0 0%)) {
 [data-theme="dracula"] {
   --sidebar-primary: color(display-p3 0.57835 0.54247 1);
 }
 }
+
 @supports (color: oklab(0% 0 0%)) {
 [data-theme="dracula"] {
   --sidebar-primary: oklch(0.7 0.18 285);
@@ -7700,31 +7755,37 @@
   --sidebar-border: oklch(0.25 0.03 270);
 }
 }
+
 @supports (color: color(display-p3 0 0 0%)) {
 [data-theme="dracula"] {
   --sidebar-ring: color(display-p3 0.57835 0.54247 1);
 }
 }
+
 @supports (color: oklab(0% 0 0%)) {
 [data-theme="dracula"] {
   --sidebar-ring: oklch(0.7 0.18 285);
 }
 }
+
 @supports (color: color(display-p3 0 0 0%)) {
 [data-theme="dracula"] {
   --chart-1: color(display-p3 0.57835 0.54247 1);
 }
 }
+
 @supports (color: oklab(0% 0 0%)) {
 [data-theme="dracula"] {
   --chart-1: oklch(0.7 0.18 285);
 }
 }
+
 @supports (color: color(display-p3 0 0 0%)) {
 [data-theme="dracula"] {
   --chart-2: color(display-p3 0.57835 0.54247 1);
 }
 }
+
 @supports (color: oklab(0% 0 0%)) {
 [data-theme="dracula"] {
   --chart-2: oklch(0.7 0.18 285);
@@ -7778,6 +7839,7 @@
   --chart-4: rgb(219, 102, 86);
   --chart-5: rgb(104, 108, 160);
 }
+
 @supports (color: oklab(0% 0 0%)) {
 [data-theme="dracula"].dark, [data-theme="dracula"] .dark {
   --background: oklch(0.2 0.03 270);
@@ -7788,11 +7850,13 @@
   --popover-foreground: oklch(0.92 0.01 270);
 }
 }
+
 @supports (color: color(display-p3 0 0 0%)) {
 [data-theme="dracula"].dark, [data-theme="dracula"] .dark {
   --primary: color(display-p3 0.57835 0.54247 1);
 }
 }
+
 @supports (color: oklab(0% 0 0%)) {
 [data-theme="dracula"].dark, [data-theme="dracula"] .dark {
   --primary: oklch(0.7 0.18 285);
@@ -7809,11 +7873,13 @@
   --input: oklch(0.3 0.03 270);
 }
 }
+
 @supports (color: color(display-p3 0 0 0%)) {
 [data-theme="dracula"].dark, [data-theme="dracula"] .dark {
   --ring: color(display-p3 0.57835 0.54247 1);
 }
 }
+
 @supports (color: oklab(0% 0 0%)) {
 [data-theme="dracula"].dark, [data-theme="dracula"] .dark {
   --ring: oklch(0.7 0.18 285);
@@ -7821,11 +7887,13 @@
   --sidebar-foreground: oklch(0.75 0.01 270);
 }
 }
+
 @supports (color: color(display-p3 0 0 0%)) {
 [data-theme="dracula"].dark, [data-theme="dracula"] .dark {
   --sidebar-primary: color(display-p3 0.57835 0.54247 1);
 }
 }
+
 @supports (color: oklab(0% 0 0%)) {
 [data-theme="dracula"].dark, [data-theme="dracula"] .dark {
   --sidebar-primary: oklch(0.7 0.18 285);
@@ -7835,31 +7903,37 @@
   --sidebar-border: oklch(0.25 0.03 270);
 }
 }
+
 @supports (color: color(display-p3 0 0 0%)) {
 [data-theme="dracula"].dark, [data-theme="dracula"] .dark {
   --sidebar-ring: color(display-p3 0.57835 0.54247 1);
 }
 }
+
 @supports (color: oklab(0% 0 0%)) {
 [data-theme="dracula"].dark, [data-theme="dracula"] .dark {
   --sidebar-ring: oklch(0.7 0.18 285);
 }
 }
+
 @supports (color: color(display-p3 0 0 0%)) {
 [data-theme="dracula"].dark, [data-theme="dracula"] .dark {
   --chart-1: color(display-p3 0.57835 0.54247 1);
 }
 }
+
 @supports (color: oklab(0% 0 0%)) {
 [data-theme="dracula"].dark, [data-theme="dracula"] .dark {
   --chart-1: oklch(0.7 0.18 285);
 }
 }
+
 @supports (color: color(display-p3 0 0 0%)) {
 [data-theme="dracula"].dark, [data-theme="dracula"] .dark {
   --chart-2: color(display-p3 0.57835 0.54247 1);
 }
 }
+
 @supports (color: oklab(0% 0 0%)) {
 [data-theme="dracula"].dark, [data-theme="dracula"] .dark {
   --chart-2: oklch(0.7 0.18 285);
@@ -7884,6 +7958,7 @@
   --border: rgb(228, 228, 231);
   --input: rgb(228, 228, 231);
 }
+
 @supports (color: oklab(0% 0 0%)) {
 [data-cz-base="zinc"] {
   --background: oklch(1 0 0);
@@ -7918,6 +7993,7 @@
   --border: rgba(255, 255, 255, 0.1);
   --input: rgba(255, 255, 255, 0.15);
 }
+
 @supports (color: oklab(0% 0 0%)) {
 [data-cz-base="zinc"].dark, [data-cz-base="zinc"] .dark {
   --background: oklch(0.141 0.005 285.823);
@@ -7952,6 +8028,7 @@
   --border: rgb(226, 232, 240);
   --input: rgb(226, 232, 240);
 }
+
 @supports (color: oklab(0% 0 0%)) {
 [data-cz-base="slate"] {
   --background: oklch(1 0 0);
@@ -7986,6 +8063,7 @@
   --border: rgba(255, 255, 255, 0.1);
   --input: rgba(255, 255, 255, 0.15);
 }
+
 @supports (color: oklab(0% 0 0%)) {
 [data-cz-base="slate"].dark, [data-cz-base="slate"] .dark {
   --background: oklch(0.208 0.042 265.755);
@@ -8020,6 +8098,7 @@
   --border: rgb(231, 229, 228);
   --input: rgb(231, 229, 228);
 }
+
 @supports (color: oklab(0% 0 0%)) {
 [data-cz-base="stone"] {
   --background: oklch(1 0 0);
@@ -8054,6 +8133,7 @@
   --border: rgba(255, 255, 255, 0.1);
   --input: rgba(255, 255, 255, 0.15);
 }
+
 @supports (color: oklab(0% 0 0%)) {
 [data-cz-base="stone"].dark, [data-cz-base="stone"] .dark {
   --background: oklch(0.216 0.006 56.043);
@@ -8088,6 +8168,7 @@
   --border: rgb(229, 231, 235);
   --input: rgb(229, 231, 235);
 }
+
 @supports (color: oklab(0% 0 0%)) {
 [data-cz-base="gray"] {
   --background: oklch(1 0 0);
@@ -8122,6 +8203,7 @@
   --border: rgba(255, 255, 255, 0.1);
   --input: rgba(255, 255, 255, 0.15);
 }
+
 @supports (color: oklab(0% 0 0%)) {
 [data-cz-base="gray"].dark, [data-cz-base="gray"] .dark {
   --background: oklch(0.21 0.034 264.665);
@@ -8156,6 +8238,7 @@
   --border: rgb(229, 229, 229);
   --input: rgb(229, 229, 229);
 }
+
 @supports (color: oklab(0% 0 0%)) {
 [data-cz-base="neutral"] {
   --background: oklch(1 0 0);
@@ -8190,6 +8273,7 @@
   --border: rgba(255, 255, 255, 0.1);
   --input: rgba(255, 255, 255, 0.15);
 }
+
 @supports (color: oklab(0% 0 0%)) {
 [data-cz-base="neutral"].dark, [data-cz-base="neutral"] .dark {
   --background: oklch(0.145 0 0);
@@ -8214,32 +8298,38 @@
   --ring: rgb(228, 0, 22);
   --chart-1: rgb(228, 0, 22);
 }
+
 @supports (color: color(display-p3 0 0 0%)) {
 [data-cz-primary="red"] {
   --primary: color(display-p3 0.83032 0.1404 0.13311);
 }
 }
+
 @supports (color: oklab(0% 0 0%)) {
 [data-cz-primary="red"] {
   --primary: oklch(0.577 0.245 27.33);
   --primary-foreground: oklch(0.985 0 0);
 }
 }
+
 @supports (color: color(display-p3 0 0 0%)) {
 [data-cz-primary="red"] {
   --ring: color(display-p3 0.83032 0.1404 0.13311);
 }
 }
+
 @supports (color: oklab(0% 0 0%)) {
 [data-cz-primary="red"] {
   --ring: oklch(0.577 0.245 27.33);
 }
 }
+
 @supports (color: color(display-p3 0 0 0%)) {
 [data-cz-primary="red"] {
   --chart-1: color(display-p3 0.83032 0.1404 0.13311);
 }
 }
+
 @supports (color: oklab(0% 0 0%)) {
 [data-cz-primary="red"] {
   --chart-1: oklch(0.577 0.245 27.33);
@@ -8250,31 +8340,37 @@
   --ring: rgb(255, 101, 104);
   --chart-1: rgb(255, 101, 104);
 }
+
 @supports (color: color(display-p3 0 0 0%)) {
 [data-cz-primary="red"].dark, [data-cz-primary="red"] .dark {
   --primary: color(display-p3 0.93353 0.43168 0.42349);
 }
 }
+
 @supports (color: oklab(0% 0 0%)) {
 [data-cz-primary="red"].dark, [data-cz-primary="red"] .dark {
   --primary: oklch(0.704 0.191 22.216);
 }
 }
+
 @supports (color: color(display-p3 0 0 0%)) {
 [data-cz-primary="red"].dark, [data-cz-primary="red"] .dark {
   --ring: color(display-p3 0.93353 0.43168 0.42349);
 }
 }
+
 @supports (color: oklab(0% 0 0%)) {
 [data-cz-primary="red"].dark, [data-cz-primary="red"] .dark {
   --ring: oklch(0.704 0.191 22.216);
 }
 }
+
 @supports (color: color(display-p3 0 0 0%)) {
 [data-cz-primary="red"].dark, [data-cz-primary="red"] .dark {
   --chart-1: color(display-p3 0.93353 0.43168 0.42349);
 }
 }
+
 @supports (color: oklab(0% 0 0%)) {
 [data-cz-primary="red"].dark, [data-cz-primary="red"] .dark {
   --chart-1: oklch(0.704 0.191 22.216);
@@ -8286,6 +8382,7 @@
   --ring: rgb(219, 32, 109);
   --chart-1: rgb(219, 32, 109);
 }
+
 @supports (color: oklab(0% 0 0%)) {
 [data-cz-primary="rose"] {
   --primary: oklch(0.585 0.22 3.96);
@@ -8299,31 +8396,37 @@
   --ring: rgb(255, 35, 87);
   --chart-1: rgb(255, 35, 87);
 }
+
 @supports (color: color(display-p3 0 0 0%)) {
 [data-cz-primary="rose"].dark, [data-cz-primary="rose"] .dark {
   --primary: color(display-p3 0.92182 0.24075 0.35565);
 }
 }
+
 @supports (color: oklab(0% 0 0%)) {
 [data-cz-primary="rose"].dark, [data-cz-primary="rose"] .dark {
   --primary: oklch(0.645 0.246 16.44);
 }
 }
+
 @supports (color: color(display-p3 0 0 0%)) {
 [data-cz-primary="rose"].dark, [data-cz-primary="rose"] .dark {
   --ring: color(display-p3 0.92182 0.24075 0.35565);
 }
 }
+
 @supports (color: oklab(0% 0 0%)) {
 [data-cz-primary="rose"].dark, [data-cz-primary="rose"] .dark {
   --ring: oklch(0.645 0.246 16.44);
 }
 }
+
 @supports (color: color(display-p3 0 0 0%)) {
 [data-cz-primary="rose"].dark, [data-cz-primary="rose"] .dark {
   --chart-1: color(display-p3 0.92182 0.24075 0.35565);
 }
 }
+
 @supports (color: oklab(0% 0 0%)) {
 [data-cz-primary="rose"].dark, [data-cz-primary="rose"] .dark {
   --chart-1: oklch(0.645 0.246 16.44);
@@ -8335,6 +8438,7 @@
   --ring: rgb(235, 87, 7);
   --chart-1: rgb(235, 87, 7);
 }
+
 @supports (color: oklab(0% 0 0%)) {
 [data-cz-primary="orange"] {
   --primary: oklch(0.646 0.196 41.11);
@@ -8348,31 +8452,37 @@
   --ring: rgb(252, 113, 0);
   --chart-1: rgb(252, 113, 0);
 }
+
 @supports (color: color(display-p3 0 0 0%)) {
 [data-cz-primary="orange"].dark, [data-cz-primary="orange"] .dark {
   --primary: color(display-p3 0.9466 0.44978 0.07584);
 }
 }
+
 @supports (color: oklab(0% 0 0%)) {
 [data-cz-primary="orange"].dark, [data-cz-primary="orange"] .dark {
   --primary: oklch(0.705 0.213 47.6);
 }
 }
+
 @supports (color: color(display-p3 0 0 0%)) {
 [data-cz-primary="orange"].dark, [data-cz-primary="orange"] .dark {
   --ring: color(display-p3 0.9466 0.44978 0.07584);
 }
 }
+
 @supports (color: oklab(0% 0 0%)) {
 [data-cz-primary="orange"].dark, [data-cz-primary="orange"] .dark {
   --ring: oklch(0.705 0.213 47.6);
 }
 }
+
 @supports (color: color(display-p3 0 0 0%)) {
 [data-cz-primary="orange"].dark, [data-cz-primary="orange"] .dark {
   --chart-1: color(display-p3 0.9466 0.44978 0.07584);
 }
 }
+
 @supports (color: oklab(0% 0 0%)) {
 [data-cz-primary="orange"].dark, [data-cz-primary="orange"] .dark {
   --chart-1: oklch(0.705 0.213 47.6);
@@ -8384,32 +8494,38 @@
   --ring: rgb(218, 119, 0);
   --chart-1: rgb(218, 119, 0);
 }
+
 @supports (color: color(display-p3 0 0 0%)) {
 [data-cz-primary="amber"] {
   --primary: color(display-p3 0.82714 0.46717 0.03355);
 }
 }
+
 @supports (color: oklab(0% 0 0%)) {
 [data-cz-primary="amber"] {
   --primary: oklch(0.666 0.179 58.32);
   --primary-foreground: oklch(0.985 0 0);
 }
 }
+
 @supports (color: color(display-p3 0 0 0%)) {
 [data-cz-primary="amber"] {
   --ring: color(display-p3 0.82714 0.46717 0.03355);
 }
 }
+
 @supports (color: oklab(0% 0 0%)) {
 [data-cz-primary="amber"] {
   --ring: oklch(0.666 0.179 58.32);
 }
 }
+
 @supports (color: color(display-p3 0 0 0%)) {
 [data-cz-primary="amber"] {
   --chart-1: color(display-p3 0.82714 0.46717 0.03355);
 }
 }
+
 @supports (color: oklab(0% 0 0%)) {
 [data-cz-primary="amber"] {
   --chart-1: oklch(0.666 0.179 58.32);
@@ -8420,31 +8536,37 @@
   --ring: rgb(246, 158, 0);
   --chart-1: rgb(246, 158, 0);
 }
+
 @supports (color: color(display-p3 0 0 0%)) {
 [data-cz-primary="amber"].dark, [data-cz-primary="amber"] .dark {
   --primary: color(display-p3 0.93994 0.62058 0.05854);
 }
 }
+
 @supports (color: oklab(0% 0 0%)) {
 [data-cz-primary="amber"].dark, [data-cz-primary="amber"] .dark {
   --primary: oklch(0.769 0.188 70.08);
 }
 }
+
 @supports (color: color(display-p3 0 0 0%)) {
 [data-cz-primary="amber"].dark, [data-cz-primary="amber"] .dark {
   --ring: color(display-p3 0.93994 0.62058 0.05854);
 }
 }
+
 @supports (color: oklab(0% 0 0%)) {
 [data-cz-primary="amber"].dark, [data-cz-primary="amber"] .dark {
   --ring: oklch(0.769 0.188 70.08);
 }
 }
+
 @supports (color: color(display-p3 0 0 0%)) {
 [data-cz-primary="amber"].dark, [data-cz-primary="amber"] .dark {
   --chart-1: color(display-p3 0.93994 0.62058 0.05854);
 }
 }
+
 @supports (color: oklab(0% 0 0%)) {
 [data-cz-primary="amber"].dark, [data-cz-primary="amber"] .dark {
   --chart-1: oklch(0.769 0.188 70.08);
@@ -8456,32 +8578,38 @@
   --ring: rgb(234, 179, 0);
   --chart-1: rgb(234, 179, 0);
 }
+
 @supports (color: color(display-p3 0 0 0%)) {
 [data-cz-primary="yellow"] {
   --primary: color(display-p3 0.90364 0.70307 0.07453);
 }
 }
+
 @supports (color: oklab(0% 0 0%)) {
 [data-cz-primary="yellow"] {
   --primary: oklch(0.795 0.184 86.05);
   --primary-foreground: oklch(0.985 0 0);
 }
 }
+
 @supports (color: color(display-p3 0 0 0%)) {
 [data-cz-primary="yellow"] {
   --ring: color(display-p3 0.90364 0.70307 0.07453);
 }
 }
+
 @supports (color: oklab(0% 0 0%)) {
 [data-cz-primary="yellow"] {
   --ring: oklch(0.795 0.184 86.05);
 }
 }
+
 @supports (color: color(display-p3 0 0 0%)) {
 [data-cz-primary="yellow"] {
   --chart-1: color(display-p3 0.90364 0.70307 0.07453);
 }
 }
+
 @supports (color: oklab(0% 0 0%)) {
 [data-cz-primary="yellow"] {
   --chart-1: oklch(0.795 0.184 86.05);
@@ -8492,31 +8620,37 @@
   --ring: rgb(234, 179, 0);
   --chart-1: rgb(234, 179, 0);
 }
+
 @supports (color: color(display-p3 0 0 0%)) {
 [data-cz-primary="yellow"].dark, [data-cz-primary="yellow"] .dark {
   --primary: color(display-p3 0.90364 0.70307 0.07453);
 }
 }
+
 @supports (color: oklab(0% 0 0%)) {
 [data-cz-primary="yellow"].dark, [data-cz-primary="yellow"] .dark {
   --primary: oklch(0.795 0.184 86.05);
 }
 }
+
 @supports (color: color(display-p3 0 0 0%)) {
 [data-cz-primary="yellow"].dark, [data-cz-primary="yellow"] .dark {
   --ring: color(display-p3 0.90364 0.70307 0.07453);
 }
 }
+
 @supports (color: oklab(0% 0 0%)) {
 [data-cz-primary="yellow"].dark, [data-cz-primary="yellow"] .dark {
   --ring: oklch(0.795 0.184 86.05);
 }
 }
+
 @supports (color: color(display-p3 0 0 0%)) {
 [data-cz-primary="yellow"].dark, [data-cz-primary="yellow"] .dark {
   --chart-1: color(display-p3 0.90364 0.70307 0.07453);
 }
 }
+
 @supports (color: oklab(0% 0 0%)) {
 [data-cz-primary="yellow"].dark, [data-cz-primary="yellow"] .dark {
   --chart-1: oklch(0.795 0.184 86.05);
@@ -8528,32 +8662,38 @@
   --ring: rgb(100, 163, 0);
   --chart-1: rgb(100, 163, 0);
 }
+
 @supports (color: color(display-p3 0 0 0%)) {
 [data-cz-primary="lime"] {
   --primary: color(display-p3 0.43539 0.64061 0.09085);
 }
 }
+
 @supports (color: oklab(0% 0 0%)) {
 [data-cz-primary="lime"] {
   --primary: oklch(0.648 0.2 131.68);
   --primary-foreground: oklch(0.985 0 0);
 }
 }
+
 @supports (color: color(display-p3 0 0 0%)) {
 [data-cz-primary="lime"] {
   --ring: color(display-p3 0.43539 0.64061 0.09085);
 }
 }
+
 @supports (color: oklab(0% 0 0%)) {
 [data-cz-primary="lime"] {
   --ring: oklch(0.648 0.2 131.68);
 }
 }
+
 @supports (color: color(display-p3 0 0 0%)) {
 [data-cz-primary="lime"] {
   --chart-1: color(display-p3 0.43539 0.64061 0.09085);
 }
 }
+
 @supports (color: oklab(0% 0 0%)) {
 [data-cz-primary="lime"] {
   --chart-1: oklch(0.648 0.2 131.68);
@@ -8564,31 +8704,37 @@
   --ring: rgb(131, 204, 0);
   --chart-1: rgb(131, 204, 0);
 }
+
 @supports (color: color(display-p3 0 0 0%)) {
 [data-cz-primary="lime"].dark, [data-cz-primary="lime"] .dark {
   --primary: color(display-p3 0.5627 0.8018 0.13123);
 }
 }
+
 @supports (color: oklab(0% 0 0%)) {
 [data-cz-primary="lime"].dark, [data-cz-primary="lime"] .dark {
   --primary: oklch(0.768 0.233 130.85);
 }
 }
+
 @supports (color: color(display-p3 0 0 0%)) {
 [data-cz-primary="lime"].dark, [data-cz-primary="lime"] .dark {
   --ring: color(display-p3 0.5627 0.8018 0.13123);
 }
 }
+
 @supports (color: oklab(0% 0 0%)) {
 [data-cz-primary="lime"].dark, [data-cz-primary="lime"] .dark {
   --ring: oklch(0.768 0.233 130.85);
 }
 }
+
 @supports (color: color(display-p3 0 0 0%)) {
 [data-cz-primary="lime"].dark, [data-cz-primary="lime"] .dark {
   --chart-1: color(display-p3 0.5627 0.8018 0.13123);
 }
 }
+
 @supports (color: oklab(0% 0 0%)) {
 [data-cz-primary="lime"].dark, [data-cz-primary="lime"] .dark {
   --chart-1: oklch(0.768 0.233 130.85);
@@ -8600,32 +8746,38 @@
   --ring: rgb(0, 129, 58);
   --chart-1: rgb(0, 129, 58);
 }
+
 @supports (color: color(display-p3 0 0 0%)) {
 [data-cz-primary="green"] {
   --primary: color(display-p3 0.19835 0.5018 0.24534);
 }
 }
+
 @supports (color: oklab(0% 0 0%)) {
 [data-cz-primary="green"] {
   --primary: oklch(0.527 0.154 150.07);
   --primary-foreground: oklch(0.985 0 0);
 }
 }
+
 @supports (color: color(display-p3 0 0 0%)) {
 [data-cz-primary="green"] {
   --ring: color(display-p3 0.19835 0.5018 0.24534);
 }
 }
+
 @supports (color: oklab(0% 0 0%)) {
 [data-cz-primary="green"] {
   --ring: oklch(0.527 0.154 150.07);
 }
 }
+
 @supports (color: color(display-p3 0 0 0%)) {
 [data-cz-primary="green"] {
   --chart-1: color(display-p3 0.19835 0.5018 0.24534);
 }
 }
+
 @supports (color: oklab(0% 0 0%)) {
 [data-cz-primary="green"] {
   --chart-1: oklch(0.527 0.154 150.07);
@@ -8636,31 +8788,37 @@
   --ring: rgb(0, 198, 90);
   --chart-1: rgb(0, 198, 90);
 }
+
 @supports (color: color(display-p3 0 0 0%)) {
 [data-cz-primary="green"].dark, [data-cz-primary="green"] .dark {
   --primary: color(display-p3 0.30872 0.77476 0.37432);
 }
 }
+
 @supports (color: oklab(0% 0 0%)) {
 [data-cz-primary="green"].dark, [data-cz-primary="green"] .dark {
   --primary: oklch(0.723 0.219 149.58);
 }
 }
+
 @supports (color: color(display-p3 0 0 0%)) {
 [data-cz-primary="green"].dark, [data-cz-primary="green"] .dark {
   --ring: color(display-p3 0.30872 0.77476 0.37432);
 }
 }
+
 @supports (color: oklab(0% 0 0%)) {
 [data-cz-primary="green"].dark, [data-cz-primary="green"] .dark {
   --ring: oklch(0.723 0.219 149.58);
 }
 }
+
 @supports (color: color(display-p3 0 0 0%)) {
 [data-cz-primary="green"].dark, [data-cz-primary="green"] .dark {
   --chart-1: color(display-p3 0.30872 0.77476 0.37432);
 }
 }
+
 @supports (color: oklab(0% 0 0%)) {
 [data-cz-primary="green"].dark, [data-cz-primary="green"] .dark {
   --chart-1: oklch(0.723 0.219 149.58);
@@ -8672,32 +8830,38 @@
   --ring: rgb(0, 150, 105);
   --chart-1: rgb(0, 150, 105);
 }
+
 @supports (color: color(display-p3 0 0 0%)) {
 [data-cz-primary="emerald"] {
   --primary: color(display-p3 0.20652 0.58906 0.41399);
 }
 }
+
 @supports (color: oklab(0% 0 0%)) {
 [data-cz-primary="emerald"] {
   --primary: oklch(0.596 0.145 163.23);
   --primary-foreground: oklch(0.985 0 0);
 }
 }
+
 @supports (color: color(display-p3 0 0 0%)) {
 [data-cz-primary="emerald"] {
   --ring: color(display-p3 0.20652 0.58906 0.41399);
 }
 }
+
 @supports (color: oklab(0% 0 0%)) {
 [data-cz-primary="emerald"] {
   --ring: oklch(0.596 0.145 163.23);
 }
 }
+
 @supports (color: color(display-p3 0 0 0%)) {
 [data-cz-primary="emerald"] {
   --chart-1: color(display-p3 0.20652 0.58906 0.41399);
 }
 }
+
 @supports (color: oklab(0% 0 0%)) {
 [data-cz-primary="emerald"] {
   --chart-1: oklch(0.596 0.145 163.23);
@@ -8708,31 +8872,37 @@
   --ring: rgb(0, 185, 129);
   --chart-1: rgb(0, 185, 129);
 }
+
 @supports (color: color(display-p3 0 0 0%)) {
 [data-cz-primary="emerald"].dark, [data-cz-primary="emerald"] .dark {
   --primary: color(display-p3 0.26711 0.72685 0.5084);
 }
 }
+
 @supports (color: oklab(0% 0 0%)) {
 [data-cz-primary="emerald"].dark, [data-cz-primary="emerald"] .dark {
   --primary: oklch(0.696 0.17 162.48);
 }
 }
+
 @supports (color: color(display-p3 0 0 0%)) {
 [data-cz-primary="emerald"].dark, [data-cz-primary="emerald"] .dark {
   --ring: color(display-p3 0.26711 0.72685 0.5084);
 }
 }
+
 @supports (color: oklab(0% 0 0%)) {
 [data-cz-primary="emerald"].dark, [data-cz-primary="emerald"] .dark {
   --ring: oklch(0.696 0.17 162.48);
 }
 }
+
 @supports (color: color(display-p3 0 0 0%)) {
 [data-cz-primary="emerald"].dark, [data-cz-primary="emerald"] .dark {
   --chart-1: color(display-p3 0.26711 0.72685 0.5084);
 }
 }
+
 @supports (color: oklab(0% 0 0%)) {
 [data-cz-primary="emerald"].dark, [data-cz-primary="emerald"] .dark {
   --chart-1: oklch(0.696 0.17 162.48);
@@ -8744,32 +8914,38 @@
   --ring: rgb(0, 148, 136);
   --chart-1: rgb(0, 148, 136);
 }
+
 @supports (color: color(display-p3 0 0 0%)) {
 [data-cz-primary="teal"] {
   --primary: color(display-p3 0.20713 0.57958 0.53666);
 }
 }
+
 @supports (color: oklab(0% 0 0%)) {
 [data-cz-primary="teal"] {
   --primary: oklch(0.6 0.118 184.7);
   --primary-foreground: oklch(0.985 0 0);
 }
 }
+
 @supports (color: color(display-p3 0 0 0%)) {
 [data-cz-primary="teal"] {
   --ring: color(display-p3 0.20713 0.57958 0.53666);
 }
 }
+
 @supports (color: oklab(0% 0 0%)) {
 [data-cz-primary="teal"] {
   --ring: oklch(0.6 0.118 184.7);
 }
 }
+
 @supports (color: color(display-p3 0 0 0%)) {
 [data-cz-primary="teal"] {
   --chart-1: color(display-p3 0.20713 0.57958 0.53666);
 }
 }
+
 @supports (color: oklab(0% 0 0%)) {
 [data-cz-primary="teal"] {
   --chart-1: oklch(0.6 0.118 184.7);
@@ -8780,31 +8956,37 @@
   --ring: rgb(0, 181, 211);
   --chart-1: rgb(0, 181, 211);
 }
+
 @supports (color: color(display-p3 0 0 0%)) {
 [data-cz-primary="teal"].dark, [data-cz-primary="teal"] .dark {
   --primary: color(display-p3 0.24048 0.70499 0.83629);
 }
 }
+
 @supports (color: oklab(0% 0 0%)) {
 [data-cz-primary="teal"].dark, [data-cz-primary="teal"] .dark {
   --primary: oklch(0.711 0.143 215.22);
 }
 }
+
 @supports (color: color(display-p3 0 0 0%)) {
 [data-cz-primary="teal"].dark, [data-cz-primary="teal"] .dark {
   --ring: color(display-p3 0.24048 0.70499 0.83629);
 }
 }
+
 @supports (color: oklab(0% 0 0%)) {
 [data-cz-primary="teal"].dark, [data-cz-primary="teal"] .dark {
   --ring: oklch(0.711 0.143 215.22);
 }
 }
+
 @supports (color: color(display-p3 0 0 0%)) {
 [data-cz-primary="teal"].dark, [data-cz-primary="teal"] .dark {
   --chart-1: color(display-p3 0.24048 0.70499 0.83629);
 }
 }
+
 @supports (color: oklab(0% 0 0%)) {
 [data-cz-primary="teal"].dark, [data-cz-primary="teal"] .dark {
   --chart-1: oklch(0.711 0.143 215.22);
@@ -8816,32 +8998,38 @@
   --ring: rgb(0, 145, 179);
   --chart-1: rgb(0, 145, 179);
 }
+
 @supports (color: color(display-p3 0 0 0%)) {
 [data-cz-primary="cyan"] {
   --primary: color(display-p3 0.19324 0.56465 0.70719);
 }
 }
+
 @supports (color: oklab(0% 0 0%)) {
 [data-cz-primary="cyan"] {
   --primary: oklch(0.609 0.126 221.72);
   --primary-foreground: oklch(0.985 0 0);
 }
 }
+
 @supports (color: color(display-p3 0 0 0%)) {
 [data-cz-primary="cyan"] {
   --ring: color(display-p3 0.19324 0.56465 0.70719);
 }
 }
+
 @supports (color: oklab(0% 0 0%)) {
 [data-cz-primary="cyan"] {
   --ring: oklch(0.609 0.126 221.72);
 }
 }
+
 @supports (color: color(display-p3 0 0 0%)) {
 [data-cz-primary="cyan"] {
   --chart-1: color(display-p3 0.19324 0.56465 0.70719);
 }
 }
+
 @supports (color: oklab(0% 0 0%)) {
 [data-cz-primary="cyan"] {
   --chart-1: oklch(0.609 0.126 221.72);
@@ -8852,31 +9040,37 @@
   --ring: rgb(0, 182, 212);
   --chart-1: rgb(0, 182, 212);
 }
+
 @supports (color: color(display-p3 0 0 0%)) {
 [data-cz-primary="cyan"].dark, [data-cz-primary="cyan"] .dark {
   --primary: color(display-p3 0.2467 0.71003 0.84144);
 }
 }
+
 @supports (color: oklab(0% 0 0%)) {
 [data-cz-primary="cyan"].dark, [data-cz-primary="cyan"] .dark {
   --primary: oklch(0.715 0.143 215.22);
 }
 }
+
 @supports (color: color(display-p3 0 0 0%)) {
 [data-cz-primary="cyan"].dark, [data-cz-primary="cyan"] .dark {
   --ring: color(display-p3 0.2467 0.71003 0.84144);
 }
 }
+
 @supports (color: oklab(0% 0 0%)) {
 [data-cz-primary="cyan"].dark, [data-cz-primary="cyan"] .dark {
   --ring: oklch(0.715 0.143 215.22);
 }
 }
+
 @supports (color: color(display-p3 0 0 0%)) {
 [data-cz-primary="cyan"].dark, [data-cz-primary="cyan"] .dark {
   --chart-1: color(display-p3 0.2467 0.71003 0.84144);
 }
 }
+
 @supports (color: oklab(0% 0 0%)) {
 [data-cz-primary="cyan"].dark, [data-cz-primary="cyan"] .dark {
   --chart-1: oklch(0.715 0.143 215.22);
@@ -8888,32 +9082,38 @@
   --ring: rgb(0, 132, 199);
   --chart-1: rgb(0, 132, 199);
 }
+
 @supports (color: color(display-p3 0 0 0%)) {
 [data-cz-primary="sky"] {
   --primary: color(display-p3 0.16255 0.50937 0.79609);
 }
 }
+
 @supports (color: oklab(0% 0 0%)) {
 [data-cz-primary="sky"] {
   --primary: oklch(0.588 0.158 241.97);
   --primary-foreground: oklch(0.985 0 0);
 }
 }
+
 @supports (color: color(display-p3 0 0 0%)) {
 [data-cz-primary="sky"] {
   --ring: color(display-p3 0.16255 0.50937 0.79609);
 }
 }
+
 @supports (color: oklab(0% 0 0%)) {
 [data-cz-primary="sky"] {
   --ring: oklch(0.588 0.158 241.97);
 }
 }
+
 @supports (color: color(display-p3 0 0 0%)) {
 [data-cz-primary="sky"] {
   --chart-1: color(display-p3 0.16255 0.50937 0.79609);
 }
 }
+
 @supports (color: oklab(0% 0 0%)) {
 [data-cz-primary="sky"] {
   --chart-1: oklch(0.588 0.158 241.97);
@@ -8924,31 +9124,37 @@
   --ring: rgb(0, 187, 253);
   --chart-1: rgb(0, 187, 253);
 }
+
 @supports (color: color(display-p3 0 0 0%)) {
 [data-cz-primary="sky"].dark, [data-cz-primary="sky"] .dark {
   --primary: color(display-p3 0.30597 0.72501 0.98017);
 }
 }
+
 @supports (color: oklab(0% 0 0%)) {
 [data-cz-primary="sky"].dark, [data-cz-primary="sky"] .dark {
   --primary: oklch(0.746 0.16 232.66);
 }
 }
+
 @supports (color: color(display-p3 0 0 0%)) {
 [data-cz-primary="sky"].dark, [data-cz-primary="sky"] .dark {
   --ring: color(display-p3 0.30597 0.72501 0.98017);
 }
 }
+
 @supports (color: oklab(0% 0 0%)) {
 [data-cz-primary="sky"].dark, [data-cz-primary="sky"] .dark {
   --ring: oklch(0.746 0.16 232.66);
 }
 }
+
 @supports (color: color(display-p3 0 0 0%)) {
 [data-cz-primary="sky"].dark, [data-cz-primary="sky"] .dark {
   --chart-1: color(display-p3 0.30597 0.72501 0.98017);
 }
 }
+
 @supports (color: oklab(0% 0 0%)) {
 [data-cz-primary="sky"].dark, [data-cz-primary="sky"] .dark {
   --chart-1: oklch(0.746 0.16 232.66);
@@ -8960,6 +9166,7 @@
   --ring: rgb(21, 93, 252);
   --chart-1: rgb(21, 93, 252);
 }
+
 @supports (color: oklab(0% 0 0%)) {
 [data-cz-primary="blue"] {
   --primary: oklch(0.546 0.245 262.88);
@@ -8973,31 +9180,37 @@
   --ring: rgb(50, 128, 255);
   --chart-1: rgb(50, 128, 255);
 }
+
 @supports (color: color(display-p3 0 0 0%)) {
 [data-cz-primary="blue"].dark, [data-cz-primary="blue"] .dark {
   --primary: color(display-p3 0.26648 0.4912 0.98863);
 }
 }
+
 @supports (color: oklab(0% 0 0%)) {
 [data-cz-primary="blue"].dark, [data-cz-primary="blue"] .dark {
   --primary: oklch(0.623 0.214 259.82);
 }
 }
+
 @supports (color: color(display-p3 0 0 0%)) {
 [data-cz-primary="blue"].dark, [data-cz-primary="blue"] .dark {
   --ring: color(display-p3 0.26648 0.4912 0.98863);
 }
 }
+
 @supports (color: oklab(0% 0 0%)) {
 [data-cz-primary="blue"].dark, [data-cz-primary="blue"] .dark {
   --ring: oklch(0.623 0.214 259.82);
 }
 }
+
 @supports (color: color(display-p3 0 0 0%)) {
 [data-cz-primary="blue"].dark, [data-cz-primary="blue"] .dark {
   --chart-1: color(display-p3 0.26648 0.4912 0.98863);
 }
 }
+
 @supports (color: oklab(0% 0 0%)) {
 [data-cz-primary="blue"].dark, [data-cz-primary="blue"] .dark {
   --chart-1: oklch(0.623 0.214 259.82);
@@ -9009,6 +9222,7 @@
   --ring: rgb(79, 57, 246);
   --chart-1: rgb(79, 57, 246);
 }
+
 @supports (color: oklab(0% 0 0%)) {
 [data-cz-primary="indigo"] {
   --primary: oklch(0.511 0.262 276.97);
@@ -9022,31 +9236,37 @@
   --ring: rgb(98, 96, 255);
   --chart-1: rgb(98, 96, 255);
 }
+
 @supports (color: color(display-p3 0 0 0%)) {
 [data-cz-primary="indigo"].dark, [data-cz-primary="indigo"] .dark {
   --primary: color(display-p3 0.3804 0.37223 0.9717);
 }
 }
+
 @supports (color: oklab(0% 0 0%)) {
 [data-cz-primary="indigo"].dark, [data-cz-primary="indigo"] .dark {
   --primary: oklch(0.585 0.233 277.12);
 }
 }
+
 @supports (color: color(display-p3 0 0 0%)) {
 [data-cz-primary="indigo"].dark, [data-cz-primary="indigo"] .dark {
   --ring: color(display-p3 0.3804 0.37223 0.9717);
 }
 }
+
 @supports (color: oklab(0% 0 0%)) {
 [data-cz-primary="indigo"].dark, [data-cz-primary="indigo"] .dark {
   --ring: oklch(0.585 0.233 277.12);
 }
 }
+
 @supports (color: color(display-p3 0 0 0%)) {
 [data-cz-primary="indigo"].dark, [data-cz-primary="indigo"] .dark {
   --chart-1: color(display-p3 0.3804 0.37223 0.9717);
 }
 }
+
 @supports (color: oklab(0% 0 0%)) {
 [data-cz-primary="indigo"].dark, [data-cz-primary="indigo"] .dark {
   --chart-1: oklch(0.585 0.233 277.12);
@@ -9058,6 +9278,7 @@
   --ring: rgb(127, 34, 254);
   --chart-1: rgb(127, 34, 254);
 }
+
 @supports (color: oklab(0% 0 0%)) {
 [data-cz-primary="violet"] {
   --primary: oklch(0.541 0.281 293.01);
@@ -9071,31 +9292,37 @@
   --ring: rgb(141, 86, 255);
   --chart-1: rgb(141, 86, 255);
 }
+
 @supports (color: color(display-p3 0 0 0%)) {
 [data-cz-primary="violet"].dark, [data-cz-primary="violet"] .dark {
   --primary: color(display-p3 0.52339 0.3296 0.99087);
 }
 }
+
 @supports (color: oklab(0% 0 0%)) {
 [data-cz-primary="violet"].dark, [data-cz-primary="violet"] .dark {
   --primary: oklch(0.606 0.25 292.72);
 }
 }
+
 @supports (color: color(display-p3 0 0 0%)) {
 [data-cz-primary="violet"].dark, [data-cz-primary="violet"] .dark {
   --ring: color(display-p3 0.52339 0.3296 0.99087);
 }
 }
+
 @supports (color: oklab(0% 0 0%)) {
 [data-cz-primary="violet"].dark, [data-cz-primary="violet"] .dark {
   --ring: oklch(0.606 0.25 292.72);
 }
 }
+
 @supports (color: color(display-p3 0 0 0%)) {
 [data-cz-primary="violet"].dark, [data-cz-primary="violet"] .dark {
   --chart-1: color(display-p3 0.52339 0.3296 0.99087);
 }
 }
+
 @supports (color: oklab(0% 0 0%)) {
 [data-cz-primary="violet"].dark, [data-cz-primary="violet"] .dark {
   --chart-1: oklch(0.606 0.25 292.72);
@@ -9107,6 +9334,7 @@
   --ring: rgb(152, 16, 250);
   --chart-1: rgb(152, 16, 250);
 }
+
 @supports (color: oklab(0% 0 0%)) {
 [data-cz-primary="purple"] {
   --primary: oklch(0.558 0.288 302.32);
@@ -9120,31 +9348,37 @@
   --ring: rgb(171, 78, 255);
   --chart-1: rgb(171, 78, 255);
 }
+
 @supports (color: color(display-p3 0 0 0%)) {
 [data-cz-primary="purple"].dark, [data-cz-primary="purple"] .dark {
   --primary: color(display-p3 0.62952 0.30089 0.99082);
 }
 }
+
 @supports (color: oklab(0% 0 0%)) {
 [data-cz-primary="purple"].dark, [data-cz-primary="purple"] .dark {
   --primary: oklch(0.627 0.265 303.9);
 }
 }
+
 @supports (color: color(display-p3 0 0 0%)) {
 [data-cz-primary="purple"].dark, [data-cz-primary="purple"] .dark {
   --ring: color(display-p3 0.62952 0.30089 0.99082);
 }
 }
+
 @supports (color: oklab(0% 0 0%)) {
 [data-cz-primary="purple"].dark, [data-cz-primary="purple"] .dark {
   --ring: oklch(0.627 0.265 303.9);
 }
 }
+
 @supports (color: color(display-p3 0 0 0%)) {
 [data-cz-primary="purple"].dark, [data-cz-primary="purple"] .dark {
   --chart-1: color(display-p3 0.62952 0.30089 0.99082);
 }
 }
+
 @supports (color: oklab(0% 0 0%)) {
 [data-cz-primary="purple"].dark, [data-cz-primary="purple"] .dark {
   --chart-1: oklch(0.627 0.265 303.9);
@@ -9156,32 +9390,38 @@
   --ring: rgb(197, 0, 218);
   --chart-1: rgb(197, 0, 218);
 }
+
 @supports (color: color(display-p3 0 0 0%)) {
 [data-cz-primary="fuchsia"] {
   --primary: color(display-p3 0.71661 0.08366 0.841);
 }
 }
+
 @supports (color: oklab(0% 0 0%)) {
 [data-cz-primary="fuchsia"] {
   --primary: oklch(0.591 0.293 322.9);
   --primary-foreground: oklch(0.985 0 0);
 }
 }
+
 @supports (color: color(display-p3 0 0 0%)) {
 [data-cz-primary="fuchsia"] {
   --ring: color(display-p3 0.71661 0.08366 0.841);
 }
 }
+
 @supports (color: oklab(0% 0 0%)) {
 [data-cz-primary="fuchsia"] {
   --ring: oklch(0.591 0.293 322.9);
 }
 }
+
 @supports (color: color(display-p3 0 0 0%)) {
 [data-cz-primary="fuchsia"] {
   --chart-1: color(display-p3 0.71661 0.08366 0.841);
 }
 }
+
 @supports (color: oklab(0% 0 0%)) {
 [data-cz-primary="fuchsia"] {
   --chart-1: oklch(0.591 0.293 322.9);
@@ -9192,6 +9432,7 @@
   --ring: rgb(225, 42, 251);
   --chart-1: rgb(225, 42, 251);
 }
+
 @supports (color: oklab(0% 0 0%)) {
 [data-cz-primary="fuchsia"].dark, [data-cz-primary="fuchsia"] .dark {
   --primary: oklch(0.667 0.295 322.15);
@@ -9205,32 +9446,38 @@
   --ring: rgb(227, 0, 118);
   --chart-1: rgb(227, 0, 118);
 }
+
 @supports (color: color(display-p3 0 0 0%)) {
 [data-cz-primary="pink"] {
   --primary: color(display-p3 0.82598 0.14098 0.4579);
 }
 }
+
 @supports (color: oklab(0% 0 0%)) {
 [data-cz-primary="pink"] {
   --primary: oklch(0.592 0.249 0.73);
   --primary-foreground: oklch(0.985 0 0);
 }
 }
+
 @supports (color: color(display-p3 0 0 0%)) {
 [data-cz-primary="pink"] {
   --ring: color(display-p3 0.82598 0.14098 0.4579);
 }
 }
+
 @supports (color: oklab(0% 0 0%)) {
 [data-cz-primary="pink"] {
   --ring: oklch(0.592 0.249 0.73);
 }
 }
+
 @supports (color: color(display-p3 0 0 0%)) {
 [data-cz-primary="pink"] {
   --chart-1: color(display-p3 0.82598 0.14098 0.4579);
 }
 }
+
 @supports (color: oklab(0% 0 0%)) {
 [data-cz-primary="pink"] {
   --chart-1: oklch(0.592 0.249 0.73);
@@ -9241,6 +9488,7 @@
   --ring: rgb(246, 51, 154);
   --chart-1: rgb(246, 51, 154);
 }
+
 @supports (color: oklab(0% 0 0%)) {
 [data-cz-primary="pink"].dark, [data-cz-primary="pink"] .dark {
   --primary: oklch(0.656 0.241 354.31);

@@ -150,6 +150,26 @@ public class NavigationTests(DemoFixture fixture) : DemoPage(fixture)
     // ---- Command ------------------------------------------------------------------------------
 
     [SkippableFact]
+    public async Task Choosing_an_item_closes_the_command_dialog()
+    {
+        RequireDemo();
+        await GoAsync("/components/command");
+        await Page.Locator("[data-command-open=\"demo-palette\"]").ClickAsync();
+        await Page.WaitForFunctionAsync("() => document.getElementById('demo-palette').open");
+
+        // Stop the link from navigating, so what is measured is the palette and not the page load.
+        await Page.EvaluateAsync("""
+            () => document.getElementById('demo-palette').addEventListener('click',
+                (e) => e.preventDefault(), { once: true })
+            """);
+        await Page.Keyboard.PressAsync("Enter");
+
+        var open = await Page.EvaluateAsync<bool>("() => document.getElementById('demo-palette').open");
+        Assert.False(open, "the palette closes when an item is chosen, rather than sitting over what it opened");
+        AssertQuiet();
+    }
+
+    [SkippableFact]
     public async Task The_down_arrow_moves_the_selection_down()
     {
         RequireDemo();

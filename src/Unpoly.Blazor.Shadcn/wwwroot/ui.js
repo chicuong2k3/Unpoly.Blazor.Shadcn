@@ -2580,9 +2580,26 @@
       input.focus()
     }
 
+    // Choosing an item is the end of a palette's job, so it closes — on the click itself, which
+    // is also what Enter produces. Left open, it stayed on screen over the page it had just
+    // navigated to; and being a modal <dialog> in the top layer, it sat above any Unpoly overlay
+    // the item opened and swallowed every click meant for it.
+    const onChoose = (event) => {
+      const item = event.target.closest('[data-slot="command-item"]')
+      if (!item || !dialog.open || item.hidden || item.getAttribute('aria-disabled') === 'true') return
+      dialog.close()
+    }
+
+    const onToggle = (event) => { if (event.newState === 'open') onOpen() }
+
     document.addEventListener('keydown', onKey)
-    dialog.addEventListener('toggle', (e) => { if (e.newState === 'open') onOpen() })
-    return () => document.removeEventListener('keydown', onKey)
+    dialog.addEventListener('toggle', onToggle)
+    dialog.addEventListener('click', onChoose)
+    return () => {
+      document.removeEventListener('keydown', onKey)
+      dialog.removeEventListener('toggle', onToggle)
+      dialog.removeEventListener('click', onChoose)
+    }
   })
 
   // =============================================================================================
