@@ -210,4 +210,16 @@ public class BarChartTests : BunitContext
         Assert.Equal("group", figure.GetAttribute("role"));
         Assert.Equal(expected, figure.GetAttribute("aria-label"));
     }
+
+    [Fact]
+    public void A_label_is_never_cut_to_an_ellipsis()
+    {
+        // Sparse labels ("12 Sep" on every fifth of thirty bars) are wider than one bar; they
+        // run into the blank neighbours instead of reading "1…".
+        var label = Render<BarChart>(p => p.Add(c => c.Values, Week).Add(c => c.Labels, Days))
+            .FindAll("[data-slot=bar-chart-label]")[0];
+
+        Assert.DoesNotContain("truncate", label.ClassList);
+        Assert.Contains("whitespace-nowrap", label.ClassList);
+    }
 }

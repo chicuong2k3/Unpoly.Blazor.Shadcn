@@ -51,11 +51,16 @@
     {
         @* aria-hidden: each bar's sr-only text already carries its label, so the row is for the
            eye only. One cell per bar — not per label — so a short list still lines up under the
-           bars it names. *@
+           bars it names.
+
+           A label is centred on its bar and allowed to run into its neighbours' space rather than
+           being cut to an ellipsis: thirty daily bars cannot each hold "12 Sep", so the usual
+           shape is a label on every fifth bar and blanks between, and a label squeezed to one
+           bar's width would read "1…". Thin the labels out; do not shorten them. *@
         <div data-slot="bar-chart-labels" aria-hidden="true" class="mt-1 flex gap-1">
             @for (var index = 0; index < Count; index++)
             {
-                <span class="min-w-0 flex-1 truncate text-center text-[10px] text-muted-foreground">@LabelAt(index)</span>
+                <span data-slot="bar-chart-label" class="flex min-w-0 flex-1 justify-center whitespace-nowrap text-[10px] text-muted-foreground">@LabelAt(index)</span>
             }
         </div>
     }
