@@ -3802,13 +3802,22 @@
         if (stopped) return
         // Clamped, because a tab that was in the background hands back one enormous dt, and an
         // unclamped integration step that size goes straight past the target and never returns.
-        const dt = Math.min(64, now - last) / 1000
+        let dt = Math.min(64, now - last) / 1000
         last = now
         // Semi-implicit Euler on x'' = -k(x - target) - c·x'. Damping well above critical, so the
         // figure eases in and stops rather than overshooting — a number that wobbles past its
         // value and comes back reads as a number that was guessed.
-        velocity += (-stiffness * (position - state.target) - damping * velocity) * dt
-        position += velocity * dt
+        //
+        // In steps of at most 8ms, whatever the frame took. The update multiplies the velocity by
+        // (1 - c·dt), which flips sign and grows once c·dt passes 2 — at this damping, any frame
+        // slower than 33ms. A phone under load, or a headless browser, then swung the figure
+        // through six-digit and negative values before the cap put it right.
+        while (dt > 0) {
+          const step = Math.min(dt, 0.008)
+          velocity += (-stiffness * (position - state.target) - damping * velocity) * step
+          position += velocity * step
+          dt -= step
+        }
         const epsilon = Math.max(1e-4, Math.abs(state.target) * 1e-5)
         if (Math.abs(state.target - position) < epsilon && Math.abs(velocity) < epsilon) {
           finish(state)
