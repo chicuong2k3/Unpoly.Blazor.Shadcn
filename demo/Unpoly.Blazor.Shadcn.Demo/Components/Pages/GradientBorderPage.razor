@@ -1,0 +1,36 @@
+@page "/components/gradient-border"
+
+<PageTitle>GradientBorder — Unpoly.Blazor.Shadcn</PageTitle>
+
+<h1 class="doc-h1">GradientBorder</h1>
+<p class="doc-lede">
+    A 1px gradient edge around a panel. Pure CSS — the gradient plate sits one pixel behind a
+    surface-coloured inset, so the child's own layout never shifts.
+</p>
+
+<h2 class="doc-h2">Basic</h2>
+<Example Source="GradientBorderExample.razor"><GradientBorderExample /></Example>
+
+<h2 class="doc-h2">Around a card</h2>
+<p class="doc-note">
+    The usual pairing. The child brings its own surface, so the default
+    <code>bg-background</code> underneath is simply covered — pass <code>Surface</code> when it is
+    not.
+</p>
+<Example Source="GradientBorderCard.razor"><GradientBorderCard /></Example>
+
+<h2 class="doc-h2">Restyle it from the outside</h2>
+<p class="doc-note">
+    There are no colour parameters. <code>Class</code> is merged with tailwind-merge, so a
+    caller's <code>from-*</code> or <code>bg-gradient-to-*</code> replaces the recipe's rather
+    than sitting beside it.
+</p>
+
+<h2 class="doc-h2">When not to use it</h2>
+<p class="doc-note">
+    The gradient is decoration and nothing more. It cannot be announced, it is invisible at 1px
+    on a low-contrast display, and it flattens to one colour wherever colour mixing is not
+    dependable. Never let a border be the only signal that a state exists: a selected panel, a
+    validation failure or a required field must say so in text and in the control's own
+    <code>Variant</code>.
+</p>

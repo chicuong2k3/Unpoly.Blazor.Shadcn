@@ -1,0 +1,38 @@
+@* The same component reading a different series: wider cells, three days per column, a different
+   ramp token. Nothing about the component changed — the buckets still come from this series' own
+   maximum, so the quiet week stays quiet next to the busy one. *@
+<div class="flex flex-wrap items-start gap-8">
+    <Heatmap Values="@Practice"
+             Title="Minutes practised"
+             AriaLabel="Daily practice minutes over the last 28 days"
+             Columns="4"
+             CellSize="18"
+             ColorRamp="bg-emerald-500"
+             ValueLabel="minutes" />
+
+    @* No Title: the panel above already says what this is, and the aria-label carries it. *@
+    <Heatmap Values="@Reviews"
+             AriaLabel="Reviews logged, first half of the term"
+             Columns="14"
+             CellSize="10"
+             ColorRamp="bg-muted-foreground"
+             ShowLegend="false" />
+</div>
+
+@code {
+    static readonly int[] Practice =
+    [
+        0, 0, 0, 0,
+        12, 0, 20, 0,
+        0, 25, 0, 30,
+        18, 0, 0, 22,
+        0, 35, 28, 0,
+        40, 0, 0, 45,
+        0, 30, 0, 50,
+    ];
+
+    static readonly int[] Reviews =
+    [
+        3, 0, 7, 0, 0, 5, 9, 0, 12, 0, 4, 8, 0, 15,
+    ];
+}

@@ -1,0 +1,9 @@
+@* ShowLabel draws the percentage over the ring, or whatever Label says. Color repaints the arc
+   from any CSS colour — a destructive tone for a job that has failed, chart-2 for one running
+   clean. *@
+<div class="flex flex-wrap items-center gap-6">
+    <ProgressRing Value="72" ShowLabel AriaLabel="Uploading files" />
+    <ProgressRing Value="45" ShowLabel Label="Step 3 of 7" AriaLabel="Step 3 of 7" />
+    <ProgressRing Value="88" ShowLabel Color="var(--chart-2)" AriaLabel="Storage used" />
+    <ProgressRing Value="88" ShowLabel Color="var(--destructive)" AriaLabel="Disk almost full" />
+</div>

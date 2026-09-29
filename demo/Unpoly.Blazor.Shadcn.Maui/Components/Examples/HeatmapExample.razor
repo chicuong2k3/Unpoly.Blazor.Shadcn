@@ -1,0 +1,26 @@
+@* A review calendar: one cell a day, oldest first, filling column by column. The counts are the
+   point, so they are in the markup — the colour only makes the shape of the month visible. *@
+<Heatmap Values="@Reviews"
+         Title="Reviews"
+         AriaLabel="Daily review counts for the last 91 days"
+         ValueLabel="reviews" />
+
+@code {
+    // A plausible 13-week run: a few warm-up days, a build, a quiet stretch, a heavy week.
+    static readonly int[] Reviews =
+    [
+        0, 0, 0, 0, 0, 0, 0,
+        0, 0, 3, 0, 5, 0, 2,
+        0, 0, 0, 4, 0, 6, 3,
+        0, 0, 2, 0, 0, 0, 0,
+        1, 0, 4, 6, 0, 8, 5,
+        0, 3, 0, 0, 7, 0, 9,
+        0, 0, 2, 5, 0, 4, 6,
+        0, 0, 0, 3, 0, 0, 5,
+        2, 0, 6, 0, 8, 0, 11,
+        0, 4, 0, 7, 0, 9, 13,
+        0, 0, 3, 0, 0, 6, 0,
+        1, 0, 0, 5, 0, 0, 8,
+        0, 0, 0, 4, 0, 7, 12,
+    ];
+}

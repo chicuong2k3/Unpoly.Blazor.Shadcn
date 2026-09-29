@@ -1,0 +1,38 @@
+@page "/components/bento-grid"
+
+<PageTitle>BentoGrid &amp; BentoCard — Unpoly.Blazor.Shadcn</PageTitle>
+
+<h1 class="doc-h1">BentoGrid &amp; BentoCard</h1>
+<p class="doc-lede">
+    A grid whose cells are deliberately unequal sizes. The grid owns the columns and the row
+    height; a card spans by asking in <code>Class</code>. No JS, no variant to remember.
+</p>
+
+<h2 class="doc-h2">Basic</h2>
+<p class="doc-note">
+    One card takes a 2×2 block and five take a single cell. Nothing on the cards knows how many
+    columns the grid has — <code>lg:col-span-2 lg:row-span-2</code> is the whole of the layout
+    decision, which is the same decision a plain <code>Card</code> would have made.
+</p>
+<Example Source="BentoGridExample.razor"><BentoGridExample /></Example>
+
+<h2 class="doc-h2">Columns &amp; row height</h2>
+<p class="doc-note">
+    <code>Columns</code> sets the count at the widest breakpoint and <code>RowClass</code> sets the
+    height of every implicit row — which is what makes a span a size rather than a guess. Both are
+    ordinary class strings, because Tailwind only emits what it can see written out; that is also
+    why <code>Class</code> can replace either one:
+    <code>Class="lg:grid-cols-6"</code>.
+</p>
+<Example Source="BentoGridColumns.razor"><BentoGridColumns /></Example>
+
+<h2 class="doc-h2">When not to use it</h2>
+<p class="doc-note">
+    A bento is a <em>composition</em> trick, and it costs the reader: unequal cells make it harder
+    to compare like with like, so a row of equal cards, a table, or a plain
+    <code>grid grid-cols-3 gap-4</code> says the same thing with none of the guessing. Fixed row
+    heights also mean a card with more text than its neighbour overflows rather than pushing the
+    grid down — reach for <code>RowClass="auto-rows-min"</code> when the content decides the
+    height. And <code>BentoCard</code> is <code>Card</code> plus <code>h-full</code>: for anything
+    that should simply hug its content, use the <code>Card</code> it wraps.
+</p>

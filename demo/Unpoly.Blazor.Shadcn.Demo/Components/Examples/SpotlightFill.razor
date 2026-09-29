@@ -1,0 +1,26 @@
+@* Two panels, one component. On the left the default `currentColor` picks up the text colour it
+   is placed in, so the glow follows the surface. On the right `Fill` names a token, which is the
+   way to get light that survives a theme change instead of merely inverting. *@
+<div class="grid gap-6 sm:grid-cols-2">
+    <div class="relative overflow-hidden rounded-2xl bg-primary px-8 py-10 text-primary-foreground">
+        <Spotlight />
+        <div class="relative z-10 flex flex-col gap-2">
+            <p class="text-sm font-semibold">currentColor</p>
+            <p class="text-sm opacity-80">
+                The glow takes the colour of the text it sits behind, so one component works on
+                both a dark and a light panel.
+            </p>
+        </div>
+    </div>
+
+    <div class="relative overflow-hidden rounded-2xl border bg-card px-8 py-10 text-card-foreground">
+        <Spotlight Fill="var(--primary)" />
+        <div class="relative z-10 flex flex-col gap-2">
+            <p class="text-sm font-semibold">var(--primary)</p>
+            <p class="text-sm text-muted-foreground">
+                A named token instead. Repaint the theme and the light follows — which a hard-coded
+                white could not do.
+            </p>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,38 @@
+@* The MAUI counterpart of the web example, plus the one thing this head can show and the web
+   head cannot: a Value that changes AFTER the count has played. The count runs once, on first
+   view; from then on the number is Blazor's text, so the figure changes on the spot rather than
+   counting again — which is the honest behaviour for a number the server owns. *@
+<div class="grid gap-6 sm:grid-cols-3">
+    <div class="flex flex-col gap-1">
+        <NumberTicker Value="@_revenue" DecimalPlaces="2" Prefix="$" Delay="0.1"
+                      Class="text-2xl font-semibold" />
+        <span class="text-sm text-muted-foreground">Revenue, in dollars</span>
+    </div>
+    <div class="flex flex-col gap-1">
+        <NumberTicker Value="99.95" DecimalPlaces="2" Suffix="%" Delay="0.25"
+                      Class="text-2xl font-semibold" />
+        <span class="text-sm text-muted-foreground">Uptime, last 30 days</span>
+    </div>
+    <div class="flex flex-col gap-1">
+        <NumberTicker Value="_openIssues" StartValue="5100" Direction="down" Delay="0.4"
+                      Class="text-2xl font-semibold" />
+        <span class="text-sm text-muted-foreground">Open issues, counting down</span>
+    </div>
+</div>
+
+<div class="mt-6 flex flex-wrap items-center gap-3">
+    <Button Variant="outline" Type="button" @onclick="AddOrder">Add an order</Button>
+    <Button Variant="outline" Type="button" @onclick="CloseIssue">Close an issue</Button>
+    <span class="text-sm text-muted-foreground">
+        Both update the first and third figures in place — the number is text Blazor owns.
+    </span>
+</div>
+
+@code {
+    private double _revenue = 98765.43;
+    private int _openIssues = 4210;
+
+    private void AddOrder() => _revenue += 1240.5;
+
+    private void CloseIssue() => _openIssues = Math.Max(0, _openIssues - 1);
+}

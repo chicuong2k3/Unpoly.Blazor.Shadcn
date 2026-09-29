@@ -1,0 +1,32 @@
+@page "/components/number-ticker"
+
+<PageTitle>NumberTicker — Unpoly.Blazor.Shadcn</PageTitle>
+
+<h1 class="doc-h1">NumberTicker</h1>
+<p class="doc-lede">
+    A number that counts towards its value the first time it scrolls into view. The value itself is
+    server-rendered, so the animation is an enhancement over text that is already correct — turn
+    scripting off and the number on the page is still the number.
+</p>
+
+<h2 class="doc-h2">Basic</h2>
+<Example Source="NumberTickerExample.razor"><NumberTickerExample /></Example>
+
+<h2 class="doc-h2">Prefix, suffix &amp; decimals</h2>
+<p class="doc-note">
+    <code>Prefix</code> and <code>Suffix</code> sit outside the grouping, so <code>Prefix="$"</code>
+    with <code>DecimalPlaces="2"</code> reads <c>$98,765.43</c> and never <c>98,765$43</c>.
+    <code>Direction="down"</code> counts back towards a falling figure instead of up to it. Every
+    number is formatted in invariant culture, so the server and the last animation frame agree on
+    the same characters.
+</p>
+<Example Source="NumberTickerFormat.razor"><NumberTickerFormat /></Example>
+
+<h2 class="doc-h2">When not to use it</h2>
+<p class="doc-note">
+    A number that has to be read at a glance, copied, or compared with a second animated figure is
+    worse as a ticker than as text: it is unreadable until it settles and nothing says when it has.
+    And a figure the server replaces after a fragment swap is not re-counted — the count plays
+    once, on first view, and the new value arrives as plain text exactly as it always did.
+    <code>prefers-reduced-motion</code> is honoured: the number simply appears.
+</p>

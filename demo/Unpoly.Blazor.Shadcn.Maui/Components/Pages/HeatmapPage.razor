@@ -1,0 +1,34 @@
+@page "/components/heatmap"
+
+<PageTitle>Heatmap — Unpoly.Blazor.Shadcn</PageTitle>
+
+<h1 class="doc-h1">Heatmap</h1>
+<p class="doc-lede">
+    A calendar-shaped grid of intensity cells — one per value, oldest first. The buckets are cut
+    from the series itself, so the ramp means "busiest day in this range" rather than a number you
+    have to keep in step with the data. No JS.
+</p>
+
+<h2 class="doc-h2">Basic</h2>
+<p class="doc-note">
+    Each cell holds its own count as text, so the calendar reads with no colour perception at all.
+    Hover any cell for the same reading in a tooltip.
+</p>
+<Example Source="HeatmapExample.razor"><HeatmapExample /></Example>
+
+<h2 class="doc-h2">Columns, cell size &amp; colour</h2>
+<p class="doc-note">
+    <code>Columns</code> is days per column, <code>CellSize</code> the edge in pixels, and
+    <code>ColorRamp</code> the Tailwind background utility the five steps scale — the alpha comes
+    from it, so pass the bare token.
+</p>
+<Example Source="HeatmapCustom.razor"><HeatmapCustom /></Example>
+
+<h2 class="doc-h2">When not to use it</h2>
+<p class="doc-note">
+    A grid spends a whole column of pixels to say what one number says in a word, so a handful of
+    values reads better as a plain list, a table or a <code>Chart</code>. The cells are
+    deliberately date-less: a <code>role="list"</code> of counts, not a labelled calendar — pair it
+    with real date headings if the day actually matters to the reader, and keep
+    <code>GridPattern</code> for a lattice that carries no data at all.
+</p>

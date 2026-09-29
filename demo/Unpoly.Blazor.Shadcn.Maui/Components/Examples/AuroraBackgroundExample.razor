@@ -1,0 +1,15 @@
+@* A section is the right unit for this: the wrapper is relative, the layer fills it and falls
+   behind the copy, and nothing about the copy's own layout changes. The headings are plain
+   text — that is the part a screen reader gets, and the colour is the part it does not. *@
+<section class="relative isolate overflow-hidden rounded-lg border px-6 py-10">
+    <AuroraBackground />
+
+    <div class="relative mx-auto max-w-prose space-y-3">
+        <h3 class="text-xl font-semibold">Quiet by default</h3>
+        <p class="text-muted-foreground">
+            The field is decoration, so the content above never depends on it. Delete the
+            <code>AuroraBackground</code> and this section still reads, still navigates, still
+            makes sense to a screen reader.
+        </p>
+    </div>
+</section>

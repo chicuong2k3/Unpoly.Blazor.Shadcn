@@ -1,0 +1,20 @@
+@* Prefix and suffix sit OUTSIDE the grouping — `$98,765.43`, never `98,765$43` — and the third
+   figure counts DOWN towards a number that fell, which is the only honest direction for one.
+   `Delay` staggers the row so the three do not all count in the same instant. *@
+<div class="grid gap-6 sm:grid-cols-3">
+    <div class="flex flex-col gap-1">
+        <NumberTicker Value="98765.43" DecimalPlaces="2" Prefix="$" Delay="0.1"
+                      Class="text-2xl font-semibold" />
+        <span class="text-sm text-muted-foreground">Revenue, in dollars</span>
+    </div>
+    <div class="flex flex-col gap-1">
+        <NumberTicker Value="99.95" DecimalPlaces="2" Suffix="%" Delay="0.25"
+                      Class="text-2xl font-semibold" />
+        <span class="text-sm text-muted-foreground">Uptime, last 30 days</span>
+    </div>
+    <div class="flex flex-col gap-1">
+        <NumberTicker Value="4210" StartValue="5100" Direction="down" Delay="0.4"
+                      Class="text-2xl font-semibold" />
+        <span class="text-sm text-muted-foreground">Open issues, counting down</span>
+    </div>
+</div>

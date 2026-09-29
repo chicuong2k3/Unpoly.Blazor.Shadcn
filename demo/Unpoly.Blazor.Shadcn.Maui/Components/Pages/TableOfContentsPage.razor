@@ -1,0 +1,19 @@
+@page "/components/table-of-contents"
+
+<PageTitle>TableOfContents — Unpoly.Blazor.Shadcn</PageTitle>
+
+<h1 class="doc-h1">TableOfContents</h1>
+<p class="doc-lede">
+    A <code>&lt;nav&gt;</code> built from entries the page supplies — it knows the links, not the
+    document, so the headings and the ids stay written down once instead of twice.
+</p>
+
+<h2 class="doc-h2">Basic</h2>
+<Example Source="TableOfContentsExample.razor"><TableOfContentsExample /></Example>
+
+<h2 class="doc-h2">When not to use it</h2>
+<p class="doc-note">
+    A short page needs no index. And if the section ids are generated rather than written by hand,
+    the links rot silently — a table of contents that points nowhere is worse than none, so keep
+    the ids next to the headings.
+</p>

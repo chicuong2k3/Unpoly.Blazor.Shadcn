@@ -1,0 +1,7 @@
+@* Size and StrokeWidth are geometry, not decoration: the radius is derived from them, so a
+   thick stroke in a small ring still lands inside the ring's own box. *@
+<div class="flex flex-wrap items-center gap-6">
+    <ProgressRing Value="25" Size="40" StrokeWidth="3" AriaLabel="Quarter" />
+    <ProgressRing Value="50" Size="64" StrokeWidth="6" AriaLabel="Half" />
+    <ProgressRing Value="90" Size="96" StrokeWidth="8" AriaLabel="Nearly done" />
+</div>

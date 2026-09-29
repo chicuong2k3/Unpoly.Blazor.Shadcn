@@ -1,0 +1,36 @@
+@* The grid's two decisions, both parameters: four columns at the widest breakpoint, and rows a
+   little shorter than the default so a 2-row block reads as a block. Four cards fill both rows
+   exactly — one 2×2, one half-width, two single cells — which is the point of a bento: the spans
+   are chosen, not sprinkled, and a card still has no idea how many columns exist. *@
+<BentoGrid Columns="4" RowClass="auto-rows-[120px]" Class="w-full">
+    <BentoCard Class="lg:col-span-2 lg:row-span-2">
+        <CardHeader>
+            <CardTitle>Two by two</CardTitle>
+            <CardDescription>
+                The largest cell, and the only one that needed <code>row-span-2</code> as well as
+                <code>col-span-2</code>.
+            </CardDescription>
+        </CardHeader>
+    </BentoCard>
+
+    <BentoCard Class="lg:col-span-2">
+        <CardHeader>
+            <CardTitle>Half a row</CardTitle>
+            <CardDescription>Wide, but only one row tall.</CardDescription>
+        </CardHeader>
+    </BentoCard>
+
+    <BentoCard>
+        <CardHeader>
+            <CardTitle>Single</CardTitle>
+            <CardDescription>No span at all.</CardDescription>
+        </CardHeader>
+    </BentoCard>
+
+    <BentoCard>
+        <CardHeader>
+            <CardTitle>Also single</CardTitle>
+            <CardDescription>Rows are <code>auto-rows-[120px]</code>, not the default 180px.</CardDescription>
+        </CardHeader>
+    </BentoCard>
+</BentoGrid>

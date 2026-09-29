@@ -1,0 +1,21 @@
+@page "/components/grid-pattern"
+
+<PageTitle>GridPattern — Unpoly.Blazor.Shadcn</PageTitle>
+
+<h1 class="doc-h1">GridPattern</h1>
+<p class="doc-lede">
+    A decorative lattice of lines — the same absolute overlay as <code>DotPattern</code>, drawn with
+    a path instead of circles. Pure SVG, no JS.
+</p>
+
+<h2 class="doc-h2">Basic</h2>
+<Example Source="GridPatternExample.razor"><GridPatternExample /></Example>
+
+<h2 class="doc-h2">When not to use it</h2>
+<p class="doc-note">
+    The lines carry no information: the overlay is <code>aria-hidden</code> and
+    <code>pointer-events-none</code>, so nothing on top of it is announced and nothing behind it
+    steals a click. Never let the pattern be the only thing marking a boundary — a hairline that
+    disappears at high zoom is not a divider. Use <code>Separator</code> for a rule, and
+    <code>Chart</code> when the marks are data.
+</p>

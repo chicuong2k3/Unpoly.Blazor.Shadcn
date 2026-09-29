@@ -1,0 +1,33 @@
+@page "/components/progress-ring"
+
+<PageTitle>ProgressRing — Unpoly.Blazor.Shadcn</PageTitle>
+
+<h1 class="doc-h1">ProgressRing</h1>
+<p class="doc-lede">
+    Circular determinate progress — the same <code>role="progressbar"</code> as <code>Progress</code>,
+    drawn as a dial. No JS, pure SVG.
+</p>
+
+<h2 class="doc-h2">Basic</h2>
+<Example Source="ProgressRingExample.razor"><ProgressRingExample /></Example>
+
+<h2 class="doc-h2">Size &amp; stroke</h2>
+<p class="doc-note">
+    The radius is derived from <code>Size</code> and <code>StrokeWidth</code>, so a thick stroke in a
+    small ring stays inside the ring's own box.
+</p>
+<Example Source="ProgressRingSize.razor"><ProgressRingSize /></Example>
+
+<h2 class="doc-h2">Label &amp; colour</h2>
+<p class="doc-note">
+    <code>ShowLabel</code> centres the percentage, or <code>Label</code> instead. <code>Color</code>
+    repaints the arc from any CSS colour.
+</p>
+<Example Source="ProgressRingLabel.razor"><ProgressRingLabel /></Example>
+
+<h2 class="doc-h2">When not to use it</h2>
+<p class="doc-note">
+    A ring costs more vertical space than a bar and reads worse below about 32&nbsp;px. Use
+    <code>Progress</code> for linear work, and <code>Loader</code> when the duration is unknown —
+    a determinate ring pretending to know the total is a lie the user can see.
+</p>

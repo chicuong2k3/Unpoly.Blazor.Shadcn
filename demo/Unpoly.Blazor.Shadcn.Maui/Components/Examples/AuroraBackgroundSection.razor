@@ -1,0 +1,23 @@
+@* Frozen drift, plus the third blob. A panel this dense already moves for its own reasons
+   (a spinner, a transition), so a breathing background is noise — Animated="false" removes it
+   and motion-reduce would remove it anyway for anyone who asked. *@
+<div class="flex flex-wrap items-start gap-6">
+    <section class="relative isolate overflow-hidden rounded-lg border px-6 py-8">
+        <AuroraBackground Animated="false" Third />
+        <div class="relative max-w-56 space-y-2">
+            <h3 class="font-semibold">Still field</h3>
+            <p class="text-sm text-muted-foreground">
+                <code>Animated="false"</code> with the third blob added.
+            </p>
+        </div>
+    </section>
+
+    <section class="relative isolate h-48 overflow-hidden rounded-lg border">
+        <AuroraBackground Animated="false" Class="[mask-image:radial-gradient(ellipse_at_center,black,transparent)]" />
+        <div class="relative flex h-full items-center justify-center">
+            <p class="text-sm text-muted-foreground">
+                Same layer, faded at the edges through <code>Class</code>.
+            </p>
+        </div>
+    </section>
+</div>

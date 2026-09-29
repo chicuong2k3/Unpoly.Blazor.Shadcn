@@ -1,0 +1,21 @@
+@page "/components/dot-pattern"
+
+<PageTitle>DotPattern — Unpoly.Blazor.Shadcn</PageTitle>
+
+<h1 class="doc-h1">DotPattern</h1>
+<p class="doc-lede">
+    A decorative lattice of dots — the same absolute overlay as <code>GridPattern</code>, drawn with
+    circles instead of lines. Pure SVG, no JS.
+</p>
+
+<h2 class="doc-h2">Basic</h2>
+<Example Source="DotPatternExample.razor"><DotPatternExample /></Example>
+
+<h2 class="doc-h2">When not to use it</h2>
+<p class="doc-note">
+    The dots carry no information: the overlay is <code>aria-hidden</code> and
+    <code>pointer-events-none</code>, so nothing on top of it is announced and nothing behind it
+    steals a click. Never let the pattern be the only thing marking a boundary — a row of dots that
+    disappears at high zoom is not a divider. Use <code>Separator</code> for a rule, and
+    <code>Chart</code> when the marks are data.
+</p>

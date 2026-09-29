@@ -1,0 +1,30 @@
+@page "/components/spotlight"
+
+<PageTitle>Spotlight — Unpoly.Blazor.Shadcn</PageTitle>
+
+<h1 class="doc-h1">Spotlight</h1>
+<p class="doc-lede">
+    A soft pool of light behind a panel — one SVG radial gradient, no JS. Put it inside a
+    <code>relative</code> wrapper and give the panel's own content <code>relative z-10</code>.
+</p>
+
+<h2 class="doc-h2">Basic</h2>
+<Example Source="SpotlightExample.razor"><SpotlightExample /></Example>
+
+<h2 class="doc-h2">Where the light comes from</h2>
+<p class="doc-note">
+    The gradient is drawn once, high and to the right; <code>Fill</code> decides its colour. The
+    default is <code>currentColor</code>, so the same component lights a dark panel white and a
+    light panel black with no theme swap. Upstream hard-codes white, which is a glow nobody can
+    see on a light surface — a theme token is the other useful value.
+</p>
+<Example Source="SpotlightFill.razor"><SpotlightFill /></Example>
+
+<h2 class="doc-h2">When not to use it</h2>
+<p class="doc-note">
+    It is <code>aria-hidden</code> and <code>pointer-events-none</code>, so it is ornament by
+    construction: nothing may depend on it and nothing may be clickable through it. A section that
+    has to read as a surface on its own wants <code>Card</code> — a border says "panel" and a glow
+    does not. And a <code>relative overflow-hidden</code> wrapper is not optional: without it the
+    gradient escapes the panel and washes over the rest of the WebView.
+</p>

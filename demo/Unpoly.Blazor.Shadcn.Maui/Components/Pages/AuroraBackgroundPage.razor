@@ -1,0 +1,35 @@
+@page "/components/aurora-background"
+
+<PageTitle>AuroraBackground — Unpoly.Blazor.Shadcn</PageTitle>
+
+<h1 class="doc-h1">AuroraBackground</h1>
+<p class="doc-lede">
+    A decorative colour wash for the back of a section — blurred gradient blobs drifting behind
+    the content. A layer, not a container: it takes no space, ignores the pointer, and is hidden
+    from assistive tech.
+</p>
+
+<h2 class="doc-h2">Basic</h2>
+<p class="doc-note">
+    The wrapper is <code>relative</code> and the layer is <code>absolute inset-0 -z-10</code>
+    inside it, so it fills that wrapper and falls behind the copy. Supply the
+    <code>relative</code> yourself — with no positioned ancestor the layer escapes to the
+    viewport and covers the page.
+</p>
+<Example Source="AuroraBackgroundExample.razor"><AuroraBackgroundExample /></Example>
+
+<h2 class="doc-h2">Still, and with the third blob</h2>
+<p class="doc-note">
+    <code>Animated="false"</code> freezes the field for a page that already moves for a reason;
+    <code>Third</code> deepens it at the cost of more paint area.
+</p>
+<Example Source="AuroraBackgroundSection.razor"><AuroraBackgroundSection /></Example>
+
+<h2 class="doc-h2">When not to use it</h2>
+<p class="doc-note">
+    It is the one element on the page that a screen reader will not read and that a printer will
+    not show, so it can never be what makes something noticed. A new result, a saved state or an
+    error has to be text and has to be in the DOM. The drift also stops on its own under
+    <code>prefers-reduced-motion</code>; if the movement is what you wanted, that is a design
+    problem, not a setting to override.
+</p>

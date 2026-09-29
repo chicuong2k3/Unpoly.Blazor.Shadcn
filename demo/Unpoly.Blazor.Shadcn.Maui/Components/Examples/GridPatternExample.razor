@@ -1,0 +1,29 @@
+@* The overlay is absolute, so the panel is the positioned ancestor it stretches across — without
+   `relative` here the lattice would escape to the page and cover everything. Two densities: the
+   defaults, then a wider tile in a quieter colour so the text keeps the contrast. *@
+<div class="flex flex-col gap-6">
+    <div class="relative isolate overflow-hidden rounded-lg border p-10">
+        <GridPattern />
+        <div class="relative flex flex-col items-center gap-2 text-center">
+            <p class="text-lg font-semibold">Quiet backdrop</p>
+            <p class="max-w-sm text-sm text-muted-foreground">
+                A 1&nbsp;px line every 24&nbsp;px, in <code>currentColor</code> — it follows the theme
+                without a colour of its own.
+            </p>
+            <Button>Still clickable</Button>
+        </div>
+    </div>
+
+    <div class="relative isolate overflow-hidden rounded-lg border p-10">
+        <GridPattern CellSize="48" Stroke="var(--border)" StrokeWidth="2" />
+        <div class="relative flex flex-col items-center gap-2 text-center">
+            <p class="text-lg font-semibold">Coarser, quieter</p>
+            <p class="max-w-sm text-sm text-muted-foreground">
+                <code>CellSize</code> sets how far apart the lines sit and <code>StrokeWidth</code>
+                their weight; <code>Stroke</code> takes a theme token when the grid should be
+                quieter than the text it sits behind.
+            </p>
+            <Button>Still clickable</Button>
+        </div>
+    </div>
+</div>

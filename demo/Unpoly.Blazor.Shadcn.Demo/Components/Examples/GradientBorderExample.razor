@@ -1,0 +1,17 @@
+@* The plain case: a bordered plate with a little content inside. The gradient is the 1px ring,
+   the child sits on a surface and its own layout is exactly what it would be unwrapped. *@
+<div class="flex flex-wrap gap-6">
+    <GradientBorder Class="w-64">
+        <div class="p-4">
+            <p class="font-medium">Reading list</p>
+            <p class="text-sm text-muted-foreground">Four papers, saved locally.</p>
+        </div>
+    </GradientBorder>
+
+    <GradientBorder Class="w-64">
+        <div class="p-4">
+            <p class="font-medium">Usage</p>
+            <p class="text-sm text-muted-foreground">1,204 of 5,000 requests this month.</p>
+        </div>
+    </GradientBorder>
+</div>
