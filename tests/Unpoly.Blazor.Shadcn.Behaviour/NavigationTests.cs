@@ -150,6 +150,32 @@ public class NavigationTests(DemoFixture fixture) : DemoPage(fixture)
     // ---- Command ------------------------------------------------------------------------------
 
     [SkippableFact]
+    public async Task Items_the_server_swaps_in_are_filtered_and_highlighted()
+    {
+        RequireDemo();
+        await GoAsync("/components/command");
+        var box = await ShowAsync("preview-command-example");
+        var input = box.Locator("[data-slot=\"command-input\"]");
+        await input.FillAsync("zebra");
+
+        // What an [up-target] swap does to the list: a new row appears after the filter has run.
+        var selected = await box.Locator("[data-slot=\"command-list\"]").EvaluateAsync<string?>("""
+            async (list) => {
+              const row = document.createElement('a');
+              row.dataset.slot = 'command-item';
+              row.href = '#zebra';
+              row.textContent = 'Zebra crossing';
+              list.append(row);
+              await new Promise((r) => setTimeout(r, 50));
+              return list.querySelector('[data-slot="command-item"][data-selected="true"]')?.textContent ?? null;
+            }
+            """);
+
+        Assert.Equal("Zebra crossing", selected);
+        AssertQuiet();
+    }
+
+    [SkippableFact]
     public async Task Choosing_an_item_closes_the_command_dialog()
     {
         RequireDemo();

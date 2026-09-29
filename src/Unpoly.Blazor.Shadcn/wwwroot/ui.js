@@ -2457,9 +2457,12 @@
 
     // Every item needs an id for aria-activedescendant to point at one.
     let seq = 0
-    for (const item of list.querySelectorAll('[data-slot="command-item"]')) {
-      if (!item.id) item.id = `cmd-${++seq}-${Math.abs(fold(item.textContent).length)}`
+    const number = () => {
+      for (const item of list.querySelectorAll('[data-slot="command-item"]')) {
+        if (!item.id) item.id = `cmd-${++seq}-${Math.abs(fold(item.textContent).length)}`
+      }
     }
+    number()
     input.setAttribute('role', 'combobox')
     input.setAttribute('aria-expanded', 'true')
     input.setAttribute('aria-controls', list.id || (list.id = 'cmd-list-' + seq))
@@ -2537,6 +2540,15 @@
       if (item && !item.hidden) highlight(item)
     })
     filter()
+
+    // The server-answered palette: <CommandInput> in a GET form with [up-target], and the results
+    // swapped into the list while the palette is open. Those rows arrive after the filter ran, so
+    // they had no ids for aria-activedescendant, nothing was highlighted, and Enter did nothing.
+    // Watching the list's children (not attributes — filtering writes `hidden`, which would loop)
+    // numbers and filters whatever arrives, and highlights the first match again.
+    const arrivals = new MutationObserver(() => { number(); filter() })
+    arrivals.observe(list, { childList: true, subtree: true })
+    cleanup.push(() => arrivals.disconnect())
 
     return () => {
       for (const undo of cleanup) undo()
