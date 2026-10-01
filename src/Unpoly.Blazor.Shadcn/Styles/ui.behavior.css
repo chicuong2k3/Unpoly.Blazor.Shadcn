@@ -1356,3 +1356,17 @@ up-cover up-cover-dismiss:focus-visible {
         padding: 1.5rem max(1rem, env(safe-area-inset-right)) calc(1.5rem + env(safe-area-inset-bottom)) max(1rem, env(safe-area-inset-left));
     }
 }
+
+/* ---- square controls keep their size inside a Field (unlayered) ------------------------
+   <Field> hands its children `w-full` below its container-query breakpoint and `w-auto` above
+   it, so a checkbox or a radio sitting in a horizontal Field loses the `size-4` on its class
+   list: `w-auto` is a utility, and a utility sits in a later layer than `@layer components`, so
+   it wins whatever the specificity of the sizing rule. An `appearance: none` input with no width
+   collapses to its two borders — 2px wide, 16px tall — which reads as a stray line rather than a
+   box to tick. A minimum keeps every size the component supports and only rules out the
+   collapse, so `size-5` and friends still work. */
+[data-slot="checkbox"],
+[data-slot="radio-group-item"] {
+    min-inline-size: 1rem;
+    min-block-size: 1rem;
+}

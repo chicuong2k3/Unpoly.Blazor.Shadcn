@@ -1491,6 +1491,21 @@
         || root.querySelector('[data-slot="combobox-chip"]'))
     }
 
+    // The hidden input is the field the form actually posts and the server actually reads, so a
+    // choice has to reach it as a real field event. A form that watches itself -- Unpoly's
+    // up-autosubmit, a filter bar that reloads as you change it -- listens for change on the
+    // form, and without this the page simply sat there until something unrelated happened.
+    // Dispatched on the post itself so it bubbles from the field the reader actually filled.
+    const announce = (field) => {
+      if (!field) return
+      field.dispatchEvent(new Event('input', { bubbles: true }))
+      field.dispatchEvent(new Event('change', { bubbles: true }))
+    }
+
+    const valuePosts = () => [...root.querySelectorAll('input[type="hidden"][data-combobox-value]')]
+
+    const announceAll = () => { for (const post of valuePosts()) announce(post) }
+
     const filter = () => {
       const q = fold((input?.value || '').trim())
       let count = 0
@@ -1514,6 +1529,7 @@
           other.setAttribute('aria-selected', String(on))
         }
         if (hidden) hidden.value = item.dataset.value
+        announce(hidden)
         if (value) value.textContent = label(item)
         if (input && !input.matches('[data-slot="combobox-chip-input"]')) {
           // A search box inside the panel resets; with no ComboboxValue the text box IS the
@@ -1560,6 +1576,7 @@
           item.setAttribute('aria-selected', 'true')
         }
         const count = posts().length
+        announceAll()
         if (value) {
           value.textContent = count
             ? (value.dataset.countLabel || '{n} selected').replace('{n}', count)
@@ -1569,11 +1586,12 @@
         return
       }
       const existing = chipFor(item.dataset.value)
-      if (existing) { existing.remove(); delete item.dataset.selected; syncClear(); return }
+      if (existing) { existing.remove(); delete item.dataset.selected; syncClear(); announceAll(); return }
       if (!addChip(chips, item.dataset.value, label(item))) return
       item.dataset.selected = 'true'
       if (input) input.value = ''
       syncClear()
+      announceAll()
       filter()
     }
 
@@ -1653,6 +1671,7 @@
         if (item) delete item.dataset.selected
         chip?.remove()
         syncClear()
+        announceAll()
         return
       }
       const item = event.target.closest('[data-slot="combobox-item"]')
@@ -1712,6 +1731,7 @@
       if (input) input.value = ''
       if (value) value.textContent = value.dataset.placeholder || ''
       syncClear()
+      announceAll()
       filter()
     }
 
