@@ -263,6 +263,19 @@ Three, all listed with the reason in the `scaffold-components` .NET command:
   or `snippet:error` when writing to the clipboard fails. Native focus/arrow-key tab handling
   comes from the shared `Tabs` compiler.
 
+## Motion-driven components
+
+Movement that upstream does with framer-motion is done here with Motion (motion.dev), the same
+engine without React, vendored at `_content/Unpoly.Blazor.Shadcn/motion/motion.js` and loaded
+by `ui.js` only when a component that uses it is on the page. Nothing to add to a layout. Every
+such component works with scripting off and keeps still under `prefers-reduced-motion`.
+
+- **`FloatingDock`** (Aceternity) takes `FloatingDockItem` children: `Title`, `Href`, and the
+  icon as `ChildContent`. The children are rendered **twice** — once on the shelf, once in the
+  phone menu — so an `id` inside an item's content is a duplicate id. `DesktopClass` and
+  `MobileClass` are upstream's `desktopClassName`/`mobileClassName` and merge with the recipe:
+  `DesktopClass="md:hidden" MobileClass="md:block"` keeps the phone layout at every width.
+
 ## Adding a component
 
 Copy the class strings from ui.shadcn.com verbatim. Change exactly four things: `h-9` →

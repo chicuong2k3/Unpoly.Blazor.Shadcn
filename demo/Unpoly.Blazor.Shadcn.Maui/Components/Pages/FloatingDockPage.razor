@@ -1,0 +1,41 @@
+@page "/components/floating-dock"
+
+<PageTitle>Floating Dock — Unpoly.Blazor.Shadcn</PageTitle>
+
+<h1 class="doc-h1">Floating Dock</h1>
+<p class="doc-lede">
+    Aceternity UI's macOS-style dock: round links on a shelf that swell as the pointer nears them,
+    and on a phone a single button that unfolds them. Every tile is a real link and the phone menu
+    is a <code>&lt;details&gt;</code>, so it all works with scripting off; Motion — framer-motion's
+    own engine, loaded only when a dock is on the page — adds the movement.
+</p>
+
+<h2 class="doc-h2">Basic</h2>
+<Example Source="FloatingDockExample.razor"><FloatingDockExample /></Example>
+
+<h2 class="doc-h2">On a phone</h2>
+<p class="doc-note">
+    Below <code>md</code> the shelf gives way to one button. The same links are rendered a second
+    time inside it, and each <code>FloatingDockItem</code> learns which copy it is from its dock,
+    so nothing is written twice at the call site. <code>DesktopClass</code> and
+    <code>MobileClass</code> are upstream's <code>desktopClassName</code> and
+    <code>mobileClassName</code> — here they keep the phone layout on at every width.
+</p>
+<Example Source="FloatingDockMobile.razor"><FloatingDockMobile /></Example>
+
+<h2 class="doc-h2">What a reader without a pointer gets</h2>
+<p class="doc-note">
+    The magnification follows a mouse and nothing else, so it is decoration: a keyboard reaches
+    every tile, the focus ring is the one every control here wears, and the title appears on focus
+    as it does on hover. A tile's name is its <code>Title</code>, which is what a screen reader
+    announces. With <code>prefers-reduced-motion</code> set the tiles keep their resting size and
+    the menu opens without the stagger.
+</p>
+
+<h2 class="doc-h2">When not to use it</h2>
+<p class="doc-note">
+    For a handful of destinations that are icons first — an app's sections, a portfolio's links.
+    Not for primary navigation that needs words to be understood, where a row of labelled links
+    or a <a href="/components/navigation-menu">Navigation Menu</a> says more, and not for more
+    than six or seven items: the row grows wider as a tile swells and a long one has nowhere to go.
+</p>

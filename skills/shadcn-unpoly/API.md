@@ -1142,6 +1142,24 @@ renders `<div>` · `data-slot="file-upload"`
 | `ClearLabel` | `string` | `"Remove"` |  |
 | `Disabled` | `bool` | — |  |
 
+## `<FloatingDock>`
+renders `<details>` · `data-slot="floating-dock"`
+
+| Parameter | Type | Default | |
+|---|---|---|---|
+| `Label` | `string` | `"Dock"` |  |
+| `ToggleLabel` | `string` | `"Open navigation"` |  |
+| `DesktopClass` | `string?` | — |  |
+| `MobileClass` | `string?` | — |  |
+
+## `<FloatingDockItem>`
+renders `<a>` · `data-slot="floating-dock-item"`
+
+| Parameter | Type | Default | |
+|---|---|---|---|
+| `Href` | `string?` | — |  |
+| `Title` | `string?` | — |  |
+
 ## `<FolderPicker>`
 renders `<div>` · `data-slot="folder-picker"`
 

@@ -137,6 +137,8 @@
     --color-violet-500: rgb(141, 86, 255);
     --color-violet-700: rgb(112, 8, 231);
     --color-rose-300: rgb(255, 163, 174);
+    --color-gray-50: rgb(249, 250, 251);
+    --color-gray-200: rgb(229, 231, 235);
     --color-black: #000;
     --color-white: #fff;
     --spacing: 0.25rem;
@@ -373,6 +375,8 @@
 @supports (color: oklab(0% 0 0%)) {
 :root, :host {
     --color-rose-300: oklch(81% 0.117 11.638);
+    --color-gray-50: oklch(98.5% 0.002 247.839);
+    --color-gray-200: oklch(92.8% 0.006 264.531);
   }
 }
 /*! tailwindcss v4.3.3 | MIT License | https://tailwindcss.com */
@@ -591,6 +595,9 @@
   .start-0 {
     inset-inline-start: calc(var(--spacing) * 0);
   }
+  .start-1\/2 {
+    inset-inline-start: calc(1/2 * 100%);
+  }
   .start-3 {
     inset-inline-start: calc(var(--spacing) * 3);
   }
@@ -608,6 +615,9 @@
   }
   .end-4 {
     inset-inline-end: calc(var(--spacing) * 4);
+  }
+  .-top-8 {
+    top: calc(var(--spacing) * -8);
   }
   .-top-12 {
     top: calc(var(--spacing) * -12);
@@ -689,6 +699,9 @@
   }
   .bottom-2 {
     bottom: calc(var(--spacing) * 2);
+  }
+  .bottom-full {
+    bottom: 100%;
   }
   .-left-8 {
     left: calc(var(--spacing) * -8);
@@ -1675,6 +1688,10 @@
     --tw-translate-y: calc(var(--spacing) * 0.5);
     translate: var(--tw-translate-x) var(--tw-translate-y);
   }
+  .translate-y-2\.5 {
+    --tw-translate-y: calc(var(--spacing) * 2.5);
+    translate: var(--tw-translate-x) var(--tw-translate-y);
+  }
   .translate-y-3\/4 {
     --tw-translate-y: calc(3 / 4 * 100%);
     translate: var(--tw-translate-x) var(--tw-translate-y);
@@ -2389,6 +2406,18 @@
   .bg-foreground {
     background-color: var(--foreground);
   }
+  .bg-foreground\/10 {
+    background-color: var(--foreground);
+    @supports (color: color-mix(in lab, red, red)) {
+      background-color: color-mix(in oklab, var(--foreground) 10%, transparent);
+    }
+  }
+  .bg-gray-50 {
+    background-color: var(--color-gray-50);
+  }
+  .bg-gray-200 {
+    background-color: var(--color-gray-200);
+  }
   .bg-input {
     background-color: var(--input);
   }
@@ -2977,6 +3006,9 @@
   .whitespace-nowrap {
     white-space: nowrap;
   }
+  .whitespace-pre {
+    white-space: pre;
+  }
   .whitespace-pre-wrap {
     white-space: pre-wrap;
   }
@@ -3439,6 +3471,10 @@
     opacity: 100%;
   }
   @media (hover: hover) {
+    .group-hover\:translate-y-0:is(:where(.group):hover *) {
+      --tw-translate-y: 0px;
+      translate: var(--tw-translate-x) var(--tw-translate-y);
+    }
     .group-hover\:bg-muted\/40:is(:where(.group):hover *) {
       background-color: var(--muted);
     }
@@ -3453,12 +3489,22 @@
     .group-hover\:underline:is(:where(.group):hover *) {
       text-decoration-line: underline;
     }
+    .group-hover\:opacity-100:is(:where(.group):hover *) {
+      opacity: 100%;
+    }
     .group-hover\/file-upload\:opacity-100:is(:where(.group\/file-upload):hover *) {
       opacity: 100%;
     }
     .group-hover\/menu-item\:opacity-100:is(:where(.group\/menu-item):hover *) {
       opacity: 100%;
     }
+  }
+  .group-focus-visible\:translate-y-0:is(:where(.group):focus-visible *) {
+    --tw-translate-y: 0px;
+    translate: var(--tw-translate-x) var(--tw-translate-y);
+  }
+  .group-focus-visible\:opacity-100:is(:where(.group):focus-visible *) {
+    opacity: 100%;
   }
   .group-has-data-\[sidebar\=menu-action\]\/menu-item\:pe-8:is(:where(.group\/menu-item):has([data-sidebar="menu-action"]) *) {
     padding-inline-end: calc(var(--spacing) * 8);
@@ -5686,6 +5732,10 @@
   .\[\&_svg\]\:pointer-events-none svg {
     pointer-events: none;
   }
+  .\[\&_svg\]\:size-full svg {
+    width: 100%;
+    height: 100%;
+  }
   .\[\&_svg\]\:shrink-0 svg {
     flex-shrink: 0;
   }
@@ -5756,6 +5806,9 @@
     background-color: var(--accent);
   }
   .\[\&\:\:-webkit-calendar-picker-indicator\]\:hidden::-webkit-calendar-picker-indicator {
+    display: none;
+  }
+  .\[\&\:\:-webkit-details-marker\]\:hidden::-webkit-details-marker {
     display: none;
   }
   .\[\&\:has\(\[role\=checkbox\]\)\]\:pe-0:has([role=checkbox]) {

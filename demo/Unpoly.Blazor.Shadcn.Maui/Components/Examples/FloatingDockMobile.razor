@@ -1,0 +1,12 @@
+@* The phone layout, kept on at every width so it can be tried here: DesktopClass hides the shelf
+   and MobileClass keeps the button. Both merge with the recipe, so md:hidden replaces md:flex
+   rather than fighting it. Open it — the links rise into place nearest-first. *@
+<div class="flex h-80 w-full items-end justify-center pb-4">
+    <FloatingDock DesktopClass="md:hidden" MobileClass="md:block">
+        <FloatingDockItem Title="Home" Href="/"><Icon Name="house" /></FloatingDockItem>
+        <FloatingDockItem Title="Components" Href="/components/button"><Icon Name="layers" /></FloatingDockItem>
+        <FloatingDockItem Title="Blocks" Href="/blocks"><Icon Name="package" /></FloatingDockItem>
+        <FloatingDockItem Title="Theming" Href="/theming"><Icon Name="compass" /></FloatingDockItem>
+        <FloatingDockItem Title="Live demo" Href="/live-demo"><Icon Name="terminal" /></FloatingDockItem>
+    </FloatingDock>
+</div>

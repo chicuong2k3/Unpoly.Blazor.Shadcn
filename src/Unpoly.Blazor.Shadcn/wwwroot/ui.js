@@ -170,6 +170,12 @@
     if (typeof QRCode !== 'undefined') return Promise.resolve()
     return loadScript('_content/Unpoly.Blazor.Shadcn/qrcodejs/qrcode.min.js').catch(() => {})
   }
+  // Motion (motion.dev, MIT) — framer-motion's own engine without React: springs, motion values
+  // and transforms. 48 KB gzipped, so it is fetched only by a component that animates with it.
+  const ensureMotion = () => {
+    if (typeof window.Motion !== 'undefined') return Promise.resolve(window.Motion)
+    return loadScript('_content/Unpoly.Blazor.Shadcn/motion/motion.js').then(() => window.Motion)
+  }
 
   // ---- cn ------------------------------------------------------------------------------------
   const cn = (...parts) => parts.filter(Boolean).join(' ')
@@ -3892,6 +3898,109 @@
       // page reads as though that were the value.
       const state = read()
       if (state) write(state, state.target)
+    }
+  })
+
+  // ---- FloatingDock ------------------------------------------------------------------------
+  // Aceternity's dock, with framer-motion's own engine doing what framer-motion did there. Each
+  // tile's size follows the pointer's horizontal distance from its centre: 150px away or more it
+  // rests at 40px, right over it 80px, and the icon inside goes 20px → 40px. Upstream's spring
+  // (mass 0.1, stiffness 150, damping 12) carries every change, which is what makes a sweep
+  // across the row look like a wave rather than a step.
+  //
+  // The distance is taken from clientX, where upstream reads pageX against a client rect: the
+  // two agree only while the page has not scrolled sideways.
+  const reducedMotion = () => window.matchMedia?.('(prefers-reduced-motion: reduce)').matches
+
+  shadcnCompiler('[data-slot="floating-dock-desktop"]', (dock) => {
+    if (reducedMotion()) return () => {}
+    let disposed = false
+    let detach = () => {}
+
+    ensureMotion().then((M) => {
+      if (disposed || !M) return
+      const tile = M.transform([-150, 0, 150], [40, 80, 40])
+      const glyph = M.transform([-150, 0, 150], [20, 40, 20])
+      const spring = { mass: 0.1, stiffness: 150, damping: 12 }
+
+      const parts = [...dock.querySelectorAll('[data-slot="floating-dock-tile"]')].map((box) => {
+        const icon = box.querySelector('[data-slot="floating-dock-icon"]')
+        const size = M.springValue(40, spring)
+        const inner = M.springValue(20, spring)
+        const stops = [
+          size.on('change', (v) => { box.style.width = box.style.height = `${v}px` }),
+          inner.on('change', (v) => { if (icon) icon.style.width = icon.style.height = `${v}px` }),
+        ]
+        return { box, icon, size, inner, stops }
+      })
+
+      const follow = (x) => {
+        for (const part of parts) {
+          const r = part.box.getBoundingClientRect()
+          const distance = x - r.x - r.width / 2
+          part.size.set(tile(distance))
+          part.inner.set(glyph(distance))
+        }
+      }
+      const onMove = (e) => follow(e.clientX)
+      const onLeave = () => follow(Infinity)
+      dock.addEventListener('mousemove', onMove)
+      dock.addEventListener('mouseleave', onLeave)
+
+      detach = () => {
+        dock.removeEventListener('mousemove', onMove)
+        dock.removeEventListener('mouseleave', onLeave)
+        for (const part of parts) {
+          for (const stop of part.stops) stop()
+          part.size.destroy()
+          part.inner.destroy()
+          part.box.style.width = part.box.style.height = ''
+          if (part.icon) part.icon.style.width = part.icon.style.height = ''
+        }
+      }
+    }).catch(() => {})
+
+    return () => { disposed = true; detach() }
+  })
+
+  // The phone menu is a <details>, so it opens and closes on its own. This adds upstream's
+  // stagger: the links rise 10px into place, the one nearest the button first, and leave the
+  // same way before the menu closes. Hidden before the first frame, not after, or the open
+  // menu flashes at full opacity while Motion is still loading — and shown again if Motion
+  // never arrives, so a failed request cannot leave the menu open and empty.
+  shadcnCompiler('[data-slot="floating-dock-mobile"]', (details) => {
+    const summary = details.querySelector(':scope > summary')
+    const links = () => [...details.querySelectorAll('[data-slot="floating-dock-item"]')]
+    let leaving = false
+
+    const onToggle = () => {
+      if (!details.open || reducedMotion()) return
+      const list = links()
+      for (const a of list) a.style.opacity = '0'
+      ensureMotion().then((M) => {
+        list.forEach((a, i) => M.animate(a, { opacity: [0, 1], y: [10, 0] }, { delay: (list.length - 1 - i) * 0.05 }))
+      }).catch(() => { for (const a of list) a.style.opacity = '' })
+    }
+
+    const onClick = (e) => {
+      if (!details.open || leaving || reducedMotion() || !window.Motion) return
+      e.preventDefault()
+      leaving = true
+      const list = links()
+      Promise.all(list.map((a, i) => window.Motion.animate(a, { opacity: 0, y: 10 }, { delay: i * 0.05, duration: 0.2 }).finished))
+        .finally(() => {
+          details.open = false
+          for (const a of list) { a.style.opacity = ''; a.style.transform = '' }
+          leaving = false
+        })
+    }
+
+    details.addEventListener('toggle', onToggle)
+    summary?.addEventListener('click', onClick)
+    return () => {
+      details.removeEventListener('toggle', onToggle)
+      summary?.removeEventListener('click', onClick)
+      for (const a of links()) { a.style.opacity = ''; a.style.transform = '' }
     }
   })
 

@@ -8,7 +8,7 @@ test('Web and MAUI share the complete component-route manifest', () => {
   const pages = path.resolve(__dirname, '../demo/Unpoly.Blazor.Shadcn.Maui/Components/Pages');
   const maui = fs.readdirSync(pages).filter(f => f.endsWith('.razor')).flatMap(f =>
     [...fs.readFileSync(path.join(pages, f), 'utf8').matchAll(/^@page "(\/components\/[^"]+)"/gm)].map(m => m[1])).sort();
-  assert.equal(routes.length, 87);
+  assert.equal(routes.length, 88);
   assert.deepEqual(maui, routes);
   const headings = pageHeadings(pages);
   assert.deepEqual(Object.keys(headings).sort(), routes);

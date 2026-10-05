@@ -49,6 +49,7 @@ circle-x
 clock
 coffee
 command
+compass
 copy
 credit-card
 croissant
@@ -85,6 +86,7 @@ heart-pulse
 history
 home
 hourglass
+house
 image
 import
 inbox
@@ -117,7 +119,9 @@ mouse-pointer-click
 move
 network
 notebook-pen
+package
 palette
+panel-bottom-open
 panel-left
 paperclip
 party-popper
@@ -157,6 +161,7 @@ tag
 tags
 target
 telescope
+terminal
 text
 timer
 timer-reset
