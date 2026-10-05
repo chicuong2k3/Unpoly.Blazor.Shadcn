@@ -34,6 +34,25 @@ public class FormControlTests(DemoFixture fixture) : DemoPage(fixture)
         AssertQuiet();
     }
 
+    /// <remarks>
+    /// Upstream gives only the vertical and responsive Field <c>[&amp;&gt;*]:w-full</c>. Hoisted into
+    /// the base recipe, it reached the horizontal Field too, and every checkbox beside its label
+    /// was stretched into a bar the width of the row.
+    /// </remarks>
+    [SkippableFact]
+    public async Task A_checkbox_in_a_horizontal_field_stays_square()
+    {
+        RequireDemo();
+        await GoAsync("/components/checkbox");
+        var box = await ShowAsync("preview-checkbox-checked-state");
+        var sizes = await box.Locator("[data-slot=field][data-orientation=horizontal] > [data-slot=checkbox]")
+            .EvaluateAllAsync<string[]>("els => els.map(e => { const r = e.getBoundingClientRect(); return `${e.id} ${Math.round(r.width)}x${Math.round(r.height)}`; })");
+
+        Assert.NotEmpty(sizes);
+        Assert.All(sizes, s => Assert.EndsWith(" 16x16", s));
+        AssertQuiet();
+    }
+
     [SkippableFact]
     public async Task Radio_example_keeps_its_group_independent_of_other_examples()
     {
