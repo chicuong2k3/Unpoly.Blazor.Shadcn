@@ -32,11 +32,10 @@
 :root {
     --radius: 0.625rem;
 
-    /* The page is a shade of grey and a card is white, so a card is separated by ground rather
-       than by a line. shadcn's default has both at pure white and draws a border between them;
-       this library does not, which is the one place its default theme departs from shadcn's.
-       Tokens are not part of the parity contract — class strings are — so this costs nothing
-       there, and `[data-theme="notebook"]` is the opposite look for anyone who wants lines. */
+    /* Page and card are both pure white, as in shadcn, so a card is separated by a line: the
+       border that --surface-border draws below. This file once had a grey page and borderless
+       cards; the page went back to white (see --background) and the border has to come with it,
+       or every card, alert and menu panel melts into the page. */
     /* oklch(1 0 0), which is shadcn's. 0.98 is their --surface, a docs-site token, and it was
        sitting on --background here: the page ground was a nearly-grey that made every
        bg-background surface disappear into bg-muted next to it. The active tab was the visible
@@ -62,14 +61,14 @@
     --ring: oklch(0.708 0 0);
 
     /* The colour of the line around a surface — a card, an alert, a menu panel, a dialog.
-       Transparent by default, which is the borderless look above: a card is separated by ground
-       rather than by a line.
+       shadcn's: var(--border). It was transparent while the page was grey, and stayed transparent
+       when the page turned white, which left a white card on a white page with no edge at all.
 
        It is a token rather than a rule because a theme has to be able to disagree. Notebook is
        heavy borders on paper and nothing else; a rule would have quietly erased the one thing it
-       is. Every theme that comes from somewhere else was authored against shadcn's bordered
-       default, so each of them sets this back to var(--border). */
-    --surface-border: transparent;
+       is. A theme that wants the borderless look sets this to transparent — and then has to give
+       --background and --card different tones, or its surfaces have nothing to separate them. */
+    --surface-border: var(--border);
 
     --chart-1: oklch(0.646 0.222 41.116);
     --chart-2: oklch(0.6 0.118 184.704);

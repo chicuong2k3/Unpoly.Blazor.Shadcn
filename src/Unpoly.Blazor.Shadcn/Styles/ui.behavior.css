@@ -615,8 +615,12 @@ side. That plugin is not installed here (it is listed by the check-compiled .NET
     [data-slot="code-block-code"] .line.diff.remove, [data-slot="code-block-code"] .line.error { background: color-mix(in srgb, #f43f5e 14%, transparent); border-inline-start: 2px solid #f43f5e; }
     [data-slot="code-block-code"] .line.warning { background: color-mix(in srgb, #f59e0b 14%, transparent); border-inline-start: 2px solid #f59e0b; }
     [data-slot="code-block-code"]:has(.line.focused) .line:not(.focused) { filter: blur(2px); opacity: .6; }
-    [data-slot="code-block-code"] .line span { color: var(--shiki-light); }
-    .dark [data-slot="code-block-code"] .line span { color: var(--shiki-dark); }
+    /* Shiki writes the light colour inline — style="color:#24292E;--shiki-dark:#E6EDF3" — and an
+       inline style beats every rule that is not !important. Without it dark mode kept the light
+       palette: near-black brackets and values on a near-black block. This is Shiki's own
+       documented switch. There is no light counterpart because the inline colour IS the light
+       one; the --shiki-light rule that stood here read a variable Shiki never writes. */
+    .dark [data-slot="code-block-code"] .line span { color: var(--shiki-dark) !important; }
 
     /* ---- Command ---------------------------------------------------------------------
        Nothing to draw here: the compiler sets data-selected="true" on the highlighted row, which

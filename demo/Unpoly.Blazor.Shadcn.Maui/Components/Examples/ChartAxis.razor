@@ -2,7 +2,9 @@
    numbers are in the DOM — Find in Page reaches them, a print stylesheet keeps them, and a
    screen reader reads the scale before the bars rather than guessing it from heights. *@
 <Chart Id="revenue-axis" Series="@Palette" Class="h-56 w-full max-w-lg">
-    <div class="flex h-full gap-2">
+    @* w-full: Chart centres what it holds, as ChartContainer does upstream, so a row with no width
+       of its own shrank around its labels and drew the plot at half the chart's width. *@
+    <div class="flex h-full w-full gap-2">
         <div class="flex flex-col justify-between pb-5 text-[10px] text-muted-foreground">
             @foreach (var tick in Ticks)
             {

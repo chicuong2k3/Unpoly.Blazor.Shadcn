@@ -20,67 +20,67 @@
     shell has to be replaced; and <code>up-fail-target</code> on the <b>form</b> rather than a div
     inside it, because <code>[up-disable]</code> disables the antiforgery field too.
 </p>
-<Example Source="LoginBlock.razor"><LoginBlock /></Example>
+<Example Source="LoginBlock.razor" Block><LoginBlock /></Example>
 
 <h2 class="doc-h2">Page header</h2>
-<Example Source="PageHeaderBlock.razor"><PageHeaderBlock /></Example>
+<Example Source="PageHeaderBlock.razor" Block><PageHeaderBlock /></Example>
 
 <h2 class="doc-h2">Stat cards</h2>
-<Example Source="StatsBlock.razor"><StatsBlock /></Example>
+<Example Source="StatsBlock.razor" Block><StatsBlock /></Example>
 
 <h2 class="doc-h2">Data table with a toolbar</h2>
 <p class="doc-note">
     The filters are a GET form and the URL is the state, so the result is bookmarkable and Back
     works. No client-side filter state exists to get out of sync.
 </p>
-<Example Source="DataTableBlock.razor"><DataTableBlock /></Example>
+<Example Source="DataTableBlock.razor" Block><DataTableBlock /></Example>
 
 <h2 class="doc-h2">Settings</h2>
 <p class="doc-note">
     One form per section. A single form across the whole screen makes "Save" mean "save
     everything, including what I did not look at".
 </p>
-<Example Source="SettingsBlock.razor"><SettingsBlock /></Example>
+<Example Source="SettingsBlock.razor" Block><SettingsBlock /></Example>
 
 <h2 class="doc-h2">Empty state</h2>
-<Example Source="EmptyStateBlock.razor"><EmptyStateBlock /></Example>
+<Example Source="EmptyStateBlock.razor" Block><EmptyStateBlock /></Example>
 
 <h2 class="doc-h2">Sign up</h2>
 <p class="doc-note">The strength meter is rendered by the server from <code>[up-validate]</code>, not computed in the browser: the rule that decides it lives on the server anyway, and a second copy in JavaScript is a second copy to get wrong.</p>
-<Example Source="SignUpBlock.razor"><SignUpBlock /></Example>
+<Example Source="SignUpBlock.razor" Block><SignUpBlock /></Example>
 
 <h2 class="doc-h2">Reset password</h2>
 <p class="doc-note">The response is the same whether or not the address exists. Saying "no such account" turns the form into a way of asking whether someone has one.</p>
-<Example Source="ResetPasswordBlock.razor"><ResetPasswordBlock /></Example>
+<Example Source="ResetPasswordBlock.razor" Block><ResetPasswordBlock /></Example>
 
 <h2 class="doc-h2">Verify a code</h2>
 <p class="doc-note">Six real inputs; the server sees one field. <code>autocomplete="one-time-code"</code> on the first box is what lets a phone offer the code it has just received.</p>
-<Example Source="OtpVerifyBlock.razor"><OtpVerifyBlock /></Example>
+<Example Source="OtpVerifyBlock.razor" Block><OtpVerifyBlock /></Example>
 
 <h2 class="doc-h2">Pricing</h2>
-<Example Source="PricingBlock.razor"><PricingBlock /></Example>
+<Example Source="PricingBlock.razor" Block><PricingBlock /></Example>
 
 <h2 class="doc-h2">Hero</h2>
-<Example Source="HeroBlock.razor"><HeroBlock /></Example>
+<Example Source="HeroBlock.razor" Block><HeroBlock /></Example>
 
 <h2 class="doc-h2">Filters</h2>
 <p class="doc-note">The URL is the state, so a filtered view can be sent to a colleague and reached by the back button. Applied filters are chips, because a filter you cannot see is a filter you will blame the data for.</p>
-<Example Source="FiltersBlock.razor"><FiltersBlock /></Example>
+<Example Source="FiltersBlock.razor" Block><FiltersBlock /></Example>
 
 <h2 class="doc-h2">Form wizard</h2>
 <p class="doc-note">Each step is a real URL and a real POST, not a client-side index — which is what makes the back button work, a refresh safe, and a half-finished application resumable from a link.</p>
-<Example Source="FormWizardBlock.razor"><FormWizardBlock /></Example>
+<Example Source="FormWizardBlock.razor" Block><FormWizardBlock /></Example>
 
 <h2 class="doc-h2">Master and detail</h2>
 <p class="doc-note">The shape behind mail, chat and any inbox. Only the detail pane is swapped, so the list keeps its scroll and the address bar always names what is on screen.</p>
-<Example Source="MasterDetailBlock.razor"><MasterDetailBlock /></Example>
+<Example Source="MasterDetailBlock.razor" Block><MasterDetailBlock /></Example>
 
 <h2 class="doc-h2">Notifications</h2>
-<Example Source="NotificationsBlock.razor"><NotificationsBlock /></Example>
+<Example Source="NotificationsBlock.razor" Block><NotificationsBlock /></Example>
 
 <h2 class="doc-h2">Checkout</h2>
 <p class="doc-note">The summary sits beside the form on a desktop and above it on a phone — never below, because the total is what someone checks before they commit.</p>
-<Example Source="CheckoutBlock.razor"><CheckoutBlock /></Example>
+<Example Source="CheckoutBlock.razor" Block><CheckoutBlock /></Example>
 
 <h2 class="doc-h2">Analytics</h2>
 <p class="doc-note">
@@ -88,7 +88,7 @@
     readable by a screen reader, selectable and correct with CSS off. Reach for a charting library
     when you need axes, tooltips or an irregular time axis — not to draw eleven rectangles.
 </p>
-<Example Source="AnalyticsBlock.razor"><AnalyticsBlock /></Example>
+<Example Source="AnalyticsBlock.razor" Block><AnalyticsBlock /></Example>
 
 <h2 class="doc-h2">Calendar</h2>
 <p class="doc-note">
@@ -96,7 +96,7 @@
     bookmarkable and Back moves through months. For picking a single date use
     <code>DatePicker</code> instead — this one is for showing what is on.
 </p>
-<Example Source="CalendarBlock.razor"><CalendarBlock /></Example>
+<Example Source="CalendarBlock.razor" Block><CalendarBlock /></Example>
 
 <h2 class="doc-h2">Chat</h2>
 <p class="doc-note">
@@ -104,7 +104,7 @@
     one bubble instead of re-rendering the conversation and losing your scroll. The thread polls
     with an <code>[up-etag]</code>, so a poll that finds nothing costs an empty 304.
 </p>
-<Example Source="ChatBlock.razor"><ChatBlock /></Example>
+<Example Source="ChatBlock.razor" Block><ChatBlock /></Example>
 
 <h2 class="doc-h2">File manager</h2>
 <p class="doc-note">
@@ -112,7 +112,7 @@
     <code>:has(:checked)</code> — CSS reading the boxes rather than a second copy of the selection
     that can drift from them.
 </p>
-<Example Source="FileManagerBlock.razor"><FileManagerBlock /></Example>
+<Example Source="FileManagerBlock.razor" Block><FileManagerBlock /></Example>
 
 <h2 class="doc-h2">Board</h2>
 <p class="doc-note">
@@ -120,14 +120,14 @@
     the accessible fallback everyone eventually bolts on is exactly this: a control on the card
     saying which column it belongs in. So the fallback is the interface.
 </p>
-<Example Source="KanbanBlock.razor"><KanbanBlock /></Example>
+<Example Source="KanbanBlock.razor" Block><KanbanBlock /></Example>
 
 <h2 class="doc-h2">Task tracker</h2>
 <p class="doc-note">
     Ticking a box is a POST targeting <code>:origin</code>, so a list of two hundred tasks costs
     one row per tick and nothing below you moves.
 </p>
-<Example Source="TaskTrackerBlock.razor"><TaskTrackerBlock /></Example>
+<Example Source="TaskTrackerBlock.razor" Block><TaskTrackerBlock /></Example>
 
 <h2 class="doc-h2">Product grid</h2>
 <p class="doc-note">
@@ -135,7 +135,7 @@
     <code>&lt;UpChrome Provides=".cart-badge"&gt;</code> is required. Leaving it out is the most
     common bug in this whole pattern: no error, and the swap finds nothing.
 </p>
-<Example Source="ProductGridBlock.razor"><ProductGridBlock /></Example>
+<Example Source="ProductGridBlock.razor" Block><ProductGridBlock /></Example>
 
 <h2 class="doc-h2">Social feed</h2>
 <p class="doc-note">
@@ -143,7 +143,7 @@
     on purpose: the round trip is the truth here, and a counter that goes up and then back down is
     worse than one that waits.
 </p>
-<Example Source="SocialFeedBlock.razor"><SocialFeedBlock /></Example>
+<Example Source="SocialFeedBlock.razor" Block><SocialFeedBlock /></Example>
 
 <h2 class="doc-h2">Media player</h2>
 <p class="doc-note">
@@ -151,7 +151,7 @@
     a lock-screen control on a phone. Hand-rolled scrubbers are where audio players lose their
     accessibility.
 </p>
-<Example Source="MediaPlayerBlock.razor"><MediaPlayerBlock /></Example>
+<Example Source="MediaPlayerBlock.razor" Block><MediaPlayerBlock /></Example>
 
 <h2 class="doc-h2">Mobile shell</h2>
 <p class="doc-note">
@@ -162,4 +162,4 @@
     cannot be tapped; and a tab bar of real links with <code>[up-nav]</code>, so a tab is a URL
     that can be shared and the back button works.
 </p>
-<Example Source="MobileShellBlock.razor"><MobileShellBlock /></Example>
+<Example Source="MobileShellBlock.razor" Block><MobileShellBlock /></Example>

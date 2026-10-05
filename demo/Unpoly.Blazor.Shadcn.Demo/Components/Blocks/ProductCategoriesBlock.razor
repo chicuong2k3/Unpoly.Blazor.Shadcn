@@ -23,7 +23,7 @@
                             </AspectRatio>
                             <div class="p-4">
                                 <p class="text-sm font-medium group-hover:underline">@p.Name</p>
-                                <p class="num text-sm text-muted-foreground">@p.Price.ToString("C0")</p>
+                                <p class="num text-sm text-muted-foreground">@p.Price.ToString("C0", Usd)</p>
                             </div>
                         </Card>
                     </a>
@@ -34,6 +34,10 @@
 </section>
 
 @code {
+    // "C0" alone follows the server's culture: ¤189 under the invariant culture a container
+    // runs with, 189 ₫ on a Vietnamese machine. The other blocks write their prices in dollars.
+    static readonly System.Globalization.CultureInfo Usd = System.Globalization.CultureInfo.GetCultureInfo("en-US");
+
     record Product(string Slug, string Name, decimal Price, string Image);
     record Category(string Slug, string Name, string Description, Product[] Items);
 

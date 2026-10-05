@@ -749,9 +749,6 @@
   .mr-auto {
     margin-right: auto;
   }
-  .-mb-\(--card-spacing\) {
-    margin-bottom: calc(var(--card-spacing) * -1);
-  }
   .mb-1\.5 {
     margin-bottom: calc(var(--spacing) * 1.5);
   }
@@ -1450,6 +1447,9 @@
   }
   .basis-full {
     flex-basis: 100%;
+  }
+  .table-fixed {
+    table-layout: fixed;
   }
   .caption-bottom {
     caption-side: bottom;
@@ -5307,6 +5307,9 @@
   .\[\&\:not\(\:popover-open\)\]\:hidden:not(:popover-open) {
     display: none;
   }
+  .\[\&\>\*\]\:w-full > * {
+    width: 100%;
+  }
   .\[\&\>\*\]\:focus-visible\:relative > *:focus-visible {
     position: relative;
   }
@@ -5422,6 +5425,9 @@
   }
   .\[\&\>\[data-slot\=select-trigger\]\:not\(\[class\*\=\'w-\'\]\)\]\:w-fit > [data-slot=select-trigger]:not([class*='w-']) {
     width: fit-content;
+  }
+  .\[\&\>\[data-slot\=steps\]\]\:overflow-x-auto > [data-slot=steps] {
+    overflow-x: auto;
   }
   .data-\[alternate\=true\]\:\[\&\>\[data-slot\=timeline-item\]\:nth-child\(even\)\]\:flex-row-reverse[data-alternate="true"] > [data-slot=timeline-item]:nth-child(even) {
     flex-direction: row-reverse;
@@ -6250,11 +6256,8 @@
     filter: blur(2px);
     opacity: .6;
   }
-  [data-slot="code-block-code"] .line span {
-    color: var(--shiki-light);
-  }
   .dark [data-slot="code-block-code"] .line span {
-    color: var(--shiki-dark);
+    color: var(--shiki-dark) !important;
   }
   [data-slot="command-input"]::-webkit-search-cancel-button {
     margin-inline-start: 0.25rem;
@@ -6857,6 +6860,10 @@ up-modal up-modal-dismiss:focus-visible, up-drawer up-drawer-dismiss:focus-visib
     padding: 1.5rem max(1rem, env(safe-area-inset-right)) calc(1.5rem + env(safe-area-inset-bottom)) max(1rem, env(safe-area-inset-left));
   }
 }
+[data-slot="checkbox"], [data-slot="radio-group-item"] {
+  min-inline-size: 1rem;
+  min-block-size: 1rem;
+}
 :root {
   --radius: 0.625rem;
   --background: rgb(255, 255, 255);
@@ -6878,7 +6885,7 @@ up-modal up-modal-dismiss:focus-visible, up-drawer up-drawer-dismiss:focus-visib
   --border: rgb(229, 229, 229);
   --input: rgb(229, 229, 229);
   --ring: rgb(161, 161, 161);
-  --surface-border: transparent;
+  --surface-border: var(--border);
   --chart-1: rgb(236, 86, 0);
   --chart-2: rgb(0, 148, 136);
   --chart-3: rgb(16, 78, 100);
@@ -9097,6 +9104,12 @@ up-modal up-modal-dismiss:focus-visible, up-drawer up-drawer-dismiss:focus-visib
     line-height: var(--tw-leading, var(--text-sm--line-height));
     color: var(--muted-foreground);
   }
+  :where([data-example-frame] > [dir]) {
+    min-width: 0;
+  }
+  :where([data-example-frame] > [dir] > *) {
+    max-width: 100%;
+  }
   .doc-note code, .doc-lede code {
     border-radius: 0.25rem;
     background-color: var(--muted);
@@ -9104,6 +9117,7 @@ up-modal up-modal-dismiss:focus-visible, up-drawer up-drawer-dismiss:focus-visib
     padding-block: calc(var(--spacing) * 0.5);
     font-family: var(--font-mono);
     font-size: 0.85em;
+    overflow-wrap: break-word;
   }
 }
 @layer utilities {

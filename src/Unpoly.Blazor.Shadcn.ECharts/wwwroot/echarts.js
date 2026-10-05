@@ -287,7 +287,10 @@
       // the theme palette so a chart without configuration still looks right.
       if (!opts.color) opts.color = resolveVars(shadcnColors())
       if (!opts.backgroundColor) opts.backgroundColor = 'transparent'
-      if (!opts.textStyle) opts.textStyle = { color: shadcnTextColor(), fontFamily: 'var(--font-sans, ui-sans-serif)' }
+      // The family is resolved here, not passed as var(--font-sans): a canvas cannot read a CSS
+      // variable, so ctx.font rejected the whole string and every label kept whatever font the
+      // last valid assignment left — the calendar heatmap drew its day letters in bold 20px.
+      if (!opts.textStyle) opts.textStyle = { color: shadcnTextColor(), fontFamily: cssVar('--font-sans', '') || 'ui-sans-serif, system-ui, sans-serif' }
       // Normalise the palette and text colour to concrete sRGB — see
       // normalizeColor. ECharts parses these on every hover, and its
       // parser cannot read the theme's modern CSS colour syntax.

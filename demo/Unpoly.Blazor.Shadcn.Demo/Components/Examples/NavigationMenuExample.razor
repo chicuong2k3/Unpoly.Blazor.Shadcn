@@ -66,7 +66,9 @@
             </NavigationMenuLink>
         </NavigationMenuItem>
 
-        <NavigationMenuItem>
+        @* hidden md:block, as in upstream's demo: six triggers do not fit a phone's width, and the
+           row pushed the page sideways. *@
+        <NavigationMenuItem Class="hidden md:block">
             <NavigationMenuTrigger Target="nav-list">List</NavigationMenuTrigger>
             <NavigationMenuContent Id="nav-list">
                 <ul class="grid w-[200px] gap-4">
@@ -79,7 +81,7 @@
             </NavigationMenuContent>
         </NavigationMenuItem>
 
-        <NavigationMenuItem>
+        <NavigationMenuItem Class="hidden md:block">
             <NavigationMenuTrigger Target="nav-icons">With Icon</NavigationMenuTrigger>
             <NavigationMenuContent Id="nav-icons">
                 <ul class="grid w-[200px] gap-4">

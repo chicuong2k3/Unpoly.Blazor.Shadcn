@@ -35,8 +35,19 @@
     .doc-lede { @apply mt-2 max-w-2xl text-muted-foreground; }
     .doc-h2 { @apply mt-12 scroll-mt-20 text-lg font-semibold tracking-tight; }
     .doc-note { @apply mt-2 max-w-2xl text-sm text-muted-foreground; }
+    /* An RTL sample wraps its component in <div dir="rtl">, and a flex item's minimum is its
+       content's: the wrapper could not shrink below the w-[420px] inside it, and on a phone it
+       pushed the whole page sideways. A component placed in the frame directly already shrinks;
+       these let a wrapped one do the same. :where() keeps them at zero specificity, so a sample's
+       own max-w-sm still wins — as a utility class it outranked them and stretched a capped
+       FileUpload across the whole frame. */
+    :where([data-example-frame] > [dir]) { min-width: 0; }
+    :where([data-example-frame] > [dir] > *) { max-width: 100%; }
+
+    /* break-words: a path like _content/Unpoly.Blazor.Shadcn.ECharts/echarts.js has nowhere to
+       wrap, and on a phone it pushed the whole page sideways. */
     .doc-note code, .doc-lede code {
-        @apply rounded bg-muted px-1 py-0.5 font-mono text-[0.85em];
+        @apply rounded bg-muted px-1 py-0.5 font-mono text-[0.85em] break-words;
     }
 }
 

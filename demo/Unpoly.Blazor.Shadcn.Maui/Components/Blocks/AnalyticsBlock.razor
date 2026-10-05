@@ -43,7 +43,7 @@
                     <tr class="group flex flex-1 flex-col items-center justify-end gap-1.5">
                         <td class="w-full rounded-sm bg-primary/85 transition-[height] group-hover:bg-primary"
                             style="@($"height: {value * 100 / Peak}%")">
-                            <span class="sr-only">@value.ToString("C0")</span>
+                            <span class="sr-only">@value.ToString("C0", Usd)</span>
                         </td>
                         <th scope="row" class="text-[10px] font-normal text-muted-foreground">@label</th>
                     </tr>
@@ -61,6 +61,10 @@
 </Card>
 
 @code {
+    // "C0" alone follows the server's culture: ¤189 under the invariant culture a container
+    // runs with, 189 ₫ on a Vietnamese machine. The other blocks write their prices in dollars.
+    static readonly System.Globalization.CultureInfo Usd = System.Globalization.CultureInfo.GetCultureInfo("en-US");
+
     static readonly (string Label, int Value)[] Weeks =
     [
         ("W1", 2900), ("W2", 3400), ("W3", 3100), ("W4", 4200), ("W5", 3900), ("W6", 4800),

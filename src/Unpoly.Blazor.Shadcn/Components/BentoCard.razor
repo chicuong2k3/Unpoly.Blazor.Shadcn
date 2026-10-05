@@ -11,9 +11,9 @@
    The slot stays "card", and that is load-bearing rather than an oversight. The theme reaches
    Card through it twice — `:where([data-slot="card"]) { --card-spacing: … }`, which is what Card's
    own `py-(--card-spacing)` and `gap-(--card-spacing)` read, and `[data-slot="card"] { border-color:
-   var(--surface-border) }`, which is how a card gets this library's quiet edge instead of a full
-   one. Renaming the slot to "bento-card" to name this component loses both: the card renders with
-   no padding and no gap between its sections, and with a full-strength border. A component that
+   var(--surface-border) }`, which is how a theme decides what a card's edge looks like. Renaming
+   the slot to "bento-card" to name this component loses both: the card renders with no padding
+   and no gap between its sections, and with an edge no theme can reach. A component that
    invents a surface earns its own slot; one that composes Card keeps the slot of the thing it
    composes. *@
 

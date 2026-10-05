@@ -199,16 +199,12 @@ A Material 3 theme was written and then deleted. It is the honest outcome of the
 M3 without its state layers and ripples is not M3, it is shadcn wearing M3's palette, and shipping
 it as a theme would have claimed something the tokens cannot deliver.
 
-**The default is deliberately borderless, and a theme may disagree.** `--surface-border` is the
-colour of the line around a card, an alert, a menu panel or a dialog; it is `transparent` by
-default and every shipped theme sets it back to `var(--border)`, because each was authored against
-shadcn's bordered look. A rule rather than a token would have quietly erased the one thing
-Notebook is.
-
- `--background` is one step off `--card`, so surfaces
-separate by tone rather than by a hairline, and `ui.behavior.css` makes the border transparent on
-the containers that carry one in upstream shadcn (card, alert, menu and dialog content). Set
-`border-color` on those slots in your theme to get the lines back — nothing else changes.
+**Surfaces have shadcn's border, and a theme may disagree.** `--surface-border` is the colour of
+the line around a card, an alert, a menu panel or a dialog; it is `var(--border)` by default, as in
+shadcn, and every shipped theme says the same. A theme that wants the borderless look sets it to
+`transparent` — and must then put `--background` and `--card` on different tones, because with both
+white and no line a card has nothing separating it from the page. A rule rather than a token would
+have quietly erased the one thing Notebook is.
 
 The demo's Customizer is worth knowing about as a tool: it writes tokens straight onto `<html>`
 and prints the block to paste. Every token in this library is a runtime custom property, so a

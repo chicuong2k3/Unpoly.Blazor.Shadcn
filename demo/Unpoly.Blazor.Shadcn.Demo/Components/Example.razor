@@ -14,13 +14,13 @@
             <TabsTrigger Value="preview">Preview</TabsTrigger>
             <TabsTrigger Value="code">Code</TabsTrigger>
         </TabsList>
-        <span class="font-mono text-xs text-muted-foreground">@Source</span>
+        <span class="min-w-0 truncate font-mono text-xs text-muted-foreground">@Source</span>
     </div>
 
     <TabsContent Value="preview">
         @* A plain dashed frame, not a Card: samples that need a Card render their own, and a
            nested Card is the most common visible defect in component documentation. *@
-        <div class="flex min-h-[80px] flex-wrap items-start justify-center gap-4 rounded-xl border border-dashed bg-card/30 px-6 py-8">
+        <div data-example-frame class="@FrameClass">
             @ChildContent
         </div>
 
@@ -57,6 +57,19 @@
                                                        : char.ToLowerInvariant(c).ToString()));
 
     [Parameter] public RenderFragment? ChildContent { get; set; }
+
+    /// <summary>
+    /// A whole section rather than a component. The frame centres what it holds and lets it size
+    /// itself, which is right for a button and wrong for a block: a block's root is written to
+    /// fill the width it is given, so as a flex item it shrank around its content instead — two
+    /// roots sat side by side and a three-column grid became three slivers. Giving every root
+    /// the full width keeps the centring for a root that caps itself with max-w-*.
+    /// </summary>
+    [Parameter] public bool Block { get; set; }
+
+    string FrameClass =>
+        "flex min-h-[80px] flex-wrap items-start justify-center gap-4 rounded-xl border border-dashed bg-card/30 px-6 py-8"
+        + (Block ? " [&>*]:w-full" : "");
 
     string SourceText = "";
 

@@ -27,7 +27,7 @@
     </CardHeader>
 
     <CardContent data-month>
-        <table class="w-full border-separate border-spacing-1">
+        <table class="w-full table-fixed border-separate border-spacing-1">
             <caption class="sr-only">March 2026</caption>
             <thead>
                 <tr>
@@ -41,14 +41,14 @@
                 </tr>
             </thead>
             <tbody>
-                @for (var week = 0; week < 5; week++)
+                @for (var week = 0; week < Weeks; week++)
                 {
                     <tr>
                         @for (var column = 1; column <= 7; column++)
                         {
-                            var date = week * 7 + column;
+                            var date = week * 7 + column - Lead;
                             <td class="p-0 align-top">
-                                @if (date <= 31)
+                                @if (date is >= 1 and <= DaysInMonth)
                                 {
                                     <a href="@($"/calendar/2026-03-{date:00}")" up-target="[data-day]"
                                        aria-current="@(date == Today ? "date" : null)" class="@Cell(date)">
@@ -82,6 +82,12 @@
     ];
 
     const int Today = 11;
+
+    // March 2026 starts on a Sunday. The grid used to start day 1 under Monday regardless, so
+    // every date sat a column early and "today", a Wednesday, was drawn as a Thursday.
+    const int DaysInMonth = 31;
+    static readonly int Lead = ((int)new DateOnly(2026, 3, 1).DayOfWeek + 6) % 7;
+    static readonly int Weeks = (Lead + DaysInMonth + 6) / 7;
 
     // aria-current is what tells a screen reader which day is today. The ring only tells eyes,
     // and a calendar where today is a colour and nothing else is a calendar half the people

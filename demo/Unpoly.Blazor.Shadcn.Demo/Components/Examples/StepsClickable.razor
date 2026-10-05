@@ -3,7 +3,7 @@
    URL: the buttons are links that change ?step and swap this card, and the trail renders with the
    value already in it. Clicking a step itself is the same CurrentStepChanged handler — in a static
    host the state travels in the query string instead of a field. *@
-<div class="flex flex-col gap-3" id="steps-clickable">
+<div class="flex w-full min-w-0 flex-col gap-3 [&>[data-slot=steps]]:overflow-x-auto" id="steps-clickable">
     <Steps CurrentStep="@Step" Clickable>
         <StepsItem Title="Details" />
         <StepsItem Title="Payment" />

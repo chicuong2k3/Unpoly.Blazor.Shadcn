@@ -1,7 +1,11 @@
 @* A trail of steps. CurrentStep is zero-based; the active one is filled, the ones before it
    are done. Pure markup and CSS — nothing here needs a script. *@
-<Steps CurrentStep="1">
-    <StepsItem Title="Account" Description="Create your account" />
-    <StepsItem Title="Profile" Description="Set up your profile" />
-    <StepsItem Title="Complete" Description="All done" />
-</Steps>
+@* The scroller is the page's, not the component's: a horizontal trail is wider than a phone, and
+   an app chooses between scrolling it and Orientation="Vertical". *@
+<div class="w-full overflow-x-auto">
+    <Steps CurrentStep="1">
+        <StepsItem Title="Account" Description="Create your account" />
+        <StepsItem Title="Profile" Description="Set up your profile" />
+        <StepsItem Title="Complete" Description="All done" />
+    </Steps>
+</div>

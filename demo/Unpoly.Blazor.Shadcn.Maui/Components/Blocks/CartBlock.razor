@@ -13,7 +13,7 @@
                     </ItemMedia>
                     <ItemContent>
                         <ItemTitle>@i.Name</ItemTitle>
-                        <ItemDescription>Size M · <span class="num">@i.Price.ToString("C0")</span></ItemDescription>
+                        <ItemDescription>Size M · <span class="num">@i.Price.ToString("C0", Usd)</span></ItemDescription>
                     </ItemContent>
                     <ItemActions Class="flex items-center gap-2">
                         <form method="post" up-target=":origin" class="flex items-center gap-1">
@@ -42,6 +42,10 @@
 </div>
 
 @code {
+    // "C0" alone follows the server's culture: ¤189 under the invariant culture a container
+    // runs with, 189 ₫ on a Vietnamese machine. The other blocks write their prices in dollars.
+    static readonly System.Globalization.CultureInfo Usd = System.Globalization.CultureInfo.GetCultureInfo("en-US");
+
     record ItemRow(string Code, string Name, decimal Price, int Qty);
 
     static readonly ItemRow[] Items =

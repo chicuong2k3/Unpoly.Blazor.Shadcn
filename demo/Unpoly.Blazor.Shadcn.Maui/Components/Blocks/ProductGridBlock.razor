@@ -43,7 +43,7 @@
                             <Badge Variant="secondary">@p.Tag</Badge>
                         }
                     </div>
-                    <p class="num text-sm text-muted-foreground">@p.Price.ToString("C0")</p>
+                    <p class="num text-sm text-muted-foreground">@p.Price.ToString("C0", Usd)</p>
 
                     <form method="post" action="@($"/cart/add/{p.Slug}")" class="mt-3"
                           up-target=".cart-badge" up-disable>
@@ -59,6 +59,10 @@
 </div>
 
 @code {
+    // "C0" alone follows the server's culture: ¤189 under the invariant culture a container
+    // runs with, 189 ₫ on a Vietnamese machine. The other blocks write their prices in dollars.
+    static readonly System.Globalization.CultureInfo Usd = System.Globalization.CultureInfo.GetCultureInfo("en-US");
+
     record Product(string Slug, string Name, decimal Price, string? Tag, bool InStock, string Image);
 
     static readonly Product[] Catalogue =

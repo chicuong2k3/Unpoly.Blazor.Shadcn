@@ -22,7 +22,10 @@ else { <EChart Options="@BuildOptions()" Height="@Height" Width="@Width" Theme="
     {
         Color = Palette.Length>0?Palette:null,
         Tooltip = new EChartsTooltip{Position="top",Formatter="{c}"},
-        Calendar = new{range=Range},
+        // The scale sits on top and its 0 / 100 labels hang below it, so the grid starts under
+        // them; ECharts' default top of 60 put the month names on the labels. Rows of 15 fit
+        // seven days into the default 200px, and "auto" spreads the weeks across the width.
+        Calendar = new{range=Range,top=80,left=64,right=16,cellSize=new object[]{"auto",15}},
         Series = [new EChartsSeries{Type="heatmap",Data=Data,CoordinateSystem="calendar"}],
         VisualMap = new{min=0,max=100,calculable=true,orient="horizontal",left="center",top="0"},
         ExtensionData = OptionOverride

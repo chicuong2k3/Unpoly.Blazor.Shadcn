@@ -40,6 +40,7 @@ const { comboboxChipInputCompat } = require('./postcss-combobox-chip-input-compa
 const { alertDescriptionChildCompat } = require('./postcss-alert-description-child-compat.cjs');
 const { negativeSpaceCompat } = require('./postcss-negative-space-compat.cjs');
 const { timelineAlternateCompat } = require('./postcss-timeline-alternate-compat.cjs');
+const { stackedVariantCompat } = require('./postcss-stacked-variant-compat.cjs');
 const { snippetTriggerCompat } = require('./postcss-snippet-trigger-compat.cjs');
 const { docInlineLeadingCompat } = require('./postcss-doc-inline-leading-compat.cjs');
 const { outlineNoneCompat } = require('./postcss-outline-none-compat.cjs');
@@ -149,7 +150,7 @@ async function compile(head, resolved, { containerFallback = false } = {}) {
   const hasPseudo = containerFallback ? (await import('css-has-pseudo')).default : null;
   const result = await postcss([
     postcssImport(), directiveConverter(), colorChannels(), spacingToken(), tailwind(config), paletteAlphaFallback(palette), paletteRoot(palette), cardSizeBaselineCompat(), negativeSpaceCompat(), rename(aliases), outlineNoneCompat(),
-    scale.fixChildLinkSelector(), fieldCompoundCompat(), inputGroupHasCompat(), childImgCompoundCompat(), fieldLabelChildCompat(), alertDescriptionChildCompat(), timelineAlternateCompat(), namedGroupCompat(),
+    scale.fixChildLinkSelector(), fieldCompoundCompat(), inputGroupHasCompat(), childImgCompoundCompat(), fieldLabelChildCompat(), alertDescriptionChildCompat(), timelineAlternateCompat(), stackedVariantCompat(), namedGroupCompat(),
     importantCompoundCompat(), attachmentPaddingCompat(), snippetTriggerCompat(), docInlineLeadingCompat(), messageSlotCompat(), bubbleSlotCompat(), bubbleTintCompat(), bubbleHoverCompat(), shimmerCompat(), scrollFadeCompat(), staticMixCompat(), darkButtonCompat(), primaryHoverMixCompat(), primaryOpaqueCompat(), sliderVerticalCompat(), nativeSelectOpacityCompat(), selectBackgroundCompat(), comboboxChipInputCompat(), spacingFunctionCompat(), preflightSpacingCompat(), formPreflightCompat(), ...(fallback ? [fallback.plugin] : []), autoprefixer(), inputGroupIconCompat(),
   ]).process(css, { from: entry, to: resolved });
   if (result.warnings().length) throw new Error(result.warnings().map(w => w.toString()).join('\n'));

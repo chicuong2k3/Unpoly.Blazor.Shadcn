@@ -6,7 +6,7 @@
    down on fragment swap. No dependencies beyond the vendored qrcode.js.
 
    Theme-aware defaults: when ForegroundColor/BackgroundColor are null the JS resolves
-   `hsl(var(--foreground))` / `hsl(var(--card))` via getComputedStyle, so dark mode just works.
+   `var(--foreground)` / `var(--card)` via getComputedStyle, so dark mode just works.
    Margin maps to the quiet zone (CSS padding on the generated canvas/img).
 *@
 
@@ -37,10 +37,10 @@
     /// <summary>String alias for ErrorCorrectionLevel — "L","M","Q","H" or "Low","Medium","Quartile","High". Takes precedence when set.</summary>
     [Parameter] public string? CorrectLevel { get; set; }
 
-    /// <summary>Foreground (dark) modules. Null → theme-aware (hsl(var(--foreground))).</summary>
+    /// <summary>Foreground (dark) modules. Null → theme-aware (var(--foreground)). A bare var(--token) is resolved before drawing; hsl(var(--token)) is not, and the tokens are oklch, so it would be an invalid colour.</summary>
     [Parameter] public string? ForegroundColor { get; set; }
 
-    /// <summary>Background (light) modules. Null → transparent / hsl(var(--card)) via JS. Use "#ffffff" for white.</summary>
+    /// <summary>Background (light) modules. Null → var(--card) via JS. Use "#ffffff" for white.</summary>
     [Parameter] public string? BackgroundColor { get; set; }
 
     /// <summary>Quiet zone margin in pixels. Default 4. Set ShowMargin=false for 0.</summary>
