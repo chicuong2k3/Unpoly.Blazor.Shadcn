@@ -1,0 +1,29 @@
+@page "/components/floating-nav"
+
+<PageTitle>Floating Nav — Unpoly.Blazor.Shadcn</PageTitle>
+
+<h1 class="doc-h1">Floating Nav</h1>
+<p class="doc-lede">
+    Ruixen UI's floating navigation bar: a rounded bar of icon-and-label stops with a soft pill
+    that slides to the active one on a spring. Labels show from <code>sm</code> up and stay
+    readable to a screen reader below it.
+</p>
+
+<h2 class="doc-h2">Basic</h2>
+<Example Source="FloatingNavExample.razor"><FloatingNavExample /></Example>
+
+<h2 class="doc-h2">As page navigation</h2>
+<p class="doc-note">
+    Give the stops an <code>Href</code> and they are links; <code>Active</code> marks the current
+    page with <code>aria-current="page"</code>. The pill is drawn by the server inside that stop,
+    so it is in the right place before any script runs and with none at all.
+</p>
+<Example Source="FloatingNavLinks.razor"><FloatingNavLinks /></Example>
+
+<h2 class="doc-h2">Placement</h2>
+<p class="doc-note">
+    Upstream pins the bar to the bottom of the window itself. Here that is the caller's choice:
+    <code>Class="fixed inset-x-0 bottom-4 z-50 mx-auto"</code> is upstream's placement, and
+    leaving it off lets the bar sit in a page, a card or a phone frame. A pinned bar covers the
+    last 80px of the page, so give the page that much padding at the bottom.
+</p>

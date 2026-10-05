@@ -23,6 +23,7 @@ calendar
 calendar-check
 calendar-days
 calendar-range
+camera
 chart-column
 chart-line
 chart-no-axes-column
@@ -112,6 +113,7 @@ mail
 medal
 menu
 message-circle
+mic
 minus
 moon
 moon-star

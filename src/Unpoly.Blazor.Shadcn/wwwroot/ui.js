@@ -4004,6 +4004,169 @@
     }
   })
 
+  // ---- FloatingNav -------------------------------------------------------------------------
+  // Ruixen's sliding pill. The server draws it inside the active item, so it is right before any
+  // script runs; this lifts that one element onto the bar and from then on positions it by the
+  // item's box, moving on upstream's spring (stiffness 400, damping 30) when the active item
+  // changes. Placed without animation on arrival and on resize, as upstream's effect does.
+  shadcnCompiler('[data-slot="floating-nav"]', (bar) => {
+    const items = () => [...bar.querySelectorAll(':scope > [data-slot="floating-nav-item"]')]
+    const pill = bar.querySelector('[data-slot="floating-nav-indicator"]')
+    if (!pill) return () => {}
+    const home = pill.parentElement
+    bar.prepend(pill)
+
+    const boxOf = (item) => {
+      const b = bar.getBoundingClientRect()
+      const r = item.getBoundingClientRect()
+      return { left: r.left - b.left - bar.clientLeft, width: r.width }
+    }
+    const active = () => items().find((i) => i.dataset.active === 'true') || home
+    const snap = () => {
+      const { left, width } = boxOf(active())
+      Object.assign(pill.style, { left: `${left}px`, width: `${width}px`, right: 'auto' })
+    }
+    snap()
+
+    let motion = null
+    const onClick = (e) => {
+      const item = e.target.closest('[data-slot="floating-nav-item"]')
+      if (!item || item.parentElement !== bar || item.dataset.active === 'true') return
+      for (const other of items()) {
+        delete other.dataset.active
+        if (other.tagName === 'BUTTON') other.setAttribute('aria-pressed', 'false')
+      }
+      item.dataset.active = 'true'
+      if (item.tagName === 'BUTTON') item.setAttribute('aria-pressed', 'true')
+      const { left, width } = boxOf(item)
+      if (reducedMotion()) { snap(); return }
+      ensureMotion().then((M) => {
+        motion?.stop()
+        motion = M.animate(pill, { left: `${left}px`, width: `${width}px` },
+          { type: 'spring', stiffness: 400, damping: 30 })
+      }).catch(snap)
+    }
+
+    const resize = typeof ResizeObserver === 'function' ? new ResizeObserver(snap) : null
+    resize?.observe(bar)
+    bar.addEventListener('click', onClick)
+    return () => {
+      bar.removeEventListener('click', onClick)
+      resize?.disconnect()
+      motion?.stop()
+      // Back where the server put it, so a recompile after a swap starts from the same markup.
+      pill.removeAttribute('style')
+      home.prepend(pill)
+    }
+  })
+
+  // ---- BottomMenu --------------------------------------------------------------------------
+  // useLayouts' bottom menu. The panels are auto popovers, so opening, one-at-a-time, outside
+  // click and Escape are the platform's. This places the open panel above the bar, keeps each
+  // button's aria-expanded true to its panel, and adds upstream's motion: a panel opening from
+  // nothing grows out of the bar (0.3s, ease [0.45, 0, 0.25, 1]); a panel replacing another
+  // starts at the old one's size, so the box morphs; and the content blurs in (0.25s).
+  //
+  // The panel is anchored by its bottom edge and its centre once placed, so a size that animates
+  // grows upward and to both sides — which is how upstream's absolutely positioned box grows.
+  shadcnCompiler('[data-slot="bottom-menu"]', (root) => {
+    const bar = root.querySelector(':scope > [data-slot="bottom-menu-bar"]')
+    if (!bar) return () => {}
+    const panels = [...root.querySelectorAll(':scope > [data-slot="bottom-menu-panel"]')]
+    const triggerFor = (panel) => bar.querySelector(`[popovertarget="${CSS.escape(panel.id)}"]`)
+    let left = null
+    const ease = [0.45, 0, 0.25, 1]
+
+    const anchor = (panel) => {
+      place(panel, bar, 'center', 'top', 12)
+      const r = panel.getBoundingClientRect()
+      Object.assign(panel.style, {
+        top: 'auto', bottom: `${Math.round(window.innerHeight - r.bottom)}px`,
+        left: `${Math.round(r.left + r.width / 2)}px`, translate: '-50% 0',
+      })
+    }
+
+    const onBeforeToggle = (e) => {
+      if (e.newState !== 'closed') return
+      const r = e.target.getBoundingClientRect()
+      left = { width: r.width, height: r.height, at: performance.now() }
+    }
+
+    const onToggle = (e) => {
+      const panel = e.target
+      const open = e.newState === 'open'
+      triggerFor(panel)?.setAttribute('aria-expanded', String(open))
+      if (!open) { panel.style.width = panel.style.height = ''; return }
+      anchor(panel)
+      const from = left && performance.now() - left.at < 150 ? left : null
+      left = null
+      if (reducedMotion()) return
+      const view = panel.querySelector(':scope > [data-slot="bottom-menu-view"]')
+      const r = panel.getBoundingClientRect()
+      ensureMotion().then((M) => {
+        const size = from
+          ? { width: [`${from.width}px`, `${r.width}px`], height: [`${from.height}px`, `${r.height}px`] }
+          : { width: ['0px', `${r.width}px`], height: ['0px', `${r.height}px`],
+              opacity: [0, 1], scaleX: [0.95, 1], scaleY: [0.9, 1] }
+        panel.style.transformOrigin = 'bottom center'
+        M.animate(panel, size, { duration: 0.3, ease }).finished
+          .then(() => { panel.style.width = panel.style.height = '' })
+        if (view) M.animate(view, { opacity: [0, 1], scale: [0.96, 1], filter: ['blur(10px)', 'blur(0px)'] },
+          { duration: 0.25, ease: [0.42, 0, 0.58, 1] })
+      }).catch(() => {})
+    }
+
+    for (const panel of panels) {
+      panel.addEventListener('beforetoggle', onBeforeToggle)
+      panel.addEventListener('toggle', onToggle)
+    }
+    return () => {
+      for (const panel of panels) {
+        panel.removeEventListener('beforetoggle', onBeforeToggle)
+        panel.removeEventListener('toggle', onToggle)
+      }
+    }
+  })
+
+  // ---- FrequentlyAskedQuestions -------------------------------------------------------------
+  // ScrollX's entrance, once per piece the first time it is scrolled into view, with upstream's
+  // timings: the headline word by word out of a 6px blur and 12px below (0.4s, 0.08s apart), the
+  // description fading in at 0.4s, the list rising 20px at 0.5s, and each question rising 10px
+  // at 0.5s + 0.07s per row. The markup already holds the finished section; the pieces are
+  // hidden here, just before they play, and shown again if Motion cannot be loaded.
+  shadcnCompiler('[data-slot="frequently-asked-questions"]', (section) => {
+    if (reducedMotion()) return () => {}
+    const words = [...section.querySelectorAll('[data-slot="faq-word"]')]
+    const description = section.querySelector('[data-slot="faq-description"]')
+    const list = section.querySelector('[data-slot="faq-list"]')
+    const rows = [...section.querySelectorAll('[data-slot="faq-item"]')]
+    const all = [...words, description, list, ...rows].filter(Boolean)
+    for (const el of all) el.style.opacity = '0'
+    const stops = []
+    let disposed = false
+
+    ensureMotion().then((M) => {
+      if (disposed) return
+      const once = (el, play) => {
+        const stop = M.inView(el, () => { play(); stop() }, { amount: 0.1 })
+        stops.push(stop)
+      }
+      words.forEach((word, i) => once(word, () => M.animate(word,
+        { opacity: [0, 1], filter: ['blur(6px)', 'blur(0px)'], y: [12, 0] },
+        { duration: 0.4, delay: i * 0.08, ease: 'easeInOut' })))
+      if (description) once(description, () => M.animate(description, { opacity: [0, 1] }, { duration: 0.5, delay: 0.4 }))
+      if (list) once(list, () => M.animate(list, { opacity: [0, 1], y: [20, 0] }, { duration: 0.5, delay: 0.5 }))
+      rows.forEach((row, i) => once(row, () => M.animate(row,
+        { opacity: [0, 1], y: [10, 0] }, { duration: 0.35, delay: 0.5 + i * 0.07, ease: 'easeOut' })))
+    }).catch(() => { for (const el of all) el.style.opacity = '' })
+
+    return () => {
+      disposed = true
+      for (const stop of stops) stop()
+      for (const el of all) { el.style.opacity = ''; el.style.filter = ''; el.style.transform = '' }
+    }
+  })
+
   // Anything outside Unpoly's world — a head's own app.js, a page script — reaches these.
   // `toast` is global on purpose: that is sonner's API, and the call sites read the same.
   window.toast = toast

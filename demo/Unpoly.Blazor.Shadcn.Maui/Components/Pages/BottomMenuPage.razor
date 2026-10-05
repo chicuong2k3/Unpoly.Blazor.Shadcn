@@ -1,0 +1,29 @@
+@page "/components/bottom-menu"
+
+<PageTitle>Bottom Menu — Unpoly.Blazor.Shadcn</PageTitle>
+
+<h1 class="doc-h1">Bottom Menu</h1>
+<p class="doc-lede">
+    useLayouts' bottom menu: a bar of icon buttons, each opening its own panel above the bar.
+    Moving from one button to the next morphs the panel to the new size and blurs the new content
+    in, with Motion.
+</p>
+
+<h2 class="doc-h2">Basic</h2>
+<Example Source="BottomMenuExample.razor"><BottomMenuExample /></Example>
+
+<h2 class="doc-h2">What the platform does</h2>
+<p class="doc-note">
+    Every panel is a <code>[popover]</code> and every button names its panel with
+    <code>popovertarget</code>, so one panel is open at a time, a click outside closes it and so
+    does Escape — the three things upstream wires by hand. That also means the menu opens and
+    closes with scripting off; only the placement above the bar and the motion need ui.js.
+</p>
+
+<h2 class="doc-h2">Writing items</h2>
+<p class="doc-note">
+    <code>IconContent</code> is what the bar shows, <code>Label</code> names the button for a screen
+    reader and <code>ChildContent</code> is the panel. <code>Value</code> is required: the item is
+    rendered twice, once as a button and once as a panel, and the two find each other by it. An
+    item with no <code>ChildContent</code> is a plain button with nothing to open.
+</p>

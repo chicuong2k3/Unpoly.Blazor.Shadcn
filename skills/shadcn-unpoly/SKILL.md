@@ -275,6 +275,17 @@ such component works with scripting off and keeps still under `prefers-reduced-m
   phone menu — so an `id` inside an item's content is a duplicate id. `DesktopClass` and
   `MobileClass` are upstream's `desktopClassName`/`mobileClassName` and merge with the recipe:
   `DesktopClass="md:hidden" MobileClass="md:block"` keeps the phone layout at every width.
+- **`FloatingNav`** (Ruixen) takes `FloatingNavItem` children: icon as `ChildContent`, `Label`,
+  `Href` (a link; without it a button) and `Active`. It does **not** pin itself to the window as
+  upstream does — put `Class="fixed inset-x-0 bottom-4 z-50 mx-auto"` on it for that, and pad
+  the page's bottom. The pill is drawn inside the `Active` item by the server; mark exactly one.
+- **`BottomMenu`** (useLayouts) takes `BottomMenuItem` children: `Value` (required), `Label`,
+  `IconContent` for the bar and `ChildContent` for the panel. Each panel is a `[popover]`, so one
+  is open at a time and outside click and Escape close it without code. Like FloatingDock the
+  children render twice, so no `id` inside an item.
+- **`FrequentlyAskedQuestions`** (ScrollX) takes `Title`, `Description`, `SupportEmail` and
+  `Items` (`FaqItem(Question, Answer)` records). The headline is an `h2`; `HeadingLevel="1"` when
+  the section is the whole page. The answers are this library's `Accordion`.
 
 ## Adding a component
 

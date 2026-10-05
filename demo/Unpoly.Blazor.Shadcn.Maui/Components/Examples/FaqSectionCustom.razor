@@ -1,0 +1,15 @@
+@* Your own questions, title and address. Items is a list of FaqItem records; the answers are
+   this library's Accordion, so one open question closes the others and all of it works with
+   scripting off. *@
+<FrequentlyAskedQuestions Class="py-8" Title="Questions about the port"
+                          Description="Not here? Ask on the issue tracker, or write to"
+                          SupportEmail="hello@example.com" Items="@Questions" />
+
+@code {
+    static readonly FaqItem[] Questions =
+    [
+        new("Does it need JavaScript?", "No. Every component renders working HTML; ui.js adds behaviour and Motion adds movement."),
+        new("Is this shadcn?", "The shadcn components are, class for class. This section is ScrollX UI's, ported the same way."),
+        new("Can I use it in MAUI?", "Yes — both demo heads render the same components."),
+    ];
+}

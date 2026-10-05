@@ -1,0 +1,24 @@
+@page "/components/faq-section"
+
+<PageTitle>FAQ Section — Unpoly.Blazor.Shadcn</PageTitle>
+
+<h1 class="doc-h1">FAQ Section</h1>
+<p class="doc-lede">
+    ScrollX UI's frequently-asked-questions section: a headline that arrives word by word out of a
+    blur, a line of help with a support address, and the questions as an accordion whose rows rise
+    into place one after another the first time the section is scrolled into view.
+</p>
+
+<h2 class="doc-h2">Basic</h2>
+<Example Source="FaqSectionExample.razor"><FaqSectionExample /></Example>
+
+<h2 class="doc-h2">Your own questions</h2>
+<Example Source="FaqSectionCustom.razor"><FaqSectionCustom /></Example>
+
+<h2 class="doc-h2">Headings and motion</h2>
+<p class="doc-note">
+    The headline is an <code>h2</code> where upstream writes <code>h1</code>, because a section in a
+    page sits under that page's own title; <code>HeadingLevel="1"</code> is for a page that is
+    nothing but the FAQ. The finished section is in the markup, so a reader without scripting —
+    or with <code>prefers-reduced-motion</code> — gets it at once, without the entrance.
+</p>

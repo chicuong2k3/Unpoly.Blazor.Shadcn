@@ -242,6 +242,22 @@ renders `<div>` · `data-slot="bento-grid"`
 | `Columns` | `int` | `3` |  |
 | `RowClass` | `string` | `"auto-rows-[180px]"` |  |
 
+## `<BottomMenu>`
+renders `<div>` · `data-slot="bottom-menu"`
+
+| Parameter | Type | Default | |
+|---|---|---|---|
+| `Label` | `string` | `"Menu"` |  |
+
+## `<BottomMenuItem>`
+renders `<div>` · `data-slot="bottom-menu-panel"`
+
+| Parameter | Type | Default | |
+|---|---|---|---|
+| `Value` | `string` | `default!` |  |
+| `Label` | `string?` | — | **required** |
+| `IconContent` | `RenderFragment?` | — |  |
+
 ## `<Breadcrumb>`
 renders `<nav>` · `data-slot="breadcrumb"`
 
@@ -1160,6 +1176,22 @@ renders `<a>` · `data-slot="floating-dock-item"`
 | `Href` | `string?` | — |  |
 | `Title` | `string?` | — |  |
 
+## `<FloatingNav>`
+renders `<nav>` · `data-slot="floating-nav"`
+
+| Parameter | Type | Default | |
+|---|---|---|---|
+| `Label` | `string` | `"Main"` |  |
+
+## `<FloatingNavItem>`
+renders `<a>` · `data-slot="floating-nav-item"`
+
+| Parameter | Type | Default | |
+|---|---|---|---|
+| `Href` | `string?` | — |  |
+| `Label` | `string?` | — |  |
+| `Active` | `bool` | — |  |
+
 ## `<FolderPicker>`
 renders `<div>` · `data-slot="folder-picker"`
 
@@ -1214,6 +1246,17 @@ renders `<p>` · `data-slot="form-message"`
 | Parameter | Type | Default | |
 |---|---|---|---|
 | `Message` | `string?` | — |  |
+
+## `<FrequentlyAskedQuestions>`
+renders `<section>` · `data-slot="frequently-asked-questions"`
+
+| Parameter | Type | Default | |
+|---|---|---|---|
+| `Title` | `string` | `"Frequently asked questions"` |  |
+| `Description` | `string?` | `"We are here to help you with any questions you may have. If you don't find what you need, please contact us."` |  |
+| `SupportEmail` | `string?` | `"support@example.com"` |  |
+| `Items` | `IReadOnlyList<FaqItem>` | `Defaults` |  |
+| `HeadingLevel` | `int` | `2` |  |
 
 ## `<GradientBorder>`
 renders `<div>` · `data-slot="gradient-border"`
