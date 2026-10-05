@@ -7403,6 +7403,10 @@ up-modal up-modal-dismiss:focus-visible, up-drawer up-drawer-dismiss:focus-visib
     padding: 1.5rem max(1rem, env(safe-area-inset-right)) calc(1.5rem + env(safe-area-inset-bottom)) max(1rem, env(safe-area-inset-left));
   }
 }
+[data-slot="checkbox"], [data-slot="radio-group-item"] {
+  min-inline-size: 1rem;
+  min-block-size: 1rem;
+}
 :root {
   --radius: 0.625rem;
   --background: rgb(255, 255, 255);
