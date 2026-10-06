@@ -1,0 +1,7 @@
+@* Annual first, three plans of your own, no photo and no question underneath. *@
+<SubscriptionDetails Class="min-h-0" Billing="yearly" Title="Choose a plan" YearlyBadge="-20%" Question="@null"
+                     Plans="@([
+                         new("Hobby", "For trying things out", 0, 0, ["1 project", "Community support"]),
+                         new("Pro", "For people who ship", 25, 20, ["Unlimited projects", "Custom domains", "Email support"]) { Featured = true },
+                         new("Studio", "For small agencies", 80, 64, ["Everything in Pro", "Client workspaces", "Priority support"]),
+                     ])" />

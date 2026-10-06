@@ -13,8 +13,9 @@
    ui.behavior.css, so that works with scripting off too. ui.js lights the chosen column, keeps
    the button's plan name in step, and counts the prices with Motion. *@
 
-<form data-slot="pricing-table" method="get" action="@Action" class="@Classes" @attributes="AdditionalAttributes">
-    <fieldset data-slot="pricing-table-billing" class="mx-auto flex w-fit min-w-0 rounded-full border bg-muted p-1">
+<form data-slot="pricing-table" data-billing-scope="@(Yearly ? "yearly" : "monthly")" method="get" action="@Action"
+      class="@Classes" @attributes="AdditionalAttributes">
+    <fieldset data-slot="pricing-table-billing" data-billing-control class="mx-auto flex w-fit min-w-0 rounded-full border bg-muted p-1">
         <legend class="sr-only">Billing period</legend>
         <label class="@ToggleClasses">
             <input type="radio" name="billing" value="monthly" checked="@(!Yearly)" class="sr-only" />Monthly

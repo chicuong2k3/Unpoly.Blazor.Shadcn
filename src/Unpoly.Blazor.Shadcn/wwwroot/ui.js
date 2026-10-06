@@ -4376,6 +4376,148 @@
     }
   })
 
+  // ---- ui-layouts' TimelineAnimation -------------------------------------------------------
+  // Every [data-timeline] piece of a section waits behind a 20px blur and, the first time the
+  // section comes into view, sharpens in over 0.5s, starting at 0.5s × its number — so the
+  // pieces arrive one after another in the order the numbers give. Nested pieces multiply, as
+  // they do upstream: a card inside the grid's piece waits for both. Hidden just before, shown
+  // again if Motion cannot load; the markup is the finished section either way.
+  const timeline = (root) => {
+    if (reducedMotion()) return () => {}
+    const pieces = [...root.querySelectorAll('[data-timeline]')]
+    for (const piece of pieces) piece.style.opacity = '0'
+    let stop = () => {}
+    let disposed = false
+    ensureMotion().then((M) => {
+      if (disposed) return
+      stop = M.inView(root, () => {
+        for (const piece of pieces) {
+          M.animate(piece, { opacity: [0, 1], filter: ['blur(20px)', 'blur(0px)'] },
+            { delay: Number(piece.dataset.timeline) * 0.5, duration: 0.5 })
+        }
+        stop()
+      })
+    }).catch(() => { for (const piece of pieces) piece.style.opacity = '' })
+    return () => {
+      disposed = true
+      stop()
+      for (const piece of pieces) { piece.style.opacity = ''; piece.style.filter = '' }
+    }
+  }
+
+  // ---- NumberFlow's roll -------------------------------------------------------------------
+  // What @number-flow/react does when a price changes, done to the text the server wrote: the
+  // new figure set right-aligned against the old one, character by character. A digit that
+  // changes is a column of 0–9 that spins to its new place; a character that appears or goes
+  // fades while its width opens or closes; the rest simply take their new width. When it
+  // settles the columns are replaced by the plain text, so the DOM ends as the server wrote it.
+  const measure = document.createElement('canvas').getContext('2d')
+  const rollText = (M, el, from, to) => {
+    const cs = getComputedStyle(el)
+    const line = parseFloat(cs.lineHeight) || parseFloat(cs.fontSize) * 1.2
+    if (measure) measure.font = `${cs.fontStyle} ${cs.fontWeight} ${cs.fontSize} ${cs.fontFamily}`
+    const width = (ch) => (ch === ' ' || !measure ? 0 : measure.measureText(ch).width)
+    const n = Math.max(from.length, to.length)
+    const a = from.padStart(n)
+    const b = to.padStart(n)
+    const spin = { duration: 0.75, ease: [0.16, 1, 0.3, 1] }
+    const fade = { duration: 0.45 }
+    const runs = []
+
+    el.textContent = ''
+    const label = document.createElement('span')
+    label.textContent = to
+    Object.assign(label.style, { position: 'absolute', width: '1px', height: '1px', overflow: 'hidden', clip: 'rect(0 0 0 0)', whiteSpace: 'nowrap' })
+    el.append(label)
+    for (let i = 0; i < n; i++) {
+      const x = a[i]
+      const y = b[i]
+      const cell = document.createElement('span')
+      cell.setAttribute('aria-hidden', 'true')
+      Object.assign(cell.style, { display: 'inline-block', overflow: 'hidden', verticalAlign: 'top', whiteSpace: 'pre', height: `${line}px`, lineHeight: `${line}px`, width: `${width(x)}px` })
+      const digit = (ch) => (/\d/.test(ch) ? Number(ch) : null)
+      const dx = digit(x)
+      const dy = digit(y)
+      if (dx !== null || dy !== null) {
+        const column = document.createElement('span')
+        column.style.display = 'block'
+        for (let d = 0; d <= 9; d++) {
+          const row = document.createElement('span')
+          row.style.display = 'block'
+          row.textContent = String(d)
+          column.append(row)
+        }
+        cell.append(column)
+        const start = dx ?? dy
+        const end = dy ?? dx
+        column.style.transform = `translateY(${-start * line}px)`
+        if (start !== end) runs.push(M.animate(column, { y: [-start * line, -end * line] }, spin))
+      } else {
+        cell.textContent = y === ' ' ? x : y
+      }
+      el.append(cell)
+      runs.push(M.animate(cell, { width: [`${width(x)}px`, `${width(y)}px`] }, spin))
+      if (x === ' ' || y === ' ') runs.push(M.animate(cell, { opacity: [x === ' ' ? 0 : 1, y === ' ' ? 0 : 1] }, fade))
+    }
+
+    let stopped = false
+    Promise.all(runs.map((run) => run.finished)).then(() => { if (!stopped) el.textContent = to })
+    return { stop: () => { stopped = true; for (const run of runs) run.stop() } }
+  }
+
+  // Rolls every [data-billing-roll] pair when the section's billing control changes. Each pair
+  // holds the monthly and the yearly figure; the CSS has already shown the right one, and this
+  // rolls it from the figure it replaced. Every figure is put back to the server's text first,
+  // so a second change mid-roll starts clean.
+  const billingRoll = (root) => {
+    const figures = [...root.querySelectorAll('[data-billing-roll] > [data-billing]')]
+    const text = new Map(figures.map((f) => [f, f.textContent]))
+    let rolls = []
+    let generation = 0
+    let disposed = false
+    const settle = () => {
+      for (const roll of rolls) roll.stop()
+      rolls = []
+      for (const f of figures) f.textContent = text.get(f)
+    }
+
+    const onChange = (e) => {
+      if (!e.target.closest?.('[data-billing-control]')) return
+      settle()
+      const token = ++generation
+      if (reducedMotion()) return
+      const billing = root.querySelector('[data-billing-control] [value="yearly"]')?.checked ? 'yearly' : 'monthly'
+      const pairs = []
+      for (const pair of root.querySelectorAll('[data-billing-roll]')) {
+        const shown = pair.querySelector(`:scope > [data-billing="${billing}"]`)
+        const gone = pair.querySelector(`:scope > [data-billing]:not([data-billing="${billing}"])`)
+        if (shown && gone && text.get(shown) !== text.get(gone)) pairs.push([shown, text.get(gone), text.get(shown)])
+      }
+      // The old figure holds until Motion arrives, so the new one is never flashed first.
+      for (const [el, from] of pairs) el.textContent = from
+      ensureMotion().then((M) => {
+        if (disposed || token !== generation) return
+        rolls = pairs.map(([el, from, to]) => rollText(M, el, from, to))
+      }).catch(settle)
+    }
+
+    root.addEventListener('change', onChange)
+    return () => {
+      disposed = true
+      root.removeEventListener('change', onChange)
+      settle()
+    }
+  }
+
+  // ---- GrowthBusiness, SubscriptionDetails -------------------------------------------------
+  // ui-layouts' two pricing sections: the timeline entrance and the roll, nothing else. The
+  // billing itself is the switch or the radios, and the CSS.
+  shadcnCompiler('[data-slot="growth-business"], [data-slot="subscription-details"]', (root) => {
+    const stopTimeline = timeline(root)
+    const stopRoll = billingRoll(root)
+    return () => { stopTimeline(); stopRoll() }
+  })
+
   // Anything outside Unpoly's world — a head's own app.js, a page script — reaches these.
   // `toast` is global on purpose: that is sonner's API, and the call sites read the same.
   window.toast = toast

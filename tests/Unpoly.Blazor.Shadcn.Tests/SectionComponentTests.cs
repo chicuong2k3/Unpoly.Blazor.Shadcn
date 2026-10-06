@@ -5,9 +5,10 @@ using Unpoly.Blazor.Shadcn.Components;
 namespace Unpoly.Blazor.Shadcn.Tests;
 
 /// <summary>
-/// BottomNavBar, LogoCloud and PricingTable were built from 21st.dev descriptions, so there is no
-/// upstream source for the parity theory to compare. These pin what each promises before ui.js
-/// and Motion add any movement: the markup that works, and reads, with scripting off.
+/// BottomNavBar, LogoCloud and PricingTable were built from 21st.dev descriptions; GrowthBusiness
+/// and SubscriptionDetails are ports of ui-layouts blocks. None has a shadcn upstream for the
+/// parity theory to compare. These pin what each promises before ui.js and Motion add any
+/// movement: the markup that works, and reads, with scripting off.
 /// </summary>
 public class SectionComponentTests : BunitContext
 {
@@ -213,6 +214,109 @@ public class SectionComponentTests : BunitContext
                 .Find("[data-slot=pricing-table-price][data-billing=monthly]");
 
             Assert.Equal(("1234.5", "2", "$1,234.50"), (price.GetAttribute("data-value"), price.GetAttribute("data-decimals"), price.TextContent));
+        }
+        finally
+        {
+            CultureInfo.CurrentCulture = culture;
+        }
+    }
+
+    // ---- GrowthBusiness, SubscriptionDetails ----------------------------------------------------
+
+    static string[] Shown<T>(IRenderedComponent<T> section, string billing) where T : Microsoft.AspNetCore.Components.IComponent =>
+        section.FindAll($"[data-billing-roll] > [data-billing={billing}]").Select(p => p.TextContent).ToArray();
+
+    [Fact]
+    public void GrowthBusiness_ships_upstreams_three_plans_with_the_middle_one_featured()
+    {
+        var cards = Render<GrowthBusiness>().FindAll("[data-timeline] > div > [data-timeline]");
+
+        Assert.Equal(["Basic Plan", "Business Plan", "Premium Plan"], cards.Select(c => c.QuerySelector("h3")!.TextContent));
+        Assert.Equal([false, true, false], cards.Select(c => c.GetAttribute("data-featured") == "true"));
+    }
+
+    [Fact]
+    public void GrowthBusiness_writes_every_price_for_both_billings()
+    {
+        var section = Render<GrowthBusiness>();
+
+        Assert.Equal(["29", "59", "99"], Shown(section, "monthly"));
+        Assert.Equal(["23", "47", "79"], Shown(section, "yearly"));
+    }
+
+    [Theory]
+    [InlineData(null, true, "yearly")]
+    [InlineData("monthly", false, "monthly")]
+    public void The_growth_business_switch_starts_on_yearly_as_upstream_does(string? billing, bool on, string scope)
+    {
+        var section = Render<GrowthBusiness>(p => { if (billing is not null) p.Add(x => x.Billing, billing); });
+
+        Assert.Equal(on, section.Find("[data-slot=switch]").HasAttribute("checked"));
+        Assert.Equal(scope, section.Find("[data-slot=growth-business]").GetAttribute("data-billing-scope"));
+    }
+
+    [Fact]
+    public void A_plan_with_an_href_gets_a_link_and_one_without_a_button_that_does_not_submit()
+    {
+        var section = Render<GrowthBusiness>(p => p.Add(x => x.Plans,
+        [
+            new PricingTier("A", "a", 1, 1, ["x"]) { Href = "/signup?plan=a" },
+            new PricingTier("B", "b", 2, 2, ["y"]),
+        ]));
+
+        Assert.Equal("/signup?plan=a", section.Find("a").GetAttribute("href"));
+        Assert.Equal("button", section.Find("button").GetAttribute("type"));
+    }
+
+    [Fact]
+    public void SubscriptionDetails_ships_upstreams_annual_prices_as_its_own_sums()
+    {
+        // Upstream rounds 85% of each monthly price; the defaults carry those results.
+        var section = Render<SubscriptionDetails>();
+
+        Assert.Equal(["10", "20", "40", "60"], Shown(section, "monthly"));
+        Assert.Equal(["9", "17", "34", "51"], Shown(section, "yearly"));
+    }
+
+    [Fact]
+    public void Two_subscription_sections_never_share_a_radio_group()
+    {
+        // Radios outside a form group by name across the page: a shared name let the second
+        // section uncheck the first one's billing.
+        var first = Render<SubscriptionDetails>().Find("input[type=radio]").GetAttribute("name");
+        var second = Render<SubscriptionDetails>().Find("input[type=radio]").GetAttribute("name");
+
+        Assert.NotEqual(first, second);
+    }
+
+    [Fact]
+    public void The_featured_photo_is_only_in_the_markup_when_given()
+    {
+        Assert.Empty(Render<SubscriptionDetails>().FindAll("img"));
+
+        var img = Render<SubscriptionDetails>(p => p.Add(x => x.FeaturedImage, "/photo.jpg")).Find("[data-featured=true] img");
+        Assert.Equal(("/photo.jpg", ""), (img.GetAttribute("src"), img.GetAttribute("alt")));
+    }
+
+    [Fact]
+    public void A_null_question_leaves_the_row_under_the_cards_out()
+    {
+        Assert.Single(Render<SubscriptionDetails>().FindAll("h3"));
+        Assert.Empty(Render<SubscriptionDetails>(p => p.Add(x => x.Question, null)).FindAll("h3"));
+    }
+
+    [Fact]
+    public void Section_prices_are_written_invariantly_whatever_the_culture()
+    {
+        var culture = CultureInfo.CurrentCulture;
+        CultureInfo.CurrentCulture = new CultureInfo("de-DE");
+        try
+        {
+            var section = Render<SubscriptionDetails>(p => p.Add(x => x.Plans,
+                [new PricingTier("Big", "b", 1234.5m, 12000m, ["x"])]));
+
+            Assert.Equal(["1,234.50"], Shown(section, "monthly"));
+            Assert.Equal(["12,000"], Shown(section, "yearly"));
         }
         finally
         {

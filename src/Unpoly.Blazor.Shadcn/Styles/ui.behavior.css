@@ -976,13 +976,19 @@ button[data-slot="sidebar-menu-sub-button"] { width: 100%; }
         [data-slot="logo-cloud-track"] > [data-slot="logo-cloud-list"] { flex-shrink: 1; flex-wrap: wrap; justify-content: center; row-gap: 2rem; padding-inline-end: 0; }
     }
 
-    /* ---- PricingTable -------------------------------------------------------------------
-       Every plan writes both of its prices, and the checked billing radio decides which one
-       shows — so the switch works with scripting off. An engine without :has() keeps the
-       yearly figures hidden and reads the monthly ones, rather than showing both. */
-    [data-slot="pricing-table"] [data-billing="yearly"] { display: none; }
-    [data-slot="pricing-table"]:has([data-slot="pricing-table-billing"] [value="yearly"]:checked) [data-billing="yearly"] { display: revert; }
-    [data-slot="pricing-table"]:has([data-slot="pricing-table-billing"] [value="yearly"]:checked) [data-billing="monthly"] { display: none; }
+    /* ---- monthly / yearly: PricingTable, GrowthBusiness, SubscriptionDetails ----------------
+       A section that offers both billings writes every price twice, each marked data-billing,
+       and its yearly control — a switch or a radio, value="yearly" — decides which shows. That
+       is :has(), so the switch works with scripting off. Rules only ever hide: a rule that
+       showed would have to restore a display value, and any utility on the element would lose
+       to it. data-billing-scope names the billing the server checked, which is what an engine
+       without :has() goes on showing, rather than both. */
+    @supports not selector(:has(*)) {
+        [data-billing-scope="monthly"] [data-billing="yearly"],
+        [data-billing-scope="yearly"] [data-billing="monthly"] { display: none; }
+    }
+    [data-billing-scope]:has([data-billing-control] [value="yearly"]:checked) [data-billing="monthly"],
+    [data-billing-scope]:has([data-billing-control] [value="yearly"]:not(:checked)) [data-billing="yearly"] { display: none; }
 }
 
 @keyframes sh-spin { to { transform: rotate(360deg); } }

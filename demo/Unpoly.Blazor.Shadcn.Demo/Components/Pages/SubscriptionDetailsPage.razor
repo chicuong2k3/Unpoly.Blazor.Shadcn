@@ -1,0 +1,21 @@
+@page "/components/subscription-details"
+
+<PageTitle>Subscription Details — Unpoly.Blazor.Shadcn</PageTitle>
+
+<h1 class="doc-h1">Subscription Details</h1>
+<p class="doc-lede">
+    ui-layouts' "subscription details" pricing section, ported class for class: a Monthly/Annual
+    pill, four plan cards with the featured one a black slab under an orange glow, prices that
+    roll digit by digit, and a question with its answer underneath.
+</p>
+
+<h2 class="doc-h2">As it ships</h2>
+<Example Source="SubscriptionDetailsExample.razor" Block><SubscriptionDetailsExample /></Example>
+
+<h2 class="doc-h2">Your own plans</h2>
+<p class="doc-note">
+    Each plan carries both prices — upstream works the annual one out as 15% off, and the
+    defaults are its sums. <code>Question="@@null"</code> leaves the row under the cards out;
+    <code>Answer</code> takes any markup.
+</p>
+<Example Source="SubscriptionDetailsCustom.razor" Block><SubscriptionDetailsCustom /></Example>

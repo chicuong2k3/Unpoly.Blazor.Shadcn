@@ -306,6 +306,16 @@ such component works with scripting off and keeps still under `prefers-reduced-m
 These three were built from their 21st.dev descriptions, not their source: the idea matches,
 the details are this library's.
 
+- **`GrowthBusiness`** and **`SubscriptionDetails`** are ui-layouts' pricing sections (MIT),
+  ported class for class. Both take `Plans` as `PricingTier(Name, Description, MonthlyPrice,
+  YearlyPrice, Features) { Featured, Href }` and default to upstream's plans and copy; both
+  start on upstream's billing (`yearly` and `monthly`) unless `Billing` says otherwise. The
+  billing control is a real checkbox / radio pair and every price is written twice, so it works
+  without script; ui.js adds NumberFlow's digit roll and the timeline entrance. Their palette is
+  upstream's fixed light one — they stay light on a dark page. `SubscriptionDetails` fetches
+  no photo unless `FeaturedImage` is given; `Question="@null"` drops the row under the cards.
+  Both are `min-h-screen` like upstream; `Class="min-h-0"` inside a page.
+
 ## Adding a component
 
 Copy the class strings from ui.shadcn.com verbatim. Change exactly four things: `h-9` →

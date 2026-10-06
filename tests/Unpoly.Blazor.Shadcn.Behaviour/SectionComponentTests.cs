@@ -3,9 +3,10 @@ using Microsoft.Playwright;
 namespace Unpoly.Blazor.Shadcn.Behaviour;
 
 /// <summary>
-/// What ui.js, Motion and ui.behavior.css add to BottomNavBar, LogoCloud and PricingTable — the
-/// parts only a browser can show: a name that unfolds, a strip that moves and stops, a cell that
-/// swaps, a price that counts, a form that comes back as it was left.
+/// What ui.js, Motion and ui.behavior.css add to BottomNavBar, LogoCloud, PricingTable,
+/// GrowthBusiness and SubscriptionDetails — the parts only a browser can show: a name that
+/// unfolds, a strip that moves and stops, a cell that swaps, a price that counts or rolls, a
+/// form that comes back as it was left, pieces that wait to be scrolled to.
 /// </summary>
 [Collection(DemoCollection.Name)]
 [Trait("Module", "Sections")]
@@ -120,6 +121,82 @@ public class SectionComponentTests(DemoFixture fixture) : DemoPage(fixture)
 
         Assert.Contains("billing=yearly", Page.Url);
         Assert.Equal(["yearly", "Enterprise"], checkedValues);
+        AssertQuiet();
+    }
+
+    const string ShownPrices = "s => [...s.querySelectorAll('[data-billing-roll] > [data-billing]')].filter(p => p.offsetParent).map(p => p.textContent)";
+
+    // The SubscriptionDetails demo lays upstream's Unsplash photo along its featured card. A
+    // test must not depend on a third party being reachable, so the photo is answered locally.
+    async Task StubPhotosAsync() =>
+        await Page.RouteAsync("https://images.unsplash.com/**", route => route.FulfillAsync(new()
+        {
+            ContentType = "image/png",
+            BodyBytes = Convert.FromBase64String("iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII="),
+        }));
+
+    [SkippableFact]
+    public async Task Flipping_the_growth_business_switch_rolls_each_price_to_its_monthly_figure()
+    {
+        RequireDemo();
+        await GoAsync("/components/growth-business");
+        var section = (await ShowAsync("preview-growth-business-example")).Locator("[data-slot=growth-business]");
+        await Page.WaitForTimeoutAsync(5000);
+
+        var before = await section.EvaluateAsync<string[]>(ShownPrices);
+        await section.Locator("[data-slot=switch]").ClickAsync();
+        await Page.WaitForTimeoutAsync(150);
+        var rolling = await section.Locator("[data-billing-roll] [aria-hidden=true]").CountAsync();
+        await Page.WaitForTimeoutAsync(1000);
+        var after = await section.EvaluateAsync<string[]>(ShownPrices);
+        var leftover = await section.Locator("[data-billing-roll] [aria-hidden=true]").CountAsync();
+
+        Assert.Equal(["23", "47", "79"], before);
+        Assert.True(rolling > 0, "no digit columns while the price changed");
+        Assert.Equal(["29", "59", "99"], after);
+        Assert.Equal(0, leftover);
+        AssertQuiet();
+    }
+
+    [SkippableFact]
+    public async Task Subscription_details_pieces_wait_out_of_sight_and_arrive_once_scrolled_to()
+    {
+        RequireDemo();
+        await StubPhotosAsync();
+        await GoAsync("/components/subscription-details");
+        var section = Example("preview-subscription-details-custom").Locator("[data-slot=subscription-details]");
+        const string Opacities = "s => [...s.querySelectorAll('[data-timeline]')].map(e => Number(getComputedStyle(e).opacity))";
+
+        var before = await section.EvaluateAsync<double[]>(Opacities);
+        await section.ScrollIntoViewIfNeededAsync();
+        await Page.WaitForTimeoutAsync(3500);
+        var after = await section.EvaluateAsync<double[]>(Opacities);
+
+        Assert.True(before.All(o => o == 0), "before scrolling: " + string.Join(",", before));
+        Assert.True(after.All(o => o == 1), "after scrolling: " + string.Join(",", after));
+        AssertQuiet();
+    }
+
+    [SkippableFact]
+    public async Task Two_subscription_sections_on_one_page_keep_their_own_billing()
+    {
+        RequireDemo();
+        await StubPhotosAsync();
+        await GoAsync("/components/subscription-details");
+        var first = Example("preview-subscription-details-example").Locator("[data-slot=subscription-details]");
+        var second = Example("preview-subscription-details-custom").Locator("[data-slot=subscription-details]");
+
+        await first.ScrollIntoViewIfNeededAsync();
+        await first.Locator("label:has(input[value=yearly])").ClickAsync();
+        await Page.WaitForTimeoutAsync(1000);
+        var checkedValues = new[]
+        {
+            await first.Locator("input:checked").GetAttributeAsync("value") ?? "",
+            await second.Locator("input:checked").GetAttributeAsync("value") ?? "",
+        };
+
+        Assert.Equal(["yearly", "yearly"], checkedValues);
+        Assert.Equal(["9", "17", "34", "51"], await first.EvaluateAsync<string[]>(ShownPrices));
         AssertQuiet();
     }
 }

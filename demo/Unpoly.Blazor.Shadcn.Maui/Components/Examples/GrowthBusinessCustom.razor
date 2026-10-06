@@ -1,0 +1,13 @@
+@* Your own plans as PricingTier records. Href makes a card's button a link; Billing="monthly"
+   starts with the switch off. min-h-0 lifts upstream's full-screen height. *@
+<GrowthBusiness Class="min-h-0" Billing="monthly" Title="Plans for every team." ActionLabel="Start free trial"
+                Description="Every plan starts with a 14-day trial. No card needed."
+                Plans="@([
+                    new("Solo", "For one person and their side project", 12, 9,
+                        ["3 projects", "Basic analytics", "Email support"]) { Href = "/components/growth-business" },
+                    new("Team", "For teams shipping every week", 39, 31,
+                        ["Everything in Solo", "Unlimited projects", "Shared workspaces", "Priority support"])
+                        { Featured = true, Href = "/components/growth-business" },
+                    new("Company", "For organisations with a security review", 89, 71,
+                        ["Everything in Team", "Single sign-on", "Audit log", "Dedicated manager"]) { Href = "/components/growth-business" },
+                ])" />

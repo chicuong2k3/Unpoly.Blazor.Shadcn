@@ -1291,6 +1291,18 @@ renders `<div>` · `data-slot="grid-pattern"`
 | `Stroke` | `string?` | `"currentColor"` |  |
 | `StrokeWidth` | `double` | `1` |  |
 
+## `<GrowthBusiness>`
+renders `<section>` · `data-slot="growth-business"`
+
+| Parameter | Type | Default | |
+|---|---|---|---|
+| `Title` | `string` | `"Plans that grow your business."` |  |
+| `Description` | `string` | `"Unlock potential with plans designed to fuel growth."` |  |
+| `Plans` | `IReadOnlyList<PricingTier>` | `Defaults` |  |
+| `Billing` | `string` | `"yearly"` |  |
+| `YearlyBadge` | `string?` | `"(Save 20%)"` |  |
+| `ActionLabel` | `string` | `"Select Plan"` |  |
+
 ## `<Heatmap>`
 renders `<div>` · `data-slot="heatmap"`
 
@@ -2294,6 +2306,21 @@ renders `<div>` · `data-slot="steps-item"`
 | `Description` | `string?` | — |  |
 | `Status` | `StepsItemStatus` | `StepsItemStatus.Default` |  |
 | `IconContent` | `RenderFragment?` | — |  |
+
+## `<SubscriptionDetails>`
+renders `<section>` · `data-slot="subscription-details"`
+
+| Parameter | Type | Default | |
+|---|---|---|---|
+| `Title` | `string` | `"Subscription"` |  |
+| `Plans` | `IReadOnlyList<PricingTier>` | `Defaults` |  |
+| `Billing` | `string` | `"monthly"` |  |
+| `YearlyBadge` | `string?` | `"-15%"` |  |
+| `PopularLabel` | `string` | `"Most popular"` |  |
+| `ActionLabel` | `string` | `"Subscribe"` |  |
+| `FeaturedImage` | `string?` | — |  |
+| `Question` | `string?` | `"How many interiors can I generate with a basic plan?"` |  |
+| `Answer` | `RenderFragment?` | — |  |
 
 ## `<Switch>`
 renders `<input>` · `data-slot="switch"`

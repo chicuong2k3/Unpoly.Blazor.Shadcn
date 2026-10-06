@@ -1,0 +1,29 @@
+@page "/components/growth-business"
+
+<PageTitle>Growth Business — Unpoly.Blazor.Shadcn</PageTitle>
+
+<h1 class="doc-h1">Growth Business</h1>
+<p class="doc-lede">
+    ui-layouts' "grow business" pricing section, ported class for class: three plan cards on a
+    slate canvas, a lime monthly/yearly switch, prices that roll digit by digit when it flips, and
+    every piece sharpening in out of a blur the first time the section is scrolled to.
+</p>
+
+<h2 class="doc-h2">As it ships</h2>
+<Example Source="GrowthBusinessExample.razor" Block><GrowthBusinessExample /></Example>
+
+<h2 class="doc-h2">Your own plans</h2>
+<p class="doc-note">
+    <code>Plans</code> takes <code>PricingTier(Name, Description, MonthlyPrice, YearlyPrice,
+    Features)</code> records; <code>Featured</code> makes the dark card and <code>Href</code>
+    makes its button a link. The switch is a real checkbox and every price is in the markup twice,
+    so it works with scripting off; the roll is the only part that needs a script.
+</p>
+<Example Source="GrowthBusinessCustom.razor" Block><GrowthBusinessCustom /></Example>
+
+<h2 class="doc-h2">A fixed, light palette</h2>
+<p class="doc-note">
+    Upstream draws this section in slate, neutral and lime with no dark variant, and so does the
+    port: on a dark page it stays a light section. Wrap it, or pass <code>Class</code>, to change
+    the canvas.
+</p>
