@@ -258,6 +258,23 @@ renders `<div>` · `data-slot="bottom-menu-panel"`
 | `Label` | `string?` | — | **required** |
 | `IconContent` | `RenderFragment?` | — |  |
 
+## `<BottomNavBar>`
+renders `<nav>` · `data-slot="bottom-nav-bar"`
+
+| Parameter | Type | Default | |
+|---|---|---|---|
+| `Label` | `string` | `"Bottom navigation"` |  |
+| `StickyBottom` | `bool` | — |  |
+
+## `<BottomNavBarItem>`
+renders `<a>` · `data-slot="bottom-nav-bar-item"`
+
+| Parameter | Type | Default | |
+|---|---|---|---|
+| `Href` | `string?` | — |  |
+| `Label` | `string?` | — |  |
+| `Active` | `bool` | — |  |
+
 ## `<Breadcrumb>`
 renders `<nav>` · `data-slot="breadcrumb"`
 
@@ -1487,6 +1504,20 @@ renders `<label>` · `data-slot="label"`
 
 _No parameters of its own._
 
+## `<LogoCloud>`
+renders `<div>` · `data-slot="logo-cloud"`
+
+| Parameter | Type | Default | |
+|---|---|---|---|
+| `Variant` | `string` | `"default"` |  |
+| `Title` | `string?` | — |  |
+| `Visible` | `int` | `6` |  |
+
+## `<LogoCloudItem>`
+renders `<svg>` · `data-slot="logo-cloud-item"`
+
+_No parameters of its own._
+
 ## `<Marker>`
 renders `<a>` · `data-slot="marker"`
 
@@ -1855,6 +1886,18 @@ renders `<button>` · `data-slot="popover-trigger"`
 | `Target` | `string` | `default!` |  |
 | `Variant` | `string` | `"outline"` | **required** |
 | `Size` | `string` | `"default"` |  |
+
+## `<PricingTable>`
+renders `<form>` · `data-slot="pricing-table"`
+
+| Parameter | Type | Default | |
+|---|---|---|---|
+| `Plans` | `IReadOnlyList<PricingPlan>` | `default!` |  |
+| `Features` | `IReadOnlyList<PricingFeature>` | `default!` | **required** |
+| `Action` | `string?` | — | **required** |
+| `Billing` | `string` | `"monthly"` |  |
+| `SelectedPlan` | `string?` | — |  |
+| `Currency` | `string` | `"$"` |  |
 
 ## `<Progress>`
 renders `<div>` · `data-slot="progress"`

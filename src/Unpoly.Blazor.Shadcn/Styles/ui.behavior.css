@@ -953,9 +953,40 @@ button[data-slot="sidebar-menu-sub-button"] { width: 100%; }
     input[type="number"][data-slot="input"] { -moz-appearance: textfield; appearance: textfield; }
     input[type="number"][data-slot="input"]::-webkit-outer-spin-button,
     input[type="number"][data-slot="input"]::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+
+    /* ---- LogoCloud marquee ------------------------------------------------------------
+       The track holds the list twice and slides by half its own width, so the second copy
+       arrives exactly where the first began and the loop has no seam. Edges fade through a
+       mask rather than an overlay, so the fade works on any background. Pointer or focus inside
+       pauses it. --logo-cloud-duration sets the speed; under right-to-left it runs the other
+       way, or the second copy would be waiting off the wrong edge. */
+    [data-slot="logo-cloud-viewport"] {
+        -webkit-mask-image: linear-gradient(to right, transparent, #000 10%, #000 90%, transparent);
+        mask-image: linear-gradient(to right, transparent, #000 10%, #000 90%, transparent);
+    }
+    [data-slot="logo-cloud-track"] { animation: sh-marquee var(--logo-cloud-duration, 30s) linear infinite; }
+    [dir="rtl"] [data-slot="logo-cloud-track"] { --sh-marquee-to: 50%; }
+    [data-slot="logo-cloud-viewport"]:hover [data-slot="logo-cloud-track"],
+    [data-slot="logo-cloud-viewport"]:focus-within [data-slot="logo-cloud-track"] { animation-play-state: paused; }
+    @media (prefers-reduced-motion: reduce) {
+        /* Nothing moves on its own: the copy goes, and the one list wraps into a still cloud. */
+        [data-slot="logo-cloud-viewport"] { -webkit-mask-image: none; mask-image: none; }
+        [data-slot="logo-cloud-track"] { animation: none; width: auto; justify-content: center; }
+        [data-slot="logo-cloud-track"] > [aria-hidden="true"] { display: none; }
+        [data-slot="logo-cloud-track"] > [data-slot="logo-cloud-list"] { flex-shrink: 1; flex-wrap: wrap; justify-content: center; row-gap: 2rem; padding-inline-end: 0; }
+    }
+
+    /* ---- PricingTable -------------------------------------------------------------------
+       Every plan writes both of its prices, and the checked billing radio decides which one
+       shows — so the switch works with scripting off. An engine without :has() keeps the
+       yearly figures hidden and reads the monthly ones, rather than showing both. */
+    [data-slot="pricing-table"] [data-billing="yearly"] { display: none; }
+    [data-slot="pricing-table"]:has([data-slot="pricing-table-billing"] [value="yearly"]:checked) [data-billing="yearly"] { display: revert; }
+    [data-slot="pricing-table"]:has([data-slot="pricing-table-billing"] [value="yearly"]:checked) [data-billing="monthly"] { display: none; }
 }
 
 @keyframes sh-spin { to { transform: rotate(360deg); } }
+@keyframes sh-marquee { to { transform: translateX(var(--sh-marquee-to, -50%)); } }
 @keyframes sh-fade-in { from { opacity: 0; } }
 @keyframes sh-dialog-in { from { opacity: 0; transform: scale(0.96); } }
 @keyframes sh-accordion-down { from { opacity: 0; transform: translateY(-4px); } }

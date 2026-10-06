@@ -1,0 +1,38 @@
+@page "/components/logo-cloud"
+
+<PageTitle>Logo Cloud — Unpoly.Blazor.Shadcn</PageTitle>
+
+<h1 class="doc-h1">Logo Cloud</h1>
+<p class="doc-lede">
+    The "trusted by" strip of partner and customer logos, after Nexus UI's logo clouds on 21st.dev.
+    One list of logos and a <code>Variant</code> for how they are shown: a still cloud, one row, a
+    marquee, a spotlight, a blur-in, or cells that swap.
+</p>
+
+<h2 class="doc-h2">Basic</h2>
+<Example Source="LogoCloudExample.razor" Block><LogoCloudExample /></Example>
+
+<h2 class="doc-h2">Single row</h2>
+<Example Source="LogoCloudRow.razor" Block><LogoCloudRow /></Example>
+
+<h2 class="doc-h2">Marquee</h2>
+<p class="doc-note">
+    The scroll is a CSS animation, so it runs with scripting off. It pauses under the pointer and
+    while focus is inside, and under reduced motion it does not run at all. The list is in the
+    markup twice so the loop has no seam; the second copy is <code>inert</code> and hidden from
+    assistive technology, and one copy has to be at least as wide as the cloud.
+</p>
+<Example Source="LogoCloudMarquee.razor" Block><LogoCloudMarquee /></Example>
+
+<h2 class="doc-h2">Spotlight</h2>
+<Example Source="LogoCloudSpotlight.razor" Block><LogoCloudSpotlight /></Example>
+
+<h2 class="doc-h2">Blur in</h2>
+<Example Source="LogoCloudBlur.razor" Block><LogoCloudBlur /></Example>
+
+<h2 class="doc-h2">Swap</h2>
+<p class="doc-note">
+    <code>Visible</code> logos show at once and the rest take turns. The swapping runs only while
+    the cloud is on screen and the tab is visible, and not at all under reduced motion.
+</p>
+<Example Source="LogoCloudSwap.razor" Block><LogoCloudSwap /></Example>

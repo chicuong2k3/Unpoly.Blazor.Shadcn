@@ -1,0 +1,13 @@
+@* Yearly checked from the start, two plans, prices in euros with cents. Switch to monthly and
+   each figure counts to its new value. *@
+<PricingTable Billing="yearly" Currency="€" SelectedPlan="Team"
+              Plans="@([
+                  new("Solo", 9.99m, 99.90m),
+                  new("Team", 24.50m, 245m) { Popular = true },
+              ])"
+              Features="@([
+                  new("Unlimited projects", "Solo"),
+                  new("Version history", "Solo"),
+                  new("Shared workspaces", "Team"),
+                  new("Single sign-on", "Team"),
+              ])" />

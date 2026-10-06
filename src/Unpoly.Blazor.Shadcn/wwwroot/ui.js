@@ -4167,6 +4167,215 @@
     }
   })
 
+  // ---- BottomNavBar ------------------------------------------------------------------------
+  // The active tab's name slides out beside its icon and the previous one folds away. The CSS
+  // already says which name shows — this moves data-active on a click and carries the change on
+  // a spring (stiffness 350, damping 32) for the width, with the name fading over 0.19s. Inline
+  // sizes are cleared once a fold settles, so the stylesheet is back in charge between clicks.
+  shadcnCompiler('[data-slot="bottom-nav-bar"]', (bar) => {
+    const items = () => [...bar.querySelectorAll(':scope > [data-slot="bottom-nav-bar-item"]')]
+    const labelOf = (item) => item?.querySelector(':scope > [data-slot="bottom-nav-bar-label"]')
+    const running = new Map()
+    const settle = (label) => { label.style.maxWidth = label.style.opacity = '' }
+    const play = (label, animation) => {
+      running.get(label)?.stop()
+      running.set(label, animation)
+      animation.finished.then(() => {
+        if (running.get(label) !== animation) return
+        running.delete(label)
+        settle(label)
+      })
+    }
+
+    const onClick = (e) => {
+      const item = e.target.closest('[data-slot="bottom-nav-bar-item"]')
+      if (!item || item.parentElement !== bar || item.dataset.active === 'true') return
+      const leaving = labelOf(items().find((i) => i.dataset.active === 'true'))
+      const arriving = labelOf(item)
+      const from = leaving ? leaving.getBoundingClientRect().width : 0
+      for (const other of items()) {
+        delete other.dataset.active
+        if (other.tagName === 'BUTTON') other.setAttribute('aria-pressed', 'false')
+      }
+      item.dataset.active = 'true'
+      if (item.tagName === 'BUTTON') item.setAttribute('aria-pressed', 'true')
+      if (!arriving || reducedMotion()) return
+
+      // Pin both names where they are before the first frame, or the new attribute paints the
+      // finished state for a frame while Motion is still loading.
+      const to = arriving.scrollWidth
+      const now = arriving.getBoundingClientRect().width
+      if (leaving) Object.assign(leaving.style, { maxWidth: `${from}px`, opacity: '1' })
+      Object.assign(arriving.style, { maxWidth: `${now}px`, opacity: now ? '1' : '0' })
+      ensureMotion().then((M) => {
+        const timing = { maxWidth: { type: 'spring', stiffness: 350, damping: 32 }, opacity: { duration: 0.19 } }
+        if (leaving) play(leaving, M.animate(leaving, { maxWidth: [`${from}px`, '0px'], opacity: [1, 0] }, timing))
+        play(arriving, M.animate(arriving, { maxWidth: [`${now}px`, `${to}px`], opacity: [now ? 1 : 0, 1] }, timing))
+      }).catch(() => { if (leaving) settle(leaving); settle(arriving) })
+    }
+
+    bar.addEventListener('click', onClick)
+    return () => {
+      bar.removeEventListener('click', onClick)
+      for (const [label, animation] of running) { animation.stop(); settle(label) }
+      running.clear()
+    }
+  })
+
+  // ---- LogoCloud ---------------------------------------------------------------------------
+  // The marquee and the spotlight are CSS. These are the two variants that need a clock.
+  //
+  // blur: the first time the cloud is scrolled to, the title sharpens in and then each logo,
+  // 0.08s apart, out of a 10px blur and 8px below. Hidden just before, shown again if Motion
+  // never arrives — the cloud is already complete in the markup.
+  shadcnCompiler('[data-slot="logo-cloud"][data-variant="blur"]', (cloud) => {
+    if (reducedMotion()) return () => {}
+    const title = cloud.querySelector(':scope > [data-slot="logo-cloud-title"]')
+    const logos = [...cloud.querySelectorAll('[data-slot="logo-cloud-item"]')]
+    const all = [title, ...logos].filter(Boolean)
+    for (const el of all) el.style.opacity = '0'
+    let stop = () => {}
+    let disposed = false
+
+    ensureMotion().then((M) => {
+      if (disposed) return
+      stop = M.inView(cloud, () => {
+        if (title) M.animate(title, { opacity: [0, 1], filter: ['blur(6px)', 'blur(0px)'] }, { duration: 0.5 })
+        logos.forEach((logo, i) => M.animate(logo,
+          { opacity: [0, 1], filter: ['blur(10px)', 'blur(0px)'], y: [8, 0] },
+          { duration: 0.6, delay: 0.15 + i * 0.08, ease: 'easeOut' }))
+        stop()
+      }, { amount: 0.3 })
+    }).catch(() => { for (const el of all) el.style.opacity = '' })
+
+    return () => {
+      disposed = true
+      stop()
+      for (const el of all) { el.style.opacity = ''; el.style.filter = ''; el.style.transform = '' }
+    }
+  })
+
+  // swap: the server shows the first Visible logos and renders the rest hidden. Every 2.5s,
+  // while the cloud is on screen and the tab is visible, one cell — never the same one twice
+  // running — blurs its logo out and the next logo in the queue blurs in where it was. The
+  // incoming logo takes the cell through CSS `order` rather than by moving elements, so the DOM
+  // a framework rendered stays the DOM it rendered.
+  shadcnCompiler('[data-slot="logo-cloud"][data-variant="swap"]', (cloud) => {
+    const list = cloud.querySelector(':scope > [data-slot="logo-cloud-list"]')
+    const logos = list ? [...list.querySelectorAll(':scope > [data-slot="logo-cloud-item"]')] : []
+    const hidden = logos.map((logo) => logo.hidden)
+    const cells = logos.filter((logo) => !logo.hidden)
+    const queue = logos.filter((logo) => logo.hidden)
+    if (!cells.length || !queue.length || reducedMotion()) return () => {}
+    cells.forEach((logo, i) => { logo.style.order = String(i) })
+    let timer = 0
+    let last = -1
+    let busy = false
+    let disposed = false
+    let stopView = () => {}
+
+    const swap = (M) => {
+      if (busy) return
+      busy = true
+      let slot
+      do slot = Math.floor(Math.random() * cells.length)
+      while (cells.length > 1 && slot === last)
+      last = slot
+      const leaving = cells[slot]
+      const arriving = queue.shift()
+      M.animate(leaving, { opacity: [1, 0], filter: ['blur(0px)', 'blur(8px)'], y: [0, -8] }, { duration: 0.3, ease: 'easeIn' })
+        .finished.then(() => {
+          if (disposed) return
+          arriving.style.order = leaving.style.order
+          leaving.hidden = true
+          for (const p of ['opacity', 'filter', 'transform', 'order']) leaving.style[p] = ''
+          arriving.hidden = false
+          cells[slot] = arriving
+          queue.push(leaving)
+          return M.animate(arriving, { opacity: [0, 1], filter: ['blur(8px)', 'blur(0px)'], y: [8, 0] },
+            { duration: 0.4, ease: 'easeOut' }).finished
+        })
+        .finally(() => { busy = false })
+    }
+
+    ensureMotion().then((M) => {
+      if (disposed) return
+      stopView = M.inView(cloud, () => {
+        timer = setInterval(() => { if (!document.hidden) swap(M) }, 2500)
+        return () => clearInterval(timer)
+      })
+    }).catch(() => {})
+
+    return () => {
+      disposed = true
+      stopView()
+      clearInterval(timer)
+      logos.forEach((logo, i) => {
+        logo.hidden = hidden[i]
+        for (const p of ['opacity', 'filter', 'transform', 'order']) logo.style[p] = ''
+      })
+    }
+  })
+
+  // ---- PricingTable ------------------------------------------------------------------------
+  // The form is the state: the radios hold the plan and the billing, and the CSS shows the
+  // checked billing's prices. This adds what a radio cannot say on its own — the chosen plan's
+  // column lit in the matrix and its name on the button — and, when the billing changes, counts
+  // each newly shown price from the figure it replaced (0.6s, easing out), where upstream used
+  // NumberFlow. The text is set to the old figure before Motion loads, so the new one is never
+  // flashed first; if Motion cannot load, every price goes straight to its own value.
+  shadcnCompiler('[data-slot="pricing-table"]', (table) => {
+    const prices = () => [...table.querySelectorAll('[data-slot="pricing-table-price"]')]
+    const write = (el, v) => {
+      const digits = Number(el.dataset.decimals || 0)
+      el.textContent = (el.dataset.prefix || '') +
+        v.toLocaleString('en-US', { minimumFractionDigits: digits, maximumFractionDigits: digits })
+    }
+    let counts = []
+    const settle = () => {
+      for (const count of counts) count.stop()
+      counts = []
+      for (const el of prices()) write(el, Number(el.dataset.value))
+    }
+
+    const onChange = (e) => {
+      const input = e.target
+      if (!(input instanceof HTMLInputElement) || !input.checked) return
+      if (input.closest('[data-slot="pricing-table-plans"]')) {
+        for (const cell of table.querySelectorAll('[data-slot="pricing-table-matrix"] [data-plan]'))
+          cell.dataset.selected = String(cell.dataset.plan === input.value)
+        const choice = table.querySelector('[data-slot="pricing-table-choice"]')
+        if (choice) choice.textContent = input.value
+        return
+      }
+      if (!input.closest('[data-slot="pricing-table-billing"]')) return
+      settle()
+      if (reducedMotion()) return
+      const pairs = []
+      for (const plan of table.querySelectorAll('[data-slot="pricing-table-plan"]')) {
+        const shown = plan.querySelector(`[data-slot="pricing-table-price"][data-billing="${input.value}"]`)
+        const replaced = plan.querySelector(`[data-slot="pricing-table-price"]:not([data-billing="${input.value}"])`)
+        if (!shown || !replaced) continue
+        write(shown, Number(replaced.dataset.value))
+        pairs.push([shown, Number(replaced.dataset.value), Number(shown.dataset.value)])
+      }
+      ensureMotion().then((M) => {
+        if (disposed) return
+        for (const count of counts) count.stop()
+        counts = pairs.map(([el, from, to]) =>
+          M.animate(from, to, { duration: 0.6, ease: [0.16, 1, 0.3, 1], onUpdate: (v) => write(el, v) }))
+      }).catch(settle)
+    }
+
+    let disposed = false
+    table.addEventListener('change', onChange)
+    return () => {
+      disposed = true
+      table.removeEventListener('change', onChange)
+      settle()
+    }
+  })
+
   // Anything outside Unpoly's world — a head's own app.js, a page script — reaches these.
   // `toast` is global on purpose: that is sonner's API, and the call sites read the same.
   window.toast = toast

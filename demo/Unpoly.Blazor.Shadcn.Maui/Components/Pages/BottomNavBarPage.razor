@@ -1,0 +1,28 @@
+@page "/components/bottom-nav-bar"
+
+<PageTitle>Bottom Nav Bar — Unpoly.Blazor.Shadcn</PageTitle>
+
+<h1 class="doc-h1">Bottom Nav Bar</h1>
+<p class="doc-lede">
+    A pill of icon tabs for the bottom of a phone screen, after Arunachalam's bottom navigation
+    bar on 21st.dev. Only the active tab shows its name; picking another slides its name out on a
+    spring while the previous one folds away.
+</p>
+
+<h2 class="doc-h2">Basic</h2>
+<Example Source="BottomNavBarExample.razor"><BottomNavBarExample /></Example>
+
+<h2 class="doc-h2">As page navigation</h2>
+<p class="doc-note">
+    Give the tabs an <code>Href</code> and they are links; <code>Active</code> marks the current
+    page with <code>aria-current="page"</code>. A folded name is still in the markup, so every
+    tab keeps its accessible name even while it shows only its icon.
+</p>
+<Example Source="BottomNavBarLinks.razor"><BottomNavBarLinks /></Example>
+
+<h2 class="doc-h2">Sticky bottom</h2>
+<p class="doc-note">
+    <code>StickyBottom</code> pins the bar above the bottom edge of the window, centred. It covers
+    the last 72px or so of the page, so give the page that much padding at the bottom.
+</p>
+<Example Source="BottomNavBarSticky.razor"><BottomNavBarSticky /></Example>

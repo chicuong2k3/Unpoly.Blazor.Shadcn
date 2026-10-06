@@ -22,6 +22,11 @@ public static class ComponentCatalog
     {
         ["Icon"] = new() { ["Name"] = "check" },
         ["BottomMenuItem"] = new() { ["Value"] = "home" },
+        ["PricingTable"] = new()
+        {
+            ["Plans"] = new[] { new PricingPlan("Starter", 15, 144), new PricingPlan("Pro", 49, 470) { Popular = true } },
+            ["Features"] = new[] { new PricingFeature("Analytics", "Starter"), new PricingFeature("Priority support", "Pro") },
+        },
         ["FileUpload"] = new() { ["Name"] = "cover", ["Action"] = "/uploads" },
         ["CodeBlock"] = new() { ["Code"] = "&lt;Button&gt;Save&lt;/Button&gt;" },
         ["Dialog"] = new() { ["Id"] = "d" },

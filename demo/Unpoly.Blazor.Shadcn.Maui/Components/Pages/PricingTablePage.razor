@@ -1,0 +1,29 @@
+@page "/components/pricing-table"
+
+<PageTitle>Pricing Table — Unpoly.Blazor.Shadcn</PageTitle>
+
+<h1 class="doc-h1">Pricing Table</h1>
+<p class="doc-lede">
+    Plans and the features they include, after Kokonut UI's pricing table on 21st.dev: a
+    monthly/yearly switch, the plans as cards to choose between, a comparison matrix with the
+    chosen plan's column lit, and prices that count to their new value when the billing changes.
+</p>
+
+<h2 class="doc-h2">Basic</h2>
+<Example Source="PricingTableExample.razor" Block><PricingTableExample /></Example>
+
+<h2 class="doc-h2">A form, not a widget</h2>
+<p class="doc-note">
+    The switch and the plan cards are radio buttons and the button submits them, so the whole
+    table works with scripting off: <code>Action</code> receives <code>plan</code> and
+    <code>billing</code> as a query string — sign-up or checkout reads them like any link. The
+    shown price follows the checked billing through CSS alone. Script adds the lit column, keeps
+    the button's plan name in step, and counts the prices.
+</p>
+
+<h2 class="doc-h2">Yearly, in another currency</h2>
+<p class="doc-note">
+    <code>Billing</code> and <code>SelectedPlan</code> set what is checked when the page arrives;
+    <code>Currency</code> goes in front of every price. A price with cents is written with them.
+</p>
+<Example Source="PricingTableYearly.razor" Block><PricingTableYearly /></Example>

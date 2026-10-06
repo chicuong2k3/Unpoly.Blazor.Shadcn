@@ -1,0 +1,27 @@
+@* Three tiers and nine features, each included from the plan it names onwards. The table is a
+   GET form: pick a plan and a billing period and press the button — the choice arrives back here
+   as ?billing=…&plan=…, read with [SupplyParameterFromQuery] and handed straight back in, so the
+   page comes back as it was left. *@
+<PricingTable Action="/components/pricing-table" Billing="@(Billing ?? "monthly")" SelectedPlan="@Plan"
+              Plans="@([
+                  new("Starter", 15, 144),
+                  new("Pro", 49, 470) { Popular = true },
+                  new("Enterprise", 99, 990),
+              ])"
+              Features="@([
+                  new("Basic analytics", "Starter"),
+                  new("Up to 5 team members", "Starter"),
+                  new("Email support", "Starter"),
+                  new("Advanced analytics", "Pro"),
+                  new("Up to 20 team members", "Pro"),
+                  new("Priority support", "Pro"),
+                  new("Custom integrations", "Enterprise"),
+                  new("Unlimited team members", "Enterprise"),
+                  new("24/7 phone support", "Enterprise"),
+              ])" />
+
+@code {
+    [SupplyParameterFromQuery(Name = "plan")] public string? Plan { get; set; }
+
+    [SupplyParameterFromQuery(Name = "billing")] public string? Billing { get; set; }
+}

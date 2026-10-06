@@ -6,6 +6,7 @@ arrow-right
 arrow-up
 arrow-up-down
 arrow-up-right
+atom
 badge-check
 ban
 banknote
@@ -62,6 +63,7 @@ ellipsis-vertical
 external-link
 eye
 eye-off
+feather
 file
 file-down
 file-spreadsheet
@@ -84,6 +86,7 @@ grip-vertical
 hand
 heart
 heart-pulse
+hexagon
 history
 home
 hourglass
@@ -91,6 +94,7 @@ house
 image
 import
 inbox
+infinity
 info
 italic
 key-round
@@ -99,6 +103,7 @@ languages
 layers
 layers-2
 layout-grid
+leaf
 library
 lightbulb
 list
@@ -117,10 +122,12 @@ mic
 minus
 moon
 moon-star
+mountain
 mouse-pointer-click
 move
 network
 notebook-pen
+orbit
 package
 palette
 panel-bottom-open
@@ -170,6 +177,7 @@ timer-reset
 trash-2
 trending-down
 trending-up
+triangle
 triangle-alert
 trophy
 type
@@ -184,5 +192,7 @@ volume-2
 wallet
 wallet-cards
 wand-sparkles
+waves
+wind
 x
 zap

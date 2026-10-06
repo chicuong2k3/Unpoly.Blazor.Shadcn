@@ -286,6 +286,25 @@ such component works with scripting off and keeps still under `prefers-reduced-m
 - **`FrequentlyAskedQuestions`** (ScrollX) takes `Title`, `Description`, `SupportEmail` and
   `Items` (`FaqItem(Question, Answer)` records). The headline is an `h2`; `HeadingLevel="1"` when
   the section is the whole page. The answers are this library's `Accordion`.
+- **`BottomNavBar`** (after Arunachalam) takes `BottomNavBarItem` children: icon as
+  `ChildContent`, `Label`, `Href` (a link; without it a button) and `Active`. Only the active
+  tab shows its name; the others keep it folded in the markup as their accessible name, so do
+  not add an `aria-label`. `StickyBottom` pins the bar above the window's bottom edge.
+- **`LogoCloud`** (after Nexus UI) takes `LogoCloudItem` children — each one logo that names
+  itself (`<img alt>`, `<svg>` with a title, or a wordmark). `Variant` is `default`, `row`,
+  `marquee`, `spotlight`, `blur` or `swap`. The marquee is CSS only, renders the list twice
+  (second copy `inert`), and needs one copy at least as wide as the cloud; set its speed with
+  `style="--logo-cloud-duration: 20s"`. `swap` shows `Visible` logos (default 6) in fixed cells
+  and rotates the rest in; logos past `Visible` are hidden with scripting off, so order matters.
+- **`PricingTable`** (after Kokonut UI) takes `Plans` (`PricingPlan(Name, MonthlyPrice,
+  YearlyPrice) { Popular = true }`) and `Features` (`PricingFeature(Name, IncludedFrom)`, a
+  feature included from that plan onwards — list plans cheapest first). It is a **GET form**:
+  `Action` receives `plan` and `billing`, and `Billing` / `SelectedPlan` set what is checked, so
+  a page can hand the query straight back in. Do not wire an `@onclick` for the choice — the
+  radios are the state. `Currency` prefixes every price.
+
+These three were built from their 21st.dev descriptions, not their source: the idea matches,
+the details are this library's.
 
 ## Adding a component
 
