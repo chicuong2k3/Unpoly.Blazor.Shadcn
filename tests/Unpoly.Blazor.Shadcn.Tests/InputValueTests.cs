@@ -31,4 +31,13 @@ public class InputValueTests : BunitContext
 
         Assert.Equal("bound", input.GetAttribute("value"));
     }
+
+    [Fact]
+    public void A_single_thumb_slider_name_is_rendered_for_native_form_posts()
+    {
+        var input = Render<Slider>(p => p.Add(c => c.Name, "strength_pct").Add(c => c.Value, 80)).Find("input[type=range]");
+
+        Assert.Equal("strength_pct", input.GetAttribute("name"));
+        Assert.Equal("80", input.GetAttribute("value"));
+    }
 }

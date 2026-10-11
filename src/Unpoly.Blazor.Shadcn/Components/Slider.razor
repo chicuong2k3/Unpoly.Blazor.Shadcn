@@ -28,14 +28,14 @@
        pointing at it addressed nothing. *@
     @if (ValueChanged.HasDelegate)
     {
-        <input type="range" data-slot="slider" id="@Id" min="@Min" max="@Max" step="@Step"
+        <input type="range" data-slot="slider" id="@Id" name="@Name" min="@Min" max="@Max" step="@Step"
                value="@Value" disabled="@Disabled" data-disabled="@(Disabled ? "" : null)"
                data-orientation="@Orientation" class="@Classes"
                @onchange="OnChange" @attributes="AdditionalAttributes" />
     }
     else
     {
-        <input type="range" data-slot="slider" id="@Id" min="@Min" max="@Max" step="@Step"
+        <input type="range" data-slot="slider" id="@Id" name="@Name" min="@Min" max="@Max" step="@Step"
                value="@Value" disabled="@Disabled" data-disabled="@(Disabled ? "" : null)"
                data-orientation="@Orientation" class="@Classes"
                @attributes="AdditionalAttributes" />
