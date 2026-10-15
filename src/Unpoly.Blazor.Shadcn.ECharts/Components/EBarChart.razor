@@ -15,10 +15,12 @@ else
             AriaLabel="@AriaLabel" Class="@Class" AdditionalAttributes="@AdditionalAttributes" />
     @if (AccessibilityLayer)
     {
-        <table class="sr-only"><caption>@(AriaLabel ?? SeriesName)</caption>
-            <thead><tr><th>Category</th><th>@SeriesName</th></tr></thead>
-            <tbody>@foreach (var i in Enumerable.Range(0, Categories.Length)) { <tr><th>@Categories[i]</th><td>@(i < Values.Length ? Values[i] : 0)</td></tr> }</tbody>
-        </table>
+        <div class="sr-only">
+            <table><caption>@(AriaLabel ?? SeriesName)</caption>
+                <thead><tr><th>Category</th><th>@SeriesName</th></tr></thead>
+                <tbody>@foreach (var i in Enumerable.Range(0, Categories.Length)) { <tr><th>@Categories[i]</th><td>@(i < Values.Length ? Values[i] : 0)</td></tr> }</tbody>
+            </table>
+        </div>
     }
 }
 
