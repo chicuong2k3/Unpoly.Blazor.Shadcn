@@ -96,6 +96,7 @@ are eight, and four components with no upstream counterpart at all.
 @* App.razor *@
 <link rel="stylesheet" href="_content/Unpoly.Blazor.Shadcn/ui.safari15.css" />
 <script src="_content/Unpoly.Blazor.Shadcn/compat/safari15-shim.js"></script>
+<script src="_content/Unpoly.Blazor.Shadcn/compat/dialog-shim.js"></script>
 <script src="_content/Unpoly.Blazor.Shadcn/compat/popover.iife.min.js"></script>
 <script src="_content/Unpoly.Blazor.Shadcn/compat/css-has-pseudo.js"></script>
 <script src="_content/Unpoly.Blazor.Shadcn/compat/has-pseudo-boot.js"></script>
@@ -103,9 +104,13 @@ are eight, and four components with no upstream counterpart at all.
 <script src="_content/Unpoly.Blazor.Shadcn/ui.js" defer></script>
 ```
 
-The four compatibility assets must be loaded before `_content/Unpoly.Blazor/unpoly.min.js`.
-They are required for Safari 15: the shim supplies missing JavaScript APIs, the popover
+The five compatibility assets must be loaded before `_content/Unpoly.Blazor/unpoly.min.js`.
+They are required for Safari 15: the shim supplies missing JavaScript APIs, the `<dialog>` shim
+supplies `show()`, `showModal()` and `close()` on Safari 15.0-15.3 (without it `Dialog`,
+`AlertDialog`, `Sheet`, `Drawer` and `CommandDialog` cannot open there), the popover
 polyfill supplies the missing top-layer API, and the `:has()` assets cover Safari 15.0-15.3.
+The `<dialog>` shim has no top layer: a modal is `position: fixed` with a high `z-index`, so an
+ancestor that creates a stacking context can cap it.
 Applications targeting Safari 16+ may omit them, except that `ui.safari15.css` is harmless
 and can be kept in a shared layout.
 

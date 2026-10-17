@@ -162,7 +162,7 @@ async function main(name) {
       const preview = index.replace('<html lang="vi" data-density="compact">', '<html lang="vi" data-density="compact" class="js-has-pseudo">')
         .replace('href="app.css"', 'href="app.v3.css"')
         .replace('href="brand.css"', 'href="brand.v3.css"')
-        .replace('</head>', `    <link rel="stylesheet" href="_content/Unpoly.Blazor.Shadcn/ui.safari15.css" />\n    <script src="_content/Unpoly.Blazor.Shadcn/compat/safari15-shim.js"></script>\n    <script src="_content/Unpoly.Blazor.Shadcn/compat/popover.iife.min.js"></script>\n    <script src="_content/Unpoly.Blazor.Shadcn/compat/css-has-pseudo.js"></script>\n    <script src="_content/Unpoly.Blazor.Shadcn/compat/has-pseudo-boot.js"></script>\n    <script>if (!(window.CSS && CSS.supports && CSS.supports('container-type', 'inline-size'))) document.write('<script src="container-fallback.v3.js"><\\/script>');</script>\n</head>`);
+        .replace('</head>', `    <link rel="stylesheet" href="_content/Unpoly.Blazor.Shadcn/ui.safari15.css" />\n    <script src="_content/Unpoly.Blazor.Shadcn/compat/safari15-shim.js"></script>\n    <script src="_content/Unpoly.Blazor.Shadcn/compat/dialog-shim.js"></script>\n    <script src="_content/Unpoly.Blazor.Shadcn/compat/popover.iife.min.js"></script>\n    <script src="_content/Unpoly.Blazor.Shadcn/compat/css-has-pseudo.js"></script>\n    <script src="_content/Unpoly.Blazor.Shadcn/compat/has-pseudo-boot.js"></script>\n    <script>if (!(window.CSS && CSS.supports && CSS.supports('container-type', 'inline-size'))) document.write('<script src="container-fallback.v3.js"><\\/script>');</script>\n</head>`);
       assets.push(['index.v3.html', preview]);
     }
     for (const [file] of assets) {

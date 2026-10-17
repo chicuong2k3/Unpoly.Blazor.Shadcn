@@ -344,6 +344,35 @@
   shadcnOn('cart:changed', (event) => toast(event.text))
 
   // =============================================================================================
+  // Opening and closing a <dialog>
+  // =============================================================================================
+  // Safari before 15.4 has no <dialog>: show(), showModal(), close() and .open do not exist, and
+  // calling them threw mid-click while a trigger that checked first just did nothing — a palette
+  // that never opens, with nothing in the console. compat/dialog-shim.js supplies all of them, and
+  // a head that loads it never reaches the fallback below. A head that does not is told so, once,
+  // and the dialog still opens (as the `open` attribute, unpositioned) rather than not at all.
+  // `open` is read as the attribute for the same reason: the property is what is missing.
+
+  let warnedNoDialog = false
+  const isOpen = (dialog) => dialog.hasAttribute('open')
+
+  const showDialog = (dialog, modal = true) => {
+    const method = modal ? 'showModal' : 'show'
+    if (typeof dialog[method] === 'function') { dialog[method](); return }
+    if (!warnedNoDialog) {
+      warnedNoDialog = true
+      console.warn('[ui] <dialog>.' + method + '() is missing (Safari before 15.4). Load ' +
+        '_content/Unpoly.Blazor.Shadcn/compat/dialog-shim.js before ui.js. Falling back to the open attribute.')
+    }
+    dialog.setAttribute('open', '')
+  }
+
+  const closeDialog = (dialog) => {
+    if (typeof dialog.close === 'function') dialog.close()
+    else dialog.removeAttribute('open')
+  }
+
+  // =============================================================================================
   // AlertDialog — a destructive confirmation
   // =============================================================================================
   // [up-confirm] calls window.confirm, and Unpoly's hook for it (up.browser.assertConfirmed) is
@@ -394,14 +423,14 @@
       dialog.append(panel)
       document.body.append(dialog)
 
-      const answer = (ok) => { dialog.close(); dialog.remove(); resolve(ok) }
+      const answer = (ok) => { closeDialog(dialog); dialog.remove(); resolve(ok) }
       confirm.addEventListener('click', () => answer(true))
       cancel.addEventListener('click', () => answer(false))
       // Escape and the backdrop both mean no. <dialog> fires `cancel` for Escape by itself.
       dialog.addEventListener('cancel', (e) => { e.preventDefault(); answer(false) })
       dialog.addEventListener('click', (e) => { if (e.target === dialog) answer(false) })
 
-      dialog.showModal()          // native: focus trap, inert background, top layer
+      showDialog(dialog)         // native: focus trap, inert background, top layer
       cancel.focus()              // the safe answer, not the destructive one
     })
   }
@@ -442,7 +471,7 @@
       const target = document.getElementById(trigger.dataset.target)
       if (!target) return
       event.preventDefault()
-      target.showModal()
+      showDialog(target)
     }
     trigger.addEventListener('click', open)
     return () => trigger.removeEventListener('click', open)
@@ -457,7 +486,7 @@
   shadcnCompiler('[data-slot="dialog-close"], [data-slot="sheet-close"], ' +
               '[data-slot="drawer-close"], [data-dialog-close]',
               (button) => {
-    const close = (event) => { event.preventDefault(); button.closest('dialog')?.close() }
+    const close = (event) => { event.preventDefault(); const dialog = button.closest('dialog'); if (dialog) closeDialog(dialog) }
     button.addEventListener('click', close)
     return () => button.removeEventListener('click', close)
   })
@@ -473,16 +502,16 @@
     const onToggle = () => {
       // A non-modal drawer does not lock anything: staying usable is the whole point of it.
       if (dialog.dataset.modal === 'false') return
-      lockScroll(dialog.open)
+      lockScroll(isOpen(dialog))
     }
 
     const watch = new MutationObserver(onToggle)
     watch.observe(dialog, { attributes: true, attributeFilter: ['open'] })
-    if (dialog.open) onToggle()
+    if (isOpen(dialog)) onToggle()
 
     return () => {
       watch.disconnect()
-      if (dialog.open && dialog.dataset.modal !== 'false') lockScroll(false)
+      if (isOpen(dialog) && dialog.dataset.modal !== 'false') lockScroll(false)
     }
   })
 
@@ -494,7 +523,7 @@
   // the backdrop nor Escape closes it, only its buttons.
   shadcnCompiler('dialog[data-dismissable]', (dialog) => {
     const dismissable = () => !/^false$/i.test(dialog.dataset.dismissable || '')
-    const onClick = (event) => { if (dismissable() && event.target === dialog) dialog.close() }
+    const onClick = (event) => { if (dismissable() && event.target === dialog) closeDialog(dialog) }
     const onCancel = (event) => { if (!dismissable()) event.preventDefault() }
     dialog.addEventListener('click', onClick)
     dialog.addEventListener('cancel', onCancel)
@@ -1325,8 +1354,7 @@
       // trap, and the page behind stays usable. That is the whole of upstream's modal={false},
       // and it was written off as impossible because "showModal is modal by definition" — which
       // is true, and is why this calls the other method.
-      if (dialog.dataset.modal === 'false') dialog.show()
-      else dialog.showModal()
+      showDialog(dialog, dialog.dataset.modal !== 'false')
     }
     trigger.addEventListener('click', onClick)
     return () => trigger.removeEventListener('click', onClick)
@@ -1376,7 +1404,7 @@
     // Escape belongs to a MODAL dialog; a non-modal one is left to the page, so a drawer opened
     // with show() ignored it. The key is the same key either way to whoever is pressing it.
     const onEscape = (event) => {
-      if (event.key === 'Escape' && dialog.open && dialog.dataset.modal === 'false') dialog.close()
+      if (event.key === 'Escape' && isOpen(dialog) && dialog.dataset.modal === 'false') closeDialog(dialog)
     }
     if (dialog.dataset.modal === 'false') document.addEventListener('keydown', onEscape)
 
@@ -1420,21 +1448,21 @@
         const now = vertical ? panel.offsetHeight : panel.offsetWidth
         // Below half the smallest rest, the gesture was "put it away" rather than "make it
         // smaller" — every drawer with snap points still has to be closeable by dragging.
-        if (now < stops[0] / 2) { dialog.close(); return }
+        if (now < stops[0] / 2) { closeDialog(dialog); return }
         restAt(stops.reduce((best, point) =>
           Math.abs(point - now) < Math.abs(best - now) ? point : best, stops[0]))
         return
       }
 
       panel.style.transform = ''
-      if (moved > span / 3) dialog.close()
+      if (moved > span / 3) closeDialog(dialog)
     }
 
     // The first snap point is where it opens, so the panel is never full height for a frame
     // before shrinking to its rest.
-    const watch = new MutationObserver(() => { if (dialog.open) onOpen() })
+    const watch = new MutationObserver(() => { if (isOpen(dialog)) onOpen() })
     watch.observe(dialog, { attributes: true, attributeFilter: ['open'] })
-    if (dialog.open) onOpen()
+    if (isOpen(dialog)) onOpen()
 
     panel.addEventListener('pointerdown', onDown)
     panel.addEventListener('pointermove', onMove)
@@ -2567,7 +2595,7 @@
     root.addEventListener('keydown', onKey)
 
     if (root.matches('dialog')) {
-      const focusInput = () => { if (root.open) input.focus({ preventScroll: true }) }
+      const focusInput = () => { if (isOpen(root)) input.focus({ preventScroll: true }) }
       const watch = new MutationObserver(focusInput)
       watch.observe(root, { attributes: true, attributeFilter: ['open'] })
       focusInput()
@@ -2599,8 +2627,8 @@
   // distinction every implementation gets wrong in one direction or the other.
   shadcnCompiler('[data-command-open]', (trigger) => {
     const dialog = document.getElementById(trigger.dataset.commandOpen || '')
-    if (!dialog || typeof dialog.showModal !== 'function') return
-    const onClick = () => dialog.open ? dialog.close() : dialog.showModal()
+    if (!dialog) return
+    const onClick = () => isOpen(dialog) ? closeDialog(dialog) : showDialog(dialog)
     trigger.addEventListener('click', onClick)
     return () => trigger.removeEventListener('click', onClick)
   })
@@ -2616,8 +2644,8 @@
       if (event.key.toLowerCase() !== key) return
       if (wantsMod !== mod || wantsShift !== event.shiftKey) return
       event.preventDefault()
-      if (dialog.open) dialog.close()
-      else dialog.showModal()
+      if (isOpen(dialog)) closeDialog(dialog)
+      else showDialog(dialog)
     }
 
     // Focus the field, not the dialog: a palette that needs a second click to type into is a
@@ -2636,8 +2664,8 @@
     // the item opened and swallowed every click meant for it.
     const onChoose = (event) => {
       const item = event.target.closest('[data-slot="command-item"]')
-      if (!item || !dialog.open || item.hidden || item.getAttribute('aria-disabled') === 'true') return
-      dialog.close()
+      if (!item || !isOpen(dialog) || item.hidden || item.getAttribute('aria-disabled') === 'true') return
+      closeDialog(dialog)
     }
 
     const onToggle = (event) => { if (event.newState === 'open') onOpen() }
@@ -3277,13 +3305,13 @@
     const closing = () => {
       panel.dataset.state = 'closed'
       const ms = parseFloat(getComputedStyle(panel).animationDuration) * 1000 || 0
-      setTimeout(() => { if (!dialog.open) delete panel.dataset.state }, ms)
+      setTimeout(() => { if (!isOpen(dialog)) delete panel.dataset.state }, ms)
     }
 
     // showModal() fires no event of its own, so the open state is watched rather than hooked.
-    const watch = new MutationObserver(() => (dialog.open ? opened() : closing()))
+    const watch = new MutationObserver(() => (isOpen(dialog) ? opened() : closing()))
     watch.observe(dialog, { attributes: true, attributeFilter: ['open'] })
-    if (dialog.open) opened()
+    if (isOpen(dialog)) opened()
 
     return () => watch.disconnect()
   })

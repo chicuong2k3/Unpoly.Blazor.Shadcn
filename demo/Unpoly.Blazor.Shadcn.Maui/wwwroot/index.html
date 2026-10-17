@@ -43,9 +43,11 @@
         })();
     </script>
 
-    <!-- Safari 15 compat: ES2023 shims + Popover API polyfill, both feature-detected.
+    <!-- Safari 15 compat: ES2023 shims + <dialog> shim (Safari < 15.4) + Popover API polyfill,
+         all feature-detected.
          Must load BEFORE unpoly.min.js so the polyfilled APIs exist when Unpoly initialises. -->
     <script src="_content/Unpoly.Blazor.Shadcn/compat/safari15-shim.js"></script>
+    <script src="_content/Unpoly.Blazor.Shadcn/compat/dialog-shim.js"></script>
     <script src="_content/Unpoly.Blazor.Shadcn/compat/popover.iife.min.js"></script>
     <script src="_content/Unpoly.Blazor.Shadcn/compat/css-has-pseudo.js"></script>
     <script src="_content/Unpoly.Blazor.Shadcn/compat/has-pseudo-boot.js"></script>
