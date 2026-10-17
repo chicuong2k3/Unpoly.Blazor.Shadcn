@@ -110,7 +110,9 @@ supplies `show()`, `showModal()` and `close()` on Safari 15.0-15.3 (without it `
 `AlertDialog`, `Sheet`, `Drawer` and `CommandDialog` cannot open there), the popover
 polyfill supplies the missing top-layer API, and the `:has()` assets cover Safari 15.0-15.3.
 The `<dialog>` shim has no top layer: a modal is `position: fixed` with a high `z-index`, so an
-ancestor that creates a stacking context can cap it.
+ancestor that creates a stacking context can cap it. Nor is there `inert` there: Tab is trapped and
+the rest of the page is `aria-hidden` while a modal is open, which fences screen readers and the
+keyboard but not a script that moves focus out of the dialog.
 Applications targeting Safari 16+ may omit them, except that `ui.safari15.css` is harmless
 and can be kept in a shared layout.
 

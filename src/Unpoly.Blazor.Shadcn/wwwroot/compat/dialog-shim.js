@@ -12,8 +12,9 @@
  * What a script cannot reproduce, and this does not pretend to:
  *   - the top layer. A modal dialog is position:fixed with a very high z-index, so an ancestor
  *     that makes a stacking context (z-index, transform, isolation) caps it.
- *   - an inert background. Tab is trapped inside the dialog, and the backdrop (below) swallows
- *     pointer input, but a screen reader's virtual cursor can still leave the dialog.
+ *   - an inert background. Tab is trapped inside the dialog, the backdrop (below) swallows pointer
+ *     input, and the rest of the page is aria-hidden while a modal is open (restored on close).
+ *     Anything else that moves focus out of the dialog by script is not stopped.
  *
  * The frame, the Escape key, Tab trapping, focus on open and focus restored on close live here;
  * the position, the size and the backdrop live in ui.safari15.css, which must load with it. The
@@ -84,6 +85,32 @@
     }, 0);
   }
 
+  // No `inert` below 15.4 either, so while a modal is open everything outside it is taken out of
+  // the accessibility tree instead: every sibling along the path from the TOPMOST modal up to
+  // <body> gets aria-hidden. The path itself stays exposed — hiding an ancestor would hide the
+  // dialog — and an element the page had already marked aria-hidden is left alone.
+  //
+  // It is recomputed from nothing on every open and close, never patched: a modal opened over
+  // another (an alert dialog over a dialog) must be exposed even though the first modal hid it
+  // as "the rest of the page", and closing it must hide the first one's surroundings again.
+  // It is a screen-reader fence, not an input one: Tab is trapped below.
+  var fenced = [];
+
+  function fence() {
+    fenced.forEach(function (element) { element.removeAttribute('aria-hidden'); });
+    fenced = [];
+    var top = modals[modals.length - 1];
+    if (!top) return;
+    for (var node = top; node !== document.body && node.parentElement; node = node.parentElement) {
+      Array.prototype.forEach.call(node.parentElement.children, function (sibling) {
+        if (sibling === node || sibling.hasAttribute('aria-hidden') ||
+            /^(script|style|link|template|noscript)$/.test(sibling.localName)) return;
+        sibling.setAttribute('aria-hidden', 'true');
+        fenced.push(sibling);
+      });
+    }
+  }
+
   function openDialog(dialog, modal) {
     var state = stateOf(dialog);
     state.previous = document.activeElement;
@@ -95,6 +122,8 @@
       modals.push(dialog);
     }
     focusInto(dialog);
+    // After focus has moved in: hiding the subtree that still holds focus is what browsers warn about.
+    if (modal) fence();
     queueEvent(dialog, 'toggle', ['closed', 'open']);
   }
 
@@ -155,9 +184,13 @@
       this.removeAttribute('open');
       this.removeAttribute('data-dialog-polyfill');
       this.removeAttribute('aria-modal');
+      var wasModal = state.modal;
       state.modal = false;
       var at = modals.indexOf(this);
       if (at >= 0) modals.splice(at, 1);
+
+      // Before focus goes back: it is returning to an element this was hiding.
+      if (wasModal) fence();
 
       var previous = state.previous;
       state.previous = null;
