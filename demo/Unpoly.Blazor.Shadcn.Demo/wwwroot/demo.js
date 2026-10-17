@@ -302,16 +302,6 @@ up.compiler('[data-customizer-reset]', (button) => {
   return () => button.removeEventListener('click', onClick)
 })
 
-// ---- the search button ------------------------------------------------------------------------
-// The palette binds its own shortcut; this is the button beside it for people who do not know
-// there is one.
-
-up.compiler('[data-command-open]', (button) => {
-  const onClick = () => document.getElementById(button.dataset.commandOpen)?.showModal()
-  button.addEventListener('click', onClick)
-  return () => button.removeEventListener('click', onClick)
-})
-
 // ---- toast ----------------------------------------------------------------------------------
 // The toast buttons carry their spec in data-toast, because Razor compiles any onclick as a C#
 // event handler and `toast('...')` is not valid C#. The spec is JSON, so the example still reads

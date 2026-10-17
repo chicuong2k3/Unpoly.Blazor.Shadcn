@@ -302,16 +302,6 @@ up.compiler('[data-customizer-reset]', (button) => {
   return () => button.removeEventListener('click', onClick)
 })
 
-// ---- the search button ------------------------------------------------------------------------
-// The palette binds its own shortcut; this is the button beside it for people who do not know
-// there is one.
-
-up.compiler('[data-command-open]', (button) => {
-  const onClick = () => document.getElementById(button.dataset.commandOpen)?.showModal()
-  button.addEventListener('click', onClick)
-  return () => button.removeEventListener('click', onClick)
-})
-
 // ---- command palette closes on navigate ------------------------------------------------------------------
 // In the web head a CommandItem carries up-target="body", so Unpoly swaps the page and the
 // palette's <dialog> never lingers. The MAUI head has no Unpoly nav — Blazor's router owns the
