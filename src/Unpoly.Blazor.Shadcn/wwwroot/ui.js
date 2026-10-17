@@ -2626,9 +2626,12 @@
   // The shortcut that opens a palette. `mod` is ⌘ on a Mac and Ctrl everywhere else, which is the
   // distinction every implementation gets wrong in one direction or the other.
   shadcnCompiler('[data-command-open]', (trigger) => {
-    const dialog = document.getElementById(trigger.dataset.commandOpen || '')
-    if (!dialog) return
-    const onClick = () => isOpen(dialog) ? closeDialog(dialog) : showDialog(dialog)
+    // Looked up when clicked, not when compiled: the palette may arrive in a later fragment than
+    // its button, and a compiler that bailed for that would leave the button dead for good.
+    const onClick = () => {
+      const dialog = document.getElementById(trigger.dataset.commandOpen || '')
+      if (dialog) isOpen(dialog) ? closeDialog(dialog) : showDialog(dialog)
+    }
     trigger.addEventListener('click', onClick)
     return () => trigger.removeEventListener('click', onClick)
   })

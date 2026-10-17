@@ -279,6 +279,100 @@ check('Escape belongs to an open popover before the dialog', {}, async (p) => {
   assert.equal(await p.evaluate(() => document.getElementById('plain').open), true);
 });
 
+// ---- the page behind -------------------------------------------------------------------------
+// Attribute reads as page expressions; `plain` and `bare` are siblings of #before in <body>.
+const attr = (id, name) => `document.getElementById(${JSON.stringify(id)}).getAttribute(${JSON.stringify(name)})`;
+// A dialog two levels down, so the path to <body> has an ancestor with a sibling of its own.
+const NEST = () => {
+  const wrap = document.createElement('div');
+  wrap.id = 'wrap';
+  wrap.innerHTML = '<button id="aunt">aunt</button><div id="parent"><button id="sibling">sibling</button>' +
+    '<dialog id="nested"><button id="ok">ok</button></dialog></div>';
+  document.body.append(wrap);
+};
+
+check('a modal carries aria-modal="true"', {}, async (p) => {
+  await p.evaluate(() => document.getElementById('plain').showModal());
+  assert.equal(await p.evaluate(attr('plain', 'aria-modal')), 'true');
+});
+
+check('a modal hides the rest of the page from assistive technology', {}, async (p) => {
+  await p.evaluate(() => document.getElementById('plain').showModal());
+  assert.equal(await p.evaluate(attr('before', 'aria-hidden')), 'true');
+});
+
+check('a modal does not hide itself', {}, async (p) => {
+  await p.evaluate(() => document.getElementById('plain').showModal());
+  assert.equal(await p.evaluate(attr('plain', 'aria-hidden')), null);
+});
+
+check('a modal hides a sibling of its own parent', {}, async (p) => {
+  await p.evaluate(NEST);
+  await p.evaluate(() => document.getElementById('nested').showModal());
+  assert.equal(await p.evaluate(attr('sibling', 'aria-hidden')), 'true');
+});
+
+check('a modal hides a sibling of its ancestor', {}, async (p) => {
+  await p.evaluate(NEST);
+  await p.evaluate(() => document.getElementById('nested').showModal());
+  assert.equal(await p.evaluate(attr('aunt', 'aria-hidden')), 'true');
+});
+
+check('a modal leaves its own ancestors exposed', {}, async (p) => {
+  await p.evaluate(NEST);
+  await p.evaluate(() => document.getElementById('nested').showModal());
+  const hidden = await p.evaluate(() => ['parent', 'wrap'].map((id) => document.getElementById(id).getAttribute('aria-hidden')));
+  assert.deepEqual(hidden, [null, null]);
+});
+
+check('close() exposes the page again', {}, async (p) => {
+  await p.evaluate(() => { const d = document.getElementById('plain'); d.showModal(); d.close(); });
+  assert.equal(await p.evaluate(attr('before', 'aria-hidden')), null);
+});
+
+check('close() leaves an element that was already aria-hidden hidden', {}, async (p) => {
+  await p.evaluate(() => {
+    document.getElementById('cap').setAttribute('aria-hidden', 'true');
+    const d = document.getElementById('plain'); d.showModal(); d.close();
+  });
+  assert.equal(await p.evaluate(attr('cap', 'aria-hidden')), 'true');
+});
+
+check('a non-modal show() leaves the page exposed', {}, async (p) => {
+  await p.evaluate(() => document.getElementById('plain').show());
+  assert.equal(await p.evaluate(attr('before', 'aria-hidden')), null);
+});
+
+// An alert dialog opened over a dialog is a sibling of it — "the rest of the page" to the first
+// modal — and must still be reachable by a screen reader.
+check('a modal opened over another modal is exposed', {}, async (p) => {
+  await p.evaluate(() => { document.getElementById('plain').showModal(); document.getElementById('bare').showModal(); });
+  assert.equal(await p.evaluate(attr('bare', 'aria-hidden')), null);
+});
+
+check('a modal opened over another hides the one beneath it', {}, async (p) => {
+  await p.evaluate(() => { document.getElementById('plain').showModal(); document.getElementById('bare').showModal(); });
+  assert.equal(await p.evaluate(attr('plain', 'aria-hidden')), 'true');
+});
+
+check('closing the top modal exposes the one beneath it again', {}, async (p) => {
+  await p.evaluate(() => {
+    document.getElementById('plain').showModal();
+    document.getElementById('bare').showModal();
+    document.getElementById('bare').close();
+  });
+  assert.equal(await p.evaluate(attr('plain', 'aria-hidden')), null);
+});
+
+check('closing the top modal hides the page from the one beneath it again', {}, async (p) => {
+  await p.evaluate(() => {
+    document.getElementById('plain').showModal();
+    document.getElementById('bare').showModal();
+    document.getElementById('bare').close();
+  });
+  assert.equal(await p.evaluate(attr('before', 'aria-hidden')), 'true');
+});
+
 // ---- backdrop --------------------------------------------------------------------------------
 check('the backdrop is painted over the viewport', {}, async (p) => {
   await p.evaluate(() => document.getElementById('plain').showModal());
