@@ -174,6 +174,7 @@ internal static partial class RepositoryChecks
         {
             "src/Unpoly.Blazor.Shadcn/wwwroot/ui.safari15.css",
             "src/Unpoly.Blazor.Shadcn/wwwroot/compat/safari15-shim.js",
+            "src/Unpoly.Blazor.Shadcn/wwwroot/compat/dialog-shim.js",
             "src/Unpoly.Blazor.Shadcn/wwwroot/compat/has-pseudo-boot.js"
         };
         var missing = files.Where(path => !File.Exists(Full(root, path))).ToArray();

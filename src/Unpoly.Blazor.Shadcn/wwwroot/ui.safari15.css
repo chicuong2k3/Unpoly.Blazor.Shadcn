@@ -55,6 +55,56 @@
   display: none;
 }
 
+/* ---- <dialog> below Safari 15.4 -----------------------------------------------------------
+   HTMLDialogElement shipped in 15.4. Before it a <dialog> is an unknown element: compat/
+   dialog-shim.js supplies show()/showModal()/close(), and these rules supply the user-agent
+   stylesheet the engine lacks. They are all :where(), so they carry no specificity and every
+   library slot rule still wins, exactly as it beats the real user-agent sheet. On an engine with a
+   native <dialog> the first rule restates what the user-agent sheet already does and the rest
+   never match, because nothing there sets [data-dialog-polyfill].
+
+   A closed dialog must be invisible. The user-agent sheet does that only where it knows the
+   element, and an unknown <dialog> otherwise renders in the flow, inline, all the time. */
+:where(dialog:not([open])) {
+  display: none;
+}
+
+/* The frame the shim opened, positioned the way the user-agent sheet positions one. Only a
+   dialog carrying [data-dialog-polyfill] (set by show()/showModal(), removed by close()) is
+   touched. Border, padding and colours are deliberately not restored: preflight and the
+   library's own slot rules own them, and a backdrop painted behind a coloured frame would dim it. */
+:where(dialog[data-dialog-polyfill]) {
+  position: absolute;
+  inset-inline: 0;
+  width: -webkit-fit-content;
+  width: fit-content;
+  height: -webkit-fit-content;
+  height: fit-content;
+  margin: auto;
+}
+
+:where(dialog[data-dialog-polyfill="modal"]) {
+  position: fixed;
+  inset-block: 0;
+  max-width: calc(100% - 6px - 2em);
+  max-height: calc(100% - 6px - 2em);
+  overflow: auto;
+  z-index: 2147483000;
+}
+
+/* ::backdrop, as the dialog's own ::before. position:fixed escapes the frame's size, z-index:-1
+   keeps it behind the frame's content inside the frame's stacking context, and a click on it
+   targets the dialog itself — which is what a click on ::backdrop does and what ui.js reads to
+   dismiss. Same colour and fade as the [data-slot=...]::backdrop rules in ui.behavior.css. */
+dialog[data-dialog-polyfill="modal"]::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  background: rgba(0, 0, 0, 0.5);
+  animation: sh-fade-in 150ms ease-out;
+}
+
 /* Unpoly's own scroll lock (unpoly.min.css): html:has(>body.up-scrollbar-away).
    Same treatment, emitted verbatim by css-has-pseudo 8.0.1 so the encoding and
    specificity padding match what its runtime maintains. Without this the page

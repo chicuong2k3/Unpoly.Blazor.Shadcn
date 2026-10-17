@@ -15,6 +15,17 @@
  *                                – Safari < 17
  *   HTMLElement.prototype.popover (content attribute reflection)
  *                                – Safari < 17
+ *   HTMLDialogElement.prototype.show / showModal / close / open / returnValue
+ *                                – Safari < 15.4
+ *
+ * <dialog> gaps this simulation CANNOT cover:
+ *   • The element itself. Chromium still builds an HTMLDialogElement, so its user-agent
+ *     stylesheet (display:none while closed, the modal frame) stays in force and the
+ *     `dialog:not([open])` rule in ui.safari15.css is never the thing that hides it. What IS
+ *     removed is the script API, which is what ui.js calls: compat/dialog-shim.js has to put it
+ *     back, and a head that forgot to load it fails here.
+ *   • The top layer and ::backdrop. Chromium keeps both for a native showModal(); the shim's
+ *     fixed frame and ::before backdrop are exercised only through the code paths that use them.
  *
  * CSS gaps this simulation CANNOT cover:
  *   • Real :has() matching – Chromium supports it; Safari 15 does not.
@@ -61,6 +72,16 @@
   var popoverDesc = Object.getOwnPropertyDescriptor(HTMLElement.prototype, 'popover');
   if (popoverDesc) {
     delete HTMLElement.prototype.popover;
+  }
+
+  /* ---- <dialog> script API -------------------------------------------------------
+     HTMLDialogElement arrived in Safari 15.4. Removing it from the prototype leaves
+     `typeof dialog.showModal` undefined exactly as it is on 15.0-15.3, so compat/dialog-shim.js
+     takes its install path instead of exiting on the feature check. ------------- */
+  if (typeof HTMLDialogElement !== 'undefined') {
+    ['show', 'showModal', 'close', 'requestClose', 'open', 'returnValue'].forEach(function (name) {
+      delete HTMLDialogElement.prototype[name];
+    });
   }
 
   /* ---- :popover-open in JS ---------------------------------------------------
