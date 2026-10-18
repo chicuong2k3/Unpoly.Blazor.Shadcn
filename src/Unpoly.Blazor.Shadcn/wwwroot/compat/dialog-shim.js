@@ -67,7 +67,7 @@
   }
 
   function focusInto(dialog) {
-    var target = dialog.querySelector('[autofocus]') || focusable(dialog)[0];
+    var target = dialog.querySelector('[autofocus], [data-autofocus]') || focusable(dialog)[0];
     if (!target) {
       // Nothing to land on: the dialog itself, as the platform does.
       if (!dialog.hasAttribute('tabindex')) dialog.setAttribute('tabindex', '-1');

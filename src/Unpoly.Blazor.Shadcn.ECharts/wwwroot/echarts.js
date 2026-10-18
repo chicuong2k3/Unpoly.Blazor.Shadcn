@@ -100,7 +100,7 @@
       if (!resolved) return c
       c = resolved
     }
-    var ctx = colorProbe.getContext('2d')
+    var ctx = colorProbe.getContext('2d', { willReadFrequently: true })
     // The rejection marker must be read BACK, not compared against the string set: Chromium
     // normalizes 'rgba(1, 2, 3)' to '#010203', so a rejected assignment (fillStyle unchanged)
     // never matched the literal and the probe then 'succeeded', painting the sentinel and

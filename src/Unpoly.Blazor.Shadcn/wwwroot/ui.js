@@ -358,7 +358,14 @@
 
   const showDialog = (dialog, modal = true) => {
     const method = modal ? 'showModal' : 'show'
-    if (typeof dialog[method] === 'function') { dialog[method](); return }
+    if (typeof dialog[method] === 'function') {
+      dialog[method]()
+      const focusTarget = dialog.querySelector('[autofocus], [data-autofocus]')
+      if (focusTarget && typeof focusTarget.focus === 'function') {
+        try { focusTarget.focus({ preventScroll: true }) } catch { focusTarget.focus() }
+      }
+      return
+    }
     if (!warnedNoDialog) {
       warnedNoDialog = true
       console.warn('[ui] <dialog>.' + method + '() is missing (Safari before 15.4). Load ' +
