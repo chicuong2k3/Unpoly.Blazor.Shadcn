@@ -262,20 +262,42 @@
       apply()
     }
 
-    if (typeof echarts === 'undefined') {
+    var started = false
+
+    function start() {
+      if (started) return
+      started = true
       // init must wait for the vendor plugins (series types) and any map the
       // options reference to be registered — a setOption against an unknown
       // type or unregistered map throws before the first frame.
-      loadEcharts()
-        .then(function () { return ensurePlugins(parsedOptions(el)) })
-        .then(function () { return ensureMap(parsedOptions(el)) })
-        .then(ensureChart)
-        .catch(function(){})
+      var ready = typeof echarts === 'undefined'
+        ? loadEcharts()
+            .then(function () { return ensurePlugins(parsedOptions(el)) })
+            .then(function () { return ensureMap(parsedOptions(el)) })
+        : ensurePlugins(parsedOptions(el))
+            .then(function () { return ensureMap(parsedOptions(el)) })
+      ready.then(ensureChart).catch(function(){})
+    }
+
+    // echarts.min.js is 1 MB that must be fetched and parsed on the main thread, and a page that
+    // charts is usually longer than a phone screen: on /stats all three charts sat 5221, 6105 and
+    // 6857 px down a 7239 px page, so compiling them spent seconds on canvases nobody had scrolled
+    // to yet. Start when the chart is close to being seen; one above the fold starts immediately.
+    var gate = null
+    if (typeof IntersectionObserver === 'function') {
+      gate = new IntersectionObserver(function (entries) {
+        for (var i = 0; i < entries.length; i++) {
+          if (entries[i].isIntersecting) {
+            gate.disconnect()
+            gate = null
+            start()
+            return
+          }
+        }
+      }, { rootMargin: '300px' })
+      gate.observe(el)
     } else {
-      ensurePlugins(parsedOptions(el))
-        .then(function () { return ensureMap(parsedOptions(el)) })
-        .then(ensureChart)
-        .catch(function(){})
+      start()
     }
 
     function apply() {
@@ -358,6 +380,7 @@
     return function () {
       mo.disconnect()
       themeMo.disconnect()
+      if (gate) { gate.disconnect(); gate = null }
       if (ro) ro.disconnect()
       else window.removeEventListener('resize', onResize)
       document.removeEventListener('visibilitychange', onVis)
