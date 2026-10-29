@@ -21,21 +21,30 @@ autosave and authorization belong to the consuming application.
   pointer/pen/touch and arrows, Shift for 10 steps. The resulting rectangle stays in bounds.
 - `MediaTimeline` receives `MediaClip` records; start/duration/snap are seconds, tracks are zero based.
   Move and trim handles support horizontal arrows/pointer, Shift for 10 steps. Up/down changes the
-  track when moving. Pointer vertical distance changes tracks at 80px per track. Clips cannot
-  extend outside the timeline or become shorter than Snap. Overlapping clips are allowed; the
-  application owns collision rules, playback and encoding. Up to 100 tracks (0–99).
+  track when moving; on a trim handle they do nothing and stay with the page. Pointer vertical
+  distance changes tracks at 80px per track. Clips cannot extend outside the timeline or become
+  shorter than Snap. Overlapping clips are allowed; the application owns collision rules, playback
+  and encoding. Up to 100 tracks (0–99). The selected clip's move button carries
+  `aria-current="true"`; `data-selected` on the clip is only a style hook.
 - `MediaGrid` renders only the caller's current page, with lazy thumbnails and no video prefetch.
   Supply `NextPageHref` for server pagination (Unpoly attributes can be attached to the root or link
   composed in ChildContent). It is not a virtualized storage client. `SelectedIds` marks selections.
-  `LightboxTarget` points to a `MediaLightbox.Id`; preview opens that asset directly.
+  `LightboxTarget` points to a `MediaLightbox.Id`; preview opens that asset directly. The root is a
+  `role="group"` named by `Label`. A video without `ThumbnailSrc` gets a decorative placeholder tile,
+  never an `<img>` without a source.
 - `MediaLightbox` composes the existing `Dialog`. Only its current asset is loaded; previous video
   playback and source are released. Use a `DialogTrigger`, the grid target, or the open event below.
-  Arrows, navigation buttons and horizontal swipes navigate. Escape and focus return use the native
-  dialog/library behavior. Videos use native controls and do not intercept media keyboard controls.
+  Arrows, navigation buttons and horizontal swipes (touch, pen or mouse) navigate; stepping past the
+  first or last asset keeps the current one loaded and emits nothing. A swipe that starts on a video
+  is left to its controls. Escape and focus return use the native dialog/library behavior. Videos use
+  native controls and do not intercept media keyboard controls.
 - `AssetPicker` composes `Dialog`, `MediaGrid`, `Checkbox` and `Button`. Supply `FilterContent` for
   app-owned filtering. Selected IDs outside the visible page are retained. Persist `SelectedIds`
   in the application when replacing the entire picker across pages. A grid-only swap inside the
-  same picker retains the selection Set. Confirm is cancelable with `preventDefault()`.
+  same picker retains the selection Set, and the swapped-in checkboxes are set from it, because the
+  server rendered them from its own `SelectedIds`. Confirm is cancelable with `preventDefault()`.
+- `MediaLightbox` and `AssetPicker` name their dialog from `Label`. `Dialog` puts splatted attributes
+  on its panel, where a label names nothing, so the compiler moves it to the `<dialog>` element.
 
 All own classes are caller supplied; existing Shadcn controls supply the visual recipes.
 Additional CSS in `ui.behavior.css` expresses only media geometry, touch behavior and focus.
@@ -49,6 +58,12 @@ Listen on the component root; events bubble. Blazor interactive consumers can at
 and forward completed changes through coarse .NET interop. Pointer frames never call .NET.
 Serialize the `detail` of change events in application state for reload recovery; the library
 makes no localStorage writes. Version 1 is the serialization version, not the package version.
+
+A change event means something changed. A key at an edge, a press without movement, a cancelled
+gesture and a set to the current value emit nothing, so an autosaving consumer is not woken for
+them. Computed positions and sizes are rounded to nine decimals before they are stored or emitted:
+binary floating point would otherwise serialize .5700000000000001 for 57 grid steps of .01, and
+.9999999999999999 for ten steps of .1.
 
 | Event | Detail |
 |---|---|

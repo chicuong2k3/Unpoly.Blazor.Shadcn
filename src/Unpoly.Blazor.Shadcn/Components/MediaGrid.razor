@@ -1,5 +1,7 @@
 @inherits UiComponentBase
-<div data-slot="media-grid" data-lightbox-target="@LightboxTarget" class="@Class" aria-label="@Label" @attributes="AdditionalAttributes">
+@* role="group": aria-label on an element with no role is ignored, so without it the library was
+   never announced by name. *@
+<div data-slot="media-grid" data-lightbox-target="@LightboxTarget" class="@Class" role="group" aria-label="@Label" @attributes="AdditionalAttributes">
     @if (Loading) { <Skeleton style="height:8rem" /> }
     else if (Error is not null) { <p role="alert">@Error</p> }
     else if (Items.Count == 0) { <p role="status">@EmptyLabel</p> }
@@ -10,7 +12,17 @@
         {
             <figure data-media-id="@item.Id" @key="item.Id">
                 <button type="button" data-media-preview="@item.Id" aria-label="@($"Preview {item.Alt}")">
-                    <img src="@(item.ThumbnailSrc ?? (item.IsVideo ? null : item.Src))" alt="@item.Alt" loading="lazy" decoding="async" />
+                    @* A video's own source is never fetched here, so one without a thumbnail has no
+                       image at all. An <img> with no src is invalid and draws as broken; the tile
+                       keeps its shape with a placeholder instead. *@
+                    @if (Thumbnail(item) is { } thumbnail)
+                    {
+                        <img src="@thumbnail" alt="@item.Alt" loading="lazy" decoding="async" />
+                    }
+                    else
+                    {
+                        <span data-media-placeholder aria-hidden="true"></span>
+                    }
                     @if (item.IsVideo) { <span>Video</span> }
                 </button>
                 @if (Selectable)
@@ -36,4 +48,6 @@
     [Parameter] public string Label { get; set; } = "Media library";
     [Parameter] public string EmptyLabel { get; set; } = "No media found.";
     [Parameter] public string MoreLabel { get; set; } = "Next page";
+
+    static string? Thumbnail(MediaAsset item) => item.ThumbnailSrc ?? (item.IsVideo ? null : item.Src);
 }

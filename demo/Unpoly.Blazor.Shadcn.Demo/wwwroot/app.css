@@ -8122,6 +8122,12 @@ up-modal up-modal-dismiss:focus-visible, up-drawer up-drawer-dismiss:focus-visib
   aspect-ratio: 1;
   object-fit: cover;
 }
+[data-media-tiles] [data-media-placeholder] {
+  display: block;
+  width: 100%;
+  aspect-ratio: 1;
+  background: var(--muted);
+}
 [data-media-tiles] button {
   width: 100%;
 }
