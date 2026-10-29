@@ -118,6 +118,21 @@ renders `<div>` · `data-slot="aspect-ratio"`
 |---|---|---|---|
 | `Ratio` | `string` | `"16 / 9"` |  |
 
+## `<AssetPicker>`
+renders `<div>` · `data-slot="asset-picker"`
+
+| Parameter | Type | Default | |
+|---|---|---|---|
+| `Id` | `string` | `$"assets-{Guid.NewGuid():N}"` |  |
+| `Label` | `string` | `"Choose assets"` |  |
+| `ConfirmLabel` | `string` | `"Use selected assets"` |  |
+| `Items` | `IReadOnlyList<MediaAsset>` | `Array.Empty<MediaAsset>()` |  |
+| `SelectedIds` | `IReadOnlySet<string>` | `new HashSet<string>()` |  |
+| `Loading` | `bool` | — |  |
+| `Error` | `string?` | — |  |
+| `NextPageHref` | `string?` | — |  |
+| `FilterContent` | `RenderFragment?` | — |  |
+
 ## `<Attachment>`
 renders `<div>` · `data-slot="attachment"`
 
@@ -892,6 +907,19 @@ renders `<div>` · `data-slot="dot-pattern"`
 | `Fill` | `string?` | `"currentColor"` |  |
 | `Opacity` | `string?` | — |  |
 
+## `<DraggableOverlay>`
+renders `<div>` · `data-slot="draggable-overlay"`
+
+| Parameter | Type | Default | |
+|---|---|---|---|
+| `X` | `double` | `.1` |  |
+| `Y` | `double` | `.1` |  |
+| `Width` | `double` | `.3` |  |
+| `Height` | `double` | `.2` |  |
+| `Snap` | `double` | `.01` |  |
+| `MoveLabel` | `string` | `"Move overlay with arrow keys"` |  |
+| `ResizeLabel` | `string` | `"Resize overlay with arrow keys"` |  |
+
 ## `<Drawer>`
 renders `<dialog>` · `data-slot="drawer"`
 
@@ -1356,6 +1384,17 @@ renders `<svg>`
 | `Title` | `string?` | — | **required** |
 | `StrokeWidth` | `double` | `2` |  |
 
+## `<ImageCanvas>`
+renders `<div>` · `data-slot="image-canvas"`
+
+| Parameter | Type | Default | |
+|---|---|---|---|
+| `Src` | `string?` | — |  |
+| `Alt` | `string` | `"Canvas image"` |  |
+| `Label` | `string` | `"Image canvas. Use arrows to pan, plus and minus to zoom, Home to fit."` |  |
+| `Width` | `int` | `1024` |  |
+| `Height` | `int` | `1024` |  |
+
 ## `<ImageCompare>`
 renders `<img-comparison-slider>` · `data-slot="image-compare"`
 
@@ -1365,6 +1404,7 @@ renders `<img-comparison-slider>` · `data-slot="image-compare"`
 | `AfterSrc` | `string` | `default!` | **required** |
 | `BeforeLabel` | `string` | `"Before"` | **required** |
 | `AfterLabel` | `string` | `"After"` |  |
+| `Label` | `string` | `"Image comparison position"` |  |
 | `ShowLabels` | `bool` | `true` |  |
 
 ## `<ImageCrop>`
@@ -1377,6 +1417,8 @@ renders `<div>` · `data-slot="image-crop"`
 | `AspectRatio` | `double?` | — |  |
 | `Circular` | `bool` | — |  |
 | `MaxImageSize` | `long` | — |  |
+| `ApplyLabel` | `string` | `"Apply crop"` |  |
+| `ResetLabel` | `string` | `"Reset crop"` |  |
 
 ## `<Input>`
 renders `<input>` · `data-slot="input"`
@@ -1547,6 +1589,51 @@ _No parameters of its own._
 renders `<span>` · `data-slot="marker-icon"`
 
 _No parameters of its own._
+
+## `<MaskBrush>`
+renders `<div>` · `data-slot="mask-brush"`
+
+| Parameter | Type | Default | |
+|---|---|---|---|
+| `Size` | `int` | `32` |  |
+| `Opacity` | `double` | `1` |  |
+| `Label` | `string` | `"Mask. Arrows move brush, Space paints, Shift plus arrows paints a line."` |  |
+
+## `<MediaGrid>`
+renders `<div>` · `data-slot="media-grid"`
+
+| Parameter | Type | Default | |
+|---|---|---|---|
+| `Items` | `IReadOnlyList<MediaAsset>` | `Array.Empty<MediaAsset>()` |  |
+| `SelectedIds` | `IReadOnlySet<string>` | `new HashSet<string>()` |  |
+| `Selectable` | `bool` | — |  |
+| `Loading` | `bool` | — |  |
+| `Error` | `string?` | — |  |
+| `NextPageHref` | `string?` | — |  |
+| `LightboxTarget` | `string?` | — |  |
+| `Label` | `string` | `"Media library"` |  |
+| `EmptyLabel` | `string` | `"No media found."` |  |
+| `MoreLabel` | `string` | `"Next page"` |  |
+
+## `<MediaLightbox>`
+renders `<div>` · `data-slot="media-lightbox"`
+
+| Parameter | Type | Default | |
+|---|---|---|---|
+| `Id` | `string` | `$"media-{Guid.NewGuid():N}"` |  |
+| `Label` | `string` | `"Media preview"` |  |
+| `Items` | `IReadOnlyList<MediaAsset>` | `Array.Empty<MediaAsset>()` |  |
+| `InitialIndex` | `int` | — |  |
+
+## `<MediaTimeline>`
+renders `<div>` · `data-slot="media-timeline"`
+
+| Parameter | Type | Default | |
+|---|---|---|---|
+| `Clips` | `IReadOnlyList<MediaClip>` | `Array.Empty<MediaClip>()` |  |
+| `Duration` | `double` | `60` |  |
+| `Snap` | `double` | `.1` |  |
+| `Label` | `string` | `"Media timeline. Arrows move or trim clips; up and down change tracks."` |  |
 
 ## `<Menubar>`
 renders `<div>` · `data-slot="menubar"`

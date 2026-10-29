@@ -1,0 +1,39 @@
+@inherits UiComponentBase
+<div data-slot="media-grid" data-lightbox-target="@LightboxTarget" class="@Class" aria-label="@Label" @attributes="AdditionalAttributes">
+    @if (Loading) { <Skeleton style="height:8rem" /> }
+    else if (Error is not null) { <p role="alert">@Error</p> }
+    else if (Items.Count == 0) { <p role="status">@EmptyLabel</p> }
+    else
+    {
+        <div data-media-tiles>
+        @foreach (var item in Items)
+        {
+            <figure data-media-id="@item.Id" @key="item.Id">
+                <button type="button" data-media-preview="@item.Id" aria-label="@($"Preview {item.Alt}")">
+                    <img src="@(item.ThumbnailSrc ?? (item.IsVideo ? null : item.Src))" alt="@item.Alt" loading="lazy" decoding="async" />
+                    @if (item.IsVideo) { <span>Video</span> }
+                </button>
+                @if (Selectable)
+                {
+                    <label><Checkbox name="assets" value="@item.Id" Checked="@(SelectedIds.Contains(item.Id))" /> @item.Alt</label>
+                }
+                else { <figcaption>@item.Alt</figcaption> }
+            </figure>
+        }
+        </div>
+    }
+    @ChildContent
+    @if (NextPageHref is not null) { <a href="@NextPageHref" rel="next">@MoreLabel</a> }
+</div>
+@code {
+    [Parameter] public IReadOnlyList<MediaAsset> Items { get; set; } = Array.Empty<MediaAsset>();
+    [Parameter] public IReadOnlySet<string> SelectedIds { get; set; } = new HashSet<string>();
+    [Parameter] public bool Selectable { get; set; }
+    [Parameter] public bool Loading { get; set; }
+    [Parameter] public string? Error { get; set; }
+    [Parameter] public string? NextPageHref { get; set; }
+    [Parameter] public string? LightboxTarget { get; set; }
+    [Parameter] public string Label { get; set; } = "Media library";
+    [Parameter] public string EmptyLabel { get; set; } = "No media found.";
+    [Parameter] public string MoreLabel { get; set; } = "Next page";
+}

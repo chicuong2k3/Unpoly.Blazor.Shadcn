@@ -116,6 +116,9 @@ jobs:
       - name: Install the browser the behaviour suite drives
         run: pwsh tests/Unpoly.Blazor.Shadcn.Behaviour/bin/Release/net10.0/playwright.ps1 install --with-deps chromium
 
+      - name: Creative media DOM and raster regression tests
+        run: CREATIVE_MEDIA_CONFIGURATION=Release node --test tools/creative-media.test.cjs
+
       - run: dotnet test --configuration Release --no-build --verbosity quiet
 
       # A skipped behaviour test is a test that did not run, and the point of the suite is that

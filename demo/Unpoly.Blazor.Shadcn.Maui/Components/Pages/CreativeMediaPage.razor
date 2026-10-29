@@ -1,0 +1,33 @@
+@page "/components/creative-media"
+<PageTitle>Creative Media — Unpoly.Blazor.Shadcn</PageTitle>
+<h1 class="doc-h1">Creative Media</h1>
+<p class="doc-lede">Image-space masks, normalized overlays and second-based clips. All controls support keyboard and touch.</p>
+<h2>Asset library</h2>
+<MediaGrid Items="@MediaItems" LightboxTarget="creative-preview" />
+<MediaLightbox Id="creative-preview" Items="@MediaItems" />
+<DialogTrigger Target="creative-assets"><Button Type="button">Choose assets</Button></DialogTrigger>
+<AssetPicker Id="creative-assets" Items="@MediaItems">
+    <FilterContent><p>Compose search and filters here; the application owns querying and pagination.</p></FilterContent>
+</AssetPicker>
+<h2>Canvas and mask</h2>
+<ImageCanvas Src="@Photo" Width="640" Height="480">
+    <MaskBrush Size="24" Opacity="0.8" />
+    <DraggableOverlay><p>Annotation: drag Move, or focus a handle and use arrow keys.</p></DraggableOverlay>
+</ImageCanvas>
+<h2>Timeline</h2>
+<MediaTimeline Duration="30" Clips="@Clips" />
+<h2>Compare and crop</h2>
+<ImageCompare BeforeSrc="@Photo" AfterSrc="@Photo" InitialPosition="30" Label="Compare original and edited image" />
+<ImageCrop Src="@Photo" AspectRatio="1.3333333333333333" MaxImageSize="2097152" ApplyLabel="Export PNG" />
+<p>Listen for the DOM events documented in <code>docs/creative-media.md</code> to save edits or consume exported Blobs.</p>
+@code {
+    const string Photo = "_content/Unpoly.Blazor.Shadcn/media-demo.svg";
+    static readonly IReadOnlyList<MediaAsset> MediaItems = new[] {
+        new MediaAsset("landscape", Photo, "Mountain landscape"),
+        new MediaAsset("reference", Photo, "Reference image")
+    };
+    static readonly IReadOnlyList<MediaClip> Clips = new[] {
+        new MediaClip("intro", "Introduction", 0, 8),
+        new MediaClip("scene", "Scene", 10, 12, 1)
+    };
+}

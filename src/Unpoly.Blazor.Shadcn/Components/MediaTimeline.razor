@@ -1,0 +1,24 @@
+@inherits UiComponentBase
+<div data-slot="media-timeline" data-duration="@F(Duration)" data-snap="@F(Snap)" class="@Class" role="group" aria-label="@Label" @attributes="AdditionalAttributes">
+    @foreach (var clip in Clips)
+    {
+        <div data-media-clip="@clip.Id" data-start="@F(clip.Start)" data-length="@F(clip.Duration)" data-track="@clip.Track" @key="clip.Id">
+            <button type="button" data-clip-move aria-label="@($"Move {clip.Label}")">@clip.Label</button>
+            <button type="button" data-clip-start aria-label="@($"Trim start of {clip.Label}")">Trim start</button>
+            <button type="button" data-clip-end aria-label="@($"Trim end of {clip.Label}")">Trim end</button>
+        </div>
+    }
+    @ChildContent
+</div>
+@code {
+    [Parameter] public IReadOnlyList<MediaClip> Clips { get; set; } = Array.Empty<MediaClip>();
+    [Parameter] public double Duration { get; set; } = 60;
+    [Parameter] public double Snap { get; set; } = .1;
+    [Parameter] public string Label { get; set; } = "Media timeline. Arrows move or trim clips; up and down change tracks.";
+    static string F(double value) => value.ToString(System.Globalization.CultureInfo.InvariantCulture);
+    protected override void OnParametersSet()
+    {
+        if (!double.IsFinite(Duration) || Duration <= 0 || !double.IsFinite(Snap) || Snap <= 0 || Snap > Duration) throw new ArgumentOutOfRangeException(nameof(Duration));
+        if (Clips.Select(c => c.Id).Distinct().Count() != Clips.Count || Clips.Any(c => !double.IsFinite(c.Start) || !double.IsFinite(c.Duration) || c.Start < 0 || c.Duration < Snap || c.Start + c.Duration > Duration || c.Track < 0 || c.Track > 99)) throw new ArgumentException("Clips require unique IDs and valid timeline bounds.", nameof(Clips));
+    }
+}

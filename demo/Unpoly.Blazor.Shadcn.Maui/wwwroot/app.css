@@ -7584,6 +7584,147 @@ up-modal up-modal-dismiss:focus-visible, up-drawer up-drawer-dismiss:focus-visib
   min-inline-size: 1rem;
   min-block-size: 1rem;
 }
+[data-media-tiles] {
+  display: grid;
+  grid-template-columns: repeat(auto-fill,minmax(min(100%,10rem),1fr));
+  gap: 1rem;
+}
+[data-media-tiles] figure {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+[data-media-tiles] img {
+  width: 100%;
+  aspect-ratio: 1;
+  object-fit: cover;
+}
+[data-media-tiles] button {
+  width: 100%;
+}
+[data-media-tiles] label {
+  display: flex;
+  gap: .5rem;
+  align-items: center;
+}
+[data-slot="media-lightbox"] [data-media-stage] {
+  min-height: 8rem;
+  touch-action: pan-y;
+}
+[data-media-stage] > :is(img,video) {
+  max-width: 100%;
+  max-height: 65vh;
+  margin: auto;
+  object-fit: contain;
+}
+[data-canvas-viewport] {
+  position: relative;
+  overflow: hidden;
+  height: min(65vh,32rem);
+  min-height: 12rem;
+  touch-action: none;
+}
+[data-canvas-plane] {
+  position: absolute;
+  transform-origin: 0 0;
+}
+[data-canvas-plane] > img {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  max-width: none;
+  object-fit: fill;
+  pointer-events: none;
+}
+[data-slot="mask-brush"] {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+[data-slot="mask-brush"] > canvas {
+  width: 100%;
+  height: 100%;
+  max-width: none;
+  touch-action: none;
+  pointer-events: auto;
+  opacity: .65;
+}
+[data-mask-toolbar], [data-canvas-toolbar] {
+  display: flex;
+  gap: .5rem;
+  flex-wrap: wrap;
+  align-items: center;
+}
+[data-mask-toolbar] {
+  pointer-events: auto;
+}
+[data-slot="draggable-overlay"] {
+  position: absolute;
+  border: 2px solid var(--primary);
+  background: var(--background);
+  color: var(--foreground);
+  overflow: auto;
+}
+[data-overlay-move], [data-overlay-resize], [data-clip-move], [data-clip-start], [data-clip-end] {
+  touch-action: none;
+  min-height: 24px;
+  min-width: 24px;
+}
+[data-overlay-resize] {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+}
+[data-slot="media-timeline"] {
+  position: relative;
+  width: 100%;
+  overflow: auto;
+  min-height: 80px;
+}
+[data-media-clip] {
+  position: absolute;
+  height: 76px;
+  border: 1px solid var(--border);
+  background: var(--secondary);
+  color: var(--secondary-foreground);
+  overflow: auto;
+}
+[data-media-clip][data-selected] {
+  outline: 2px solid var(--ring);
+  outline-offset: -2px;
+}
+[data-slot="image-compare"] img-comparison-slider > [slot] {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+[data-slot="image-compare"] img-comparison-slider {
+  --divider-width: 3px;
+}
+[data-slot="image-compare"] [slot] img {
+  display: block;
+}
+:is([data-slot="image-canvas"], [data-slot="mask-brush"], [data-slot="media-timeline"], [data-slot="draggable-overlay"], [data-slot="media-grid"]) :focus-visible, [data-slot="image-compare"] img-comparison-slider:focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 2px;
+}
+@media (prefers-reduced-motion:reduce) {
+  [data-slot="image-compare"] img-comparison-slider {
+    --default-transition-time: 0ms;
+    --keyboard-transition-time: 0ms;
+  }
+}
+[data-mask-cursor] {
+  display: none;
+  position: absolute;
+  pointer-events: none;
+  transform: translate(-50%,-50%);
+  border: 2px solid white;
+  border-radius: 50%;
+  box-shadow: 0 0 0 1px black;
+}
+[data-slot="mask-brush"] > canvas:focus-visible ~ [data-mask-cursor] {
+  display: block;
+}
 :root {
   --radius: 0.625rem;
   --background: rgb(255, 255, 255);

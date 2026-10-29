@@ -1,0 +1,24 @@
+@inherits UiComponentBase
+<div data-slot="mask-brush" class="@Class" data-size="@Size" data-opacity="@Opacity.ToString(System.Globalization.CultureInfo.InvariantCulture)" @attributes="AdditionalAttributes">
+    <div data-mask-toolbar role="group" aria-label="Mask tools">
+        <Button Type="button" data-mask-action="draw" aria-pressed="true">Draw</Button>
+        <Button Type="button" data-mask-action="erase" aria-pressed="false">Erase</Button>
+        <label>Brush size <Slider Min="1" Max="256" Value="@Size" data-mask-size aria-label="Brush size" /></label>
+        <label>Opacity <Slider Min="1" Max="100" Value="@(Opacity * 100)" data-mask-opacity aria-label="Brush opacity" /></label>
+        <Button Type="button" data-mask-action="undo">Undo</Button>
+        <Button Type="button" data-mask-action="redo">Redo</Button>
+        <Button Type="button" data-mask-action="export">Export mask</Button>
+    </div>
+    <canvas tabindex="0" role="img" aria-label="@Label"></canvas>
+    <span data-mask-cursor aria-hidden="true"></span>
+    @ChildContent
+</div>
+@code {
+    [Parameter] public int Size { get; set; } = 32;
+    [Parameter] public double Opacity { get; set; } = 1;
+    [Parameter] public string Label { get; set; } = "Mask. Arrows move brush, Space paints, Shift plus arrows paints a line.";
+    protected override void OnParametersSet()
+    {
+        if (Size < 1 || Size > 256 || !double.IsFinite(Opacity) || Opacity <= 0 || Opacity > 1) throw new ArgumentOutOfRangeException(nameof(Size));
+    }
+}

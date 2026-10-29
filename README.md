@@ -199,3 +199,8 @@ and `h-9` → `h-control` on controls, `data-slot` on the root, and `@attributes
 can override. If it needs state, ask in this order — does a native element already have it, does
 an Unpoly attribute already do it, and only then write a compiler. A compiler must return a
 destructor; one that leaves residue behind does not break this swap, it breaks the next one.
+
+## Creative media
+
+Canvas/mask, media gallery/lightbox/asset picker, timeline and draggable overlay documentation:
+[creative-media.md](docs/creative-media.md). Both demos expose `/components/creative-media`.

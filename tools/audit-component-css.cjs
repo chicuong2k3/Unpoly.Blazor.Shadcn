@@ -9,7 +9,11 @@ const { classes } = require('./audit-css-classes.cjs');
 // as component parity passes: composition, slot CSS and browser-default
 // elements still need rendered/state/interaction tests.
 const delegates = new Set(['ComboboxInput', 'FieldTitle', 'FolderPicker', 'FormField']);
-const slotCss = new Map([['ResizablePanel', 'resizable-panel'], ['SelectItem', 'select-item'], ['Snippet', 'snippet']]);
+const slotCss = new Map([
+  ['ImageCanvas', 'image-canvas'], ['MaskBrush', 'mask-brush'],
+  ['DraggableOverlay', 'draggable-overlay'], ['MediaTimeline', 'media-timeline'],
+  ['MediaGrid', 'media-grid'], ['MediaLightbox', 'media-lightbox'],
+  ['AssetPicker', 'asset-picker'], ['ResizablePanel', 'resizable-panel'], ['SelectItem', 'select-item'], ['Snippet', 'snippet']]);
 const noOwnUtility = new Set([
   'Accordion', 'AspectRatio', 'Breadcrumb', 'Collapsible', 'CollapsibleContent',
   'CollapsibleTrigger', 'ComboboxValue', 'ContextMenuGroup', 'ContextMenuTrigger',

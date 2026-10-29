@@ -1,0 +1,25 @@
+@inherits UiComponentBase
+<div data-slot="image-canvas" data-width="@Width" data-height="@Height" class="@Class" @attributes="AdditionalAttributes">
+    <div data-canvas-toolbar role="group" aria-label="Canvas view">
+        <Button Type="button" data-canvas-action="zoom-in">Zoom in</Button>
+        <Button Type="button" data-canvas-action="zoom-out">Zoom out</Button>
+        <Button Type="button" data-canvas-action="fit">Fit image</Button>
+    </div>
+    <div data-canvas-viewport tabindex="0" role="group" aria-label="@Label">
+        <div data-canvas-plane>
+            @if (Src is not null) { <img src="@Src" alt="@Alt" draggable="false" /> }
+            @ChildContent
+        </div>
+    </div>
+</div>
+@code {
+    [Parameter] public string? Src { get; set; }
+    [Parameter] public string Alt { get; set; } = "Canvas image";
+    [Parameter] public string Label { get; set; } = "Image canvas. Use arrows to pan, plus and minus to zoom, Home to fit.";
+    [Parameter] public int Width { get; set; } = 1024;
+    [Parameter] public int Height { get; set; } = 1024;
+    protected override void OnParametersSet()
+    {
+        if (Width < 1 || Height < 1 || Width > 8192 || Height > 8192) throw new ArgumentOutOfRangeException(nameof(Width), "Canvas dimensions must be 1–8192.");
+    }
+}

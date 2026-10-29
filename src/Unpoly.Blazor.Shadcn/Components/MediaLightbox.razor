@@ -1,0 +1,20 @@
+@inherits UiComponentBase
+<div data-slot="media-lightbox" data-index="@InitialIndex" class="@Class" @attributes="AdditionalAttributes">
+    <Dialog Id="@Id" Dismissable="true" aria-label="@Label">
+        <p data-media-status role="status" aria-live="polite"></p>
+        <div data-media-stage></div>
+        <Button Type="button" data-media-previous aria-label="Previous media">Previous</Button>
+        <Button Type="button" data-media-next aria-label="Next media">Next</Button>
+        @ChildContent
+    </Dialog>
+    @foreach (var item in Items)
+    {
+        <template data-media-id="@item.Id" data-src="@item.Src" data-alt="@item.Alt" data-video="@(item.IsVideo ? "true" : "false")"></template>
+    }
+</div>
+@code {
+    [Parameter] public string Id { get; set; } = $"media-{Guid.NewGuid():N}";
+    [Parameter] public string Label { get; set; } = "Media preview";
+    [Parameter] public IReadOnlyList<MediaAsset> Items { get; set; } = Array.Empty<MediaAsset>();
+    [Parameter] public int InitialIndex { get; set; }
+}

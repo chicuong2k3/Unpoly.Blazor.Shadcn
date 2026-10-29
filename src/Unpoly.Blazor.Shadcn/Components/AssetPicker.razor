@@ -1,0 +1,20 @@
+@inherits UiComponentBase
+<div data-slot="asset-picker" data-selected-ids="@System.Text.Json.JsonSerializer.Serialize(SelectedIds)" class="@Class" @attributes="AdditionalAttributes">
+    <Dialog Id="@Id" Dismissable="true" aria-label="@Label">
+        @FilterContent
+        <MediaGrid Items="@Items" SelectedIds="@SelectedIds" Selectable="true" Loading="@Loading" Error="@Error" NextPageHref="@NextPageHref" />
+        <Button Type="button" data-assets-confirm>@ConfirmLabel</Button>
+        @ChildContent
+    </Dialog>
+</div>
+@code {
+    [Parameter] public string Id { get; set; } = $"assets-{Guid.NewGuid():N}";
+    [Parameter] public string Label { get; set; } = "Choose assets";
+    [Parameter] public string ConfirmLabel { get; set; } = "Use selected assets";
+    [Parameter] public IReadOnlyList<MediaAsset> Items { get; set; } = Array.Empty<MediaAsset>();
+    [Parameter] public IReadOnlySet<string> SelectedIds { get; set; } = new HashSet<string>();
+    [Parameter] public bool Loading { get; set; }
+    [Parameter] public string? Error { get; set; }
+    [Parameter] public string? NextPageHref { get; set; }
+    [Parameter] public RenderFragment? FilterContent { get; set; }
+}

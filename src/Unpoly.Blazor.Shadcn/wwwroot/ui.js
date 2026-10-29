@@ -85,7 +85,11 @@
     const teardown = compile(el)
     let set = compiledElements.get(el)
     if (!set) { set = new Set(); compiledElements.set(el, set) }
-    if (typeof teardown === 'function') { set.add(compile); el.__shadcnTeardown = teardown }
+    if (typeof teardown === 'function') {
+      set.add(compile)
+      const previous = el.__shadcnTeardown
+      el.__shadcnTeardown = () => { previous?.(); teardown() }
+    }
     // No teardown (a bail, or a compiler that attaches state to global structure) → not owned.
     // The observer will retry it on the next mutation; this is what makes a lazy-asset bail work
     // without swapping fragments.
@@ -126,9 +130,21 @@
           // A node moved within the document (for example a wrapped select) is not
           // disposed. Unwrapping it here creates an infinite mutation/recompile loop.
           if (!(node instanceof Element) || node.isConnected) continue
-          const teardown = node.__shadcnTeardown
-          if (typeof teardown === 'function') { teardown(); delete node.__shadcnTeardown }
-          compiledElements.delete(node)
+          // MutationObserver reports the removed ancestor, not a record for every
+          // descendant. Dispose the entire subtree, including nodes restored by a
+          // destructor (e.g. a mask toolbar moved out of its image plane).
+          const pending = [node]
+          while (pending.length) {
+            const current = pending.pop()
+            if (current.isConnected) continue
+            const children = new Set(current.children)
+            const teardown = current.__shadcnTeardown
+            delete current.__shadcnTeardown
+            compiledElements.delete(current)
+            if (typeof teardown === 'function') teardown()
+            for (const child of current.children) children.add(child)
+            pending.push(...children)
+          }
         }
       }
     })
@@ -2430,75 +2446,407 @@
     }
   })
 
-  shadcnCompiler('[data-slot="image-crop"]', (root) => {
+  // Creative media primitives share the platform driver on SSR/Unpoly and WebView hosts.
+  const mediaNumber = (value, fallback = 0) => Number.isFinite(Number(value)) ? Number(value) : fallback
+  const mediaClamp = (n, min, max) => Math.max(min, Math.min(max, n))
+  const mediaEmit = (root, name, detail) => root.dispatchEvent(new CustomEvent(name, { bubbles: true, detail }))
+  const mediaListen = (controller, el, name, fn, options = {}) => el?.addEventListener(name, fn, { ...options, signal: controller.signal })
+
+  shadcnCompiler('[data-slot="media-grid"]', root => {
+    const controller = new AbortController()
+    mediaListen(controller, root, 'change', e => {
+      if (e.target.matches('input[name="assets"]')) mediaEmit(root, 'media-grid:selection', {
+        ids: Array.from(root.querySelectorAll('input[name="assets"]:checked'), x => x.value)
+      })
+    })
+    mediaListen(controller, root, 'click', e => {
+      const button = e.target.closest('[data-media-preview]')
+      if (button) {
+        const detail = { id: button.dataset.mediaPreview }
+        mediaEmit(root, 'media-grid:preview', detail)
+        const lightbox = document.getElementById(root.dataset.lightboxTarget)?.closest('[data-slot="media-lightbox"]')
+        if (lightbox) mediaEmit(lightbox, 'media-lightbox:open', detail)
+      }
+    })
+    return () => controller.abort()
+  })
+
+  shadcnCompiler('[data-slot="asset-picker"]', root => {
+    const controller = new AbortController()
+    let initial = []
+    try { initial = JSON.parse(root.dataset.selectedIds || '[]') } catch {}
+    const selected = new Set(Array.isArray(initial) ? initial.filter(x => typeof x === 'string') : [])
+    const remember = () => { root.dataset.selectedIds = JSON.stringify(Array.from(selected)) }
+    mediaListen(controller, root, 'change', e => {
+      if (!e.target.matches('input[name="assets"]')) return
+      if (e.target.checked) selected.add(e.target.value); else selected.delete(e.target.value)
+      remember()
+    })
+    mediaListen(controller, root, 'click', e => {
+      if (!e.target.closest('[data-assets-confirm]')) return
+      // Reconcile the visible page; keep selections from other pages/filter results.
+      for (const input of root.querySelectorAll('input[name="assets"]')) {
+        if (input.checked) selected.add(input.value); else selected.delete(input.value)
+      }
+      remember()
+      const ids = Array.from(selected)
+      if (root.dispatchEvent(new CustomEvent('asset-picker:confirm', { bubbles: true, cancelable: true, detail: { ids } }))) root.querySelector('dialog')?.close()
+    })
+    return () => controller.abort()
+  })
+
+  shadcnCompiler('[data-slot="media-lightbox"]', root => {
+    const controller = new AbortController()
+    const dialog = root.querySelector('dialog'), stage = root.querySelector('[data-media-stage]'), status = root.querySelector('[data-media-status]')
+    const items = Array.from(root.querySelectorAll('template[data-media-id]'))
+    let mediaController = null
+    let index = mediaClamp(mediaNumber(root.dataset.index), 0, Math.max(0, items.length - 1)), current = null, startX = null
+    const clear = () => {
+      mediaController?.abort(); mediaController = null
+      if (current?.tagName === 'VIDEO') { current.pause(); current.removeAttribute('src'); current.load() }
+      current?.remove(); current = null
+    }
+    const show = n => {
+      clear()
+      index = mediaClamp(n, 0, Math.max(0, items.length - 1))
+      root.querySelector('[data-media-previous]').disabled = !items.length || index === 0
+      root.querySelector('[data-media-next]').disabled = !items.length || index === items.length - 1
+      if (!items.length) { status.textContent = 'No media found.'; return }
+      const item = items[index].dataset
+      status.textContent = 'Loading…'
+      const media = document.createElement(item.video === 'true' ? 'video' : 'img')
+      current = media; mediaController = new AbortController()
+      const loaded = () => { if (current === media) status.textContent = `${index + 1} / ${items.length}: ${item.alt}` }
+      mediaListen(mediaController, media, item.video === 'true' ? 'loadeddata' : 'load', loaded)
+      mediaListen(mediaController, media, 'error', () => { if (current === media) status.textContent = 'Unable to load media.' })
+      if (item.video === 'true') { media.controls = true; media.preload = 'metadata'; media.setAttribute('aria-label', item.alt) }
+      else media.alt = item.alt
+      media.src = item.src; stage.append(media)
+      mediaEmit(root, 'media-lightbox:change', { id: item.mediaId, index })
+    }
+    const open = e => {
+      const requested = items.findIndex(x => x.dataset.mediaId === e.detail?.id)
+      if (requested >= 0) index = requested
+      if (!dialog.open) dialog.showModal()
+      show(index)
+    }
+    mediaListen(controller, root, 'media-lightbox:open', open)
+    // DialogTrigger calls showModal; only fetch the active asset once the dialog opens.
+    const observer = new MutationObserver(() => { if (dialog.open && !current) show(index); else if (!dialog.open) clear() })
+    observer.observe(dialog, { attributes: true, attributeFilter: ['open'] })
+    mediaListen(controller, dialog, 'close', clear)
+    mediaListen(controller, root.querySelector('[data-media-previous]'), 'click', () => show(index - 1))
+    mediaListen(controller, root.querySelector('[data-media-next]'), 'click', () => show(index + 1))
+    mediaListen(controller, dialog, 'keydown', e => {
+      if (e.target.closest('video, input, textarea')) return
+      if (e.key === 'ArrowLeft' || e.key === 'ArrowRight') { e.preventDefault(); show(index + (e.key === 'ArrowLeft' ? -1 : 1)) }
+    })
+    mediaListen(controller, stage, 'pointerdown', e => { startX = e.clientX })
+    mediaListen(controller, stage, 'pointercancel', () => { startX = null })
+    mediaListen(controller, stage, 'pointerup', e => {
+      if (startX !== null && Math.abs(e.clientX - startX) > 50 && !e.target.closest('video')) show(index + (e.clientX < startX ? 1 : -1))
+      startX = null
+    })
+    if (dialog.open) show(index)
+    return () => { controller.abort(); observer.disconnect(); clear() }
+  })
+
+  shadcnCompiler('[data-slot="image-canvas"]', root => {
+    const controller = new AbortController(), viewport = root.querySelector('[data-canvas-viewport]'), plane = root.querySelector('[data-canvas-plane]')
+    const width = mediaNumber(root.dataset.width, 1024), height = mediaNumber(root.dataset.height, 1024)
+    let scale = 1, x = 0, y = 0, dragging = null
+    plane.style.width = `${width}px`; plane.style.height = `${height}px`
+    const render = () => { plane.style.transform = `translate(${x}px, ${y}px) scale(${scale})` }
+    const changed = () => mediaEmit(root, 'image-canvas:change', { version: 1, scale, x, y, width, height })
+    const fit = () => { const r = viewport.getBoundingClientRect(); scale = Math.min(r.width / width, r.height / height) || 1; x = (r.width - width * scale) / 2; y = (r.height - height * scale) / 2; render() }
+    const zoom = factor => {
+      const r = viewport.getBoundingClientRect(), next = mediaClamp(scale * factor, .02, 32), ratio = next / scale
+      x = r.width / 2 - (r.width / 2 - x) * ratio; y = r.height / 2 - (r.height / 2 - y) * ratio
+      scale = next; render(); changed()
+    }
+    mediaListen(controller, root, 'click', e => {
+      const action = e.target.closest('[data-canvas-action]')?.dataset.canvasAction
+      if (action === 'fit') { fit(); changed() }
+      else if (action) zoom(action === 'zoom-in' ? 1.25 : .8)
+    })
+    mediaListen(controller, viewport, 'keydown', e => {
+      if (e.target !== viewport) return
+      if (e.key === '+' || e.key === '=') zoom(1.25)
+      else if (e.key === '-') zoom(.8)
+      else if (e.key === 'Home') { fit(); changed() }
+      else if (['ArrowLeft','ArrowRight','ArrowUp','ArrowDown'].includes(e.key)) {
+        x += e.key === 'ArrowLeft' ? 20 : e.key === 'ArrowRight' ? -20 : 0
+        y += e.key === 'ArrowUp' ? 20 : e.key === 'ArrowDown' ? -20 : 0; render(); changed()
+      } else return
+      e.preventDefault()
+    })
+    mediaListen(controller, viewport, 'wheel', e => { if (!e.ctrlKey) return; e.preventDefault(); zoom(e.deltaY < 0 ? 1.1 : 1 / 1.1) }, { passive: false })
+    mediaListen(controller, viewport, 'pointerdown', e => {
+      if (e.button !== 0 || e.target.closest('[data-slot="mask-brush"], [data-slot="draggable-overlay"], button, input')) return
+      dragging = { id: e.pointerId, px: e.clientX, py: e.clientY, x, y }; viewport.setPointerCapture(e.pointerId)
+    })
+    mediaListen(controller, viewport, 'pointermove', e => {
+      if (!dragging || dragging.id !== e.pointerId) return
+      x = dragging.x + e.clientX - dragging.px; y = dragging.y + e.clientY - dragging.py; render()
+    })
+    const end = e => { if (dragging?.id !== e.pointerId) return; dragging = null; if (viewport.hasPointerCapture(e.pointerId)) viewport.releasePointerCapture(e.pointerId); changed() }
+    mediaListen(controller, viewport, 'pointerup', end); mediaListen(controller, viewport, 'pointercancel', end)
+    mediaListen(controller, viewport, 'lostpointercapture', end)
+    mediaListen(controller, root, 'image-canvas:restore', e => {
+      const d = e.detail
+      if (d?.version !== 1 || ![d.scale,d.x,d.y].every(Number.isFinite)) return
+      scale = mediaClamp(d.scale, .02, 32); x = d.x; y = d.y; render(); changed()
+    })
+    const observer = new ResizeObserver(() => { fit(); changed() }); observer.observe(viewport); fit()
+    return () => { if (dragging && viewport.hasPointerCapture(dragging.id)) viewport.releasePointerCapture(dragging.id); dragging = null; controller.abort(); observer.disconnect() }
+  })
+
+  shadcnCompiler('[data-slot="mask-brush"]', root => {
+    const host = root.closest('[data-slot="image-canvas"]'), canvas = root.querySelector('canvas')
+    if (!host || !canvas) return
+    const controller = new AbortController(), toolbar = root.querySelector('[data-mask-toolbar]')
+    const toolbarNext = toolbar.nextSibling
+    host.querySelector('[data-canvas-toolbar]').append(toolbar)
+    canvas.width = mediaNumber(host.dataset.width, 1024); canvas.height = mediaNumber(host.dataset.height, 1024)
+    const ctx = canvas.getContext('2d')
+    let size = mediaClamp(mediaNumber(root.dataset.size, 32), 1, 256), opacity = mediaClamp(mediaNumber(root.dataset.opacity, 1), .01, 1), mode = 'draw', strokes = [], redo = [], active = null, pointer = null
+    let cursor = { x: canvas.width / 2, y: canvas.height / 2 }, disposed = false
+    const cursorEl = root.querySelector('[data-mask-cursor]')
+    const renderCursor = () => { if (cursorEl) { cursorEl.style.left=`${cursor.x}px`; cursorEl.style.top=`${cursor.y}px`; cursorEl.style.width=`${size}px`; cursorEl.style.height=`${size}px` } }
+    renderCursor()
+    const point = e => { const r = canvas.getBoundingClientRect(); return { x: mediaClamp((e.clientX-r.left)*canvas.width/r.width,0,canvas.width), y: mediaClamp((e.clientY-r.top)*canvas.height/r.height,0,canvas.height) } }
+    const paint = s => {
+      // One compositing operation per stroke keeps opacity independent of pointer sampling rate.
+      ctx.globalCompositeOperation = s.mode === 'erase' ? 'destination-out' : 'source-over'
+      ctx.globalAlpha = s.opacity; ctx.strokeStyle = '#fff'; ctx.fillStyle = '#fff'; ctx.lineWidth = s.size; ctx.lineCap = 'round'; ctx.lineJoin = 'round'
+      ctx.beginPath(); const first = s.points[0]; ctx.moveTo(first.x, first.y)
+      for (const p of s.points.slice(1)) ctx.lineTo(p.x,p.y)
+      if (s.points.length === 1) { ctx.arc(first.x,first.y,s.size/2,0,Math.PI*2); ctx.fill() } else ctx.stroke()
+    }
+    const render = () => { ctx.clearRect(0,0,canvas.width,canvas.height); for (const s of strokes) paint(s); if (active) paint(active); ctx.globalAlpha = 1 }
+    const changed = () => {
+      toolbar.querySelector('[data-mask-action="undo"]').disabled = strokes.length === 0
+      toolbar.querySelector('[data-mask-action="redo"]').disabled = redo.length === 0
+      mediaEmit(root, 'mask-brush:change', { version: 1, width: canvas.width, height: canvas.height, strokes: structuredClone(strokes) })
+    }
+    const begin = p => { active = { mode, size, opacity, points: [p] } }
+    const commit = () => { if (!active) return; strokes.push(active); active = null; redo = []; render(); changed() }
+    mediaListen(controller, canvas, 'pointerdown', e => { if (e.button !== 0 || pointer !== null) return; e.preventDefault(); canvas.focus(); pointer = e.pointerId; canvas.setPointerCapture(pointer); cursor = point(e); renderCursor(); begin(cursor); render() })
+    mediaListen(controller, canvas, 'pointermove', e => { if (pointer !== e.pointerId || !active) return; cursor = point(e); renderCursor(); active.points.push(cursor); render() })
+    mediaListen(controller, canvas, 'pointerup', e => { if (pointer !== e.pointerId) return; const id = pointer; pointer = null; commit(); if (canvas.hasPointerCapture(id)) canvas.releasePointerCapture(id) })
+    const cancel = e => { if (pointer !== e.pointerId) return; pointer = null; active = null; render() }
+    mediaListen(controller, canvas, 'pointercancel', cancel); mediaListen(controller, canvas, 'lostpointercapture', cancel)
+    mediaListen(controller, canvas, 'keydown', e => {
+      if (!['ArrowLeft','ArrowRight','ArrowUp','ArrowDown',' '].includes(e.key)) return
+      e.preventDefault(); const old = { ...cursor }, step = e.altKey ? 1 : size / 2
+      cursor = { x: mediaClamp(cursor.x + (e.key==='ArrowRight'?step:e.key==='ArrowLeft'?-step:0),0,canvas.width), y: mediaClamp(cursor.y + (e.key==='ArrowDown'?step:e.key==='ArrowUp'?-step:0),0,canvas.height) }
+      if (e.key === ' ' || e.shiftKey) { begin(old); if (e.key !== ' ') active.points.push({ ...cursor }); commit() }
+      renderCursor()
+      canvas.setAttribute('aria-description', `Brush at ${Math.round(cursor.x)}, ${Math.round(cursor.y)}`)
+    })
+    mediaListen(controller, toolbar, 'input', e => { if (e.target.matches('[data-mask-size]')) size = mediaClamp(Number(e.target.value),1,256); if (e.target.matches('[data-mask-opacity]')) opacity = mediaClamp(Number(e.target.value)/100,.01,1); renderCursor() })
+    mediaListen(controller, toolbar, 'click', e => {
+      const action = e.target.closest('[data-mask-action]')?.dataset.maskAction
+      if (action === 'draw' || action === 'erase') { mode = action; for (const b of toolbar.querySelectorAll('[aria-pressed]')) b.setAttribute('aria-pressed', String(b.dataset.maskAction === mode)) }
+      if (action === 'undo' && strokes.length) { redo.push(strokes.pop()); render(); changed() }
+      if (action === 'redo' && redo.length) { strokes.push(redo.pop()); render(); changed() }
+      if (action === 'export') canvas.toBlob(blob => { if (!disposed) mediaEmit(root, blob ? 'mask-brush:export' : 'mask-brush:error', blob ? { blob, width: canvas.width, height: canvas.height } : { reason: 'export' }) }, 'image/png')
+    })
+    mediaListen(controller, root, 'mask-brush:restore', e => {
+      const d = e.detail
+      if (d?.version !== 1 || d.width !== canvas.width || d.height !== canvas.height || !Array.isArray(d.strokes) || d.strokes.length > 10000) return
+      if (d.strokes.some(s => !['draw','erase'].includes(s.mode) || !Number.isFinite(s.size) || s.size < 1 || s.size > 256 || !Number.isFinite(s.opacity) || s.opacity <= 0 || s.opacity > 1 || !Array.isArray(s.points) || !s.points.length || s.points.length > 100000 || s.points.some(p => !Number.isFinite(p.x) || !Number.isFinite(p.y) || p.x < 0 || p.x > canvas.width || p.y < 0 || p.y > canvas.height))) return
+      strokes = structuredClone(d.strokes); redo = []; active = null; render(); changed()
+    })
+    changed()
+    return () => { disposed = true; controller.abort(); root.insertBefore(toolbar, toolbarNext?.parentNode === root ? toolbarNext : null); if (pointer !== null && canvas.hasPointerCapture(pointer)) canvas.releasePointerCapture(pointer); pointer = null }
+  })
+
+  shadcnCompiler('[data-slot="draggable-overlay"]', root => {
+    const controller = new AbortController(), parent = root.parentElement
+    let state = { x: mediaNumber(root.dataset.x), y: mediaNumber(root.dataset.y), width: mediaNumber(root.dataset.width,.3), height: mediaNumber(root.dataset.height,.2) }, drag = null
+    const snap = mediaClamp(mediaNumber(root.dataset.snap,.01),.000001,1), quantize = n => Math.round(n / snap) * snap
+    const render = () => { root.style.left = `${state.x*100}%`; root.style.top = `${state.y*100}%`; root.style.width = `${state.width*100}%`; root.style.height = `${state.height*100}%` }
+    const emit = () => { for (const [k,v] of Object.entries(state)) root.dataset[k] = String(v); mediaEmit(root,'draggable-overlay:change',{ version:1,...state }) }
+    const update = (base, dx, dy, resize) => {
+      if (resize) state = { ...base, width:mediaClamp(quantize(base.width+dx),Math.min(snap,1-base.x),1-base.x), height:mediaClamp(quantize(base.height+dy),Math.min(snap,1-base.y),1-base.y) }
+      else state = { ...base, x:mediaClamp(quantize(base.x+dx),0,1-base.width), y:mediaClamp(quantize(base.y+dy),0,1-base.height) }
+      render()
+    }
+    mediaListen(controller, root, 'pointerdown', e => {
+      const handle = e.target.closest('[data-overlay-move], [data-overlay-resize]'); if (!handle || e.button !== 0 || drag) return
+      e.preventDefault(); handle.focus(); const r = parent.getBoundingClientRect(); if (!r.width || !r.height) return
+      drag = { id:e.pointerId, x:e.clientX, y:e.clientY, width:r.width, height:r.height, base:{...state}, resize:handle.hasAttribute('data-overlay-resize') }; root.setPointerCapture(e.pointerId)
+    })
+    mediaListen(controller, root, 'pointermove', e => { if (drag?.id === e.pointerId) update(drag.base,(e.clientX-drag.x)/drag.width,(e.clientY-drag.y)/drag.height,drag.resize) })
+    const end = e => { if (drag?.id !== e.pointerId) return; if (e.type === 'pointercancel') { state = drag.base; render() }; drag=null; if (root.hasPointerCapture(e.pointerId)) root.releasePointerCapture(e.pointerId); emit() }
+    mediaListen(controller, root, 'pointerup', end); mediaListen(controller, root, 'pointercancel', end); mediaListen(controller, root, 'lostpointercapture', end)
+    mediaListen(controller, root, 'keydown', e => {
+      if (!e.target.matches('[data-overlay-move], [data-overlay-resize]') || !['ArrowLeft','ArrowRight','ArrowUp','ArrowDown'].includes(e.key)) return
+      e.preventDefault(); const step = snap*(e.shiftKey?10:1)
+      update(state,e.key==='ArrowRight'?step:e.key==='ArrowLeft'?-step:0,e.key==='ArrowDown'?step:e.key==='ArrowUp'?-step:0,e.target.hasAttribute('data-overlay-resize')); emit()
+    })
+    mediaListen(controller, root, 'draggable-overlay:set', e => {
+      const d=e.detail
+      if (d?.version!==1 || ![d.x,d.y,d.width,d.height].every(Number.isFinite) || d.x<0 || d.y<0 || d.width<=0 || d.height<=0 || d.x+d.width>1 || d.y+d.height>1) return
+      state={x:d.x,y:d.y,width:d.width,height:d.height}; render(); emit()
+    })
+    render()
+    return () => { controller.abort(); if (drag && root.hasPointerCapture(drag.id)) root.releasePointerCapture(drag.id); drag=null }
+  })
+
+  shadcnCompiler('[data-slot="media-timeline"]', root => {
+    const controller = new AbortController(), duration = mediaNumber(root.dataset.duration,60), snap = mediaNumber(root.dataset.snap,.1), clips = Array.from(root.querySelectorAll('[data-media-clip]'))
+    let drag = null
+    const read = clip => ({ start:mediaNumber(clip.dataset.start), duration:mediaNumber(clip.dataset.length), track:mediaNumber(clip.dataset.track) })
+    const render = clip => { const s=read(clip); clip.style.left=`${s.start/duration*100}%`; clip.style.width=`${s.duration/duration*100}%`; clip.style.top=`${s.track*80}px`; root.style.minHeight=`${Math.max(...clips.map(c=>read(c).track),0)*80+80}px` }
+    const emit = clip => mediaEmit(root,'media-timeline:change',{version:1,id:clip.dataset.mediaClip,...read(clip)})
+    const update = (clip,base,delta,action,trackDelta=0) => {
+      delta=Math.round(delta/snap)*snap
+      let {start,duration:length,track}=base
+      if (action==='start') { const end=start+length; start=mediaClamp(start+delta,0,end-snap); length=end-start }
+      else if (action==='end') length=mediaClamp(length+delta,snap,duration-start)
+      else { start=mediaClamp(start+delta,0,duration-length); track=mediaClamp(track+trackDelta,0,99) }
+      clip.dataset.start=String(start); clip.dataset.length=String(length); clip.dataset.track=String(track); render(clip)
+      clip.querySelector('[data-clip-move]').setAttribute('aria-description',`Start ${start.toFixed(2)} seconds, duration ${length.toFixed(2)} seconds, track ${track+1}`)
+    }
+    const handle = target => { const h=target.closest('[data-clip-move], [data-clip-start], [data-clip-end]'); if(!h) return null; return { h,clip:h.closest('[data-media-clip]'),action:h.hasAttribute('data-clip-start')?'start':h.hasAttribute('data-clip-end')?'end':'move' } }
+    mediaListen(controller, root, 'pointerdown', e => {
+      const h=handle(e.target); if(!h || e.button!==0 || drag) return
+      e.preventDefault(); h.h.focus(); for (const c of clips) c.toggleAttribute('data-selected',c===h.clip)
+      mediaEmit(root,'media-timeline:select',{id:h.clip.dataset.mediaClip})
+      drag={...h,id:e.pointerId,x:e.clientX,y:e.clientY,width:root.getBoundingClientRect().width,base:read(h.clip)}; root.setPointerCapture(e.pointerId)
+    })
+    mediaListen(controller, root, 'pointermove', e => { if(drag?.id===e.pointerId && drag.width) update(drag.clip,drag.base,(e.clientX-drag.x)/drag.width*duration,drag.action,Math.round((e.clientY-drag.y)/80)) })
+    const end = e => { if(drag?.id!==e.pointerId) return; const clip=drag.clip; if(e.type==='pointercancel') { clip.dataset.start=String(drag.base.start); clip.dataset.length=String(drag.base.duration); clip.dataset.track=String(drag.base.track); render(clip) }; drag=null; if(root.hasPointerCapture(e.pointerId)) root.releasePointerCapture(e.pointerId); emit(clip) }
+    mediaListen(controller, root, 'pointerup', end); mediaListen(controller, root, 'pointercancel', end); mediaListen(controller, root, 'lostpointercapture', end)
+    mediaListen(controller, root, 'keydown', e => {
+      const h=handle(e.target); if(!h || !['ArrowLeft','ArrowRight','ArrowUp','ArrowDown'].includes(e.key)) return
+      e.preventDefault(); for(const c of clips) c.toggleAttribute('data-selected',c===h.clip)
+      mediaEmit(root,'media-timeline:select',{id:h.clip.dataset.mediaClip})
+      const step=snap*(e.shiftKey?10:1)
+      update(h.clip,read(h.clip),e.key==='ArrowRight'?step:e.key==='ArrowLeft'?-step:0,h.action,e.key==='ArrowDown'?1:e.key==='ArrowUp'?-1:0); emit(h.clip)
+    })
+    mediaListen(controller, root, 'click', e => {
+      if (e.detail !== 0) return // Native keyboard activation (Enter/Space).
+      const h=handle(e.target); if (!h) return
+      for (const c of clips) c.toggleAttribute('data-selected',c===h.clip)
+      mediaEmit(root,'media-timeline:select',{id:h.clip.dataset.mediaClip})
+    })
+    mediaListen(controller, root, 'media-timeline:set', e => {
+      const d=e.detail, clip=clips.find(c=>c.dataset.mediaClip===d?.id)
+      if (!clip || d.version!==1 || ![d.start,d.duration,d.track].every(Number.isFinite) || !Number.isInteger(d.track) || d.track<0 || d.track>99 || d.start<0 || d.duration<snap || d.start+d.duration>duration) return
+      clip.dataset.start=String(d.start); clip.dataset.length=String(d.duration); clip.dataset.track=String(d.track); render(clip); emit(clip)
+    })
+    clips.forEach(render)
+    return () => { controller.abort(); if(drag && root.hasPointerCapture(drag.id)) root.releasePointerCapture(drag.id); drag=null }
+  })
+
+  shadcnCompiler('[data-slot="image-crop"]', root => {
     const image = root.querySelector('img')
     if (!image) return
-    let disposed = false
-    let cropper = null
-    const controller = new AbortController()
+    const controller = new AbortController(), status = root.querySelector('[data-crop-status]')
+    let disposed = false, cropper = null, exporting = false, ready = false
+    const error = reason => { if (disposed) return; if (status) status.textContent = `Crop failed: ${reason}`; mediaEmit(root, 'image-crop:error', { reason }) }
+    const changed = () => {
+      if (!cropper || !ready || disposed) return
+      const crop = cropper.getData(true)
+      for (const field of root.querySelectorAll('[data-crop-field]')) { if (document.activeElement !== field) field.value = crop[field.dataset.cropField] }
+      mediaEmit(root, 'image-crop:change', { crop })
+    }
     const start = () => {
       if (disposed || !root.isConnected || cropper || !window.Cropper) return
       const ratio = Number(root.dataset.aspectRatio)
       cropper = new window.Cropper(image, {
-        aspectRatio: root.dataset.circular === 'true' ? 1 : (root.dataset.aspectRatio ? ratio : NaN),
-        viewMode: 1, autoCropArea: 0.9, background: false,
+        aspectRatio: root.dataset.circular === 'true' ? 1 : (ratio > 0 && Number.isFinite(ratio) ? ratio : NaN),
+        viewMode: 1, autoCropArea: .9, background: false,
         ready() {
-          if (root.dataset.circular === 'true') {
-            const box = root.querySelector('.cropper-view-box')
-            const face = root.querySelector('.cropper-face')
-            if (box) box.style.borderRadius = '50%'
-            if (face) face.style.borderRadius = '50%'
-          }
-        }
+          ready = true
+          if (root.dataset.circular === 'true') for (const box of root.querySelectorAll('.cropper-view-box, .cropper-face')) box.style.borderRadius = '50%'
+          changed()
+        }, crop() { changed() }
       })
     }
+    mediaListen(controller, image, 'error', () => error('image'))
     if (window.Cropper) start()
-    else loadScript('_content/Unpoly.Blazor.Shadcn/cropperjs/cropper.min.js').then(start).catch(console.error)
-    const emitCrop = (canvas) => {
-      const dataUrl = canvas.toDataURL('image/png')
-      const max = Number(root.dataset.maxImageSize) || 0
-      if (max && Math.ceil((dataUrl.length - dataUrl.indexOf(',') - 1) * 3 / 4) > max) {
-        root.dispatchEvent(new CustomEvent('image-crop:error', { bubbles: true, detail: { reason: 'size' } }))
-        return
-      }
-      root.dispatchEvent(new CustomEvent('image-crop:apply', { bubbles: true, detail: { dataUrl } }))
-    }
-    root.querySelector('[data-slot="image-crop-apply"]')?.addEventListener('click', () => {
-      if (!cropper) return
-      const canvas = cropper.getCroppedCanvas()
-      if (!canvas) return
-      if (root.dataset.circular === 'true') {
-        const circle = document.createElement('canvas')
-        circle.width = canvas.width; circle.height = canvas.height
-        const ctx = circle.getContext('2d')
-        ctx.beginPath(); ctx.ellipse(circle.width / 2, circle.height / 2, circle.width / 2, circle.height / 2, 0, 0, Math.PI * 2)
-        ctx.clip(); ctx.drawImage(canvas, 0, 0)
-        emitCrop(circle)
-      } else {
-        emitCrop(canvas)
-      }
-    }, { signal: controller.signal })
-    root.querySelector('[data-slot="image-crop-reset"]')?.addEventListener('click', () => cropper?.reset(), { signal: controller.signal })
+    else loadScript('_content/Unpoly.Blazor.Shadcn/cropperjs/cropper.min.js').then(start).catch(() => error('load'))
+    mediaListen(controller, root, 'change', e => {
+      if (!ready || !e.target.matches('[data-crop-field]')) return
+      const value = Number(e.target.value), field = e.target.dataset.cropField
+      if (!Number.isFinite(value) || value < 0 || (['width','height'].includes(field) && value === 0)) { error('bounds'); return }
+      cropper.setData({ [field]: value }); changed()
+    })
+    mediaListen(controller, root, 'image-crop:set', e => {
+      if (!ready) return
+      const crop = e.detail?.crop
+      if (!crop || !['x','y','width','height'].every(k => Number.isFinite(crop[k]) && crop[k] >= 0) || !crop.width || !crop.height) { error('bounds'); return }
+      cropper.setData(crop); changed()
+    })
+    mediaListen(controller, root, 'click', async e => {
+      if (!cropper || !ready) return
+      if (e.target.closest('[data-slot="image-crop-reset"]')) { cropper.reset(); changed(); return }
+      const zoom = e.target.closest('[data-crop-zoom]')
+      if (zoom) { cropper.zoom(Number(zoom.dataset.cropZoom)); changed(); return }
+      if (!e.target.closest('[data-slot="image-crop-apply"]') || exporting) return
+      exporting = true
+      const button = root.querySelector('[data-slot="image-crop-apply"]'); button.disabled = true
+      try {
+        let canvas = cropper.getCroppedCanvas({ maxWidth: 8192, maxHeight: 8192 })
+        if (!canvas || !canvas.width || !canvas.height) throw new Error('empty')
+        if (root.dataset.circular === 'true') {
+          const circle = document.createElement('canvas'); circle.width = canvas.width; circle.height = canvas.height
+          const ctx = circle.getContext('2d'); ctx.beginPath(); ctx.ellipse(circle.width/2,circle.height/2,circle.width/2,circle.height/2,0,0,Math.PI*2); ctx.clip(); ctx.drawImage(canvas,0,0); canvas = circle
+        }
+        const crop = cropper.getData(true)
+        const blob = await new Promise(resolve => canvas.toBlob(resolve,'image/png'))
+        if (disposed) return
+        if (!blob) { error('export'); return }
+        const max = Number(root.dataset.maxImageSize) || 0
+        if (max && blob.size > max) { error('size'); return }
+        const dataUrl = canvas.toDataURL('image/png') // retained compatibility; prefer detail.blob
+        if (status) status.textContent = 'Crop ready.'
+        mediaEmit(root,'image-crop:apply',{ dataUrl, blob, crop, width:canvas.width, height:canvas.height })
+      } catch (e) { error(e.name === 'SecurityError' ? 'cors' : 'export') }
+      finally { exporting = false; if (!disposed) button.disabled = false }
+    })
     return () => { disposed = true; controller.abort(); cropper?.destroy() }
   })
 
-  shadcnCompiler('[data-slot="image-compare"][data-image-compare]', (el) => {
-    const slider = el.querySelector('img-comparison-slider')
+  shadcnCompiler('[data-slot="image-compare"][data-image-compare]', root => {
+    const slider = root.querySelector('img-comparison-slider')
     if (!slider) return
-    const ensure = () => {
-      if (customElements.get('img-comparison-slider')) {
-        slider.value = el.dataset.position || '50'
-        return Promise.resolve()
-      }
-      return loadScript('_content/Unpoly.Blazor.Shadcn/image-compare/img-comparison-slider.js')
-        .then(() => { slider.value = el.dataset.position || '50' }).catch(()=>{})
+    const controller = new AbortController()
+    let disposed = false, initialized = false
+    const sync = () => {
+      const value = mediaClamp(mediaNumber(slider.value,50),0,100)
+      slider.setAttribute('aria-valuenow', String(Math.round(value)))
+      slider.setAttribute('aria-valuetext', `${Math.round(value)}%`)
+    }
+    const set = value => { slider.value = mediaClamp(mediaNumber(value,50),0,100); sync() }
+    const ensure = async () => {
+      try {
+        if (!customElements.get('img-comparison-slider')) await loadScript('_content/Unpoly.Blazor.Shadcn/image-compare/img-comparison-slider.js')
+        if (disposed) return
+        initialized = true
+        set(root.dataset.position)
+        const reduced = matchMedia('(prefers-reduced-motion: reduce)')
+        const enable = slider.enableTransition.bind(slider)
+        slider.enableTransition = () => { if (!reduced.matches) enable() }
+      } catch { if (!disposed) mediaEmit(root,'image-compare:error',{reason:'load'}) }
     }
     ensure()
-    const mo = new MutationObserver((muts) => {
-      for (const m of muts) if (m.attributeName === 'data-position') { slider.value = el.dataset.position || '50'; break }
-    })
-    mo.observe(el, { attributes: true, attributeFilter: ['data-position'] })
-    return () => mo.disconnect()
+    mediaListen(controller, slider, 'slide', () => { sync(); mediaEmit(root,'image-compare:change',{ value:mediaClamp(mediaNumber(slider.value,50),0,100) }) })
+    mediaListen(controller, slider, 'keydown', e => {
+      const keys = ['ArrowLeft','ArrowRight','ArrowUp','ArrowDown','Home','End','PageUp','PageDown']
+      if (!keys.includes(e.key)) return
+      e.preventDefault(); e.stopImmediatePropagation()
+      const direction = ['ArrowLeft','ArrowDown','PageDown'].includes(e.key) ? -1 : 1
+      set(e.key==='Home'?0:e.key==='End'?100:Number(slider.value)+direction*(e.shiftKey || e.key.startsWith('Page')?10:1))
+      mediaEmit(root,'image-compare:change',{value:Number(slider.value)})
+    }, {capture:true})
+    const observer = new MutationObserver(() => { if (initialized) set(root.dataset.position) })
+    observer.observe(root,{attributes:true,attributeFilter:['data-position']})
+    return () => { disposed=true; controller.abort(); observer.disconnect(); slider.stopSlideAnimation?.(); if(slider.isMouseDown) slider.onWindowMouseUp?.() }
   })
 
   // =============================================================================================
