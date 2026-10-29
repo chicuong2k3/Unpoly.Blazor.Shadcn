@@ -1,0 +1,104 @@
+# Creative media primitives
+
+Issues #7, #8 and #9. Demo route: `/components/creative-media` in Web and MAUI.
+These components contain presentation state only. Storage, queries, generation, credits,
+autosave and authorization belong to the consuming application.
+
+## Composition
+
+- `ImageCanvas` defines a source image coordinate space (`Width`/`Height`, 1–8192).
+  Put `MaskBrush`, `DraggableOverlay` and image layers in its `ChildContent`.
+  Additional images should fill the image plane; their coordinates match the declared source size.
+  The view fits on resize; pan by pointer or arrows, zoom with buttons, +/- or Ctrl+wheel.
+- `MaskBrush` requires an ancestor `ImageCanvas`. Its toolbar is mounted in the canvas toolbar
+  and restored on disposal. Image-space strokes are independent of CSS scale and device pixel ratio;
+  PNG exports always use the declared source dimensions. Transparent means unmasked, white means
+  masked, alpha is brush opacity. Erase uses destination-out. Undo/redo is stroke based.
+  Focus the canvas: arrows move the brush, Space paints a dot, Shift+arrows paints a segment,
+  Alt+arrows uses one-image-pixel steps. Pointer cancellation discards the unfinished stroke.
+- `DraggableOverlay` requires a positioned parent (the canvas plane provides one). Coordinates and
+  sizes use fractions of that parent, in [0,1]; default snap .01. Move/Resize handles support
+  pointer/pen/touch and arrows, Shift for 10 steps. The resulting rectangle stays in bounds.
+- `MediaTimeline` receives `MediaClip` records; start/duration/snap are seconds, tracks are zero based.
+  Move and trim handles support horizontal arrows/pointer, Shift for 10 steps. Up/down changes the
+  track when moving. Pointer vertical distance changes tracks at 80px per track. Clips cannot
+  extend outside the timeline or become shorter than Snap. Overlapping clips are allowed; the
+  application owns collision rules, playback and encoding. Up to 100 tracks (0–99).
+- `MediaGrid` renders only the caller's current page, with lazy thumbnails and no video prefetch.
+  Supply `NextPageHref` for server pagination (Unpoly attributes can be attached to the root or link
+  composed in ChildContent). It is not a virtualized storage client. `SelectedIds` marks selections.
+  `LightboxTarget` points to a `MediaLightbox.Id`; preview opens that asset directly.
+- `MediaLightbox` composes the existing `Dialog`. Only its current asset is loaded; previous video
+  playback and source are released. Use a `DialogTrigger`, the grid target, or the open event below.
+  Arrows, navigation buttons and horizontal swipes navigate. Escape and focus return use the native
+  dialog/library behavior. Videos use native controls and do not intercept media keyboard controls.
+- `AssetPicker` composes `Dialog`, `MediaGrid`, `Checkbox` and `Button`. Supply `FilterContent` for
+  app-owned filtering. Selected IDs outside the visible page are retained. Persist `SelectedIds`
+  in the application when replacing the entire picker across pages. A grid-only swap inside the
+  same picker retains the selection Set. Confirm is cancelable with `preventDefault()`.
+
+All own classes are caller supplied; existing Shadcn controls supply the visual recipes.
+Additional CSS in `ui.behavior.css` expresses only media geometry, touch behavior and focus.
+No new lazy script is needed; existing crop/compare assets retain their loading paths on both hosts.
+Use `@key` or replace the fragment when changing canvas dimensions, source assets or timeline data.
+Use the set/restore events below for edits to an existing mounted instance.
+
+## DOM event contract (both hosts)
+
+Listen on the component root; events bubble. Blazor interactive consumers can attach a JS listener
+and forward completed changes through coarse .NET interop. Pointer frames never call .NET.
+Serialize the `detail` of change events in application state for reload recovery; the library
+makes no localStorage writes. Version 1 is the serialization version, not the package version.
+
+| Event | Detail |
+|---|---|
+| `image-canvas:change` / send `image-canvas:restore` | `{version:1, scale, x, y, width, height}`; view x/y use CSS pixels, source dimensions use image pixels |
+| `mask-brush:change` / send `mask-brush:restore` | `{version:1,width,height,strokes:[{mode:'draw'\|'erase',size,opacity,points:[{x,y}]}]}`; source pixels; restore requires matching dimensions |
+| `mask-brush:export` | `{blob,width,height}`; PNG Blob, no data URL copy |
+| `mask-brush:error` | `{reason}` |
+| `draggable-overlay:change` / send `draggable-overlay:set` | `{version:1,x,y,width,height}`; normalized fractions |
+| `media-timeline:select` | `{id}` |
+| `media-timeline:change` / send `media-timeline:set` | `{version:1,id,start,duration,track}`; seconds |
+| `media-grid:selection` | `{ids}` on the visible page |
+| `media-grid:preview` | `{id}` |
+| send `media-lightbox:open` | `{id}` (omitting ID uses current index) |
+| `media-lightbox:change` | `{id,index}` |
+| `asset-picker:confirm` | `{ids}`, cancelable |
+| `image-compare:change` | `{value}` in 0–100; set `data-position` on the wrapper to control it |
+| `image-compare:error` | `{reason:'load'}` |
+| `image-crop:change` / send `image-crop:set` | `{crop:{x,y,width,height,...}}` in original image pixels |
+| `image-crop:apply` | `{dataUrl,blob,crop,width,height}`; legacy `dataUrl` preserved |
+| `image-crop:error` | `{reason:'image'\|'load'\|'bounds'\|'size'\|'cors'\|'export'}` |
+
+Exported Blobs can be passed to FormData directly. Create an object URL only if needed and revoke
+it after use. Crop export requires same-origin or CORS-enabled images. `MaxImageSize` is a hard
+PNG byte limit, not a compression target; invalid ratios and negative limits are rejected.
+
+## References and deliberate differences
+
+- [shadcn.io comparison](https://www.shadcn.io/ui/comparison): enhance the existing
+  `ImageCompare` web component instead of adding React's controlled component tree. Named slots
+  each contain one image+label wrapper. Accessible slider value and discrete keyboard steps are
+  maintained by the compiler; arrows, Home/End, PageUp/Down, Shift steps and reduced motion work
+  without React state. Vendor teardown now disconnects its observer, stops animations and removes
+  pointer/focus/keyboard listeners. InitialPosition is clamped to 0–100.
+- [Kibo Image Crop](https://www.kibo-ui.com/components/image-crop): retain Cropper.js and the
+  existing API; add numeric keyboard controls, zoom, coordinate events, Blob and error reporting.
+  The file-size policy rejects oversized output rather than silently recompressing PNG.
+- [dkmediaviewer](https://github.com/diklein/dkmediaviewer): image/video navigation and touch
+  behavior, adapted to native Dialog and paged SSR instead of a React gallery dependency.
+- [konva-drawboard](https://github.com/Oval17/konva-drawboard) and
+  [free-drawing](https://github.com/fabienwnklr/free-drawing): draw/erase and replay concepts,
+  implemented with native Canvas2D; no Konva/React dependency or infinite-canvas business engine.
+
+## Validation
+
+- `dotnet test tests/Unpoly.Blazor.Shadcn.Tests` — rendering, validation, contract and parity tests.
+- Build Web, then `node --test tools/creative-media.test.cjs` (`DOTNET` overrides executable,
+  `CREATIVE_MEDIA_URL` reuses a running demo, `CREATIVE_MEDIA_CONFIGURATION` selects Release). Uses actual SSR markup, jsdom and a native raster
+  canvas to verify geometry, undo/redo, exports and disposal. This is not browser paint validation.
+- `dotnet test tests/Unpoly.Blazor.Shadcn.Behaviour --filter FullyQualifiedName~CreativeMediaTests`
+  exercises real browser navigation, mask pixel placement, crop export and narrow layout.
+- Build and run `demo/Unpoly.Blazor.Shadcn.Maui` on Windows with the MAUI workload for native
+  WebView QA. Linux cannot verify that host. Browser/MAUI touch, pen and accessibility-tree audits
+  remain necessary before declaring every issue acceptance criterion verified.

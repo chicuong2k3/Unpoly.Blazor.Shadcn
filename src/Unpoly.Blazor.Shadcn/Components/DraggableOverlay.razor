@@ -1,0 +1,20 @@
+@inherits UiComponentBase
+<div data-slot="draggable-overlay" data-x="@F(X)" data-y="@F(Y)" data-width="@F(Width)" data-height="@F(Height)" data-snap="@F(Snap)" class="@Class" @attributes="AdditionalAttributes">
+    <button type="button" data-overlay-move aria-label="@MoveLabel">Move</button>
+    @ChildContent
+    <button type="button" data-overlay-resize aria-label="@ResizeLabel">Resize</button>
+</div>
+@code {
+    [Parameter] public double X { get; set; } = .1;
+    [Parameter] public double Y { get; set; } = .1;
+    [Parameter] public double Width { get; set; } = .3;
+    [Parameter] public double Height { get; set; } = .2;
+    [Parameter] public double Snap { get; set; } = .01;
+    [Parameter] public string MoveLabel { get; set; } = "Move overlay with arrow keys";
+    [Parameter] public string ResizeLabel { get; set; } = "Resize overlay with arrow keys";
+    static string F(double value) => value.ToString(System.Globalization.CultureInfo.InvariantCulture);
+    protected override void OnParametersSet()
+    {
+        if (new[] { X, Y, Width, Height, Snap }.Any(v => !double.IsFinite(v)) || X < 0 || Y < 0 || Width <= 0 || Height <= 0 || X + Width > 1 || Y + Height > 1 || Snap <= 0 || Snap > 1) throw new ArgumentOutOfRangeException(nameof(X));
+    }
+}
