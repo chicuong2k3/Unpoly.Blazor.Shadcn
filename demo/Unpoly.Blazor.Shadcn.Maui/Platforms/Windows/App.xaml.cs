@@ -16,7 +16,15 @@ public partial class App : MauiWinUIApplication
 	/// </summary>
 	public App()
 	{
-		this.InitializeComponent();
+		MauiSmokeDiagnostics.Write("WinUI app constructing");
+        UnhandledException += (_, args) => MauiSmokeDiagnostics.Write($"Unhandled WinUI exception: {args.Exception}");
+        if (MauiSmokeDiagnostics.Enabled)
+        {
+            try { MauiSmokeDiagnostics.Write($"WebView2 runtime: {Microsoft.Web.WebView2.Core.CoreWebView2Environment.GetAvailableBrowserVersionString()}"); }
+            catch (Exception error) { MauiSmokeDiagnostics.Write($"WebView2 runtime detection: {error}"); }
+        }
+        this.InitializeComponent();
+        MauiSmokeDiagnostics.Write("WinUI XAML initialized");
 	}
 
 	protected override MauiApp CreateMauiApp() => MauiProgram.CreateMauiApp();

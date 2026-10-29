@@ -6,6 +6,7 @@ public static class MauiProgram
 {
 	public static MauiApp CreateMauiApp()
 	{
+		MauiSmokeDiagnostics.Write($"CreateMauiApp: interactive={Environment.UserInteractive}");
 		var builder = MauiApp.CreateBuilder();
 		builder
 			.UseMauiApp<App>()
@@ -15,6 +16,11 @@ public static class MauiProgram
 			});
 
 		builder.Services.AddMauiBlazorWebView();
+        if (MauiSmokeDiagnostics.Enabled)
+        {
+            builder.Logging.AddFilter("Microsoft.AspNetCore.Components.WebView", LogLevel.Trace);
+            builder.Logging.AddProvider(new MauiSmokeLogProvider());
+        }
 		builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri("http://localhost/") });
 
 #if DEBUG

@@ -5,7 +5,7 @@ const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const path = require('node:path');
 const { spawn } = require('node:child_process');
-const { JSDOM } = require('jsdom');
+const { JSDOM, VirtualConsole } = require('jsdom');
 const { createCanvas } = require('@napi-rs/canvas');
 const repo = path.resolve(__dirname, '..');
 const ui = fs.readFileSync(path.join(repo, 'src/Unpoly.Blazor.Shadcn/wwwroot/ui.js'), 'utf8');
@@ -23,7 +23,9 @@ before(async () => {
 });
 after(() => server?.kill());
 function fixture() {
-  const dom = new JSDOM(html, { runScripts: 'outside-only', url: 'http://localhost/' });
+  const errors = [], virtualConsole = new VirtualConsole();
+  virtualConsole.on('jsdomError', error => errors.push(error.message));
+  const dom = new JSDOM(html, { runScripts: 'outside-only', url: 'http://localhost/', virtualConsole });
   const w = dom.window, compilers = new Map(), rasters = new WeakMap(), observers = [];
   w.structuredClone = structuredClone;
   w.matchMedia = () => ({ matches: true });
@@ -47,9 +49,14 @@ function fixture() {
   const key = (el,key,extra={}) => el.dispatchEvent(new w.KeyboardEvent('keydown',{bubbles:true,cancelable:true,key,...extra}));
   const pointer = (el,type,x,y,id=1) => { const e=new w.Event(type,{bubbles:true,cancelable:true}); Object.assign(e,{clientX:x,clientY:y,pointerId:id,button:0}); el.dispatchEvent(e) };
   const rect = (el,width,height,left=0,top=0) => { el.getBoundingClientRect=()=>({width,height,left,top,x:left,y:top,right:left+width,bottom:top+height}) };
-  return {dom,w,q,compile,event,key,pointer,rect,observers};
+  return {dom,w,q,compile,event,key,pointer,rect,observers,errors};
 }
-function withFixture(fn) { return async () => { const f=fixture(); try { await fn(f) } finally { f.dom.window.close() } } }
+function withFixture(fn) { return async () => {
+  const f=fixture();
+  try { await fn(f) }
+  finally { f.w.document.body.replaceChildren(); await tick(); f.dom.window.close() }
+  assert.deepEqual(f.errors, [], 'DOM runtime errors must fail the test');
+} }
 const tick = () => new Promise(r=>setImmediate(r));
 
 test('gallery preview opens only the requested lightbox image', withFixture(async f=>{
@@ -203,13 +210,24 @@ test('crop async loading does not initialize after disposal', withFixture(async 
 }));
 
 test('full no-Unpoly driver compiles media inserted into a WebView-style DOM', withFixture(async f=>{
-  const main=f.q('.doc-main'); assert.ok(main); f.w.document.body.replaceChildren(main);
-  f.w.requestAnimationFrame=fn=>f.w.setTimeout(fn,0); f.w.cancelAnimationFrame=id=>f.w.clearTimeout(id);
-  f.w.IntersectionObserver=class { observe(){} disconnect(){} unobserve(){} };
-  f.w.eval(ui); await tick();
+  const main=f.q('.doc-main');
+  loadPlatformDriver(f); await tick();
   assert.equal(f.q('[data-mask-toolbar]').parentElement.hasAttribute('data-canvas-toolbar'),true);
   const overlay=f.q('[data-slot=draggable-overlay]'); f.key(overlay.querySelector('[data-overlay-move]'),'ArrowRight');
   assert.ok(Math.abs(Number(overlay.dataset.x)-.11)<1e-9);
   const observer=f.observers.find(o=>!o.disconnected); main.remove(); await tick();
   assert.ok(observer.disconnected);
+}));
+
+function loadPlatformDriver(f) {
+  const main=f.q('.doc-main'); assert.ok(main); f.w.document.body.replaceChildren(main);
+  f.w.requestAnimationFrame=fn=>f.w.setTimeout(fn,0); f.w.cancelAnimationFrame=id=>f.w.clearTimeout(id);
+  f.w.IntersectionObserver=class { observe(){} disconnect(){} unobserve(){} };
+  f.w.eval(ui);
+}
+test('the visible asset picker button opens its dialog', withFixture(async f=>{
+  loadPlatformDriver(f); await tick();
+  const button=Array.from(f.w.document.querySelectorAll('button')).find(b=>b.textContent.trim()==='Choose assets');
+  assert.ok(button); button.click();
+  assert.ok(f.q('#creative-assets').open);
 }));

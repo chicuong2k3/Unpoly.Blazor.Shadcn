@@ -102,3 +102,46 @@ PNG byte limit, not a compression target; invalid ratios and negative limits are
 - Build and run `demo/Unpoly.Blazor.Shadcn.Maui` on Windows with the MAUI workload for native
   WebView QA. Linux cannot verify that host. Browser/MAUI touch, pen and accessibility-tree audits
   remain necessary before declaring every issue acceptance criterion verified.
+
+
+### Windows automation
+
+The `MAUI creative media` GitHub Actions workflow builds an unpackaged Windows demo with its
+App SDK runtime, ensures Evergreen WebView2 is installed, and runs the existing WebView2 harness against v3 and v4. It also supports manual
+`workflow_dispatch`. A failed native build, unavailable WebView2/CDP endpoint or failed assertion
+fails the job; none is recorded as a skip/pass. Reports and screenshots are uploaded as
+`maui-creative-media` when the app reaches the media checks.
+
+To run locally on Windows after building Debug for win-x64:
+
+```powershell
+npm ci --prefix tools
+$env:MAUI_MEDIA_REPORT_DIR = Join-Path $env:TEMP 'maui-media-reports'
+node tools/maui-webview-smoke.cjs --creative-media-only
+node tools/maui-webview-smoke.cjs --creative-media-only --baseline
+```
+
+Each run launches the native MAUI executable with a disposable WebView2 profile and loopback CDP
+port. It checks gallery and asset selection, overlay resize, timeline trim, mask raster undo/redo,
+pen input, touch emulation at DPR 2, crop Blob export, controlled comparison/reduced motion and
+handler cleanup across Blazor navigation. Pen/touch are injected through the real WebView2 engine's
+CDP interface; this does not certify physical touchscreen hardware, mobile native targets or a full
+screen-reader/contrast audit. A report is evidence only for its recorded passing checks.
+
+The smoke child sets `MAUI_SMOKE_LOG_PATH` to capture WinUI/MAUI startup, detected WebView2
+version, initialization events and Blazor WebView trace logs. This logging is disabled for ordinary
+app launches. Launch failures also upload host/session metadata and relevant Windows application
+errors; a missing CDP endpoint remains a failure and is never counted as native coverage.
+
+Windows Debug demos recognize the smoke child's validated `MAUI_SMOKE_CDP_PORT` (1024–65535)
+and set loopback-only debugging through `BlazorWebViewInitializing.EnvironmentOptions`. This is
+needed because elevated WebView2 hosts ignore `WEBVIEW2_*` environment overrides. The code
+accepts no arbitrary browser arguments, uses a fresh temp profile, and is compiled out of Release.
+Ordinary launches without the opt-in port do not enable debugging. See
+[Microsoft's WebView2 flag guidance](https://learn.microsoft.com/en-us/microsoft-edge/webview2/concepts/webview-features-flags).
+
+The hosted Windows job also scopes Microsoft's supported HKLM AdditionalBrowserArguments policy
+to `Unpoly.Blazor.Shadcn.Maui.exe` on port 9222, with prior value/type restoration in `finally`.
+It changes no wildcard policy. The smoke harness checks that the selected port is free; startup
+failure reports include the last HTTP probe result and the disposable WebView process arguments.
+This workflow policy is confined to the ephemeral runner and is not required for ordinary app use.
