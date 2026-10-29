@@ -16,7 +16,10 @@ const executable = process.env.MAUI_SMOKE_EXE
   ? path.resolve(process.env.MAUI_SMOKE_EXE)
   : path.resolve(__dirname, '../demo/Unpoly.Blazor.Shadcn.Maui/bin/Debug/net10.0-windows10.0.19041.0/win-x64/Unpoly.Blazor.Shadcn.Maui.exe');
 if (path.basename(executable).toLowerCase() !== 'unpoly.blazor.shadcn.maui.exe' || !fs.statSync(executable).isFile()) throw Error('Expected a built Shadcn MAUI demo executable');
-function freePort() { return new Promise((resolve, reject) => { const server = net.createServer(); server.listen(0, '127.0.0.1', () => { const port = server.address().port; server.close(() => resolve(port)); }); server.on('error', reject); }); }
+function freePort() {
+  const requested = process.env.MAUI_SMOKE_CDP_PORT;
+  if (requested && (!/^\d+$/.test(requested) || Number(requested) < 1024 || Number(requested) > 65535)) throw Error('MAUI_SMOKE_CDP_PORT must be 1024–65535');
+  return new Promise((resolve, reject) => { const server = net.createServer(); server.listen(requested ? Number(requested) : 0, '127.0.0.1', () => { const port = server.address().port; server.close(() => resolve(port)); }); server.on('error', reject); }); }
 function get(url) { return new Promise((resolve, reject) => { const req = http.get(url, res => { res.resume(); res.on('end', () => resolve(res.statusCode)); }); req.on('error', reject); req.setTimeout(1500, () => req.destroy()); }); }
 async function navigate(page, href) {
   const link = page.locator(`a[data-slot="item"][href="${href}"]`).first();
@@ -40,7 +43,14 @@ async function navigate(page, href) {
   const sheet = css === 'v3' ? 'app.v3.css' : 'app.css';
   try {
     const endpoint = `http://127.0.0.1:${port}`;
-    for (let n=0;n<120;n++) { if (child.exitCode !== null) throw Error(`MAUI exited ${child.exitCode}`); try { if (await get(endpoint+'/json/version')===200) break; } catch {} if (n===119) throw Error('No WebView2 CDP endpoint in 60s'); await new Promise(r=>setTimeout(r,500)); }
+    let lastProbe = 'not probed';
+    for (let n=0;n<120;n++) {
+      if (child.exitCode !== null) throw Error(`MAUI exited ${child.exitCode}`);
+      try { const status=await get(endpoint+'/json/version'); lastProbe=`HTTP ${status}`; if (status===200) break; }
+      catch (error) { lastProbe=`${error.code || error.name}: ${error.message}`; }
+      if (n===119) throw Error(`No WebView2 CDP endpoint at ${endpoint} in 60s; last probe: ${lastProbe}`);
+      await new Promise(r=>setTimeout(r,500));
+    }
     browser = await chromium.connectOverCDP(endpoint);
     let page;
     for (let n=0;n<100;n++) { page=browser.contexts().flatMap(c=>c.pages()).find(pg=>/0\.0\.0\.1/.test(pg.url())); if (page) break; await new Promise(r=>setTimeout(r,500)); }
@@ -486,6 +496,11 @@ async function navigate(page, href) {
     if (reportDirectory) {
       fs.writeFileSync(path.join(reportDirectory, `${css}-launch.json`), JSON.stringify({error:error.stack, executable, childPid:child.pid, exitCode:child.exitCode}, null, 2));
       if (smokeLog && fs.existsSync(smokeLog)) console.error(fs.readFileSync(smokeLog, 'utf8'));
+      try {
+        const processes=execFileSync('powershell.exe',['-NoProfile','-Command',"Get-CimInstance Win32_Process -Filter \"Name='msedgewebview2.exe'\" | Select-Object ProcessId,ParentProcessId,CommandLine | ConvertTo-Json"],{encoding:'utf8'});
+        fs.writeFileSync(path.join(reportDirectory, `${css}-webview-processes.json`),processes);
+        console.error(processes);
+      } catch {}
     }
     throw error;
   } finally {

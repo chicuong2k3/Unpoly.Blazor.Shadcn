@@ -139,3 +139,9 @@ needed because elevated WebView2 hosts ignore `WEBVIEW2_*` environment overrides
 accepts no arbitrary browser arguments, uses a fresh temp profile, and is compiled out of Release.
 Ordinary launches without the opt-in port do not enable debugging. See
 [Microsoft's WebView2 flag guidance](https://learn.microsoft.com/en-us/microsoft-edge/webview2/concepts/webview-features-flags).
+
+The hosted Windows job also scopes Microsoft's supported HKLM AdditionalBrowserArguments policy
+to `Unpoly.Blazor.Shadcn.Maui.exe` on port 9222, with prior value/type restoration in `finally`.
+It changes no wildcard policy. The smoke harness checks that the selected port is free; startup
+failure reports include the last HTTP probe result and the disposable WebView process arguments.
+This workflow policy is confined to the ephemeral runner and is not required for ordinary app use.

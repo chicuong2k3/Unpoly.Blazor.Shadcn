@@ -66,10 +66,30 @@ jobs:
         env:
           MAUI_MEDIA_REPORT_DIR: ${{ runner.temp }}/maui-media-reports
         run: |
-          node tools/maui-webview-smoke.cjs --creative-media-only
-          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
-          node tools/maui-webview-smoke.cjs --creative-media-only --baseline
-          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          # Elevated hosted runners require the machine-policy channel. Scope it to
+          # this disposable demo executable and restore its prior value in finally.
+          $policy = 'HKLM:\SOFTWARE\Policies\Microsoft\Edge\WebView2\AdditionalBrowserArguments'
+          $application = 'Unpoly.Blazor.Shadcn.Maui.exe'
+          $existed = Test-Path $policy
+          if (-not $existed) { New-Item -Path $policy -Force | Out-Null }
+          $key = Get-Item $policy
+          $hadValue = $key.GetValueNames() -contains $application
+          $oldValue = if ($hadValue) { $key.GetValue($application, $null, [Microsoft.Win32.RegistryValueOptions]::DoNotExpandEnvironmentNames) } else { $null }
+          $oldKind = if ($hadValue) { $key.GetValueKind($application) } else { 'String' }
+          if ($hadValue -and $oldKind.ToString() -notin @('String','ExpandString')) { throw 'Unexpected existing app policy type; refusing to overwrite' }
+          try {
+            New-ItemProperty -Path $policy -Name $application -PropertyType String -Value '--remote-debugging-port=9222 --remote-debugging-address=127.0.0.1' -Force | Out-Null
+            $env:MAUI_SMOKE_CDP_PORT = '9222'
+            node tools/maui-webview-smoke.cjs --creative-media-only
+            if ($LASTEXITCODE -ne 0) { throw "v3 native checks failed: $LASTEXITCODE" }
+            node tools/maui-webview-smoke.cjs --creative-media-only --baseline
+            if ($LASTEXITCODE -ne 0) { throw "v4 native checks failed: $LASTEXITCODE" }
+          } finally {
+            if ($hadValue) { (Get-Item $policy).SetValue($application, $oldValue, $oldKind) }
+            else { Remove-ItemProperty -Path $policy -Name $application -ErrorAction SilentlyContinue }
+            $key = Get-Item $policy
+            if (-not $existed -and $key.GetValueNames().Count -eq 0 -and $key.GetSubKeyNames().Count -eq 0) { Remove-Item $policy }
+          }
       - name: Collect native startup diagnostics on failure
         if: failure()
         run: |
