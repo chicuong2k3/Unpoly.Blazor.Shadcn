@@ -2449,8 +2449,21 @@
   // Creative media primitives share the platform driver on SSR/Unpoly and WebView hosts.
   const mediaNumber = (value, fallback = 0) => Number.isFinite(Number(value)) ? Number(value) : fallback
   const mediaClamp = (n, min, max) => Math.max(min, Math.min(max, n))
+  // Grid arithmetic in binary floating point leaves residue: 57 × .01 is .5700000000000001 and
+  // ten steps of .1 make .9999999999999999. Those values are serialized into application state,
+  // so every computed position is rounded back to nine decimals before it is stored or emitted.
+  const mediaTidy = n => Math.round(n * 1e9) / 1e9
   const mediaEmit = (root, name, detail) => root.dispatchEvent(new CustomEvent(name, { bubbles: true, detail }))
   const mediaListen = (controller, el, name, fn, options = {}) => el?.addEventListener(name, fn, { ...options, signal: controller.signal })
+  // Dialog splats every attribute onto its panel, but the <dialog> is the element with the
+  // dialog role, so a label left on the panel names nothing. Move it to the frame; the returned
+  // function puts it back.
+  const mediaNameDialog = dialog => {
+    const panel = dialog?.querySelector(':scope > [data-slot="dialog-content"]'), label = panel?.getAttribute('aria-label')
+    if (!label || dialog.hasAttribute('aria-label') || dialog.hasAttribute('aria-labelledby')) return () => {}
+    dialog.setAttribute('aria-label', label); panel.removeAttribute('aria-label')
+    return () => { panel.setAttribute('aria-label', label); dialog.removeAttribute('aria-label') }
+  }
 
   shadcnCompiler('[data-slot="media-grid"]', root => {
     const controller = new AbortController()
@@ -2477,6 +2490,15 @@
     try { initial = JSON.parse(root.dataset.selectedIds || '[]') } catch {}
     const selected = new Set(Array.isArray(initial) ? initial.filter(x => typeof x === 'string') : [])
     const remember = () => { root.dataset.selectedIds = JSON.stringify(Array.from(selected)) }
+    const unname = mediaNameDialog(root.querySelector('dialog'))
+    // A grid swapped in for another page is rendered from the server's SelectedIds, which knows
+    // nothing of the choices made since. Left alone, a page the user returns to shows its
+    // choices unchecked, and Confirm then reconciles them out of the Set. The Set is the
+    // selection; any checkbox that appears follows it. Setting .checked is not a childList
+    // mutation, so this cannot feed itself.
+    const sync = () => { for (const input of root.querySelectorAll('input[name="assets"]')) input.checked = selected.has(input.value) }
+    const observer = new MutationObserver(sync)
+    observer.observe(root, { childList: true, subtree: true })
     mediaListen(controller, root, 'change', e => {
       if (!e.target.matches('input[name="assets"]')) return
       if (e.target.checked) selected.add(e.target.value); else selected.delete(e.target.value)
@@ -2492,7 +2514,7 @@
       const ids = Array.from(selected)
       if (root.dispatchEvent(new CustomEvent('asset-picker:confirm', { bubbles: true, cancelable: true, detail: { ids } }))) root.querySelector('dialog')?.close()
     })
-    return () => controller.abort()
+    return () => { controller.abort(); observer.disconnect(); unname() }
   })
 
   shadcnCompiler('[data-slot="media-lightbox"]', root => {
@@ -2506,9 +2528,14 @@
       if (current?.tagName === 'VIDEO') { current.pause(); current.removeAttribute('src'); current.load() }
       current?.remove(); current = null
     }
+    const unname = mediaNameDialog(dialog)
     const show = n => {
+      const next = mediaClamp(n, 0, Math.max(0, items.length - 1))
+      // Stepping past either end lands on the asset already shown. Reloading it would restart a
+      // playing video and announce a change that did not happen.
+      if (current && next === index) return
       clear()
-      index = mediaClamp(n, 0, Math.max(0, items.length - 1))
+      index = next
       root.querySelector('[data-media-previous]').disabled = !items.length || index === 0
       root.querySelector('[data-media-next]').disabled = !items.length || index === items.length - 1
       if (!items.length) { status.textContent = 'No media found.'; return }
@@ -2520,15 +2547,16 @@
       mediaListen(mediaController, media, item.video === 'true' ? 'loadeddata' : 'load', loaded)
       mediaListen(mediaController, media, 'error', () => { if (current === media) status.textContent = 'Unable to load media.' })
       if (item.video === 'true') { media.controls = true; media.preload = 'metadata'; media.setAttribute('aria-label', item.alt) }
-      else media.alt = item.alt
+      // An <img> is natively draggable: a mouse swipe across it starts a drag, the browser
+      // cancels the pointer, and the swipe never navigates.
+      else { media.alt = item.alt; media.draggable = false }
       media.src = item.src; stage.append(media)
       mediaEmit(root, 'media-lightbox:change', { id: item.mediaId, index })
     }
     const open = e => {
       const requested = items.findIndex(x => x.dataset.mediaId === e.detail?.id)
-      if (requested >= 0) index = requested
       if (!dialog.open) dialog.showModal()
-      show(index)
+      show(requested >= 0 ? requested : index)
     }
     mediaListen(controller, root, 'media-lightbox:open', open)
     // DialogTrigger calls showModal; only fetch the active asset once the dialog opens.
@@ -2541,14 +2569,20 @@
       if (e.target.closest('video, input, textarea')) return
       if (e.key === 'ArrowLeft' || e.key === 'ArrowRight') { e.preventDefault(); show(index + (e.key === 'ArrowLeft' ? -1 : 1)) }
     })
-    mediaListen(controller, stage, 'pointerdown', e => { startX = e.clientX })
+    // The swipe ignores a gesture that starts on a video: its native controls own the pointer.
+    // Capture keeps the release on the stage when it lands outside the image.
+    mediaListen(controller, stage, 'pointerdown', e => {
+      if (e.button !== 0 || e.target.closest('video')) return
+      startX = e.clientX
+      try { stage.setPointerCapture(e.pointerId) } catch { /* a synthetic pointer has nothing to capture */ }
+    })
     mediaListen(controller, stage, 'pointercancel', () => { startX = null })
     mediaListen(controller, stage, 'pointerup', e => {
-      if (startX !== null && Math.abs(e.clientX - startX) > 50 && !e.target.closest('video')) show(index + (e.clientX < startX ? 1 : -1))
+      if (startX !== null && Math.abs(e.clientX - startX) > 50) show(index + (e.clientX < startX ? 1 : -1))
       startX = null
     })
     if (dialog.open) show(index)
-    return () => { controller.abort(); observer.disconnect(); clear() }
+    return () => { controller.abort(); observer.disconnect(); clear(); unname() }
   })
 
   shadcnCompiler('[data-slot="image-canvas"]', root => {
@@ -2665,12 +2699,18 @@
   shadcnCompiler('[data-slot="draggable-overlay"]', root => {
     const controller = new AbortController(), parent = root.parentElement
     let state = { x: mediaNumber(root.dataset.x), y: mediaNumber(root.dataset.y), width: mediaNumber(root.dataset.width,.3), height: mediaNumber(root.dataset.height,.2) }, drag = null
-    const snap = mediaClamp(mediaNumber(root.dataset.snap,.01),.000001,1), quantize = n => Math.round(n / snap) * snap
+    const snap = mediaClamp(mediaNumber(root.dataset.snap,.01),.000001,1), quantize = n => mediaTidy(Math.round(n / snap) * snap)
     const render = () => { root.style.left = `${state.x*100}%`; root.style.top = `${state.y*100}%`; root.style.width = `${state.width*100}%`; root.style.height = `${state.height*100}%` }
-    const emit = () => { for (const [k,v] of Object.entries(state)) root.dataset[k] = String(v); mediaEmit(root,'draggable-overlay:change',{ version:1,...state }) }
+    // change means changed: a key at the edge, a press without movement and a set to the current
+    // rectangle all leave it as it was, and an autosaving consumer should not hear about them.
+    const emit = before => {
+      if (before && ['x','y','width','height'].every(k => before[k] === state[k])) return
+      for (const [k,v] of Object.entries(state)) root.dataset[k] = String(v); mediaEmit(root,'draggable-overlay:change',{ version:1,...state })
+    }
     const update = (base, dx, dy, resize) => {
-      if (resize) state = { ...base, width:mediaClamp(quantize(base.width+dx),Math.min(snap,1-base.x),1-base.x), height:mediaClamp(quantize(base.height+dy),Math.min(snap,1-base.y),1-base.y) }
-      else state = { ...base, x:mediaClamp(quantize(base.x+dx),0,1-base.width), y:mediaClamp(quantize(base.y+dy),0,1-base.height) }
+      const right = mediaTidy(1-base.x), bottom = mediaTidy(1-base.y)
+      if (resize) state = { ...base, width:mediaClamp(quantize(base.width+dx),Math.min(snap,right),right), height:mediaClamp(quantize(base.height+dy),Math.min(snap,bottom),bottom) }
+      else state = { ...base, x:mediaClamp(quantize(base.x+dx),0,mediaTidy(1-base.width)), y:mediaClamp(quantize(base.y+dy),0,mediaTidy(1-base.height)) }
       render()
     }
     mediaListen(controller, root, 'pointerdown', e => {
@@ -2679,17 +2719,24 @@
       drag = { id:e.pointerId, x:e.clientX, y:e.clientY, width:r.width, height:r.height, base:{...state}, resize:handle.hasAttribute('data-overlay-resize') }; root.setPointerCapture(e.pointerId)
     })
     mediaListen(controller, root, 'pointermove', e => { if (drag?.id === e.pointerId) update(drag.base,(e.clientX-drag.x)/drag.width,(e.clientY-drag.y)/drag.height,drag.resize) })
-    const end = e => { if (drag?.id !== e.pointerId) return; if (e.type === 'pointercancel') { state = drag.base; render() }; drag=null; if (root.hasPointerCapture(e.pointerId)) root.releasePointerCapture(e.pointerId); emit() }
+    const end = e => {
+      if (drag?.id !== e.pointerId) return
+      const base = drag.base; drag = null
+      if (root.hasPointerCapture(e.pointerId)) root.releasePointerCapture(e.pointerId)
+      // A cancelled gesture is undone rather than committed, so it is not a change either.
+      if (e.type === 'pointercancel') { state = base; render() } else emit(base)
+    }
     mediaListen(controller, root, 'pointerup', end); mediaListen(controller, root, 'pointercancel', end); mediaListen(controller, root, 'lostpointercapture', end)
     mediaListen(controller, root, 'keydown', e => {
       if (!e.target.matches('[data-overlay-move], [data-overlay-resize]') || !['ArrowLeft','ArrowRight','ArrowUp','ArrowDown'].includes(e.key)) return
-      e.preventDefault(); const step = snap*(e.shiftKey?10:1)
-      update(state,e.key==='ArrowRight'?step:e.key==='ArrowLeft'?-step:0,e.key==='ArrowDown'?step:e.key==='ArrowUp'?-step:0,e.target.hasAttribute('data-overlay-resize')); emit()
+      e.preventDefault(); const step = snap*(e.shiftKey?10:1), before = state
+      update(state,e.key==='ArrowRight'?step:e.key==='ArrowLeft'?-step:0,e.key==='ArrowDown'?step:e.key==='ArrowUp'?-step:0,e.target.hasAttribute('data-overlay-resize')); emit(before)
     })
     mediaListen(controller, root, 'draggable-overlay:set', e => {
       const d=e.detail
       if (d?.version!==1 || ![d.x,d.y,d.width,d.height].every(Number.isFinite) || d.x<0 || d.y<0 || d.width<=0 || d.height<=0 || d.x+d.width>1 || d.y+d.height>1) return
-      state={x:d.x,y:d.y,width:d.width,height:d.height}; render(); emit()
+      const before = state
+      state={x:d.x,y:d.y,width:d.width,height:d.height}; render(); emit(before)
     })
     render()
     return () => { controller.abort(); if (drag && root.hasPointerCapture(drag.id)) root.releasePointerCapture(drag.id); drag=null }
@@ -2700,43 +2747,63 @@
     let drag = null
     const read = clip => ({ start:mediaNumber(clip.dataset.start), duration:mediaNumber(clip.dataset.length), track:mediaNumber(clip.dataset.track) })
     const render = clip => { const s=read(clip); clip.style.left=`${s.start/duration*100}%`; clip.style.width=`${s.duration/duration*100}%`; clip.style.top=`${s.track*80}px`; root.style.minHeight=`${Math.max(...clips.map(c=>read(c).track),0)*80+80}px` }
-    const emit = clip => mediaEmit(root,'media-timeline:change',{version:1,id:clip.dataset.mediaClip,...read(clip)})
+    const same = (a, b) => a.start === b.start && a.duration === b.duration && a.track === b.track
+    // change means changed: a key at the timeline's edge, a press without movement and an undone
+    // gesture all leave the clip where it was, and an autosaving consumer should not hear of them.
+    const emit = (clip, before) => { if (!before || !same(before, read(clip))) mediaEmit(root,'media-timeline:change',{version:1,id:clip.dataset.mediaClip,...read(clip)}) }
+    // data-selected is only a style hook. The move button carries the state assistive technology
+    // reads, so the clip an application's inspector is editing is announced as the current one.
+    const select = clip => {
+      for (const c of clips) {
+        const on = c === clip, move = c.querySelector('[data-clip-move]')
+        c.toggleAttribute('data-selected', on)
+        if (on) move.setAttribute('aria-current', 'true'); else move.removeAttribute('aria-current')
+      }
+      mediaEmit(root,'media-timeline:select',{id:clip.dataset.mediaClip})
+    }
     const update = (clip,base,delta,action,trackDelta=0) => {
       delta=Math.round(delta/snap)*snap
       let {start,duration:length,track}=base
-      if (action==='start') { const end=start+length; start=mediaClamp(start+delta,0,end-snap); length=end-start }
-      else if (action==='end') length=mediaClamp(length+delta,snap,duration-start)
-      else { start=mediaClamp(start+delta,0,duration-length); track=mediaClamp(track+trackDelta,0,99) }
+      if (action==='start') { const end=mediaTidy(start+length); start=mediaTidy(mediaClamp(start+delta,0,end-snap)); length=mediaTidy(end-start) }
+      else if (action==='end') length=mediaTidy(mediaClamp(length+delta,snap,duration-start))
+      else { start=mediaTidy(mediaClamp(start+delta,0,duration-length)); track=mediaClamp(track+trackDelta,0,99) }
       clip.dataset.start=String(start); clip.dataset.length=String(length); clip.dataset.track=String(track); render(clip)
       clip.querySelector('[data-clip-move]').setAttribute('aria-description',`Start ${start.toFixed(2)} seconds, duration ${length.toFixed(2)} seconds, track ${track+1}`)
     }
     const handle = target => { const h=target.closest('[data-clip-move], [data-clip-start], [data-clip-end]'); if(!h) return null; return { h,clip:h.closest('[data-media-clip]'),action:h.hasAttribute('data-clip-start')?'start':h.hasAttribute('data-clip-end')?'end':'move' } }
     mediaListen(controller, root, 'pointerdown', e => {
       const h=handle(e.target); if(!h || e.button!==0 || drag) return
-      e.preventDefault(); h.h.focus(); for (const c of clips) c.toggleAttribute('data-selected',c===h.clip)
-      mediaEmit(root,'media-timeline:select',{id:h.clip.dataset.mediaClip})
+      e.preventDefault(); h.h.focus(); select(h.clip)
       drag={...h,id:e.pointerId,x:e.clientX,y:e.clientY,width:root.getBoundingClientRect().width,base:read(h.clip)}; root.setPointerCapture(e.pointerId)
     })
     mediaListen(controller, root, 'pointermove', e => { if(drag?.id===e.pointerId && drag.width) update(drag.clip,drag.base,(e.clientX-drag.x)/drag.width*duration,drag.action,Math.round((e.clientY-drag.y)/80)) })
-    const end = e => { if(drag?.id!==e.pointerId) return; const clip=drag.clip; if(e.type==='pointercancel') { clip.dataset.start=String(drag.base.start); clip.dataset.length=String(drag.base.duration); clip.dataset.track=String(drag.base.track); render(clip) }; drag=null; if(root.hasPointerCapture(e.pointerId)) root.releasePointerCapture(e.pointerId); emit(clip) }
+    const end = e => {
+      if(drag?.id!==e.pointerId) return
+      const { clip, base } = drag; drag=null
+      if(root.hasPointerCapture(e.pointerId)) root.releasePointerCapture(e.pointerId)
+      // A cancelled gesture is undone rather than committed, so it is not a change either.
+      if(e.type==='pointercancel') { clip.dataset.start=String(base.start); clip.dataset.length=String(base.duration); clip.dataset.track=String(base.track); render(clip) }
+      else emit(clip, base)
+    }
     mediaListen(controller, root, 'pointerup', end); mediaListen(controller, root, 'pointercancel', end); mediaListen(controller, root, 'lostpointercapture', end)
     mediaListen(controller, root, 'keydown', e => {
       const h=handle(e.target); if(!h || !['ArrowLeft','ArrowRight','ArrowUp','ArrowDown'].includes(e.key)) return
-      e.preventDefault(); for(const c of clips) c.toggleAttribute('data-selected',c===h.clip)
-      mediaEmit(root,'media-timeline:select',{id:h.clip.dataset.mediaClip})
-      const step=snap*(e.shiftKey?10:1)
-      update(h.clip,read(h.clip),e.key==='ArrowRight'?step:e.key==='ArrowLeft'?-step:0,h.action,e.key==='ArrowDown'?1:e.key==='ArrowUp'?-1:0); emit(h.clip)
+      // A trim handle has no vertical meaning, so Up and Down stay with the page.
+      if (h.action!=='move' && (e.key==='ArrowUp' || e.key==='ArrowDown')) return
+      e.preventDefault(); select(h.clip)
+      const step=snap*(e.shiftKey?10:1), before=read(h.clip)
+      update(h.clip,before,e.key==='ArrowRight'?step:e.key==='ArrowLeft'?-step:0,h.action,e.key==='ArrowDown'?1:e.key==='ArrowUp'?-1:0); emit(h.clip, before)
     })
     mediaListen(controller, root, 'click', e => {
       if (e.detail !== 0) return // Native keyboard activation (Enter/Space).
       const h=handle(e.target); if (!h) return
-      for (const c of clips) c.toggleAttribute('data-selected',c===h.clip)
-      mediaEmit(root,'media-timeline:select',{id:h.clip.dataset.mediaClip})
+      select(h.clip)
     })
     mediaListen(controller, root, 'media-timeline:set', e => {
       const d=e.detail, clip=clips.find(c=>c.dataset.mediaClip===d?.id)
       if (!clip || d.version!==1 || ![d.start,d.duration,d.track].every(Number.isFinite) || !Number.isInteger(d.track) || d.track<0 || d.track>99 || d.start<0 || d.duration<snap || d.start+d.duration>duration) return
-      clip.dataset.start=String(d.start); clip.dataset.length=String(d.duration); clip.dataset.track=String(d.track); render(clip); emit(clip)
+      const before = read(clip)
+      clip.dataset.start=String(d.start); clip.dataset.length=String(d.duration); clip.dataset.track=String(d.track); render(clip); emit(clip, before)
     })
     clips.forEach(render)
     return () => { controller.abort(); if(drag && root.hasPointerCapture(drag.id)) root.releasePointerCapture(drag.id); drag=null }
@@ -2840,9 +2907,10 @@
       const keys = ['ArrowLeft','ArrowRight','ArrowUp','ArrowDown','Home','End','PageUp','PageDown']
       if (!keys.includes(e.key)) return
       e.preventDefault(); e.stopImmediatePropagation()
-      const direction = ['ArrowLeft','ArrowDown','PageDown'].includes(e.key) ? -1 : 1
-      set(e.key==='Home'?0:e.key==='End'?100:Number(slider.value)+direction*(e.shiftKey || e.key.startsWith('Page')?10:1))
-      mediaEmit(root,'image-compare:change',{value:Number(slider.value)})
+      const direction = ['ArrowLeft','ArrowDown','PageDown'].includes(e.key) ? -1 : 1, before = Number(slider.value)
+      set(e.key==='Home'?0:e.key==='End'?100:before+direction*(e.shiftKey || e.key.startsWith('Page')?10:1))
+      // Home at 0, End at 100 and an arrow at either end move nothing, so they are not changes.
+      if (Number(slider.value) !== before) mediaEmit(root,'image-compare:change',{value:Number(slider.value)})
     }, {capture:true})
     const observer = new MutationObserver(() => { if (initialized) set(root.dataset.position) })
     observer.observe(root,{attributes:true,attributeFilter:['data-position']})

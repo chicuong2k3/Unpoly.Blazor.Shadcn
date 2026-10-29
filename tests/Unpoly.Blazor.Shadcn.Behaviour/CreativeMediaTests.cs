@@ -124,4 +124,235 @@ public class CreativeMediaTests(DemoFixture fixture) : DemoPage(fixture)
         Assert.Empty(errors);
     }
 
+    // ---- Lightbox ---------------------------------------------------------------------------
+
+    // Stepping past the last asset reloaded it: a playing video restarted from nothing.
+    [SkippableFact]
+    public async Task Lightbox_stepping_past_the_last_asset_keeps_it_loaded()
+    {
+        RequireDemo();
+        await GoAsync("/components/creative-media");
+        await OpenPreviewAsync("reference");
+        await Page.EvaluateAsync("() => window.__shown = document.querySelector('#creative-preview [data-media-stage] > *')");
+        await Page.Keyboard.PressAsync("ArrowRight");
+        Assert.True(await Page.EvaluateAsync<bool>("() => window.__shown === document.querySelector('#creative-preview [data-media-stage] > *')"));
+        AssertQuiet();
+    }
+
+    [SkippableFact]
+    public async Task Lightbox_stepping_past_the_last_asset_announces_no_change()
+    {
+        RequireDemo();
+        await GoAsync("/components/creative-media");
+        await OpenPreviewAsync("reference");
+        await CountAsync("[data-slot=media-lightbox]", "media-lightbox:change");
+        await Page.Keyboard.PressAsync("ArrowRight");
+        Assert.Equal(0, await CountedAsync());
+        AssertQuiet();
+    }
+
+    // The label sat on the panel inside <dialog>, a generic element, so the dialog had no name.
+    [SkippableFact]
+    public async Task Lightbox_dialog_is_named_by_its_label()
+    {
+        RequireDemo();
+        await GoAsync("/components/creative-media");
+        await OpenPreviewAsync("reference");
+        Assert.Equal(1, await Page.GetByRole(AriaRole.Dialog, new() { Name = "Media preview", Exact = true }).CountAsync());
+        AssertQuiet();
+    }
+
+    // The image was natively draggable, so the browser cancelled the pointer and a mouse swipe
+    // never navigated.
+    [SkippableFact]
+    public async Task Lightbox_mouse_swipe_moves_to_the_previous_asset()
+    {
+        RequireDemo();
+        await GoAsync("/components/creative-media");
+        await OpenPreviewAsync("reference");
+        await Page.WaitForFunctionAsync("() => document.querySelector('#creative-preview [data-media-stage] img')?.complete");
+        var box = (await Page.Locator("#creative-preview [data-media-stage] img").BoundingBoxAsync())!;
+        await Page.Mouse.MoveAsync(box.X + box.Width * .2f, box.Y + box.Height / 2);
+        await Page.Mouse.DownAsync();
+        await Page.Mouse.MoveAsync(box.X + box.Width * .8f, box.Y + box.Height / 2, new() { Steps = 8 });
+        await Page.Mouse.UpAsync();
+        Assert.Equal("Mountain landscape", await Page.Locator("#creative-preview [data-media-stage] img").GetAttributeAsync("alt"));
+        AssertQuiet();
+    }
+
+    // ---- Asset picker and gallery -----------------------------------------------------------
+
+    // A grid swapped in for another page is rendered from the server's SelectedIds. It came back
+    // unchecked, and Confirm then reconciled the choice out of the selection.
+    [SkippableFact]
+    public async Task Asset_picker_confirms_a_choice_after_its_grid_is_rendered_again()
+    {
+        RequireDemo();
+        await GoAsync("/components/creative-media");
+        await OpenPickerAsync();
+        await Page.Locator("#creative-assets input[value=landscape]").CheckAsync();
+        await RenderPickerGridAgainAsync();
+        await Page.EvaluateAsync("() => document.querySelector('[data-slot=asset-picker]').addEventListener('asset-picker:confirm', e => window.__ids = e.detail.ids)");
+        await Page.Locator("#creative-assets [data-assets-confirm]").ClickAsync();
+        Assert.Equal(new[] { "landscape" }, await Page.EvaluateAsync<string[]>("() => window.__ids"));
+        AssertQuiet();
+    }
+
+    [SkippableFact]
+    public async Task Asset_picker_shows_a_kept_choice_as_checked_after_its_grid_is_rendered_again()
+    {
+        RequireDemo();
+        await GoAsync("/components/creative-media");
+        await OpenPickerAsync();
+        await Page.Locator("#creative-assets input[value=landscape]").CheckAsync();
+        await RenderPickerGridAgainAsync();
+        Assert.True(await Page.Locator("#creative-assets input[value=landscape]").IsCheckedAsync());
+        AssertQuiet();
+    }
+
+    [SkippableFact]
+    public async Task Asset_picker_dialog_is_named_by_its_label()
+    {
+        RequireDemo();
+        await GoAsync("/components/creative-media");
+        await OpenPickerAsync();
+        Assert.Equal(1, await Page.GetByRole(AriaRole.Dialog, new() { Name = "Choose assets", Exact = true }).CountAsync());
+        AssertQuiet();
+    }
+
+    // aria-label on an element with no role is ignored, so the library had no name.
+    [SkippableFact]
+    public async Task Gallery_is_announced_by_its_label()
+    {
+        RequireDemo();
+        await GoAsync("/components/creative-media");
+        Assert.Equal(1, await Page.GetByRole(AriaRole.Group, new() { Name = "Media library", Exact = true }).CountAsync());
+        AssertQuiet();
+    }
+
+    // ---- Timeline ----------------------------------------------------------------------------
+
+    // Only the step was snapped, so ten steps of .1 stored .9999999999999999.
+    [SkippableFact]
+    public async Task Timeline_keyboard_steps_stay_on_the_snap_grid()
+    {
+        RequireDemo();
+        await GoAsync("/components/creative-media");
+        var move = Page.Locator("[data-media-clip=intro] [data-clip-move]");
+        for (var i = 0; i < 10; i++) await move.PressAsync("ArrowRight");
+        Assert.Equal("1", await Page.Locator("[data-media-clip=intro]").GetAttributeAsync("data-start"));
+        AssertQuiet();
+    }
+
+    [SkippableFact]
+    public async Task Timeline_trim_handle_leaves_up_and_down_to_the_page()
+    {
+        RequireDemo();
+        await GoAsync("/components/creative-media");
+        await CountAsync("[data-slot=media-timeline]", "media-timeline:change");
+        await Page.Locator("[data-media-clip=intro] [data-clip-end]").PressAsync("ArrowUp");
+        Assert.Equal(0, await CountedAsync());
+        AssertQuiet();
+    }
+
+    [SkippableFact]
+    public async Task Timeline_press_without_movement_is_not_a_change()
+    {
+        RequireDemo();
+        await GoAsync("/components/creative-media");
+        await CountAsync("[data-slot=media-timeline]", "media-timeline:change");
+        await Page.Locator("[data-media-clip=scene] [data-clip-move]").ClickAsync();
+        Assert.Equal(0, await CountedAsync());
+        AssertQuiet();
+    }
+
+    // Selection was only a data-* style hook, invisible to assistive technology.
+    [SkippableFact]
+    public async Task Timeline_announces_only_the_selected_clip_as_current()
+    {
+        RequireDemo();
+        await GoAsync("/components/creative-media");
+        await Page.Locator("[data-media-clip=scene] [data-clip-move]").PressAsync("ArrowRight");
+        Assert.Equal("true", await Page.Locator("[data-media-clip=scene] [data-clip-move]").GetAttributeAsync("aria-current"));
+        Assert.Null(await Page.Locator("[data-media-clip=intro] [data-clip-move]").GetAttributeAsync("aria-current"));
+        AssertQuiet();
+    }
+
+    // ---- Overlay and comparison ------------------------------------------------------------
+
+    // 57 × .01 is .5700000000000001 in binary floating point, and that was what got serialized.
+    [SkippableFact]
+    public async Task Overlay_serializes_grid_positions_exactly()
+    {
+        RequireDemo();
+        await GoAsync("/components/creative-media");
+        var move = Page.Locator("[data-overlay-move]");
+        for (var i = 0; i < 4; i++) await move.PressAsync("Shift+ArrowRight");
+        for (var i = 0; i < 7; i++) await move.PressAsync("ArrowRight");
+        Assert.Equal("0.57", await Page.Locator("[data-slot=draggable-overlay]").GetAttributeAsync("data-x"));
+        AssertQuiet();
+    }
+
+    [SkippableFact]
+    public async Task Overlay_key_at_the_edge_is_not_a_change()
+    {
+        RequireDemo();
+        await GoAsync("/components/creative-media");
+        var move = Page.Locator("[data-overlay-move]");
+        await move.PressAsync("Shift+ArrowLeft");
+        await CountAsync("[data-slot=draggable-overlay]", "draggable-overlay:change");
+        await move.PressAsync("ArrowLeft");
+        Assert.Equal(0, await CountedAsync());
+        AssertQuiet();
+    }
+
+    [SkippableFact]
+    public async Task Overlay_press_without_movement_is_not_a_change()
+    {
+        RequireDemo();
+        await GoAsync("/components/creative-media");
+        await CountAsync("[data-slot=draggable-overlay]", "draggable-overlay:change");
+        await Page.Locator("[data-overlay-move]").ClickAsync();
+        Assert.Equal(0, await CountedAsync());
+        AssertQuiet();
+    }
+
+    [SkippableFact]
+    public async Task Comparison_home_at_zero_is_not_a_change()
+    {
+        RequireDemo();
+        await GoAsync("/components/creative-media");
+        // The definition loads lazily and then applies data-position; wait so it cannot land late.
+        await Page.WaitForFunctionAsync("() => customElements.get('img-comparison-slider') && document.querySelector('img-comparison-slider')?.value === 30");
+        var slider = Page.Locator("img-comparison-slider");
+        await slider.PressAsync("Home");
+        await CountAsync("[data-slot=image-compare]", "image-compare:change");
+        await slider.PressAsync("Home");
+        Assert.Equal(0, await CountedAsync());
+        AssertQuiet();
+    }
+
+    async Task OpenPreviewAsync(string id)
+    {
+        await Page.Locator($"[data-slot=media-grid][data-lightbox-target=creative-preview] [data-media-preview={id}]").ClickAsync();
+        await Page.WaitForFunctionAsync("() => document.querySelector('#creative-preview').open");
+    }
+
+    async Task OpenPickerAsync()
+    {
+        await Page.Locator("[data-slot=dialog-trigger][data-target=creative-assets]").ClickAsync();
+        await Page.WaitForFunctionAsync("() => document.querySelector('#creative-assets').open");
+    }
+
+    /// <summary>What a paginated server swap delivers: the picker's grid rendered again from
+    /// the server's SelectedIds, which knows nothing of choices made in the browser.</summary>
+    Task RenderPickerGridAgainAsync() => Page.EvaluateAsync(
+        "() => { const grid = document.querySelector('[data-slot=asset-picker] [data-slot=media-grid]'); grid.outerHTML = grid.outerHTML.replace(/ checked(=\"[^\"]*\")?/g, '') }");
+
+    /// <summary>Starts counting one event on one element; read the count with <see cref="CountedAsync"/>.</summary>
+    Task CountAsync(string selector, string eventName) => Page.EvaluateAsync(
+        "([selector, name]) => { window.__count = 0; document.querySelector(selector).addEventListener(name, () => window.__count++) }",
+        new[] { selector, eventName });
+
+    Task<int> CountedAsync() => Page.EvaluateAsync<int>("() => window.__count");
 }

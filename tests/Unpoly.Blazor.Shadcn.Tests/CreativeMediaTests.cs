@@ -50,6 +50,30 @@ public class CreativeMediaTests : BunitContext
         Assert.Equal("lazy", root.Find("img").GetAttribute("loading"));
     }
 
+    // aria-label on an element with no role is ignored; the group role is what makes it a name.
+    [Fact]
+    public void Gallery_is_a_group_named_by_its_label()
+    {
+        var root = Render<MediaGrid>(p => p.Add(x => x.Label, "Assets")).Find("[data-slot=media-grid]");
+        Assert.Equal("group", root.GetAttribute("role"));
+        Assert.Equal("Assets", root.GetAttribute("aria-label"));
+    }
+
+    // An <img> with no src is invalid markup and draws as a broken image.
+    [Fact]
+    public void Gallery_video_without_a_thumbnail_draws_no_image()
+    {
+        var root = Render<MediaGrid>(p => p.Add(x => x.Items, new[] { new MediaAsset("v", "/full.mp4", "Clip") { IsVideo = true } }));
+        Assert.Empty(root.FindAll("img"));
+    }
+
+    [Fact]
+    public void Gallery_video_without_a_thumbnail_keeps_a_decorative_placeholder()
+    {
+        var root = Render<MediaGrid>(p => p.Add(x => x.Items, new[] { new MediaAsset("v", "/full.mp4", "Clip") { IsVideo = true } }));
+        Assert.Single(root.FindAll("[data-media-preview=v] [data-media-placeholder][aria-hidden=true]"));
+    }
+
     [Fact]
     public void Gallery_marks_preselected_assets()
     {

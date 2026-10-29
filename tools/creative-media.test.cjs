@@ -8,7 +8,8 @@ const { spawn } = require('node:child_process');
 const { JSDOM, VirtualConsole } = require('jsdom');
 const { createCanvas } = require('@napi-rs/canvas');
 const repo = path.resolve(__dirname, '..');
-const ui = fs.readFileSync(path.join(repo, 'src/Unpoly.Blazor.Shadcn/wwwroot/ui.js'), 'utf8');
+// A Windows checkout with core.autocrlf has CRLF endings; the slice markers below are LF.
+const ui = fs.readFileSync(path.join(repo, 'src/Unpoly.Blazor.Shadcn/wwwroot/ui.js'), 'utf8').replace(/\r\n/g, '\n');
 const source = ui.slice(ui.indexOf('  // Creative media primitives'), ui.indexOf('  // Command\n'));
 let html, server;
 before(async () => {
