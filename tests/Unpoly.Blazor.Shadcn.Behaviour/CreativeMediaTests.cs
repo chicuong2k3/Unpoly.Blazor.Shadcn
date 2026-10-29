@@ -11,7 +11,7 @@ public class CreativeMediaTests(DemoFixture fixture) : DemoPage(fixture)
     {
         RequireDemo();
         await GoAsync("/components/creative-media");
-        await Page.Locator("[data-media-preview=reference]").ClickAsync();
+        await Page.Locator("[data-slot=media-grid][data-lightbox-target=creative-preview] [data-media-preview=reference]").ClickAsync();
         await Page.WaitForFunctionAsync("() => document.querySelector('#creative-preview').open");
         Assert.Equal("Reference image", await Page.Locator("[data-media-stage] img").GetAttributeAsync("alt"));
         AssertQuiet();
@@ -72,11 +72,20 @@ public class CreativeMediaTests(DemoFixture fixture) : DemoPage(fixture)
     {
         RequireDemo();
         await GoAsync("/components/creative-media");
-        await Page.Locator("a[href='/components/button']").First.ClickAsync();
-        await Page.Locator("a[href='/components/creative-media']").First.ClickAsync();
+        await Page.EvaluateAsync("() => window.__mediaNavigationToken = 'same-document'");
+        await Page.Locator(".doc-nav a[href='/components/button']").ClickAsync();
+        // Scope links to the visible sidebar: the command palette contains hidden copies.
+        // ClickAsync waits for the click, not for Unpoly's asynchronous replacement.
+        // Clicking the still-current Creative Media link here can be ignored as up-current.
+        await Page.GetByRole(AriaRole.Heading, new() { Name = "Button", Exact = true }).WaitForAsync();
+        await Page.Locator(".doc-nav a[href='/components/creative-media']").ClickAsync();
+        await Page.GetByRole(AriaRole.Heading, new() { Name = "Creative Media", Exact = true }).WaitForAsync();
         await Page.WaitForFunctionAsync("() => customElements.get('img-comparison-slider') && document.querySelector('img-comparison-slider')?.value === 30");
+        await Page.EvaluateAsync("() => { window.__comparisonChanges = 0; document.querySelector('[data-slot=image-compare]').addEventListener('image-compare:change', () => window.__comparisonChanges++); }");
         await Page.Locator("img-comparison-slider").PressAsync("ArrowRight");
         Assert.Equal("31", await Page.Locator("img-comparison-slider").GetAttributeAsync("aria-valuenow"));
+        Assert.Equal(1, await Page.EvaluateAsync<int>("() => window.__comparisonChanges"));
+        Assert.Equal("same-document", await Page.EvaluateAsync<string>("() => window.__mediaNavigationToken"));
         AssertQuiet();
     }
 
@@ -90,4 +99,29 @@ public class CreativeMediaTests(DemoFixture fixture) : DemoPage(fixture)
         Assert.InRange(viewport.Width, 1, 390);
         AssertQuiet();
     }
+
+    [SkippableFact]
+    public async Task Touch_mask_maps_to_source_pixels_at_double_device_pixel_ratio()
+    {
+        RequireDemo();
+        await using var context = await Fixture.Browser!.NewContextAsync(new()
+        {
+            ViewportSize = new() { Width = 390, Height = 844 },
+            HasTouch = true,
+            IsMobile = true,
+            DeviceScaleFactor = 2,
+        });
+        var page = await context.NewPageAsync();
+        var errors = new List<string>();
+        page.PageError += (_, error) => errors.Add(error);
+        await page.GotoAsync(Fixture.BaseUrl + "/components/creative-media", new() { WaitUntil = WaitUntilState.NetworkIdle });
+        var canvas = page.Locator("[data-slot=mask-brush] canvas");
+        await canvas.ScrollIntoViewIfNeededAsync();
+        var box = (await canvas.BoundingBoxAsync())!;
+        await page.Touchscreen.TapAsync(box.X + box.Width * .75f, box.Y + box.Height * .75f);
+        Assert.Equal(2, await page.EvaluateAsync<int>("() => window.devicePixelRatio"));
+        Assert.True(await canvas.EvaluateAsync<bool>("c => c.width === 640 && c.height === 480 && c.getContext('2d').getImageData(480, 360, 1, 1).data[3] > 0"));
+        Assert.Empty(errors);
+    }
+
 }

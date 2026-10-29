@@ -119,7 +119,7 @@ jobs:
       - name: Creative media DOM and raster regression tests
         run: CREATIVE_MEDIA_CONFIGURATION=Release node --test tools/creative-media.test.cjs
 
-      - run: dotnet test --configuration Release --no-build --verbosity quiet
+      - run: dotnet test --configuration Release --no-build --logger "console;verbosity=minimal"
 
       # A skipped behaviour test is a test that did not run, and the point of the suite is that
       # it runs. This fails if any of them skipped.
