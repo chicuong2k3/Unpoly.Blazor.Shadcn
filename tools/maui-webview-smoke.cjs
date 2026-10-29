@@ -51,6 +51,28 @@ async function navigate(page, href) {
     const result=await page.evaluate(sheet=>({css:[...document.styleSheets].filter(s=>s.href?.endsWith('/'+sheet)).map(s=>({href:s.href,rules:s.cssRules.length})), title:document.title,up:typeof window.up}),sheet);
     console.log(`${css} WebView2 loaded:`,JSON.stringify(result));
     if (result.up !== 'object' && result.up !== 'function') throw Error('Unpoly did not initialize');
+    if (process.argv.includes('--creative-media-only')) {
+      const { checkCreativeMedia } = require('./creative-media-browser-checks.cjs');
+      const output = process.env.MAUI_MEDIA_REPORT_DIR;
+      if (output) fs.mkdirSync(output, { recursive: true });
+      try {
+        const checks = await checkCreativeMedia(page, navigate);
+        if (errors.length) throw Error(`Creative media page errors: ${JSON.stringify(errors)}`);
+        if (output) {
+          await page.screenshot({path:path.join(output, `${css}-success.png`), fullPage:true});
+          fs.writeFileSync(path.join(output, `${css}.json`), JSON.stringify({host:'MAUI WebView2', css, checks, errors},null,2));
+        }
+        console.log(`${css} MAUI creative media: ${checks.length}/${checks.length} checks passed`);
+        success = true;
+        return;
+      } catch (error) {
+        if (output) {
+          await page.screenshot({path:path.join(output, `${css}-failure.png`), fullPage:true}).catch(()=>{});
+          fs.writeFileSync(path.join(output, `${css}.json`), JSON.stringify({host:'MAUI WebView2', css, checks:error.mediaChecks || [], error:error.stack, errors},null,2));
+        }
+        throw error;
+      }
+    }
     if (process.argv.includes('--themes-only')) {
       await page.evaluate(() => localStorage.setItem('demo-theme', 'supabase'));
       await page.reload({waitUntil:'domcontentloaded'});

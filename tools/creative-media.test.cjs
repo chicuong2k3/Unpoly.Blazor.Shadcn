@@ -203,13 +203,24 @@ test('crop async loading does not initialize after disposal', withFixture(async 
 }));
 
 test('full no-Unpoly driver compiles media inserted into a WebView-style DOM', withFixture(async f=>{
-  const main=f.q('.doc-main'); assert.ok(main); f.w.document.body.replaceChildren(main);
-  f.w.requestAnimationFrame=fn=>f.w.setTimeout(fn,0); f.w.cancelAnimationFrame=id=>f.w.clearTimeout(id);
-  f.w.IntersectionObserver=class { observe(){} disconnect(){} unobserve(){} };
-  f.w.eval(ui); await tick();
+  const main=f.q('.doc-main');
+  loadPlatformDriver(f); await tick();
   assert.equal(f.q('[data-mask-toolbar]').parentElement.hasAttribute('data-canvas-toolbar'),true);
   const overlay=f.q('[data-slot=draggable-overlay]'); f.key(overlay.querySelector('[data-overlay-move]'),'ArrowRight');
   assert.ok(Math.abs(Number(overlay.dataset.x)-.11)<1e-9);
   const observer=f.observers.find(o=>!o.disconnected); main.remove(); await tick();
   assert.ok(observer.disconnected);
+}));
+
+function loadPlatformDriver(f) {
+  const main=f.q('.doc-main'); assert.ok(main); f.w.document.body.replaceChildren(main);
+  f.w.requestAnimationFrame=fn=>f.w.setTimeout(fn,0); f.w.cancelAnimationFrame=id=>f.w.clearTimeout(id);
+  f.w.IntersectionObserver=class { observe(){} disconnect(){} unobserve(){} };
+  f.w.eval(ui);
+}
+test('the visible asset picker button opens its dialog', withFixture(async f=>{
+  loadPlatformDriver(f); await tick();
+  const button=Array.from(f.w.document.querySelectorAll('button')).find(b=>b.textContent.trim()==='Choose assets');
+  assert.ok(button); button.click();
+  assert.ok(f.q('#creative-assets').open);
 }));
