@@ -37,6 +37,26 @@ jobs:
         run: dotnet workload install maui-windows --skip-manifest-update
       - name: Install tooling
         run: npm ci --prefix tools
+      - name: Ensure Evergreen WebView2 runtime is available
+        run: |
+          $runtimePaths = @(
+            "${env:ProgramFiles(x86)}/Microsoft/EdgeWebView/Application/*/msedgewebview2.exe",
+            "$env:LOCALAPPDATA/Microsoft/EdgeWebView/Application/*/msedgewebview2.exe"
+          )
+          $runtime = Get-ChildItem -Path $runtimePaths -ErrorAction SilentlyContinue
+          if (-not $runtime) {
+            $installer = Join-Path $env:RUNNER_TEMP 'MicrosoftEdgeWebview2Setup.exe'
+            Invoke-WebRequest 'https://go.microsoft.com/fwlink/p/?LinkId=2124703' -OutFile $installer
+            $signature = Get-AuthenticodeSignature $installer
+            if ($signature.Status -ne 'Valid' -or $signature.SignerCertificate.Subject -notmatch 'Microsoft Corporation') {
+              throw 'WebView2 bootstrapper signature could not be verified'
+            }
+            $process = Start-Process $installer -ArgumentList '/silent','/install' -Wait -PassThru
+            if ($process.ExitCode -notin @(0,3010)) { throw "WebView2 install failed: $($process.ExitCode)" }
+            $runtime = Get-ChildItem -Path $runtimePaths -ErrorAction SilentlyContinue
+          }
+          if (-not $runtime) { throw 'Evergreen WebView2 executable is missing after installation' }
+          $runtime | Select-Object FullName,@{Name='Version';Expression={$_.VersionInfo.ProductVersion}}
       - name: Build unpackaged Windows demo with its App SDK runtime
         run: >-
           dotnet build demo/Unpoly.Blazor.Shadcn.Maui/Unpoly.Blazor.Shadcn.Maui.csproj
@@ -50,6 +70,23 @@ jobs:
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
           node tools/maui-webview-smoke.cjs --creative-media-only --baseline
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+      - name: Collect native startup diagnostics on failure
+        if: failure()
+        run: |
+          $output = Join-Path $env:RUNNER_TEMP 'maui-media-reports'
+          New-Item -ItemType Directory -Path $output -Force | Out-Null
+          @{
+            Interactive = [Environment]::UserInteractive
+            SessionId = [Diagnostics.Process]::GetCurrentProcess().SessionId
+            OS = [Environment]::OSVersion.VersionString
+          } | ConvertTo-Json | Out-File (Join-Path $output 'host.json')
+          Get-Process -Name 'Unpoly.Blazor.Shadcn.Maui','msedgewebview2' -ErrorAction SilentlyContinue |
+            Select-Object ProcessName,Id,SessionId,MainWindowTitle |
+            ConvertTo-Json | Out-File (Join-Path $output 'processes.json')
+          Get-WinEvent -FilterHashtable @{LogName='Application';StartTime=(Get-Date).AddMinutes(-15)} -ErrorAction SilentlyContinue |
+            Where-Object { $_.ProviderName -in @('.NET Runtime','Application Error') } |
+            Select-Object -First 20 TimeCreated,ProviderName,Id,Message |
+            ConvertTo-Json | Out-File (Join-Path $output 'application-errors.json')
       - name: Save native reports and screenshots
         if: always()
         uses: actions/upload-artifact@v4

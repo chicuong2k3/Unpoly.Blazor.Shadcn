@@ -107,7 +107,7 @@ PNG byte limit, not a compression target; invalid ratios and negative limits are
 ### Windows automation
 
 The `MAUI creative media` GitHub Actions workflow builds an unpackaged Windows demo with its
-App SDK runtime and runs the existing WebView2 harness against v3 and v4. It also supports manual
+App SDK runtime, ensures Evergreen WebView2 is installed, and runs the existing WebView2 harness against v3 and v4. It also supports manual
 `workflow_dispatch`. A failed native build, unavailable WebView2/CDP endpoint or failed assertion
 fails the job; none is recorded as a skip/pass. Reports and screenshots are uploaded as
 `maui-creative-media` when the app reaches the media checks.
@@ -127,3 +127,8 @@ pen input, touch emulation at DPR 2, crop Blob export, controlled comparison/red
 handler cleanup across Blazor navigation. Pen/touch are injected through the real WebView2 engine's
 CDP interface; this does not certify physical touchscreen hardware, mobile native targets or a full
 screen-reader/contrast audit. A report is evidence only for its recorded passing checks.
+
+The smoke child sets `MAUI_SMOKE_LOG_PATH` to capture WinUI/MAUI startup, detected WebView2
+version, initialization events and Blazor WebView trace logs. This logging is disabled for ordinary
+app launches. Launch failures also upload host/session metadata and relevant Windows application
+errors; a missing CDP endpoint remains a failure and is never counted as native coverage.

@@ -29,7 +29,11 @@ async function navigate(page, href) {
 (async () => {
   if (process.platform !== 'win32') throw Error('Windows WebView2 required');
   const port = await freePort();
-  const child = spawn(executable, [], { cwd:path.dirname(executable), windowsHide:false, detached:true, stdio:'ignore', env:{...process.env,WEBVIEW2_ADDITIONAL_BROWSER_ARGUMENTS:`--remote-debugging-port=${port} --remote-debugging-address=127.0.0.1`,WEBVIEW2_USER_DATA_FOLDER:path.join(os.tmpdir(),`shadcn-maui-smoke-${process.pid}`)} });
+  const reportDirectory = process.argv.includes('--creative-media-only') && process.env.MAUI_MEDIA_REPORT_DIR;
+  if (reportDirectory) fs.mkdirSync(reportDirectory, {recursive:true});
+  const smokeCss = process.argv.includes('--baseline') ? 'v4' : 'v3';
+  const smokeLog = reportDirectory ? path.join(reportDirectory, `${smokeCss}-startup.log`) : null;
+  const child = spawn(executable, [], { cwd:path.dirname(executable), windowsHide:false, detached:true, stdio:'ignore', env:{...process.env,...(smokeLog ? {MAUI_SMOKE_LOG_PATH:smokeLog} : {}),WEBVIEW2_ADDITIONAL_BROWSER_ARGUMENTS:`--remote-debugging-port=${port} --remote-debugging-address=127.0.0.1`,WEBVIEW2_USER_DATA_FOLDER:path.join(os.tmpdir(),`shadcn-maui-smoke-${process.pid}`)} });
   let browser;
   let success = false;
   const css = process.argv.includes('--baseline') ? 'v4' : 'v3';
@@ -478,6 +482,12 @@ async function navigate(page, href) {
       console.log(`Review MAUI ${css} in the open app window (PID ${child.pid}); close the window after review.`);
     }
     success = true;
+  } catch (error) {
+    if (reportDirectory) {
+      fs.writeFileSync(path.join(reportDirectory, `${css}-launch.json`), JSON.stringify({error:error.stack, executable, childPid:child.pid, exitCode:child.exitCode}, null, 2));
+      if (smokeLog && fs.existsSync(smokeLog)) console.error(fs.readFileSync(smokeLog, 'utf8'));
+    }
+    throw error;
   } finally {
     // A failed smoke must not leave a debug-enabled WebView running.
     const keep = process.argv.includes('--keep-open') && success;
