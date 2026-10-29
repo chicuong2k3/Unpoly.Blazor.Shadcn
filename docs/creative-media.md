@@ -132,3 +132,10 @@ The smoke child sets `MAUI_SMOKE_LOG_PATH` to capture WinUI/MAUI startup, detect
 version, initialization events and Blazor WebView trace logs. This logging is disabled for ordinary
 app launches. Launch failures also upload host/session metadata and relevant Windows application
 errors; a missing CDP endpoint remains a failure and is never counted as native coverage.
+
+Windows Debug demos recognize the smoke child's validated `MAUI_SMOKE_CDP_PORT` (1024–65535)
+and set loopback-only debugging through `BlazorWebViewInitializing.EnvironmentOptions`. This is
+needed because elevated WebView2 hosts ignore `WEBVIEW2_*` environment overrides. The code
+accepts no arbitrary browser arguments, uses a fresh temp profile, and is compiled out of Release.
+Ordinary launches without the opt-in port do not enable debugging. See
+[Microsoft's WebView2 flag guidance](https://learn.microsoft.com/en-us/microsoft-edge/webview2/concepts/webview-features-flags).

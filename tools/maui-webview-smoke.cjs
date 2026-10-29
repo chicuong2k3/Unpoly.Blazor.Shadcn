@@ -33,7 +33,7 @@ async function navigate(page, href) {
   if (reportDirectory) fs.mkdirSync(reportDirectory, {recursive:true});
   const smokeCss = process.argv.includes('--baseline') ? 'v4' : 'v3';
   const smokeLog = reportDirectory ? path.join(reportDirectory, `${smokeCss}-startup.log`) : null;
-  const child = spawn(executable, [], { cwd:path.dirname(executable), windowsHide:false, detached:true, stdio:'ignore', env:{...process.env,...(smokeLog ? {MAUI_SMOKE_LOG_PATH:smokeLog} : {}),WEBVIEW2_ADDITIONAL_BROWSER_ARGUMENTS:`--remote-debugging-port=${port} --remote-debugging-address=127.0.0.1`,WEBVIEW2_USER_DATA_FOLDER:path.join(os.tmpdir(),`shadcn-maui-smoke-${process.pid}`)} });
+  const child = spawn(executable, [], { cwd:path.dirname(executable), windowsHide:false, detached:true, stdio:'ignore', env:{...process.env,MAUI_SMOKE_CDP_PORT:String(port),...(smokeLog ? {MAUI_SMOKE_LOG_PATH:smokeLog} : {}),WEBVIEW2_ADDITIONAL_BROWSER_ARGUMENTS:`--remote-debugging-port=${port} --remote-debugging-address=127.0.0.1`,WEBVIEW2_USER_DATA_FOLDER:path.join(os.tmpdir(),`shadcn-maui-smoke-${process.pid}`)} });
   let browser;
   let success = false;
   const css = process.argv.includes('--baseline') ? 'v4' : 'v3';
