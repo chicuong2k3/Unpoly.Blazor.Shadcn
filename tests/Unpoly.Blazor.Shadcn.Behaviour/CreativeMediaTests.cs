@@ -435,6 +435,34 @@ public class CreativeMediaTests(DemoFixture fixture) : DemoPage(fixture)
         AssertQuiet();
     }
 
+    [SkippableFact]
+    public async Task Asset_picker_count_survives_grid_replacement()
+    {
+        RequireDemo();
+        await GoAsync("/components/creative-media");
+        await OpenPickerAsync();
+        await Page.Locator("#creative-assets input[value=landscape]").CheckAsync();
+        await RenderPickerGridAgainAsync();
+        Assert.Equal("1", await Page.Locator("#creative-assets [data-assets-count]").TextContentAsync());
+        Assert.Equal(1, await Page.Locator("#creative-assets figure[data-selected]").CountAsync());
+        AssertQuiet();
+    }
+
+    [SkippableFact]
+    public async Task Asset_picker_clear_removes_choices_from_other_pages()
+    {
+        RequireDemo();
+        await GoAsync("/components/creative-media");
+        await OpenPickerAsync();
+        await Page.Locator("#creative-assets input[value=landscape]").CheckAsync();
+        await Page.EvaluateAsync("() => document.querySelector('#creative-assets [data-slot=media-grid]').remove()");
+        await Page.Locator("#creative-assets [data-assets-clear]").ClickAsync();
+        await Page.EvaluateAsync("() => document.querySelector('[data-slot=asset-picker]').addEventListener('asset-picker:confirm', e => window.__clearedIds = e.detail.ids, { once: true })");
+        await Page.Locator("#creative-assets [data-assets-confirm]").ClickAsync();
+        Assert.Empty(await Page.EvaluateAsync<string[]>("() => window.__clearedIds"));
+        AssertQuiet();
+    }
+
     async Task OpenPreviewAsync(string id)
     {
         await Page.Locator($"[data-slot=media-grid][data-lightbox-target=creative-preview] [data-media-preview={id}]").ClickAsync();

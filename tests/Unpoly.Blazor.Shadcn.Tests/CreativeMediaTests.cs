@@ -5,6 +5,29 @@ namespace Unpoly.Blazor.Shadcn.Tests;
 
 public class CreativeMediaTests : BunitContext
 {
+    [Fact]
+    public void Asset_picker_renders_initial_selection_count()
+    {
+        var root = Render<AssetPicker>(p => p.Add(x => x.SelectedIds, new HashSet<string> { "off-page", "other" }));
+        Assert.Equal("2", root.Find("[data-assets-count]").TextContent);
+        Assert.False(root.Find("[data-assets-clear]").HasAttribute("disabled"));
+    }
+
+    [Fact]
+    public void Asset_picker_clear_is_disabled_for_empty_selection()
+    {
+        Assert.True(Render<AssetPicker>().Find("[data-assets-clear]").HasAttribute("disabled"));
+    }
+
+    [Fact]
+    public void Gallery_marks_initially_selected_tiles()
+    {
+        var root = Render<MediaGrid>(p => p.Add(x => x.Selectable, true)
+            .Add(x => x.Items, new[] { new MediaAsset("a", "/a.png", "A") })
+            .Add(x => x.SelectedIds, new HashSet<string> { "a" }));
+        Assert.Single(root.FindAll("figure[data-selected]"));
+    }
+
     [Theory]
     [InlineData("undo")]
     [InlineData("redo")]

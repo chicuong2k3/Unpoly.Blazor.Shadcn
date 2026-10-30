@@ -42,7 +42,10 @@ autosave and authorization belong to the consuming application.
   app-owned filtering. Selected IDs outside the visible page are retained. Persist `SelectedIds`
   in the application when replacing the entire picker across pages. A grid-only swap inside the
   same picker retains the selection Set, and the swapped-in checkboxes are set from it, because the
-  server rendered them from its own `SelectedIds`. Confirm is cancelable with `preventDefault()`.
+  server rendered them from its own `SelectedIds`. The footer announces the total selected count,
+  including IDs outside the visible page. Clear selection clears the whole Set, including those
+  off-page IDs, and removes visible tile highlights. `SelectionLabel` and `ClearLabel` customize
+  the summary and clear action. Confirm remains cancelable with `preventDefault()`.
 - `MediaLightbox` and `AssetPicker` name their dialog from `Label`. `Dialog` puts splatted attributes
   on its panel, where a label names nothing, so the compiler moves it to the `<dialog>` element.
 
@@ -79,6 +82,7 @@ binary floating point would otherwise serialize .5700000000000001 for 57 grid st
 | send `media-lightbox:open` | `{id}` (omitting ID uses current index) |
 | `media-lightbox:change` | `{id,index}` |
 | `asset-picker:confirm` | `{ids}`, cancelable |
+| `asset-picker:selection` | `{ids}` across all pages, emitted after an actual checkbox/clear change |
 | `image-compare:change` | `{value}` in 0–100; set `data-position` on the wrapper to control it |
 | `image-compare:error` | `{reason:'load'}` |
 | `image-crop:change` / send `image-crop:set` | `{crop:{x,y,width,height,...}}` in original image pixels |

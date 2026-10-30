@@ -2467,10 +2467,14 @@
 
   shadcnCompiler('[data-slot="media-grid"]', root => {
     const controller = new AbortController()
+    const paint = () => {
+      for (const input of root.querySelectorAll('input[name="assets"]')) input.closest('figure')?.toggleAttribute('data-selected', input.checked)
+    }
+    paint()
     mediaListen(controller, root, 'change', e => {
-      if (e.target.matches('input[name="assets"]')) mediaEmit(root, 'media-grid:selection', {
-        ids: Array.from(root.querySelectorAll('input[name="assets"]:checked'), x => x.value)
-      })
+      if (!e.target.matches('input[name="assets"]')) return
+      paint()
+      mediaEmit(root, 'media-grid:selection', { ids: Array.from(root.querySelectorAll('input[name="assets"]:checked'), x => x.value) })
     })
     mediaListen(controller, root, 'click', e => {
       const button = e.target.closest('[data-media-preview]')
@@ -2489,28 +2493,48 @@
     let initial = []
     try { initial = JSON.parse(root.dataset.selectedIds || '[]') } catch {}
     const selected = new Set(Array.isArray(initial) ? initial.filter(x => typeof x === 'string') : [])
-    const remember = () => { root.dataset.selectedIds = JSON.stringify(Array.from(selected)) }
+    const count = root.querySelector('[data-assets-count]'), clear = root.querySelector('[data-assets-clear]')
+    const remember = () => {
+      root.dataset.selectedIds = JSON.stringify(Array.from(selected))
+      // Avoid replacing a live-region text node when nothing changed.
+      if (count && count.textContent !== String(selected.size)) count.textContent = String(selected.size)
+      if (clear) clear.disabled = selected.size === 0
+    }
+    const notify = () => mediaEmit(root, 'asset-picker:selection', { ids: Array.from(selected) })
     const unname = mediaNameDialog(root.querySelector('dialog'))
     // A grid swapped in for another page is rendered from the server's SelectedIds, which knows
     // nothing of the choices made since. Left alone, a page the user returns to shows its
     // choices unchecked, and Confirm then reconciles them out of the Set. The Set is the
     // selection; any checkbox that appears follows it. Setting .checked is not a childList
     // mutation, so this cannot feed itself.
-    const sync = () => { for (const input of root.querySelectorAll('input[name="assets"]')) input.checked = selected.has(input.value) }
+    const sync = () => {
+      for (const input of root.querySelectorAll('input[name="assets"]')) {
+        input.checked = selected.has(input.value)
+        input.closest('figure')?.toggleAttribute('data-selected', input.checked)
+      }
+    }
+    sync(); remember()
     const observer = new MutationObserver(sync)
     observer.observe(root, { childList: true, subtree: true })
     mediaListen(controller, root, 'change', e => {
       if (!e.target.matches('input[name="assets"]')) return
+      const before = selected.has(e.target.value)
       if (e.target.checked) selected.add(e.target.value); else selected.delete(e.target.value)
-      remember()
+      sync(); remember()
+      if (before !== e.target.checked) notify()
     })
     mediaListen(controller, root, 'click', e => {
+      if (e.target.closest('[data-assets-clear]')) {
+        if (!selected.size) return
+        selected.clear(); sync(); remember(); notify()
+        return
+      }
       if (!e.target.closest('[data-assets-confirm]')) return
       // Reconcile the visible page; keep selections from other pages/filter results.
       for (const input of root.querySelectorAll('input[name="assets"]')) {
         if (input.checked) selected.add(input.value); else selected.delete(input.value)
       }
-      remember()
+      sync(); remember()
       const ids = Array.from(selected)
       if (root.dispatchEvent(new CustomEvent('asset-picker:confirm', { bubbles: true, cancelable: true, detail: { ids } }))) root.querySelector('dialog')?.close()
     })

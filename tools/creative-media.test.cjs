@@ -261,3 +261,41 @@ test('timeline cancellation restores accessible trim bounds', withFixture(f=>{
   assert.equal(clip.querySelector('[data-clip-start]').getAttribute('aria-description'), 'Start 0 seconds, end 8 seconds, duration 8 seconds, track 1.');
   assert.equal(root.querySelector('[role=status]').textContent, '');
 }));
+
+
+test('picker count includes off-page selection', withFixture(f=>{
+  const root=f.q('[data-slot=asset-picker]'); root.dataset.selectedIds='["off-page"]'; f.compile('asset-picker');
+  const input=root.querySelector('input'); input.checked=true; input.dispatchEvent(new f.w.Event('change',{bubbles:true}));
+  assert.equal(root.querySelector('[data-assets-count]').textContent,'2');
+}));
+test('picker clear removes off-page selection', withFixture(f=>{
+  const root=f.q('[data-slot=asset-picker]'); root.dataset.selectedIds='["off-page"]'; f.compile('asset-picker');
+  root.querySelector('[data-assets-clear]').click();
+  assert.deepEqual(JSON.parse(root.dataset.selectedIds),[]);
+  assert.equal(root.querySelector('[data-assets-count]').textContent,'0');
+}));
+test('picker selection event contains all selected IDs', withFixture(f=>{
+  const root=f.q('[data-slot=asset-picker]'); root.dataset.selectedIds='["off-page"]'; f.compile('asset-picker'); let ids;
+  root.addEventListener('asset-picker:selection',e=>ids=e.detail.ids);
+  const input=root.querySelector('input'); input.checked=true; input.dispatchEvent(new f.w.Event('change',{bubbles:true}));
+  assert.deepEqual(Array.from(ids),['off-page','landscape']);
+}));
+test('picker clear removes tile highlighting', withFixture(f=>{
+  f.compile('asset-picker'); const root=f.q('[data-slot=asset-picker]'), input=root.querySelector('input');
+  input.checked=true; input.dispatchEvent(new f.w.Event('change',{bubbles:true}));
+  assert.ok(input.closest('figure').hasAttribute('data-selected'));
+  root.querySelector('[data-assets-clear]').click();
+  assert.equal(input.checked,false); assert.equal(input.closest('figure').hasAttribute('data-selected'),false);
+}));
+test('picker disposal removes clear listener', withFixture(f=>{
+  const root=f.q('[data-slot=asset-picker]'); root.dataset.selectedIds='["off-page"]'; const dispose=f.compile('asset-picker'); dispose();
+  root.querySelector('[data-assets-clear]').click();
+  assert.deepEqual(JSON.parse(root.dataset.selectedIds),['off-page']);
+}));
+test('picker clear does not restore stale choices when grid returns', withFixture(async f=>{
+  f.compile('asset-picker'); const root=f.q('[data-slot=asset-picker]'), grid=root.querySelector('[data-slot=media-grid]');
+  const input=grid.querySelector('input'); input.checked=true; input.dispatchEvent(new f.w.Event('change',{bubbles:true}));
+  const stale=grid.outerHTML.replace('value="landscape"','checked value="landscape"'); grid.remove();
+  root.querySelector('[data-assets-clear]').click(); root.querySelector('[data-assets-grid]').innerHTML=stale; await tick();
+  assert.equal(root.querySelector('input').checked,false);
+}));

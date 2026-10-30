@@ -1455,11 +1455,14 @@ up-cover up-cover-dismiss:focus-visible {
 [data-media-navigation] { display:flex; align-items:center; justify-content:space-between; gap:1rem; }
 [data-media-navigation] p { min-width:0; font-size:.875rem; color:var(--muted-foreground); }
 [data-media-navigation] [role="group"] { display:flex; flex-shrink:0; gap:.5rem; }
-[data-slot="asset-picker"] [data-slot="dialog-content"] { width:min(48rem,calc(100vw - 2rem)); max-width:calc(100vw - 2rem); gap:1rem; }
+[data-slot="asset-picker"] [data-slot="dialog-content"] { width:min(48rem,calc(100vw - 2rem)); max-width:calc(100vw - 2rem); max-height:calc(100dvh - 2rem); grid-template-rows:auto auto minmax(0,1fr) auto; overflow:hidden; gap:1rem; }
 [data-assets-heading] { padding-inline-end:2rem; font-size:1.125rem; font-weight:600; }
 [data-assets-filters]:empty { display:none; }
-[data-assets-grid] { max-height:55vh; overflow:auto; padding:2px; }
-[data-assets-footer] { display:flex; justify-content:flex-end; border-top:1px solid var(--border); padding-top:1rem; }
+[data-assets-grid] { min-height:0; max-height:55vh; overflow:auto; padding:2px; }
+[data-assets-footer] { display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:.75rem; border-top:1px solid var(--border); padding-top:1rem; }
+[data-assets-selection] { display:flex; flex-wrap:wrap; align-items:center; gap:.5rem; }
+[data-assets-summary] { font-size:.875rem; color:var(--muted-foreground); }
+[data-media-tiles] figure[data-selected] { outline:2px solid var(--ring); outline-offset:-2px; background:var(--accent); }
 [data-slot="image-crop"] { display:grid; gap:1rem; }
 [data-crop-stage] { height:clamp(14rem,40vh,24rem); overflow:hidden; border:1px solid var(--border); border-radius:var(--radius); background:var(--muted); }
 [data-crop-stage] > img { width:100%; height:100%; object-fit:contain; }
@@ -1486,6 +1489,7 @@ up-cover up-cover-dismiss:focus-visible {
     [data-mask-settings] { grid-area:settings; }
     [data-mask-toolbar] > [data-mask-action="export"] { grid-area:export; width:100%; }
     [data-crop-fields] { grid-template-columns:repeat(2,minmax(0,1fr)); }
+    [data-assets-footer] > [data-assets-confirm] { width:100%; }
     [data-media-clip] { grid-template-columns:24px minmax(0,1fr) 24px; }
 }
 @media (prefers-reduced-motion:reduce) {

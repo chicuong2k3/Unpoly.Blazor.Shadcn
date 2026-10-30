@@ -125,6 +125,8 @@ renders `<div>` · `data-slot="asset-picker"`
 |---|---|---|---|
 | `Id` | `string` | `$"assets-{Guid.NewGuid():N}"` |  |
 | `Label` | `string` | `"Choose assets"` |  |
+| `SelectionLabel` | `string` | `"Selected assets:"` |  |
+| `ClearLabel` | `string` | `"Clear selection"` |  |
 | `ConfirmLabel` | `string` | `"Use selected assets"` |  |
 | `Items` | `IReadOnlyList<MediaAsset>` | `Array.Empty<MediaAsset>()` |  |
 | `SelectedIds` | `IReadOnlySet<string>` | `new HashSet<string>()` |  |
