@@ -10,6 +10,20 @@
             <Button Type="button" Variant="outline" Size="icon" data-crop-zoom="-0.1" aria-label="Zoom out"><Icon Name="zoom-out" /></Button>
             <Button Type="button" Variant="outline" Size="icon" data-crop-zoom="0.1" aria-label="Zoom in"><Icon Name="zoom-in" /></Button>
         </div>
+        <div data-crop-ratio-control>
+            <span>Aspect ratio</span>
+            <Select Size="sm" data-crop-ratio aria-label="Crop aspect ratio" disabled="@Circular">
+                <SelectItem Value="free" Selected="@(AspectRatio is null && !Circular)">Free</SelectItem>
+                @foreach (var ratio in Ratios)
+                {
+                    <SelectItem Value="@F(ratio.Value)" Selected="@(Circular ? ratio.Value == 1 : AspectRatio == ratio.Value)">@ratio.Label</SelectItem>
+                }
+                @if (!Circular && AspectRatio is double custom && !Ratios.Any(r => r.Value == custom))
+                {
+                    <SelectItem Value="@F(custom)" Selected="true">@($"{custom:0.###}:1")</SelectItem>
+                }
+            </Select>
+        </div>
         <div data-crop-actions>
             <Button Type="button" Variant="outline" Size="sm" data-slot="image-crop-reset">@ResetLabel</Button>
             <Button Type="button" Size="sm" data-slot="image-crop-apply"><Icon Name="crop" /> @ApplyLabel</Button>
@@ -38,6 +52,8 @@
     [Parameter] public long MaxImageSize { get; set; }
     [Parameter] public string ApplyLabel { get; set; } = "Apply crop";
     [Parameter] public string ResetLabel { get; set; } = "Reset crop";
+    static readonly (double Value, string Label)[] Ratios = { (1, "1:1"), (4d / 3, "4:3"), (16d / 9, "16:9") };
+    static string F(double value) => value.ToString(System.Globalization.CultureInfo.InvariantCulture);
     protected override void OnParametersSet()
     {
         if (AspectRatio is double ratio && (!double.IsFinite(ratio) || ratio <= 0)) throw new ArgumentOutOfRangeException(nameof(AspectRatio));

@@ -1615,6 +1615,8 @@ renders `<div>` · `data-slot="media-grid"`
 | `LightboxTarget` | `string?` | — |  |
 | `Label` | `string` | `"Media library"` |  |
 | `EmptyLabel` | `string` | `"No media found."` |  |
+| `LoadingLabel` | `string` | `"Loading media…"` |  |
+| `ThumbnailErrorLabel` | `string` | `"Preview unavailable"` |  |
 | `MoreLabel` | `string` | `"Next page"` |  |
 
 ## `<MediaLightbox>`
@@ -1623,6 +1625,7 @@ renders `<div>` · `data-slot="media-lightbox"`
 | Parameter | Type | Default | |
 |---|---|---|---|
 | `Id` | `string` | `$"media-{Guid.NewGuid():N}"` |  |
+| `RetryLabel` | `string` | `"Retry"` |  |
 | `Label` | `string` | `"Media preview"` |  |
 | `Items` | `IReadOnlyList<MediaAsset>` | `Array.Empty<MediaAsset>()` |  |
 | `InitialIndex` | `int` | — |  |

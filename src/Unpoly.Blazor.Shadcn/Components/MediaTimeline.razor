@@ -1,5 +1,7 @@
 @inherits UiComponentBase
 <div data-slot="media-timeline" data-duration="@F(Duration)" data-snap="@F(Snap)" class="@Class" role="group" aria-label="@Label" @attributes="AdditionalAttributes">
+    <div data-timeline-viewport tabindex="0" role="region" aria-label="Timeline tracks">
+        <div data-timeline-surface>
     <div data-timeline-ruler aria-hidden="true">
         @for (var tick = 0; tick <= 5; tick++) { <span>@F(Math.Round(Duration * tick / 5, 2))s</span> }
     </div>
@@ -12,6 +14,9 @@
             <span data-clip-meta aria-hidden="true">@($"Track {clip.Track + 1} · {F(clip.Duration)}s")</span>
         </div>
     }
+        </div>
+    </div>
+    <p data-timeline-hint>Scroll horizontally to see the full timeline.</p>
     <span data-media-feedback role="status" aria-atomic="true"></span>
     @ChildContent
 </div>

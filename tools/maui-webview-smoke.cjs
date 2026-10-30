@@ -71,6 +71,10 @@ async function navigate(page, href) {
       if (output) fs.mkdirSync(output, { recursive: true });
       try {
         const checks = await checkCreativeMedia(page, navigate);
+        if (process.env.CREATIVE_MEDIA_FULL_AUDIT === '1') {
+          const { auditCreativeMedia } = require('./creative-media-audit.cjs');
+          await auditCreativeMedia(page, navigate, {output, host:'maui', css});
+        }
         if (errors.length) throw Error(`Creative media page errors: ${JSON.stringify(errors)}`);
         if (output) {
           await page.screenshot({path:path.join(output, `${css}-success.png`), fullPage:true});

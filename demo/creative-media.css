@@ -20,3 +20,10 @@
     [data-creative-heading], [data-creative-body] { padding:1rem; }
     [data-creative-timeline-heading] { align-items:start; flex-direction:column; gap:.25rem; }
 }
+
+[data-audit-link] { margin-top:1rem; }
+[data-media-audit] { display:grid; gap:1.5rem; margin-top:2rem; min-width:0; }
+[data-audit] { min-width:0; display:grid; gap:1rem; border:1px solid var(--border); border-radius:var(--radius); padding:1rem; }
+[data-audit] h2 { font-size:1rem; font-weight:600; }
+[data-audit="compare"] img-comparison-slider { height:auto; aspect-ratio:4 / 3; }
+[data-audit="compare"] [slot] img { width:100%; height:100%; object-fit:cover; }

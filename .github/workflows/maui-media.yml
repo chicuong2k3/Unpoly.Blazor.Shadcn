@@ -9,6 +9,7 @@ on:
       - 'demo/creative-media.css'
       - 'tools/maui-webview-smoke.cjs'
       - 'tools/creative-media-browser-checks.cjs'
+      - 'tools/creative-media-audit.cjs'
       - 'tools/package*.json'
   workflow_dispatch:
 
@@ -66,6 +67,7 @@ jobs:
       - name: Check creative media in native WebView2 with both stylesheets
         env:
           MAUI_MEDIA_REPORT_DIR: ${{ runner.temp }}/maui-media-reports
+          CREATIVE_MEDIA_FULL_AUDIT: '1'
         run: |
           # Elevated hosted runners require the machine-policy channel. Scope it to
           # this disposable demo executable and restore its prior value in finally.
@@ -82,9 +84,10 @@ jobs:
             New-ItemProperty -Path $policy -Name $application -PropertyType String -Value '--remote-debugging-port=9222 --remote-debugging-address=127.0.0.1' -Force | Out-Null
             $env:MAUI_SMOKE_CDP_PORT = '9222'
             node tools/maui-webview-smoke.cjs --creative-media-only
-            if ($LASTEXITCODE -ne 0) { throw "v3 native checks failed: $LASTEXITCODE" }
+            $v3Exit = $LASTEXITCODE
             node tools/maui-webview-smoke.cjs --creative-media-only --baseline
-            if ($LASTEXITCODE -ne 0) { throw "v4 native checks failed: $LASTEXITCODE" }
+            $v4Exit = $LASTEXITCODE
+            if ($v3Exit -ne 0 -or $v4Exit -ne 0) { throw "Native audit failures: v3=$v3Exit, v4=$v4Exit" }
           } finally {
             if ($hadValue) { (Get-Item $policy).SetValue($application, $oldValue, $oldKind) }
             else { Remove-ItemProperty -Path $policy -Name $application -ErrorAction SilentlyContinue }

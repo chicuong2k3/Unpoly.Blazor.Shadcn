@@ -5,6 +5,7 @@
         <div data-media-navigation>
             <p data-media-status role="status" aria-live="polite"></p>
             <div role="group" aria-label="Media navigation">
+                <Button Type="button" Variant="outline" Size="sm" data-media-retry hidden>@RetryLabel</Button>
                 <Button Type="button" Variant="outline" Size="icon" data-media-previous aria-label="Previous media"><Icon Name="chevron-left" /></Button>
                 <Button Type="button" Variant="outline" Size="icon" data-media-next aria-label="Next media"><Icon Name="chevron-right" /></Button>
             </div>
@@ -18,6 +19,7 @@
 </div>
 @code {
     [Parameter] public string Id { get; set; } = $"media-{Guid.NewGuid():N}";
+    [Parameter] public string RetryLabel { get; set; } = "Retry";
     [Parameter] public string Label { get; set; } = "Media preview";
     [Parameter] public IReadOnlyList<MediaAsset> Items { get; set; } = Array.Empty<MediaAsset>();
     [Parameter] public int InitialIndex { get; set; }

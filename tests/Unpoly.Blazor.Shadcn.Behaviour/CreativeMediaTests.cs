@@ -463,6 +463,46 @@ public class CreativeMediaTests(DemoFixture fixture) : DemoPage(fixture)
         AssertQuiet();
     }
 
+    [SkippableFact]
+    public async Task Free_crop_east_edge_preserves_height()
+    {
+        RequireDemo();
+        await GoAsync("/components/creative-media");
+        await Page.WaitForFunctionAsync("() => Number(document.querySelector('[data-crop-field=height]').value) > 0");
+        var before = await Page.Locator("[data-crop-field=height]").InputValueAsync();
+        var width = await Page.Locator("[data-crop-field=width]").InputValueAsync();
+        var handle = Page.Locator(".cropper-point[data-cropper-action=e]");
+        await handle.ScrollIntoViewIfNeededAsync();
+        var box = (await handle.BoundingBoxAsync())!;
+        await Page.Mouse.MoveAsync(box.X + box.Width / 2, box.Y + box.Height / 2);
+        await Page.Mouse.DownAsync();
+        await Page.Mouse.MoveAsync(box.X + box.Width / 2 - 24, box.Y + box.Height / 2, new() { Steps = 6 });
+        await Page.Mouse.UpAsync();
+        Assert.Equal(before, await Page.Locator("[data-crop-field=height]").InputValueAsync());
+        Assert.True(double.Parse(await Page.Locator("[data-crop-field=width]").InputValueAsync(), System.Globalization.CultureInfo.InvariantCulture) < double.Parse(width, System.Globalization.CultureInfo.InvariantCulture));
+        AssertQuiet();
+    }
+
+    [SkippableFact]
+    public async Task Free_crop_south_edge_preserves_width()
+    {
+        RequireDemo();
+        await GoAsync("/components/creative-media");
+        await Page.WaitForFunctionAsync("() => Number(document.querySelector('[data-crop-field=width]').value) > 0");
+        var before = await Page.Locator("[data-crop-field=width]").InputValueAsync();
+        var height = await Page.Locator("[data-crop-field=height]").InputValueAsync();
+        var handle = Page.Locator(".cropper-point[data-cropper-action=s]");
+        await handle.ScrollIntoViewIfNeededAsync();
+        var box = (await handle.BoundingBoxAsync())!;
+        await Page.Mouse.MoveAsync(box.X + box.Width / 2, box.Y + box.Height / 2);
+        await Page.Mouse.DownAsync();
+        await Page.Mouse.MoveAsync(box.X + box.Width / 2, box.Y + box.Height / 2 - 24, new() { Steps = 6 });
+        await Page.Mouse.UpAsync();
+        Assert.Equal(before, await Page.Locator("[data-crop-field=width]").InputValueAsync());
+        Assert.True(double.Parse(await Page.Locator("[data-crop-field=height]").InputValueAsync(), System.Globalization.CultureInfo.InvariantCulture) < double.Parse(height, System.Globalization.CultureInfo.InvariantCulture));
+        AssertQuiet();
+    }
+
     async Task OpenPreviewAsync(string id)
     {
         await Page.Locator($"[data-slot=media-grid][data-lightbox-target=creative-preview] [data-media-preview={id}]").ClickAsync();

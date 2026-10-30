@@ -2,6 +2,7 @@
 <PageTitle>Creative Media — Unpoly.Blazor.Shadcn</PageTitle>
 <h1 class="doc-h1">Creative Media</h1>
 <p class="doc-lede">A focused workspace for masks, annotations and media clips.</p>
+<Button Href="/components/creative-media/audit" Variant="outline" data-audit-link>View component audit cases</Button>
 <div data-creative-workspace>
     <section data-creative-section data-creative-editor>
         <header data-creative-heading>
@@ -39,8 +40,8 @@
             <div data-creative-body><ImageCompare BeforeSrc="@Photo" AfterSrc="@Photo" InitialPosition="30" Label="Compare original and edited image" BeforeLabel="Original" AfterLabel="Edited" /></div>
         </section>
         <section data-creative-section>
-            <header data-creative-heading><div><h2>Image crop</h2><p>Resize the crop bounds, then export a PNG.</p></div></header>
-            <div data-creative-body><ImageCrop Src="@Photo" AspectRatio="1.3333333333333333" MaxImageSize="2097152" ApplyLabel="Export PNG" /></div>
+            <header data-creative-heading><div><h2>Image crop</h2><p>Free crop resizes each edge independently. Choose a ratio to lock the shape.</p></div></header>
+            <div data-creative-body><ImageCrop Src="@Photo" MaxImageSize="2097152" ApplyLabel="Export PNG" /></div>
         </section>
     </div>
 </div>
