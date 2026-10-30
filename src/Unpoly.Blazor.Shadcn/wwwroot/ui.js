@@ -2731,6 +2731,8 @@
   shadcnCompiler('[data-slot="draggable-overlay"]', root => {
     const controller = new AbortController(), parent = root.parentElement
     let state = { x: mediaNumber(root.dataset.x), y: mediaNumber(root.dataset.y), width: mediaNumber(root.dataset.width,.3), height: mediaNumber(root.dataset.height,.2) }, drag = null
+    const logicalWidth = Number(root.dataset.coordinateWidth), logicalHeight = Number(root.dataset.coordinateHeight)
+    const hasLogicalSpace = Number.isFinite(logicalWidth) && logicalWidth > 0 && Number.isFinite(logicalHeight) && logicalHeight > 0
     const snap = mediaClamp(mediaNumber(root.dataset.snap,.01),.000001,1), quantize = n => mediaTidy(Math.round(n / snap) * snap)
     const describe = () => `Left ${mediaTidy(state.x*100)}%, top ${mediaTidy(state.y*100)}%, width ${mediaTidy(state.width*100)}%, height ${mediaTidy(state.height*100)}%.`
     const feedback = root.querySelector('[data-media-feedback]')
@@ -2745,6 +2747,7 @@
       for (const [k,v] of Object.entries(state)) root.dataset[k] = String(v)
       if (feedback) feedback.textContent = describe()
       mediaEmit(root,'draggable-overlay:change',{ version:1,...state })
+      if (hasLogicalSpace) mediaEmit(root,'draggable-overlay:logical-change',{ version:1,x:mediaTidy(state.x*logicalWidth),y:mediaTidy(state.y*logicalHeight),width:mediaTidy(state.width*logicalWidth),height:mediaTidy(state.height*logicalHeight) })
     }
     const update = (base, dx, dy, resize) => {
       const right = mediaTidy(1-base.x), bottom = mediaTidy(1-base.y)
@@ -2776,6 +2779,13 @@
       if (d?.version!==1 || ![d.x,d.y,d.width,d.height].every(Number.isFinite) || d.x<0 || d.y<0 || d.width<=0 || d.height<=0 || d.x+d.width>1 || d.y+d.height>1) return
       const before = state
       state={x:d.x,y:d.y,width:d.width,height:d.height}; render(); emit(before)
+    })
+    mediaListen(controller, root, 'draggable-overlay:logical-set', e => {
+      const d = e.detail
+      if (!hasLogicalSpace || d?.version !== 1 || ![d.x,d.y,d.width,d.height].every(Number.isFinite) || d.x < 0 || d.y < 0 || d.width <= 0 || d.height <= 0 || d.x + d.width > logicalWidth || d.y + d.height > logicalHeight) return
+      const before = state
+      state = { x:d.x/logicalWidth, y:d.y/logicalHeight, width:d.width/logicalWidth, height:d.height/logicalHeight }
+      render(); emit(before)
     })
     render()
     return () => { controller.abort(); if (drag && root.hasPointerCapture(drag.id)) root.releasePointerCapture(drag.id); drag=null }

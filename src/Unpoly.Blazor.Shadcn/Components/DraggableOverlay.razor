@@ -1,5 +1,5 @@
 @inherits UiComponentBase
-<div data-slot="draggable-overlay" data-x="@F(X)" data-y="@F(Y)" data-width="@F(Width)" data-height="@F(Height)" data-snap="@F(Snap)" class="@Class" @attributes="AdditionalAttributes">
+<div data-slot="draggable-overlay" data-x="@F(X)" data-y="@F(Y)" data-width="@F(Width)" data-height="@F(Height)" data-snap="@F(Snap)" data-coordinate-width="@(CoordinateWidth is { } cw ? F(cw) : null)" data-coordinate-height="@(CoordinateHeight is { } ch ? F(ch) : null)" class="@Class" @attributes="AdditionalAttributes">
     <Button Type="button" Variant="ghost" Size="icon" data-overlay-move aria-label="@MoveLabel" title="@MoveLabel"><Icon Name="grip" /></Button>
     <span data-media-feedback role="status" aria-atomic="true"></span>
     <div data-overlay-content>@ChildContent</div>
@@ -11,11 +11,14 @@
     [Parameter] public double Width { get; set; } = .3;
     [Parameter] public double Height { get; set; } = .2;
     [Parameter] public double Snap { get; set; } = .01;
+    [Parameter] public double? CoordinateWidth { get; set; }
+    [Parameter] public double? CoordinateHeight { get; set; }
     [Parameter] public string MoveLabel { get; set; } = "Move overlay with arrow keys";
     [Parameter] public string ResizeLabel { get; set; } = "Resize overlay with arrow keys";
     static string F(double value) => value.ToString(System.Globalization.CultureInfo.InvariantCulture);
     protected override void OnParametersSet()
     {
         if (new[] { X, Y, Width, Height, Snap }.Any(v => !double.IsFinite(v)) || X < 0 || Y < 0 || Width <= 0 || Height <= 0 || X + Width > 1 || Y + Height > 1 || Snap <= 0 || Snap > 1) throw new ArgumentOutOfRangeException(nameof(X));
+        if (CoordinateWidth.HasValue != CoordinateHeight.HasValue || (CoordinateWidth is { } w && (!double.IsFinite(w) || w <= 0)) || (CoordinateHeight is { } h && (!double.IsFinite(h) || h <= 0))) throw new ArgumentOutOfRangeException(nameof(CoordinateWidth), "Coordinate dimensions must both be finite and positive.");
     }
 }

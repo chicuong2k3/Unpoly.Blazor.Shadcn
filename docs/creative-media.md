@@ -19,6 +19,9 @@ autosave and authorization belong to the consuming application.
 - `DraggableOverlay` requires a positioned parent (the canvas plane provides one). Coordinates and
   sizes use fractions of that parent, in [0,1]; default snap .01. Move/Resize handles support
   pointer/pen/touch and arrows, Shift for 10 steps. The resulting rectangle stays in bounds.
+  Optional positive `CoordinateWidth` and `CoordinateHeight` expose a second event interface in
+  application units; both dimensions must be supplied together. `OverlayCoordinates` converts
+  `OverlayRectangle` values in .NET. Normalized inputs and events remain unchanged.
 - `MediaTimeline` receives `MediaClip` records; start/duration/snap are seconds, tracks are zero based.
   Move and trim handles support horizontal arrows/pointer, Shift for 10 steps. Up/down changes the
   track when moving; on a trim handle they do nothing and stay with the page. Pointer vertical
@@ -75,6 +78,7 @@ binary floating point would otherwise serialize .5700000000000001 for 57 grid st
 | `mask-brush:export` | `{blob,width,height}`; PNG Blob, no data URL copy |
 | `mask-brush:error` | `{reason}` |
 | `draggable-overlay:change` / send `draggable-overlay:set` | `{version:1,x,y,width,height}`; normalized fractions |
+| `draggable-overlay:logical-change` / send `draggable-overlay:logical-set` | `{version:1,x,y,width,height}` in the configured coordinate space; emitted in addition to the normalized change |
 | `media-timeline:select` | `{id}` |
 | `media-timeline:change` / send `media-timeline:set` | `{version:1,id,start,duration,track}`; seconds |
 | `media-grid:selection` | `{ids}` on the visible page |

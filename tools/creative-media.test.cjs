@@ -94,6 +94,20 @@ test('overlay keyboard coordinates are normalized and bounded', withFixture(f=>{
   for(let i=0;i<100;i++) f.key(root.querySelector('[data-overlay-move]'),'ArrowRight');
   assert.ok(Math.abs(Number(root.dataset.x)-.7)<1e-9); assert.equal(root.style.left,'70%');
 }));
+test('overlay logical coordinates round trip without changing the normalized event', withFixture(f=>{
+  f.compile('draggable-overlay'); const root=f.q('[data-slot=draggable-overlay]'); let logical, normalized;
+  root.addEventListener('draggable-overlay:logical-change',e=>logical=e.detail);
+  root.addEventListener('draggable-overlay:change',e=>normalized=e.detail);
+  f.event(root,'draggable-overlay:logical-set',{version:1,x:64,y:96,width:192,height:144});
+  assert.deepEqual([logical.x,logical.y,logical.width,logical.height],[64,96,192,144]);
+  assert.deepEqual([normalized.x,normalized.y,normalized.width,normalized.height],[.1,.2,.3,.3]);
+}));
+test('overlay rejects logical rectangles outside its configured space', withFixture(f=>{
+  f.compile('draggable-overlay'); const root=f.q('[data-slot=draggable-overlay]'); let changes=0;
+  root.addEventListener('draggable-overlay:change',()=>changes++);
+  f.event(root,'draggable-overlay:logical-set',{version:1,x:630,y:0,width:20,height:20});
+  assert.equal(changes,0); assert.equal(root.dataset.x,'0.1');
+}));
 test('overlay drag uses the transformed parent rectangle', withFixture(f=>{
   const root=f.q('[data-slot=draggable-overlay]'); f.rect(root.parentElement,500,250); f.compile('draggable-overlay');
   f.pointer(root.querySelector('[data-overlay-move]'),'pointerdown',10,10); f.pointer(root,'pointermove',60,35); f.pointer(root,'pointerup',60,35);

@@ -919,6 +919,8 @@ renders `<div>` · `data-slot="draggable-overlay"`
 | `Width` | `double` | `.3` |  |
 | `Height` | `double` | `.2` |  |
 | `Snap` | `double` | `.01` |  |
+| `CoordinateWidth` | `double?` | — |  |
+| `CoordinateHeight` | `double?` | — |  |
 | `MoveLabel` | `string` | `"Move overlay with arrow keys"` |  |
 | `ResizeLabel` | `string` | `"Resize overlay with arrow keys"` |  |
 
