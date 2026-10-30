@@ -471,7 +471,7 @@ public class CreativeMediaTests(DemoFixture fixture) : DemoPage(fixture)
         await Page.WaitForFunctionAsync("() => Number(document.querySelector('[data-crop-field=height]').value) > 0");
         var before = await Page.Locator("[data-crop-field=height]").InputValueAsync();
         var width = await Page.Locator("[data-crop-field=width]").InputValueAsync();
-        var handle = Page.Locator(".cropper-point[data-action=e]");
+        var handle = Page.Locator(".cropper-point[data-cropper-action=e]");
         await handle.ScrollIntoViewIfNeededAsync();
         var box = (await handle.BoundingBoxAsync())!;
         await Page.Mouse.MoveAsync(box.X + box.Width / 2, box.Y + box.Height / 2);
@@ -491,7 +491,7 @@ public class CreativeMediaTests(DemoFixture fixture) : DemoPage(fixture)
         await Page.WaitForFunctionAsync("() => Number(document.querySelector('[data-crop-field=width]').value) > 0");
         var before = await Page.Locator("[data-crop-field=width]").InputValueAsync();
         var height = await Page.Locator("[data-crop-field=height]").InputValueAsync();
-        var handle = Page.Locator(".cropper-point[data-action=s]");
+        var handle = Page.Locator(".cropper-point[data-cropper-action=s]");
         await handle.ScrollIntoViewIfNeededAsync();
         var box = (await handle.BoundingBoxAsync())!;
         await Page.Mouse.MoveAsync(box.X + box.Width / 2, box.Y + box.Height / 2);

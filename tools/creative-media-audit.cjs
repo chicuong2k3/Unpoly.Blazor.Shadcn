@@ -114,14 +114,16 @@ async function auditCreativeMedia(page, navigate, { output, host, css }) {
     await page.waitForFunction(()=>{const root=document.querySelector('[data-audit=crop]');return Math.abs(root.querySelector('.cropper-container').clientWidth-root.querySelector('[data-crop-stage]').clientWidth)<=2});
     const cropData=async()=>{await page.evaluate(()=>new Promise(r=>requestAnimationFrame(r)));return crop.locator('[data-crop-field]').evaluateAll(els=>Object.fromEntries(els.map(el=>[el.dataset.cropField,Number(el.value)])));};
     const dragEdge=async action=>{
-      const handle=crop.locator(`.cropper-point[data-action=${action}]`);await handle.scrollIntoViewIfNeeded();const b=await handle.boundingBox();
+      const handle=crop.locator(`.cropper-point[data-cropper-action=${action}]`);await handle.scrollIntoViewIfNeeded();const b=await handle.boundingBox();
       await page.mouse.move(b.x+b.width/2,b.y+b.height/2);await page.mouse.down();await page.mouse.move(b.x+b.width/2+(action==='e'?-24:0),b.y+b.height/2+(action==='s'?-24:0),{steps:6});await page.mouse.up();
     };
+    await crop.evaluate(el=>el.dispatchEvent(new CustomEvent('image-crop:set',{detail:{crop:{x:64,y:48,width:512,height:384}}})));
+    await page.waitForFunction(()=>Number(document.querySelector('[data-audit=crop] [data-crop-field=width]').value)>500);
     await check('ImageCrop','east drag changes width without changing height in Free',async()=>{const before=await cropData();await dragEdge('e');const after=await cropData();assert.ok(after.width<before.width);assert.ok(Math.abs(after.height-before.height)<=1);});
     await check('ImageCrop','south drag changes height without changing width in Free',async()=>{const before=await cropData();await dragEdge('s');const after=await cropData();assert.ok(after.height<before.height);assert.ok(Math.abs(after.width-before.width)<=1);});
     await check('ImageCrop','ratio control locks 4:3 only when chosen',async()=>{
-      await crop.locator('[data-slot=select-trigger]').click();await page.getByRole('option',{name:'4:3',exact:true}).click();await dragEdge('e');const d=await cropData();assert.ok(Math.abs(d.width/d.height-4/3)<.02);
-      await crop.locator('[data-slot=select-trigger]').click();await page.getByRole('option',{name:'Free',exact:true}).click();
+      await crop.locator('[data-slot=select-trigger]').click();await page.locator('[data-slot=select-content]:visible').getByRole('option',{name:'4:3',exact:true}).click();await dragEdge('e');const d=await cropData();assert.ok(Math.abs(d.width/d.height-4/3)<.02);
+      await crop.locator('[data-slot=select-trigger]').click();await page.locator('[data-slot=select-content]:visible').getByRole('option',{name:'Free',exact:true}).click();
     });
     await check('ImageCrop','export contains a PNG Blob and source dimensions',async()=>{
       await crop.evaluate(el=>el.addEventListener('image-crop:apply',e=>window.__auditCrop={blob:e.detail.blob instanceof Blob,type:e.detail.blob.type,width:e.detail.width,height:e.detail.height},{once:true}));

@@ -84,9 +84,10 @@ jobs:
             New-ItemProperty -Path $policy -Name $application -PropertyType String -Value '--remote-debugging-port=9222 --remote-debugging-address=127.0.0.1' -Force | Out-Null
             $env:MAUI_SMOKE_CDP_PORT = '9222'
             node tools/maui-webview-smoke.cjs --creative-media-only
-            if ($LASTEXITCODE -ne 0) { throw "v3 native checks failed: $LASTEXITCODE" }
+            $v3Exit = $LASTEXITCODE
             node tools/maui-webview-smoke.cjs --creative-media-only --baseline
-            if ($LASTEXITCODE -ne 0) { throw "v4 native checks failed: $LASTEXITCODE" }
+            $v4Exit = $LASTEXITCODE
+            if ($v3Exit -ne 0 -or $v4Exit -ne 0) { throw "Native audit failures: v3=$v3Exit, v4=$v4Exit" }
           } finally {
             if ($hadValue) { (Get-Item $policy).SetValue($application, $oldValue, $oldKind) }
             else { Remove-ItemProperty -Path $policy -Name $application -ErrorAction SilentlyContinue }

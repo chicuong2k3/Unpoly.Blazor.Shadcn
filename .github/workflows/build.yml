@@ -117,9 +117,7 @@ jobs:
         run: pwsh tests/Unpoly.Blazor.Shadcn.Behaviour/bin/Release/net10.0/playwright.ps1 install --with-deps chromium
 
       - name: Creative media full visual and functional audit
-        run: |
-          node tools/node_modules/playwright-core/cli.js install chromium
-          node tools/creative-media-web-audit.cjs
+        run: node tools/creative-media-web-audit.cjs
         env:
           CREATIVE_MEDIA_AUDIT_DIR: ${{ runner.temp }}/web-media-audit
 
