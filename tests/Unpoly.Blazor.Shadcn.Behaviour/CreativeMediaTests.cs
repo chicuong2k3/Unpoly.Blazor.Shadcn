@@ -90,6 +90,36 @@ public class CreativeMediaTests(DemoFixture fixture) : DemoPage(fixture)
     }
 
     [SkippableFact]
+    public async Task Reentering_after_Unpoly_navigation_has_one_overlay_key_handler()
+    {
+        RequireDemo();
+        await GoAsync("/components/creative-media");
+        await Page.Locator(".doc-nav a[href='/components/button']").ClickAsync();
+        await Page.GetByRole(AriaRole.Heading, new() { Name = "Button", Exact = true }).WaitForAsync();
+        await Page.Locator(".doc-nav a[href='/components/creative-media']").ClickAsync();
+        await Page.GetByRole(AriaRole.Heading, new() { Name = "Creative Media", Exact = true }).WaitForAsync();
+        await CountAsync("[data-slot=draggable-overlay]", "draggable-overlay:change");
+        await Page.Locator("[data-overlay-move]").PressAsync("ArrowRight");
+        Assert.Equal(1, await CountedAsync());
+        AssertQuiet();
+    }
+
+    [SkippableFact]
+    public async Task Reentering_after_Unpoly_navigation_has_one_timeline_key_handler()
+    {
+        RequireDemo();
+        await GoAsync("/components/creative-media");
+        await Page.Locator(".doc-nav a[href='/components/button']").ClickAsync();
+        await Page.GetByRole(AriaRole.Heading, new() { Name = "Button", Exact = true }).WaitForAsync();
+        await Page.Locator(".doc-nav a[href='/components/creative-media']").ClickAsync();
+        await Page.GetByRole(AriaRole.Heading, new() { Name = "Creative Media", Exact = true }).WaitForAsync();
+        await CountAsync("[data-slot=media-timeline]", "media-timeline:change");
+        await Page.Locator("[data-media-clip=intro] [data-clip-move]").PressAsync("ArrowRight");
+        Assert.Equal(1, await CountedAsync());
+        AssertQuiet();
+    }
+
+    [SkippableFact]
     public async Task Mobile_canvas_fits_the_viewport()
     {
         RequireDemo();
@@ -122,6 +152,36 @@ public class CreativeMediaTests(DemoFixture fixture) : DemoPage(fixture)
         Assert.Equal(2, await page.EvaluateAsync<int>("() => window.devicePixelRatio"));
         Assert.True(await canvas.EvaluateAsync<bool>("c => c.width === 640 && c.height === 480 && c.getContext('2d').getImageData(480, 360, 1, 1).data[3] > 0"));
         Assert.Empty(errors);
+    }
+
+    [SkippableFact]
+    public async Task Video_preview_accessible_name_includes_its_visible_label()
+    {
+        RequireDemo();
+        await GoAsync("/components/creative-media");
+        Assert.Equal(1, await Page.GetByRole(AriaRole.Button, new() { Name = "Preview Video Flower clip", Exact = true }).CountAsync());
+        AssertQuiet();
+    }
+
+    [SkippableFact]
+    public async Task Overlay_handles_remain_at_least_24_pixels_on_a_narrow_viewport()
+    {
+        RequireDemo();
+        await Page.SetViewportSizeAsync(390, 844);
+        await GoAsync("/components/creative-media");
+        for (var i = 0; i < 3; i++)
+        {
+            foreach (var selector in new[] { "[data-overlay-move]", "[data-overlay-resize]" })
+            {
+                var handle = Page.Locator(selector);
+                await handle.ScrollIntoViewIfNeededAsync();
+                var box = (await handle.BoundingBoxAsync())!;
+                Assert.True(box.Width >= 24 && box.Height >= 24, $"{selector}: {box.Width} x {box.Height}");
+                Assert.True(await handle.EvaluateAsync<bool>("el => { const r = el.getBoundingClientRect(); return el.contains(document.elementFromPoint(r.left + r.width / 2, r.top + r.height / 2)); }"), $"{selector} is obscured or clipped");
+            }
+            await Page.Locator("[data-canvas-action=zoom-out]").ClickAsync();
+        }
+        AssertQuiet();
     }
 
     // ---- Lightbox ---------------------------------------------------------------------------
@@ -207,6 +267,69 @@ public class CreativeMediaTests(DemoFixture fixture) : DemoPage(fixture)
         await Page.Locator("#creative-assets input[value=landscape]").CheckAsync();
         await RenderPickerGridAgainAsync();
         Assert.True(await Page.Locator("#creative-assets input[value=landscape]").IsCheckedAsync());
+        AssertQuiet();
+    }
+
+    [SkippableFact]
+    public async Task Asset_picker_retains_choices_across_actual_Unpoly_page_swaps()
+    {
+        RequireDemo();
+        await GoAsync("/components/creative-media");
+        await OpenPickerAsync();
+        await Page.Locator("#creative-assets input[value=landscape]").CheckAsync();
+        await Page.Locator("#creative-assets a", new() { HasText = "Page 2" }).ClickAsync();
+        await Page.Locator("#creative-assets input[value=sketch]").WaitForAsync();
+        await Page.Locator("#creative-assets input[value=sketch]").CheckAsync();
+        await Page.Locator("#creative-assets").GetByRole(AriaRole.Link, new() { Name = "Page 1", Exact = true }).ClickAsync();
+        await Page.Locator("#creative-assets input[value=landscape]").WaitForAsync();
+        await Page.EvaluateAsync("() => document.querySelector('[data-slot=asset-picker]').addEventListener('asset-picker:confirm', e => window.__ids = e.detail.ids)");
+        await Page.Locator("#creative-assets [data-assets-confirm]").ClickAsync();
+        Assert.Equal(new[] { "landscape", "sketch" }, await Page.EvaluateAsync<string[]>("() => window.__ids"));
+        AssertQuiet();
+    }
+
+    [SkippableFact]
+    public async Task Asset_picker_deselection_after_returning_to_a_page_is_preserved()
+    {
+        RequireDemo();
+        await GoAsync("/components/creative-media");
+        await OpenPickerAsync();
+        await Page.Locator("#creative-assets input[value=landscape]").CheckAsync();
+        await Page.Locator("#creative-assets").GetByRole(AriaRole.Link, new() { Name = "Page 2", Exact = true }).ClickAsync();
+        await Page.Locator("#creative-assets input[value=sketch]").CheckAsync();
+        await Page.Locator("#creative-assets").GetByRole(AriaRole.Link, new() { Name = "Page 1", Exact = true }).ClickAsync();
+        await Page.Locator("#creative-assets input[value=landscape]").UncheckAsync();
+        await Page.EvaluateAsync("() => document.querySelector('[data-slot=asset-picker]').addEventListener('asset-picker:confirm', e => window.__ids = e.detail.ids)");
+        await Page.Locator("#creative-assets [data-assets-confirm]").ClickAsync();
+        Assert.Equal(new[] { "sketch" }, await Page.EvaluateAsync<string[]>("() => window.__ids"));
+        AssertQuiet();
+    }
+
+    [SkippableFact]
+    public async Task Asset_picker_renders_only_the_current_page_of_a_large_library()
+    {
+        RequireDemo();
+        await GoAsync("/components/creative-media");
+        await OpenPickerAsync();
+        Assert.Equal(10, await Page.Locator("#creative-assets [data-media-id]").CountAsync());
+        await Page.Locator("#creative-assets a", new() { HasText = "Page 11" }).ClickAsync();
+        await Page.Locator("#creative-assets [data-media-id='asset-100']").WaitForAsync();
+        Assert.Equal(1, await Page.Locator("#creative-assets [data-media-id]").CountAsync());
+        AssertQuiet();
+    }
+
+    [SkippableFact]
+    public async Task Asset_picker_does_not_request_full_resolution_sources_while_browsing()
+    {
+        RequireDemo();
+        var requests = new List<string>();
+        Page.Request += (_, request) => { if (request.Url.Contains("?full=") || request.Url.Contains("flower.mp4")) requests.Add(request.Url); };
+        await GoAsync("/components/creative-media");
+        await OpenPickerAsync();
+        await Page.Locator("#creative-assets a", new() { HasText = "Page 2" }).ClickAsync();
+        await Page.Locator("#creative-assets [data-media-id='asset-12']").WaitForAsync();
+        await Page.WaitForLoadStateAsync(LoadState.NetworkIdle);
+        Assert.Empty(requests);
         AssertQuiet();
     }
 

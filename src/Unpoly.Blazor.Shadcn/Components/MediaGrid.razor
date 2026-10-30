@@ -11,7 +11,7 @@
         @foreach (var item in Items)
         {
             <figure data-media-id="@item.Id" @key="item.Id">
-                <button type="button" data-media-preview="@item.Id" aria-label="@($"Preview {item.Alt}")">
+                <button type="button" data-media-preview="@item.Id" aria-label="@(item.IsVideo ? $"Preview Video {item.Alt}" : $"Preview {item.Alt}")">
                     @* A video's own source is never fetched here, so one without a thumbnail has no
                        image at all. An <img> with no src is invalid and draws as broken; the tile
                        keeps its shape with a placeholder instead. *@

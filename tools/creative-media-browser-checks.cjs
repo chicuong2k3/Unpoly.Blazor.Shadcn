@@ -26,6 +26,74 @@ async function checkCreativeMedia(page, navigate) {
     await page.locator('#creative-assets').waitFor({ state: 'hidden' });
     assert.deepEqual(await page.evaluate(() => window.__nativeAssets), ['reference']);
   });
+  await check('asset picker keeps selections across interactive pages', async () => {
+    await page.evaluate(() => document.querySelector('[data-slot=asset-picker]').addEventListener('asset-picker:confirm', e => window.__nativePages = e.detail.ids, { once: true }));
+    await page.locator('[data-slot=dialog-trigger][data-target=creative-assets]').click();
+    await page.locator('#creative-assets input[value=reference]').check();
+    await page.getByRole('navigation', { name: 'Asset pages' }).getByRole('button', { name: 'Page 2' }).click();
+    await page.locator('#creative-assets input[value=sketch]').check();
+    await page.getByRole('navigation', { name: 'Asset pages' }).getByRole('button', { name: 'Page 1', exact: true }).click();
+    await page.locator('#creative-assets input[value=reference]').waitFor();
+    await page.locator('#creative-assets [data-assets-confirm]').click();
+    assert.deepEqual(await page.evaluate(() => window.__nativePages), ['reference', 'sketch']);
+  });
+  await check('asset picker renders only the requested library page', async () => {
+    await page.locator('[data-slot=dialog-trigger][data-target=creative-assets]').click();
+    assert.equal(await page.locator('#creative-assets [data-media-id]').count(), 10);
+    await page.getByRole('navigation', { name: 'Asset pages' }).getByRole('button', { name: 'Page 11', exact: true }).click();
+    await page.locator('#creative-assets [data-media-id="asset-100"]').waitFor();
+    assert.equal(await page.locator('#creative-assets [data-media-id]').count(), 1);
+    await page.getByRole('navigation', { name: 'Asset pages' }).getByRole('button', { name: 'Page 1', exact: true }).click();
+    await page.locator('#creative-assets input[value=reference]').waitFor();
+    await page.locator('#creative-assets [data-assets-confirm]').click();
+  });
+  await check('asset picker browsing does not request full media', async () => {
+    const requests = [];
+    const onRequest = request => { if (request.url().includes('?full=') || request.url().includes('flower.mp4')) requests.push(request.url()); };
+    page.on('request', onRequest);
+    try {
+      await page.locator('[data-slot=dialog-trigger][data-target=creative-assets]').click();
+      await page.getByRole('navigation', { name: 'Asset pages' }).getByRole('button', { name: 'Page 2', exact: true }).click();
+      await page.locator('#creative-assets [data-media-id="asset-12"]').waitFor();
+      await page.waitForLoadState('networkidle');
+      assert.deepEqual(requests, []);
+      await page.getByRole('navigation', { name: 'Asset pages' }).getByRole('button', { name: 'Page 1', exact: true }).click();
+      await page.locator('#creative-assets input[value=reference]').waitFor();
+      await page.locator('#creative-assets [data-assets-confirm]').click();
+    } finally { page.off('request', onRequest); }
+  });
+  await check('tiny overlay controls are clickable at minimum zoom', async () => {
+    const canvas = page.locator('[data-slot=image-canvas]'), overlay = page.locator('[data-slot=draggable-overlay]');
+    const before = await canvas.evaluate(el => {
+      const m = new DOMMatrix(el.querySelector('[data-canvas-plane]').style.transform);
+      const o = el.querySelector('[data-slot=draggable-overlay]').dataset;
+      return { view: { version: 1, scale: m.a, x: m.e, y: m.f }, rect: { version: 1, x: +o.x, y: +o.y, width: +o.width, height: +o.height } };
+    });
+    try {
+      await overlay.evaluate(el => el.dispatchEvent(new CustomEvent('draggable-overlay:set', { detail: { version: 1, x: .45, y: .45, width: .01, height: .01 } })));
+      await canvas.evaluate(el => { const v = el.querySelector('[data-canvas-viewport]').getBoundingClientRect(); el.dispatchEvent(new CustomEvent('image-canvas:restore', { detail: { version: 1, scale: .02, x: v.width / 2 - 6.4, y: v.height / 2 - 4.8 } })); });
+      for (const selector of ['[data-overlay-move]', '[data-overlay-resize]']) {
+        const handle = page.locator(selector), box = await handle.boundingBox();
+        assert.ok(box && box.width >= 24 && box.height >= 24, `${selector} target is too small`);
+        await handle.click();
+      }
+    } finally {
+      await overlay.evaluate((el, rect) => el.dispatchEvent(new CustomEvent('draggable-overlay:set', { detail: rect })), before.rect);
+      await canvas.evaluate((el, view) => el.dispatchEvent(new CustomEvent('image-canvas:restore', { detail: view })), before.view);
+    }
+  });
+  await check('full-width overlay controls remain inside the viewport', async () => {
+    const overlay = page.locator('[data-slot=draggable-overlay]');
+    const before = await overlay.evaluate(el => { const o = el.dataset; return { version: 1, x: +o.x, y: +o.y, width: +o.width, height: +o.height }; });
+    try {
+      await overlay.evaluate(el => el.dispatchEvent(new CustomEvent('draggable-overlay:set', { detail: { version: 1, x: 0, y: 0, width: 1, height: 1 } })));
+      for (const selector of ['[data-overlay-move]', '[data-overlay-resize]']) {
+        const handle = page.locator(selector);
+        assert.ok(await handle.evaluate(el => { const r=el.getBoundingClientRect(), v=el.closest('[data-canvas-viewport]').getBoundingClientRect(); return r.left >= v.left && r.right <= v.right && r.top >= v.top && r.bottom <= v.bottom; }), `${selector} clipped`);
+        await handle.click();
+      }
+    } finally { await overlay.evaluate((el, rect) => el.dispatchEvent(new CustomEvent('draggable-overlay:set', { detail: rect })), before); }
+  });
   await check('overlay keyboard resize uses normalized size', async () => {
     await page.locator('[data-overlay-resize]').press('ArrowRight');
     const width = await page.locator('[data-slot=draggable-overlay]').evaluate(el => Number(el.dataset.width));

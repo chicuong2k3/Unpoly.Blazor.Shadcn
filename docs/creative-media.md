@@ -18,7 +18,11 @@ autosave and authorization belong to the consuming application.
   Alt+arrows uses one-image-pixel steps. Pointer cancellation discards the unfinished stroke.
 - `DraggableOverlay` requires a positioned parent (the canvas plane provides one). Coordinates and
   sizes use fractions of that parent, in [0,1]; default snap .01. Move/Resize handles support
-  pointer/pen/touch and arrows, Shift for 10 steps. The resulting rectangle stays in bounds.
+  pointer/pen/touch and arrows, Shift for 10 steps. The resulting rectangle stays in bounds. Content
+  is wrapped in `[data-overlay-content]` for scrolling; controls occupy a separate rail outside small
+  rectangles so those overlays do not clip them. For a wide overlay the rail is placed inside instead.
+  The rail points toward the parent center and its minimum target size compensates for canvas zoom. An ancestor viewport can still clip controls
+  when the user pans an overlay offscreen; controls from nearby overlays can overlap.
 - `MediaTimeline` receives `MediaClip` records; start/duration/snap are seconds, tracks are zero based.
   Move and trim handles support horizontal arrows/pointer, Shift for 10 steps. Up/down changes the
   track when moving; on a trim handle they do nothing and stay with the page. Pointer vertical
@@ -31,7 +35,8 @@ autosave and authorization belong to the consuming application.
   composed in ChildContent). It is not a virtualized storage client. `SelectedIds` marks selections.
   `LightboxTarget` points to a `MediaLightbox.Id`; preview opens that asset directly. The root is a
   `role="group"` named by `Label`. A video without `ThumbnailSrc` gets a decorative placeholder tile,
-  never an `<img>` without a source.
+  never an `<img>` without a source. An image without `ThumbnailSrc` uses its `Src` as its thumbnail;
+  supply a smaller thumbnail URL to avoid requesting the full image while browsing.
 - `MediaLightbox` composes the existing `Dialog`. Only its current asset is loaded; previous video
   playback and source are released. Use a `DialogTrigger`, the grid target, or the open event below.
   Arrows, navigation buttons and horizontal swipes (touch, pen or mouse) navigate; stepping past the
@@ -43,6 +48,11 @@ autosave and authorization belong to the consuming application.
   in the application when replacing the entire picker across pages. A grid-only swap inside the
   same picker retains the selection Set, and the swapped-in checkboxes are set from it, because the
   server rendered them from its own `SelectedIds`. Confirm is cancelable with `preventDefault()`.
+  The creative-media demos show a 101-item synthetic library in pages of ten: Web uses Unpoly to
+  replace only the grid, while MAUI uses interactive Blazor buttons. The SVG and full-source query
+  strings in that example stand in for a real thumbnail service and media backend. Picker preview
+  buttons emit `media-grid:preview`; the application must connect previews to a lightbox and update
+  its item list as pages change.
 - `MediaLightbox` and `AssetPicker` name their dialog from `Label`. `Dialog` puts splatted attributes
   on its panel, where a label names nothing, so the compiler moves it to the `<dialog>` element.
 

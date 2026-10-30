@@ -1,0 +1,26 @@
+@namespace Unpoly.Blazor.Shadcn.Demo.Components.Examples
+<DialogTrigger Target="creative-assets">Choose assets</DialogTrigger>
+<AssetPicker Id="creative-assets" Items="@Items">
+    <FilterContent>
+        <p>Browse 101 example assets, ten at a time. Select items on different pages and return to check your selection.</p>
+        <nav aria-label="Asset pages">
+            <a href="/components/creative-media?assetPage=1" up-target="#creative-assets [data-slot=media-grid]" up-history="false">Page 1</a>
+            <a href="/components/creative-media?assetPage=2" up-target="#creative-assets [data-slot=media-grid]" up-history="false">Page 2</a>
+            <a href="/components/creative-media?assetPage=11" up-target="#creative-assets [data-slot=media-grid]" up-history="false">Page 11</a>
+        </nav>
+    </FilterContent>
+</AssetPicker>
+@code {
+    [SupplyParameterFromQuery(Name = "assetPage")] public int? AssetPage { get; set; }
+    const string Photo = "_content/Unpoly.Blazor.Shadcn/media-demo.svg";
+    IReadOnlyList<MediaAsset> Items => Enumerable.Range((Math.Clamp(AssetPage ?? 1, 1, 11) - 1) * 10, 10)
+        .Where(i => i < 101).Select(Asset).ToArray();
+    // The shared SVG is a stand-in for a thumbnail; the query string distinguishes the full URL.
+    static MediaAsset Asset(int i) => i switch {
+        0 => new MediaAsset("landscape", Photo, "Mountain landscape"),
+        1 => new MediaAsset("reference", Photo, "Reference image"),
+        10 => new MediaAsset("sketch", Photo, "Concept sketch"),
+        11 => new MediaAsset("texture", Photo, "Texture reference"),
+        _ => new MediaAsset($"asset-{i}", $"{Photo}?full={i}", $"Example asset {i}") { ThumbnailSrc = Photo }
+    };
+}

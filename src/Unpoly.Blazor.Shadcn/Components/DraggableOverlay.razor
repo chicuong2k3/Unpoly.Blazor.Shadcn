@@ -1,8 +1,10 @@
 @inherits UiComponentBase
 <div data-slot="draggable-overlay" data-x="@F(X)" data-y="@F(Y)" data-width="@F(Width)" data-height="@F(Height)" data-snap="@F(Snap)" class="@Class" @attributes="AdditionalAttributes">
-    <button type="button" data-overlay-move aria-label="@MoveLabel">Move</button>
-    @ChildContent
-    <button type="button" data-overlay-resize aria-label="@ResizeLabel">Resize</button>
+    <div data-overlay-content>@ChildContent</div>
+    <div data-overlay-controls>
+        <button type="button" data-overlay-move aria-label="@MoveLabel">Move</button>
+        <button type="button" data-overlay-resize aria-label="@ResizeLabel">Resize</button>
+    </div>
 </div>
 @code {
     [Parameter] public double X { get; set; } = .1;

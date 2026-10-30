@@ -2590,7 +2590,11 @@
     const width = mediaNumber(root.dataset.width, 1024), height = mediaNumber(root.dataset.height, 1024)
     let scale = 1, x = 0, y = 0, dragging = null
     plane.style.width = `${width}px`; plane.style.height = `${height}px`
-    const render = () => { plane.style.transform = `translate(${x}px, ${y}px) scale(${scale})` }
+    const render = () => {
+      plane.style.transform = `translate(${x}px, ${y}px) scale(${scale})`
+      // Overlay controls live inside the scaled plane; preserve their minimum screen-space size.
+      plane.style.setProperty('--overlay-target-size', `${24.1 / scale}px`)
+    }
     const changed = () => mediaEmit(root, 'image-canvas:change', { version: 1, scale, x, y, width, height })
     const fit = () => { const r = viewport.getBoundingClientRect(); scale = Math.min(r.width / width, r.height / height) || 1; x = (r.width - width * scale) / 2; y = (r.height - height * scale) / 2; render() }
     const zoom = factor => {
@@ -2700,7 +2704,7 @@
     const controller = new AbortController(), parent = root.parentElement
     let state = { x: mediaNumber(root.dataset.x), y: mediaNumber(root.dataset.y), width: mediaNumber(root.dataset.width,.3), height: mediaNumber(root.dataset.height,.2) }, drag = null
     const snap = mediaClamp(mediaNumber(root.dataset.snap,.01),.000001,1), quantize = n => mediaTidy(Math.round(n / snap) * snap)
-    const render = () => { root.style.left = `${state.x*100}%`; root.style.top = `${state.y*100}%`; root.style.width = `${state.width*100}%`; root.style.height = `${state.height*100}%` }
+    const render = () => { root.style.left = `${state.x*100}%`; root.style.top = `${state.y*100}%`; root.style.width = `${state.width*100}%`; root.style.height = `${state.height*100}%`; root.toggleAttribute('data-controls-left', state.x + state.width / 2 > .5); root.toggleAttribute('data-controls-bottom', state.y + state.height / 2 > .5); root.toggleAttribute('data-controls-inside', state.width > .5) }
     // change means changed: a key at the edge, a press without movement and a set to the current
     // rectangle all leave it as it was, and an autosaving consumer should not hear about them.
     const emit = before => {

@@ -5,13 +5,11 @@
 <h2>Asset library</h2>
 <MediaGrid Items="@MediaItems" LightboxTarget="creative-preview" />
 <MediaLightbox Id="creative-preview" Items="@MediaItems" />
-<DialogTrigger Target="creative-assets">Choose assets</DialogTrigger>
-<AssetPicker Id="creative-assets" Items="@MediaItems">
-    <FilterContent><p>Compose search and filters here; the application owns querying and pagination.</p></FilterContent>
-</AssetPicker>
+<PaginatedAssetPicker />
 <p>A video without a thumbnail keeps the tile's shape. Its source is fetched only when it is previewed.</p>
 <MediaGrid Items="@VideoItems" Label="Video without a thumbnail" />
 <h2>Canvas and mask</h2>
+<p>Zoom the canvas to try the overlay handles at different scales.</p>
 <ImageCanvas Src="@Photo" Width="640" Height="480">
     <MaskBrush Size="24" Opacity="0.8" />
     <DraggableOverlay><p>Annotation: drag Move, or focus a handle and use arrow keys.</p></DraggableOverlay>
