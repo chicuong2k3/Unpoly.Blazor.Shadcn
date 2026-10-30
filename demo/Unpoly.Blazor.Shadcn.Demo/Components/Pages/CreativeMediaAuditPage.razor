@@ -1,0 +1,38 @@
+@page "/components/creative-media/audit"
+<PageTitle>Creative Media Audit — Unpoly.Blazor.Shadcn</PageTitle>
+<h1 class="doc-h1">Creative Media Audit</h1>
+<p class="doc-lede">Deterministic cases for layout, controls, image states and editing behavior.</p>
+<div data-media-audit>
+    <section data-audit="canvas"><h2>ImageCanvas</h2><ImageCanvas Src="@Photo" Width="640" Height="480" /></section>
+    <section data-audit="editor"><h2>MaskBrush and DraggableOverlay</h2><ImageCanvas Src="@Photo" Width="640" Height="480"><MaskBrush Size="24" /><DraggableOverlay><p>Annotation</p></DraggableOverlay></ImageCanvas></section>
+    <section data-audit="timeline"><h2>MediaTimeline</h2><MediaTimeline Duration="30" Clips="@Clips" /></section>
+    <section data-audit="grid"><h2>MediaGrid</h2><MediaGrid Items="@AuditAssets" Selectable="true" LightboxTarget="audit-preview" /></section>
+    <section data-audit="grid-states"><h2>MediaGrid states</h2>
+        <MediaGrid Label="Loading gallery" Loading="true" />
+        <MediaGrid Label="Empty gallery" />
+        <MediaGrid Label="Failed gallery" Error="The media request failed. Try the request again." />
+        <MediaGrid Label="Broken thumbnail" Items="@BrokenThumbnail" />
+    </section>
+    <section data-audit="lightbox"><h2>MediaLightbox</h2><DialogTrigger Target="audit-preview">Open media preview</DialogTrigger><MediaLightbox Id="audit-preview" Items="@AuditAssets" /></section>
+    <section data-audit="lightbox-empty"><h2>Empty MediaLightbox</h2><DialogTrigger Target="audit-empty">Open empty preview</DialogTrigger><MediaLightbox Id="audit-empty" /></section>
+    <section data-audit="picker"><h2>AssetPicker</h2><DialogTrigger Target="audit-picker">Open asset picker</DialogTrigger><AssetPicker Id="audit-picker" Items="@AuditAssets"><FilterContent><p>Select media for your editor. The list scrolls while the selection summary and actions remain available.</p></FilterContent></AssetPicker></section>
+    <section data-audit="picker-loading"><h2>Loading AssetPicker</h2><DialogTrigger Target="audit-picker-loading">Open loading picker</DialogTrigger><AssetPicker Id="audit-picker-loading" Loading="true" /></section>
+    <section data-audit="compare"><h2>ImageCompare horizontal</h2><ImageCompare BeforeSrc="@Photo" AfterSrc="@Photo" /></section>
+    <section data-audit="vertical"><h2>ImageCompare vertical</h2><ImageCompare BeforeSrc="@Photo" AfterSrc="@Photo" Orientation="Vertical" /></section>
+    <section data-audit="crop"><h2>ImageCrop free and fixed ratio</h2><ImageCrop Src="@Photo" /></section>
+    <section data-audit="circular"><h2>ImageCrop circular</h2><ImageCrop Src="@Photo" Circular="true" /></section>
+</div>
+@code {
+    const string Photo = "_content/Unpoly.Blazor.Shadcn/media-demo.svg";
+    const string Broken = "data:image/png;base64,broken";
+    const string Portrait = "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyMDAiIGhlaWdodD0iNjAwIj48cmVjdCB3aWR0aD0iMjAwIiBoZWlnaHQ9IjYwMCIgZmlsbD0iIzMzNDE1NSIvPjxjaXJjbGUgY3g9IjEwMCIgY3k9IjMwMCIgcj0iNzAiIGZpbGw9IiNmYmJmMjQiLz48L3N2Zz4=";
+    const string Video = "data:video/webm;base64,GkXfo59ChoEBQveBAULygQRC84EIQoKEd2VibUKHgQJChYECGFOAZwEAAAAAAAIcEU2bdLpNu4tTq4QVSalmU6yBoU27i1OrhBZUrmtTrIHYTbuMU6uEElTDZ1OsggEeTbuMU6uEHFO7a1OsggIG7AEAAAAAAABZAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAVSalmsirXsYMPQkBNgI1MYXZmNjAuMTYuMTAwV0GNTGF2ZjYwLjE2LjEwMESJiECCwAAAAAAAFlSua8GuAQAAAAAAADjXgQFzxYjMKw/qfx5fIJyBACK1nIN1bmSIgQCGhVZfVlA5g4EBI+ODhAvrwgDgibCBQLqBMJqBAhJUw2dAgHNzoGPAgGfImkWjh0VOQ09ERVJEh41MYXZmNjAuMTYuMTAwc3PaY8CLY8WIzCsP6n8eXyBnyKVFo4dFTkNPREVSRIeYTGF2YzYwLjMxLjEwMiBsaWJ2cHgtdnA5Z8ihRaOIRFVSQVRJT05Eh5MwMDowMDowMC42MDAwMDAwMDAAH0O2dd3ngQCjroEAAICCSYNCAAPwAvYAOCQcGEoAADBgAAATv//7/TgAEf////qx1n////5BiACjk4EAyACGAECSnABQAAADIAAAVHCjk4EBkACGAECSnABO4AADIAAAVHAcU7trkbuPs4EAt4r3gQHxggGk8IED";
+    static readonly IReadOnlyList<MediaAsset> AuditAssets = new[] {
+        new MediaAsset("landscape", Photo, "Landscape reference"),
+        new MediaAsset("portrait", Portrait, "Portrait with a long descriptive caption to check wrapping in narrow layouts"),
+        new MediaAsset("video", Video, "Local video preview") { IsVideo = true, ThumbnailSrc = Photo },
+        new MediaAsset("error", Broken, "Unavailable media")
+    };
+    static readonly IReadOnlyList<MediaAsset> BrokenThumbnail = new[] { new MediaAsset("thumbnail-error", Photo, "Recoverable thumbnail") { ThumbnailSrc = Broken } };
+    static readonly IReadOnlyList<MediaClip> Clips = new[] { new MediaClip("intro", "Opening shot", 0, 8), new MediaClip("scene", "A longer clip title that must stay inside its move control", 10, 12, 1) };
+}

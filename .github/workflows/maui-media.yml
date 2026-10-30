@@ -9,6 +9,7 @@ on:
       - 'demo/creative-media.css'
       - 'tools/maui-webview-smoke.cjs'
       - 'tools/creative-media-browser-checks.cjs'
+      - 'tools/creative-media-audit.cjs'
       - 'tools/package*.json'
   workflow_dispatch:
 
@@ -66,6 +67,7 @@ jobs:
       - name: Check creative media in native WebView2 with both stylesheets
         env:
           MAUI_MEDIA_REPORT_DIR: ${{ runner.temp }}/maui-media-reports
+          CREATIVE_MEDIA_FULL_AUDIT: '1'
         run: |
           # Elevated hosted runners require the machine-policy channel. Scope it to
           # this disposable demo executable and restore its prior value in finally.

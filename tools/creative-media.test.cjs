@@ -183,6 +183,7 @@ function fakeCropper(f) {
   f.w.Cropper=class {
     constructor(image,options) { this.options=options; this.data={x:1,y:2,width:20,height:10}; instance=this; queueMicrotask(()=>options.ready.call(this)) }
     getData() { return this.data }
+    setAspectRatio(value) { this.aspectRatio = value }
     getCroppedCanvas() { const c=f.w.document.createElement('canvas'); c.width=20;c.height=10;return c }
     setData(value) { Object.assign(this.data,value) }
     reset() { this.data={x:0,y:0,width:20,height:10} }
@@ -298,4 +299,25 @@ test('picker clear does not restore stale choices when grid returns', withFixtur
   const stale=grid.outerHTML.replace('value="landscape"','checked value="landscape"'); grid.remove();
   root.querySelector('[data-assets-clear]').click(); root.querySelector('[data-assets-grid]').innerHTML=stale; await tick();
   assert.equal(root.querySelector('input').checked,false);
+}));
+
+
+test('free crop does not configure an aspect lock', withFixture(async f=>{
+  const instance=fakeCropper(f); f.compile('image-crop'); await tick();
+  assert.ok(Number.isNaN(instance().options.aspectRatio));
+}));
+test('crop ratio selector can unlock a configured ratio', withFixture(async f=>{
+  const root=f.q('[data-slot=image-crop]'); root.dataset.aspectRatio='1.3333333333333333'; const instance=fakeCropper(f); f.compile('image-crop'); await tick();
+  const select=root.querySelector('[data-crop-ratio]'); select.value='free'; select.dispatchEvent(new f.w.Event('change',{bubbles:true}));
+  assert.ok(Number.isNaN(instance().aspectRatio));
+}));
+test('thumbnail failure replaces the broken image with a fallback', withFixture(f=>{
+  f.compile('media-grid'); const image=f.q('[data-media-thumbnail]'); image.dispatchEvent(new f.w.Event('error'));
+  assert.equal(image.hidden,true); assert.equal(image.closest('figure').querySelector('[data-media-fallback]').hidden,false);
+}));
+test('lightbox retry creates a new media request', withFixture(f=>{
+  f.compile('media-lightbox'); f.event(f.q('[data-slot=media-lightbox]'),'media-lightbox:open',{});
+  const image=f.q('[data-media-stage] img'); image.dispatchEvent(new f.w.Event('error'));
+  assert.equal(f.q('[data-media-retry]').hidden,false); f.q('[data-media-retry]').click();
+  assert.notEqual(f.q('[data-media-stage] img'),image); assert.equal(f.q('[data-media-retry]').hidden,true);
 }));

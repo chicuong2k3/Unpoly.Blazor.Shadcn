@@ -1,8 +1,8 @@
 @inherits UiComponentBase
 @* role="group": aria-label on an element with no role is ignored, so without it the library was
    never announced by name. *@
-<div data-slot="media-grid" data-lightbox-target="@LightboxTarget" class="@Class" role="group" aria-label="@Label" @attributes="AdditionalAttributes">
-    @if (Loading) { <Skeleton style="height:8rem" /> }
+<div data-slot="media-grid" data-lightbox-target="@LightboxTarget" class="@Class" role="group" aria-label="@Label" aria-busy="@(Loading ? "true" : null)" @attributes="AdditionalAttributes">
+    @if (Loading) { <div data-media-loading role="status"><Skeleton style="height:8rem" /><span>@LoadingLabel</span></div> }
     else if (Error is not null) { <p role="alert">@Error</p> }
     else if (Items.Count == 0) { <p role="status">@EmptyLabel</p> }
     else
@@ -17,12 +17,13 @@
                        keeps its shape with a placeholder instead. *@
                     @if (Thumbnail(item) is { } thumbnail)
                     {
-                        <img src="@thumbnail" alt="@item.Alt" loading="lazy" decoding="async" />
+                        <img data-media-thumbnail src="@thumbnail" alt="@item.Alt" loading="lazy" decoding="async" />
                     }
                     else
                     {
                         <span data-media-placeholder aria-hidden="true"></span>
                     }
+                    <span data-media-fallback hidden role="img" aria-label="@($"{item.Alt}: {ThumbnailErrorLabel}")">@ThumbnailErrorLabel</span>
                     @if (item.IsVideo) { <span data-media-kind><Icon Name="play" /> Video</span> }
                 </button>
                 @if (Selectable)
@@ -47,6 +48,8 @@
     [Parameter] public string? LightboxTarget { get; set; }
     [Parameter] public string Label { get; set; } = "Media library";
     [Parameter] public string EmptyLabel { get; set; } = "No media found.";
+    [Parameter] public string LoadingLabel { get; set; } = "Loading media…";
+    [Parameter] public string ThumbnailErrorLabel { get; set; } = "Preview unavailable";
     [Parameter] public string MoreLabel { get; set; } = "Next page";
 
     static string? Thumbnail(MediaAsset item) => item.ThumbnailSrc ?? (item.IsVideo ? null : item.Src);

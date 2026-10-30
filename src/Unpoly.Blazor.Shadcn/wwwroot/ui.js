@@ -2467,6 +2467,12 @@
 
   shadcnCompiler('[data-slot="media-grid"]', root => {
     const controller = new AbortController()
+    const failThumbnail = image => {
+      const fallback = image.closest('figure')?.querySelector('[data-media-fallback]')
+      if (fallback) { image.hidden = true; fallback.hidden = false }
+    }
+    mediaListen(controller, root, 'error', e => { if (e.target.matches('[data-media-thumbnail]')) failThumbnail(e.target) }, { capture: true })
+    for (const image of root.querySelectorAll('[data-media-thumbnail]')) if (image.complete && !image.naturalWidth) failThumbnail(image)
     const paint = () => {
       for (const input of root.querySelectorAll('input[name="assets"]')) input.closest('figure')?.toggleAttribute('data-selected', input.checked)
     }
@@ -2544,7 +2550,7 @@
   shadcnCompiler('[data-slot="media-lightbox"]', root => {
     const controller = new AbortController()
     const dialog = root.querySelector('dialog'), stage = root.querySelector('[data-media-stage]'), status = root.querySelector('[data-media-status]')
-    const items = Array.from(root.querySelectorAll('template[data-media-id]'))
+    const items = Array.from(root.querySelectorAll('template[data-media-id]')), retry = root.querySelector('[data-media-retry]')
     let mediaController = null
     let index = mediaClamp(mediaNumber(root.dataset.index), 0, Math.max(0, items.length - 1)), current = null, startX = null
     const clear = () => {
@@ -2559,6 +2565,7 @@
       // playing video and announce a change that did not happen.
       if (current && next === index) return
       clear()
+      if (retry) retry.hidden = true
       index = next
       root.querySelector('[data-media-previous]').disabled = !items.length || index === 0
       root.querySelector('[data-media-next]').disabled = !items.length || index === items.length - 1
@@ -2569,7 +2576,7 @@
       current = media; mediaController = new AbortController()
       const loaded = () => { if (current === media) status.textContent = `${index + 1} / ${items.length}: ${item.alt}` }
       mediaListen(mediaController, media, item.video === 'true' ? 'loadeddata' : 'load', loaded)
-      mediaListen(mediaController, media, 'error', () => { if (current === media) status.textContent = 'Unable to load media.' })
+      mediaListen(mediaController, media, 'error', () => { if (current === media) { status.textContent = 'Unable to load media.'; if (retry) retry.hidden = false } })
       if (item.video === 'true') { media.controls = true; media.preload = 'metadata'; media.setAttribute('aria-label', item.alt) }
       // An <img> is natively draggable: a mouse swipe across it starts a drag, the browser
       // cancels the pointer, and the swipe never navigates.
@@ -2587,6 +2594,7 @@
     const observer = new MutationObserver(() => { if (dialog.open && !current) show(index); else if (!dialog.open) clear() })
     observer.observe(dialog, { attributes: true, attributeFilter: ['open'] })
     mediaListen(controller, dialog, 'close', clear)
+    mediaListen(controller, retry, 'click', () => { clear(); show(index) })
     mediaListen(controller, root.querySelector('[data-media-previous]'), 'click', () => show(index - 1))
     mediaListen(controller, root.querySelector('[data-media-next]'), 'click', () => show(index + 1))
     mediaListen(controller, dialog, 'keydown', e => {
@@ -2614,7 +2622,7 @@
     const width = mediaNumber(root.dataset.width, 1024), height = mediaNumber(root.dataset.height, 1024)
     let scale = 1, x = 0, y = 0, dragging = null
     plane.style.width = `${width}px`; plane.style.height = `${height}px`
-    const render = () => { plane.style.transform = `translate(${x}px, ${y}px) scale(${scale})` }
+    const render = () => { plane.style.transform = `translate(${x}px, ${y}px) scale(${scale})`; plane.style.setProperty('--canvas-control-scale', String(1 / scale)) }
     const changed = () => mediaEmit(root, 'image-canvas:change', { version: 1, scale, x, y, width, height })
     const fit = () => { const r = viewport.getBoundingClientRect(); scale = Math.min(r.width / width, r.height / height) || 1; x = (r.width - width * scale) / 2; y = (r.height - height * scale) / 2; render() }
     const zoom = factor => {
@@ -2877,7 +2885,13 @@
     if (window.Cropper) start()
     else loadScript('_content/Unpoly.Blazor.Shadcn/cropperjs/cropper.min.js').then(start).catch(() => error('load'))
     mediaListen(controller, root, 'change', e => {
-      if (!ready || !e.target.matches('[data-crop-field]')) return
+      if (!ready) return
+      if (e.target.matches('[data-crop-ratio]')) {
+        const value = e.target.value === 'free' ? NaN : Number(e.target.value)
+        if (e.target.value !== 'free' && (!Number.isFinite(value) || value <= 0)) { error('bounds'); return }
+        cropper.setAspectRatio(root.dataset.circular === 'true' ? 1 : value); changed(); return
+      }
+      if (!e.target.matches('[data-crop-field]')) return
       const value = Number(e.target.value), field = e.target.dataset.cropField
       if (!Number.isFinite(value) || value < 0 || (['width','height'].includes(field) && value === 0)) { error('bounds'); return }
       cropper.setData({ [field]: value }); changed()

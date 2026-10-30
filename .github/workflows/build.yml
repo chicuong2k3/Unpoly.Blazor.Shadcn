@@ -116,6 +116,21 @@ jobs:
       - name: Install the browser the behaviour suite drives
         run: pwsh tests/Unpoly.Blazor.Shadcn.Behaviour/bin/Release/net10.0/playwright.ps1 install --with-deps chromium
 
+      - name: Creative media full visual and functional audit
+        run: |
+          node tools/node_modules/playwright-core/cli.js install chromium
+          node tools/creative-media-web-audit.cjs
+        env:
+          CREATIVE_MEDIA_AUDIT_DIR: ${{ runner.temp }}/web-media-audit
+
+      - name: Save creative media audit reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: web-creative-media-audit
+          path: ${{ runner.temp }}/web-media-audit
+          if-no-files-found: ignore
+
       - name: Creative media DOM and raster regression tests
         run: CREATIVE_MEDIA_CONFIGURATION=Release node --test tools/creative-media.test.cjs
 
