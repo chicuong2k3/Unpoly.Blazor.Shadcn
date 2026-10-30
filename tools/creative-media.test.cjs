@@ -232,3 +232,32 @@ test('the visible asset picker button opens its dialog', withFixture(async f=>{
   assert.ok(button); button.click();
   assert.ok(f.q('#creative-assets').open);
 }));
+
+test('overlay handles describe initial normalized bounds', withFixture(f=>{
+  f.compile('draggable-overlay');
+  for (const control of f.q('[data-slot=draggable-overlay]').querySelectorAll('button'))
+    assert.equal(control.getAttribute('aria-description'), 'Left 10%, top 10%, width 30%, height 20%.');
+}));
+test('overlay announces committed keyboard bounds', withFixture(f=>{
+  f.compile('draggable-overlay'); const root=f.q('[data-slot=draggable-overlay]');
+  f.key(root.querySelector('[data-overlay-resize]'),'ArrowRight');
+  assert.equal(root.querySelector('[role=status]').textContent, 'Left 10%, top 10%, width 31%, height 20%.');
+}));
+test('timeline trim handles describe initial time bounds', withFixture(f=>{
+  f.compile('media-timeline'); const clip=f.q('[data-media-clip=intro]');
+  for (const control of clip.querySelectorAll('button'))
+    assert.equal(control.getAttribute('aria-description'), 'Start 0 seconds, end 8 seconds, duration 8 seconds, track 1.');
+}));
+test('timeline announces committed trim bounds', withFixture(f=>{
+  f.compile('media-timeline'); const clip=f.q('[data-media-clip=intro]');
+  f.key(clip.querySelector('[data-clip-start]'),'ArrowRight');
+  assert.equal(f.q('[data-slot=media-timeline] [role=status]').textContent, 'Introduction. Start 0.1 seconds, end 8 seconds, duration 7.9 seconds, track 1.');
+}));
+test('timeline cancellation restores accessible trim bounds', withFixture(f=>{
+  const root=f.q('[data-slot=media-timeline]'), clip=f.q('[data-media-clip=intro]');
+  f.rect(root,300,160); f.compile('media-timeline');
+  f.pointer(clip.querySelector('[data-clip-start]'),'pointerdown',0,0);
+  f.pointer(root,'pointermove',10,0); f.pointer(root,'pointercancel',10,0);
+  assert.equal(clip.querySelector('[data-clip-start]').getAttribute('aria-description'), 'Start 0 seconds, end 8 seconds, duration 8 seconds, track 1.');
+  assert.equal(root.querySelector('[role=status]').textContent, '');
+}));

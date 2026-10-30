@@ -332,6 +332,43 @@ public class CreativeMediaTests(DemoFixture fixture) : DemoPage(fixture)
         AssertQuiet();
     }
 
+    [SkippableFact]
+    public async Task Overlay_keyboard_edit_updates_accessible_bounds()
+    {
+        RequireDemo();
+        await GoAsync("/components/creative-media");
+        var resize = Page.Locator("[data-overlay-resize]");
+        Assert.Equal("Left 10%, top 10%, width 30%, height 20%.", await resize.GetAttributeAsync("aria-description"));
+        await resize.PressAsync("ArrowRight");
+        Assert.Equal("Left 10%, top 10%, width 31%, height 20%.", await resize.GetAttributeAsync("aria-description"));
+        Assert.Equal("Left 10%, top 10%, width 31%, height 20%.", await Page.Locator("[data-slot=draggable-overlay] [role=status]").TextContentAsync());
+        AssertQuiet();
+    }
+
+    [SkippableFact]
+    public async Task Timeline_trim_updates_accessible_bounds()
+    {
+        RequireDemo();
+        await GoAsync("/components/creative-media");
+        var trim = Page.Locator("[data-media-clip=intro] [data-clip-start]");
+        Assert.Equal("Start 0 seconds, end 8 seconds, duration 8 seconds, track 1.", await trim.GetAttributeAsync("aria-description"));
+        await trim.PressAsync("ArrowRight");
+        Assert.Equal("Start 0.1 seconds, end 8 seconds, duration 7.9 seconds, track 1.", await trim.GetAttributeAsync("aria-description"));
+        Assert.Equal("Introduction. Start 0.1 seconds, end 8 seconds, duration 7.9 seconds, track 1.", await Page.Locator("[data-slot=media-timeline] [role=status]").TextContentAsync());
+        AssertQuiet();
+    }
+
+    [SkippableFact]
+    public async Task Comparison_controls_keep_a_dark_edge_over_light_images()
+    {
+        RequireDemo();
+        await GoAsync("/components/creative-media");
+        var shadows = await Page.Locator("img-comparison-slider").EvaluateAsync<string[]>(
+            "el => ['--divider-shadow', '--default-handle-shadow'].map(name => getComputedStyle(el).getPropertyValue(name).trim())");
+        Assert.All(shadows, value => { Assert.False(string.IsNullOrWhiteSpace(value)); Assert.NotEqual("none", value); });
+        AssertQuiet();
+    }
+
     async Task OpenPreviewAsync(string id)
     {
         await Page.Locator($"[data-slot=media-grid][data-lightbox-target=creative-preview] [data-media-preview={id}]").ClickAsync();

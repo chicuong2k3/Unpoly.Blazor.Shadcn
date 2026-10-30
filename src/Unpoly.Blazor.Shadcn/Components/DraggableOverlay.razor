@@ -1,6 +1,7 @@
 @inherits UiComponentBase
 <div data-slot="draggable-overlay" data-x="@F(X)" data-y="@F(Y)" data-width="@F(Width)" data-height="@F(Height)" data-snap="@F(Snap)" class="@Class" @attributes="AdditionalAttributes">
     <button type="button" data-overlay-move aria-label="@MoveLabel">Move</button>
+    <span data-media-feedback role="status" aria-atomic="true"></span>
     @ChildContent
     <button type="button" data-overlay-resize aria-label="@ResizeLabel">Resize</button>
 </div>

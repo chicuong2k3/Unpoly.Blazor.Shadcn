@@ -2700,12 +2700,19 @@
     const controller = new AbortController(), parent = root.parentElement
     let state = { x: mediaNumber(root.dataset.x), y: mediaNumber(root.dataset.y), width: mediaNumber(root.dataset.width,.3), height: mediaNumber(root.dataset.height,.2) }, drag = null
     const snap = mediaClamp(mediaNumber(root.dataset.snap,.01),.000001,1), quantize = n => mediaTidy(Math.round(n / snap) * snap)
-    const render = () => { root.style.left = `${state.x*100}%`; root.style.top = `${state.y*100}%`; root.style.width = `${state.width*100}%`; root.style.height = `${state.height*100}%` }
+    const describe = () => `Left ${mediaTidy(state.x*100)}%, top ${mediaTidy(state.y*100)}%, width ${mediaTidy(state.width*100)}%, height ${mediaTidy(state.height*100)}%.`
+    const feedback = root.querySelector('[data-media-feedback]')
+    const render = () => {
+      root.style.left = `${state.x*100}%`; root.style.top = `${state.y*100}%`; root.style.width = `${state.width*100}%`; root.style.height = `${state.height*100}%`
+      for (const control of root.querySelectorAll('[data-overlay-move], [data-overlay-resize]')) control.setAttribute('aria-description', describe())
+    }
     // change means changed: a key at the edge, a press without movement and a set to the current
     // rectangle all leave it as it was, and an autosaving consumer should not hear about them.
     const emit = before => {
       if (before && ['x','y','width','height'].every(k => before[k] === state[k])) return
-      for (const [k,v] of Object.entries(state)) root.dataset[k] = String(v); mediaEmit(root,'draggable-overlay:change',{ version:1,...state })
+      for (const [k,v] of Object.entries(state)) root.dataset[k] = String(v)
+      if (feedback) feedback.textContent = describe()
+      mediaEmit(root,'draggable-overlay:change',{ version:1,...state })
     }
     const update = (base, dx, dy, resize) => {
       const right = mediaTidy(1-base.x), bottom = mediaTidy(1-base.y)
@@ -2746,11 +2753,19 @@
     const controller = new AbortController(), duration = mediaNumber(root.dataset.duration,60), snap = mediaNumber(root.dataset.snap,.1), clips = Array.from(root.querySelectorAll('[data-media-clip]'))
     let drag = null
     const read = clip => ({ start:mediaNumber(clip.dataset.start), duration:mediaNumber(clip.dataset.length), track:mediaNumber(clip.dataset.track) })
-    const render = clip => { const s=read(clip); clip.style.left=`${s.start/duration*100}%`; clip.style.width=`${s.duration/duration*100}%`; clip.style.top=`${s.track*80}px`; root.style.minHeight=`${Math.max(...clips.map(c=>read(c).track),0)*80+80}px` }
+    const describe = clip => { const s=read(clip); return `Start ${mediaTidy(s.start)} seconds, end ${mediaTidy(s.start+s.duration)} seconds, duration ${mediaTidy(s.duration)} seconds, track ${s.track+1}.` }
+    const feedback = root.querySelector('[data-media-feedback]')
+    const render = clip => { const s=read(clip); clip.style.left=`${s.start/duration*100}%`; clip.style.width=`${s.duration/duration*100}%`; clip.style.top=`${s.track*80}px`; root.style.minHeight=`${Math.max(...clips.map(c=>read(c).track),0)*80+80}px`
+      for (const control of clip.querySelectorAll('[data-clip-move], [data-clip-start], [data-clip-end]')) control.setAttribute('aria-description', describe(clip))
+    }
     const same = (a, b) => a.start === b.start && a.duration === b.duration && a.track === b.track
     // change means changed: a key at the timeline's edge, a press without movement and an undone
     // gesture all leave the clip where it was, and an autosaving consumer should not hear of them.
-    const emit = (clip, before) => { if (!before || !same(before, read(clip))) mediaEmit(root,'media-timeline:change',{version:1,id:clip.dataset.mediaClip,...read(clip)}) }
+    const emit = (clip, before) => {
+      if (before && same(before, read(clip))) return
+      if (feedback) feedback.textContent = `${clip.querySelector('[data-clip-move]').textContent}. ${describe(clip)}`
+      mediaEmit(root,'media-timeline:change',{version:1,id:clip.dataset.mediaClip,...read(clip)})
+    }
     // data-selected is only a style hook. The move button carries the state assistive technology
     // reads, so the clip an application's inspector is editing is announced as the current one.
     const select = clip => {
@@ -2768,7 +2783,6 @@
       else if (action==='end') length=mediaTidy(mediaClamp(length+delta,snap,duration-start))
       else { start=mediaTidy(mediaClamp(start+delta,0,duration-length)); track=mediaClamp(track+trackDelta,0,99) }
       clip.dataset.start=String(start); clip.dataset.length=String(length); clip.dataset.track=String(track); render(clip)
-      clip.querySelector('[data-clip-move]').setAttribute('aria-description',`Start ${start.toFixed(2)} seconds, duration ${length.toFixed(2)} seconds, track ${track+1}`)
     }
     const handle = target => { const h=target.closest('[data-clip-move], [data-clip-start], [data-clip-end]'); if(!h) return null; return { h,clip:h.closest('[data-media-clip]'),action:h.hasAttribute('data-clip-start')?'start':h.hasAttribute('data-clip-end')?'end':'move' } }
     mediaListen(controller, root, 'pointerdown', e => {

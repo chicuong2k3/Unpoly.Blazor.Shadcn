@@ -16,8 +16,10 @@
     <MaskBrush Size="24" Opacity="0.8" />
     <DraggableOverlay><p>Annotation: drag Move, or focus a handle and use arrow keys.</p></DraggableOverlay>
 </ImageCanvas>
+<p>Focus Move or Resize and use arrows (Shift for larger steps). Each handle describes the current rectangle; committed edits announce its new bounds.</p>
 <h2>Timeline</h2>
 <MediaTimeline Duration="30" Clips="@Clips" />
+<p>Focus a clip or trim handle and use Left/Right to edit time. Up/Down on the clip changes tracks. Each handle describes the current start, end, duration and track.</p>
 <h2>Compare and crop</h2>
 <ImageCompare BeforeSrc="@Photo" AfterSrc="@Photo" InitialPosition="30" Label="Compare original and edited image" />
 <ImageCrop Src="@Photo" AspectRatio="1.3333333333333333" MaxImageSize="2097152" ApplyLabel="Export PNG" />
