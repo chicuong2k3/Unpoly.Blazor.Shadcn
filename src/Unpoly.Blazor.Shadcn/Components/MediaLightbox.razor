@@ -1,10 +1,14 @@
 @inherits UiComponentBase
 <div data-slot="media-lightbox" data-index="@InitialIndex" class="@Class" @attributes="AdditionalAttributes">
     <Dialog Id="@Id" Dismissable="true" aria-label="@Label">
-        <p data-media-status role="status" aria-live="polite"></p>
         <div data-media-stage></div>
-        <Button Type="button" data-media-previous aria-label="Previous media">Previous</Button>
-        <Button Type="button" data-media-next aria-label="Next media">Next</Button>
+        <div data-media-navigation>
+            <p data-media-status role="status" aria-live="polite"></p>
+            <div role="group" aria-label="Media navigation">
+                <Button Type="button" Variant="outline" Size="icon" data-media-previous aria-label="Previous media"><Icon Name="chevron-left" /></Button>
+                <Button Type="button" Variant="outline" Size="icon" data-media-next aria-label="Next media"><Icon Name="chevron-right" /></Button>
+            </div>
+        </div>
         @ChildContent
     </Dialog>
     @foreach (var item in Items)

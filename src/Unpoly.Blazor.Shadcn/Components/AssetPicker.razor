@@ -1,9 +1,10 @@
 @inherits UiComponentBase
 <div data-slot="asset-picker" data-selected-ids="@System.Text.Json.JsonSerializer.Serialize(SelectedIds)" class="@Class" @attributes="AdditionalAttributes">
     <Dialog Id="@Id" Dismissable="true" aria-label="@Label">
-        @FilterContent
-        <MediaGrid Items="@Items" SelectedIds="@SelectedIds" Selectable="true" Loading="@Loading" Error="@Error" NextPageHref="@NextPageHref" />
-        <Button Type="button" data-assets-confirm>@ConfirmLabel</Button>
+        <header data-assets-heading><h2>@Label</h2></header>
+        <div data-assets-filters>@FilterContent</div>
+        <div data-assets-grid><MediaGrid Items="@Items" SelectedIds="@SelectedIds" Selectable="true" Loading="@Loading" Error="@Error" NextPageHref="@NextPageHref" /></div>
+        <footer data-assets-footer><Button Type="button" data-assets-confirm>@ConfirmLabel</Button></footer>
         @ChildContent
     </Dialog>
 </div>

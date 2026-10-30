@@ -6,6 +6,7 @@ on:
       - '.github/workflows/maui-media.yml'
       - 'src/**'
       - 'demo/Unpoly.Blazor.Shadcn.Maui/**'
+      - 'demo/creative-media.css'
       - 'tools/maui-webview-smoke.cjs'
       - 'tools/creative-media-browser-checks.cjs'
       - 'tools/package*.json'

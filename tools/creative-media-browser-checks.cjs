@@ -11,6 +11,43 @@ async function checkCreativeMedia(page, navigate) {
     await page.waitForFunction(() => document.querySelector('[data-canvas-plane]')?.style.transform && document.querySelector('[data-mask-toolbar]')?.parentElement.hasAttribute('data-canvas-toolbar'));
   };
   await navigate(page, '/components/creative-media'); await ready();
+  const initialViewport = page.viewportSize() || await page.evaluate(() => ({ width: innerWidth, height: innerHeight }));
+  try {
+    for (const [width, height] of [[1280, 900], [390, 844]]) {
+      await page.setViewportSize({ width, height });
+      await check(`editor controls fit ${width}px viewport`, async () => {
+        const problems = await page.evaluate(() => {
+          const problems = [], canvas = document.querySelector('[data-slot=image-canvas]');
+          const bounds = canvas.getBoundingClientRect();
+          const groups = [...document.querySelector('[data-mask-toolbar]').children].map(el => el.getBoundingClientRect());
+          groups.forEach((r, i) => {
+            if (r.left < bounds.left - 1 || r.right > bounds.right + 1) problems.push(`toolbar group ${i} overflows`);
+            groups.slice(i + 1).forEach(other => {
+              if (Math.min(r.right, other.right) - Math.max(r.left, other.left) > 1 && Math.min(r.bottom, other.bottom) - Math.max(r.top, other.top) > 1) problems.push(`toolbar group ${i} overlaps`);
+            });
+          });
+          for (const clip of document.querySelectorAll('[data-media-clip]')) {
+            const r = clip.getBoundingClientRect(), start = clip.querySelector('[data-clip-start]').getBoundingClientRect(), end = clip.querySelector('[data-clip-end]').getBoundingClientRect();
+            if (Math.abs(start.left - r.left) > 2 || Math.abs(end.right - r.right) > 2 || start.right > end.left) problems.push('trim handles misplaced');
+          }
+          if (document.querySelector('[data-crop-details]').open) problems.push('advanced crop fields exposed by default');
+          const crop = document.querySelector('[data-crop-stage]').getBoundingClientRect();
+          if (crop.height < 100 || crop.height > 385) problems.push('crop frame unbounded');
+          for (const el of document.querySelectorAll('[data-creative-section]')) {
+            const r = el.getBoundingClientRect(); if (r.left < -1 || r.right > innerWidth + 1) problems.push('section overflows viewport');
+          }
+          return problems;
+        });
+        assert.deepEqual(problems, []);
+        if (process.env.MAUI_MEDIA_REPORT_DIR) {
+          const path = require('node:path');
+          const css = await page.evaluate(() => [...document.styleSheets].some(s => s.href?.includes('app.v3.css')) ? 'v3' : 'v4');
+          await page.locator('[data-slot=image-canvas]').screenshot({ path: path.join(process.env.MAUI_MEDIA_REPORT_DIR, `${css}-${width}-canvas.png`) });
+          await page.locator('[data-creative-image-tools]').screenshot({ path: path.join(process.env.MAUI_MEDIA_REPORT_DIR, `${css}-${width}-image-tools.png`) });
+        }
+      });
+    }
+  } finally { await page.setViewportSize(initialViewport); }
   await check('gallery selects requested image', async () => {
     await page.locator('[data-slot=media-grid][data-lightbox-target=creative-preview] [data-media-preview=reference]').click();
     await page.locator('#creative-preview[open]').waitFor();

@@ -1,11 +1,15 @@
 @inherits UiComponentBase
 <div data-slot="media-timeline" data-duration="@F(Duration)" data-snap="@F(Snap)" class="@Class" role="group" aria-label="@Label" @attributes="AdditionalAttributes">
+    <div data-timeline-ruler aria-hidden="true">
+        @for (var tick = 0; tick <= 5; tick++) { <span>@F(Math.Round(Duration * tick / 5, 2))s</span> }
+    </div>
     @foreach (var clip in Clips)
     {
         <div data-media-clip="@clip.Id" data-start="@F(clip.Start)" data-length="@F(clip.Duration)" data-track="@clip.Track" @key="clip.Id">
-            <button type="button" data-clip-move aria-label="@($"Move {clip.Label}")">@clip.Label</button>
-            <button type="button" data-clip-start aria-label="@($"Trim start of {clip.Label}")">Trim start</button>
-            <button type="button" data-clip-end aria-label="@($"Trim end of {clip.Label}")">Trim end</button>
+            <Button Type="button" Variant="ghost" Size="icon" data-clip-start aria-label="@($"Trim start of {clip.Label}")" title="Trim start"><Icon Name="grip-vertical" /></Button>
+            <Button Type="button" Variant="ghost" data-clip-move aria-label="@($"Move {clip.Label}")">@clip.Label</Button>
+            <Button Type="button" Variant="ghost" Size="icon" data-clip-end aria-label="@($"Trim end of {clip.Label}")" title="Trim end"><Icon Name="grip-vertical" /></Button>
+            <span data-clip-meta aria-hidden="true">@($"Track {clip.Track + 1} · {F(clip.Duration)}s")</span>
         </div>
     }
     <span data-media-feedback role="status" aria-atomic="true"></span>

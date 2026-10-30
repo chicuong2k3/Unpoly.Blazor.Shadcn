@@ -1,29 +1,49 @@
 @page "/components/creative-media"
 <PageTitle>Creative Media — Unpoly.Blazor.Shadcn</PageTitle>
 <h1 class="doc-h1">Creative Media</h1>
-<p class="doc-lede">Image-space masks, normalized overlays and second-based clips. All controls support keyboard and touch.</p>
-<h2>Asset library</h2>
-<MediaGrid Items="@MediaItems" LightboxTarget="creative-preview" />
-<MediaLightbox Id="creative-preview" Items="@MediaItems" />
-<DialogTrigger Target="creative-assets">Choose assets</DialogTrigger>
-<AssetPicker Id="creative-assets" Items="@MediaItems">
-    <FilterContent><p>Compose search and filters here; the application owns querying and pagination.</p></FilterContent>
-</AssetPicker>
-<p>A video without a thumbnail keeps the tile's shape. Its source is fetched only when it is previewed.</p>
-<MediaGrid Items="@VideoItems" Label="Video without a thumbnail" />
-<h2>Canvas and mask</h2>
-<ImageCanvas Src="@Photo" Width="640" Height="480">
-    <MaskBrush Size="24" Opacity="0.8" />
-    <DraggableOverlay><p>Annotation: drag Move, or focus a handle and use arrow keys.</p></DraggableOverlay>
-</ImageCanvas>
-<p>Focus Move or Resize and use arrows (Shift for larger steps). Each handle describes the current rectangle; committed edits announce its new bounds.</p>
-<h2>Timeline</h2>
-<MediaTimeline Duration="30" Clips="@Clips" />
-<p>Focus a clip or trim handle and use Left/Right to edit time. Up/Down on the clip changes tracks. Each handle describes the current start, end, duration and track.</p>
-<h2>Compare and crop</h2>
-<ImageCompare BeforeSrc="@Photo" AfterSrc="@Photo" InitialPosition="30" Label="Compare original and edited image" />
-<ImageCrop Src="@Photo" AspectRatio="1.3333333333333333" MaxImageSize="2097152" ApplyLabel="Export PNG" />
-<p>Listen for the DOM events documented in <code>docs/creative-media.md</code> to save edits or consume exported Blobs.</p>
+<p class="doc-lede">A focused workspace for masks, annotations and media clips.</p>
+<div data-creative-workspace>
+    <section data-creative-section data-creative-editor>
+        <header data-creative-heading>
+            <div><h2>Canvas editor</h2><p>Draw a mask, position an annotation, then export your work.</p></div>
+            <Badge Variant="secondary">640 × 480</Badge>
+        </header>
+        <div data-creative-body>
+            <ImageCanvas Src="@Photo" Width="640" Height="480">
+                <MaskBrush Size="24" Opacity="0.8" />
+                <DraggableOverlay><p>Annotation</p></DraggableOverlay>
+            </ImageCanvas>
+            <details data-creative-help><summary>Keyboard shortcuts</summary><p>Canvas: arrows pan, +/− zoom, Home fits. Mask: arrows move, Space paints, Shift + arrows draws. Overlay: focus Move or Resize and use arrows; Shift makes larger steps.</p></details>
+            <div data-creative-timeline-heading><h3>Timeline</h3><span>30 seconds · 2 tracks</span></div>
+            <MediaTimeline Duration="30" Clips="@Clips" />
+            <p data-creative-hint>Drag a clip to move it; drag its edge to trim. With a handle focused, Left/Right edits time and Up/Down on the clip changes tracks.</p>
+        </div>
+    </section>
+    <section data-creative-section>
+        <header data-creative-heading>
+            <div><h2>Asset library</h2><p>Preview your references or choose assets for the editor.</p></div>
+            <DialogTrigger Target="creative-assets">Choose assets</DialogTrigger>
+        </header>
+        <div data-creative-body>
+            <MediaGrid Items="@MediaItems" LightboxTarget="creative-preview" />
+            <details data-creative-help><summary>Video without a thumbnail</summary><MediaGrid Items="@VideoItems" Label="Video without a thumbnail" /></details>
+        </div>
+        <MediaLightbox Id="creative-preview" Items="@MediaItems" />
+        <AssetPicker Id="creative-assets" Items="@MediaItems">
+            <FilterContent><p data-creative-hint>Select the references to add to your canvas.</p></FilterContent>
+        </AssetPicker>
+    </section>
+    <div data-creative-image-tools>
+        <section data-creative-section data-creative-comparison>
+            <header data-creative-heading><div><h2>Image comparison</h2><p>Drag the divider to compare the original and edited image.</p></div></header>
+            <div data-creative-body><ImageCompare BeforeSrc="@Photo" AfterSrc="@Photo" InitialPosition="30" Label="Compare original and edited image" BeforeLabel="Original" AfterLabel="Edited" /></div>
+        </section>
+        <section data-creative-section>
+            <header data-creative-heading><div><h2>Image crop</h2><p>Resize the crop bounds, then export a PNG.</p></div></header>
+            <div data-creative-body><ImageCrop Src="@Photo" AspectRatio="1.3333333333333333" MaxImageSize="2097152" ApplyLabel="Export PNG" /></div>
+        </section>
+    </div>
+</div>
 @code {
     const string Photo = "_content/Unpoly.Blazor.Shadcn/media-demo.svg";
     static readonly IReadOnlyList<MediaAsset> MediaItems = new[] {

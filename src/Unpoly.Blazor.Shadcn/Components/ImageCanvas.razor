@@ -1,9 +1,12 @@
 @inherits UiComponentBase
 <div data-slot="image-canvas" data-width="@Width" data-height="@Height" class="@Class" @attributes="AdditionalAttributes">
-    <div data-canvas-toolbar role="group" aria-label="Canvas view">
-        <Button Type="button" data-canvas-action="zoom-in">Zoom in</Button>
-        <Button Type="button" data-canvas-action="zoom-out">Zoom out</Button>
-        <Button Type="button" data-canvas-action="fit">Fit image</Button>
+    <div data-canvas-toolbar>
+        <div data-canvas-view-controls role="group" aria-label="Canvas view">
+            <span data-canvas-caption>Canvas</span>
+            <Button Type="button" Variant="ghost" Size="icon" data-canvas-action="zoom-out" aria-label="Zoom out"><Icon Name="zoom-out" /></Button>
+            <Button Type="button" Variant="ghost" Size="icon" data-canvas-action="zoom-in" aria-label="Zoom in"><Icon Name="zoom-in" /></Button>
+            <Button Type="button" Variant="outline" Size="sm" data-canvas-action="fit"><Icon Name="maximize" /> Fit image</Button>
+        </div>
     </div>
     <div data-canvas-viewport tabindex="0" role="group" aria-label="@Label">
         <div data-canvas-plane>

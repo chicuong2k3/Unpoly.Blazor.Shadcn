@@ -4,19 +4,26 @@
    as a PNG data URL in the image-crop:apply CustomEvent (detail.dataUrl). *@
 <div data-slot="image-crop" data-aspect-ratio="@AspectRatio?.ToString(System.Globalization.CultureInfo.InvariantCulture)" data-circular="@(Circular ? "true" : "false")"
      data-max-image-size="@MaxImageSize" class="@Class" @attributes="AdditionalAttributes">
-    <img src="@Src" alt="@Alt" style="display:block;max-width:100%" />
-    <div>
-        <Button Type="button" data-slot="image-crop-apply">@ApplyLabel</Button>
-        <Button Type="button" data-slot="image-crop-reset">@ResetLabel</Button>
-        <Button Type="button" data-crop-zoom="0.1" aria-label="Zoom in">+</Button>
-        <Button Type="button" data-crop-zoom="-0.1" aria-label="Zoom out">−</Button>
+    <div data-crop-stage><img src="@Src" alt="@Alt" style="display:block;max-width:100%" /></div>
+    <div data-crop-toolbar>
+        <div role="group" aria-label="Crop zoom">
+            <Button Type="button" Variant="outline" Size="icon" data-crop-zoom="-0.1" aria-label="Zoom out"><Icon Name="zoom-out" /></Button>
+            <Button Type="button" Variant="outline" Size="icon" data-crop-zoom="0.1" aria-label="Zoom in"><Icon Name="zoom-in" /></Button>
+        </div>
+        <div data-crop-actions>
+            <Button Type="button" Variant="outline" Size="sm" data-slot="image-crop-reset">@ResetLabel</Button>
+            <Button Type="button" Size="sm" data-slot="image-crop-apply"><Icon Name="crop" /> @ApplyLabel</Button>
+        </div>
     </div>
-    <div role="group" aria-label="Crop position and size">
-        @foreach (var field in new[] { "x", "y", "width", "height" })
-        {
-            <label>@field <Input type="number" min="0" step="1" data-crop-field="@field" aria-label="@($"Crop {field}")" /></label>
-        }
-    </div>
+    <details data-crop-details>
+        <summary>Crop position and size</summary>
+        <div data-crop-fields role="group" aria-label="Crop position and size">
+            @foreach (var field in new[] { "x", "y", "width", "height" })
+            {
+                <label>@field <Input type="number" min="0" step="1" data-crop-field="@field" aria-label="@($"Crop {field}")" /></label>
+            }
+        </div>
+    </details>
     <p data-crop-status role="status" aria-live="polite"></p>
     @ChildContent
 </div>

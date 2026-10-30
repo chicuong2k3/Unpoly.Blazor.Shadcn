@@ -20,6 +20,7 @@ book-marked
 book-open
 bookmark
 brain
+brush
 calendar
 calendar-check
 calendar-days
@@ -55,11 +56,13 @@ compass
 copy
 credit-card
 croissant
+crop
 crown
 delete
 download
 ellipsis
 ellipsis-vertical
+eraser
 external-link
 eye
 eye-off
@@ -82,6 +85,7 @@ git-branch
 git-fork
 globe
 graduation-cap
+grip
 grip-vertical
 hand
 heart
@@ -115,6 +119,7 @@ lock
 log-in
 log-out
 mail
+maximize
 medal
 menu
 message-circle
@@ -125,6 +130,7 @@ moon-star
 mountain
 mouse-pointer-click
 move
+move-diagonal-2
 network
 notebook-pen
 orbit
@@ -196,3 +202,5 @@ waves
 wind
 x
 zap
+zoom-in
+zoom-out

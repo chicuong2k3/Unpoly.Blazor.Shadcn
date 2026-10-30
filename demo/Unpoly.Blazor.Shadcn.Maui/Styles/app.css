@@ -1,5 +1,6 @@
 /* Input for the Tailwind CLI. Built to wwwroot/app.css on every `dotnet build`. */
 @import "tailwindcss";
+@import "../../creative-media.css";
 
 /* Tokens, the @theme inline indirection, and the behaviour CSS that stands in for Radix. */
 @import "../../../src/Unpoly.Blazor.Shadcn/Styles/ui.css";
