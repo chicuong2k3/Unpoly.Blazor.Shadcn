@@ -79,6 +79,43 @@ async function checkCreativeMedia(page, navigate) {
     await page.locator('#creative-assets').waitFor({ state: 'hidden' });
     assert.deepEqual(await page.evaluate(() => window.__nativeAssets), ['reference']);
   });
+  await check('picker clears selection across replaced grid on mobile', async () => {
+    const session = await page.context().newCDPSession(page);
+    try {
+      await session.send('Emulation.setDeviceMetricsOverride', { width: 390, height: 844, deviceScaleFactor: 1, mobile: false });
+      await page.waitForFunction(() => innerWidth === 390);
+      await page.locator('[data-slot=dialog-trigger][data-target=creative-assets]').click();
+      await page.locator('#creative-assets [data-assets-clear]').click();
+      await page.locator('#creative-assets input[value=landscape]').check();
+      await page.locator('#creative-assets input[value=reference]').check();
+      assert.equal(await page.locator('#creative-assets [data-assets-count]').textContent(), '2');
+      assert.equal(await page.locator('#creative-assets figure[data-selected]').count(), 2);
+      const footerFits = await page.locator('#creative-assets [data-assets-footer]').evaluate(el => {
+        const r = el.getBoundingClientRect(); return r.left >= 0 && r.right <= innerWidth && r.bottom <= innerHeight;
+      });
+      assert.equal(footerFits, true, 'picker footer must remain visible on mobile');
+      if (process.env.MAUI_MEDIA_REPORT_DIR) {
+        const path = require('node:path'), css = await page.evaluate(() => document.querySelector('#demo-app-css').dataset.demoCss);
+        await page.locator('#creative-assets').screenshot({ path: path.join(process.env.MAUI_MEDIA_REPORT_DIR, `${css}-390-asset-picker.png`) });
+      }
+      // A new page can contain just one of the two selected assets. Clear must remove both.
+      await page.locator('#creative-assets [data-slot=media-grid]').evaluate(grid => {
+        const copy = grid.cloneNode(true); copy.querySelector('[data-media-id=reference]').remove(); grid.replaceWith(copy);
+      });
+      assert.equal(await page.locator('#creative-assets [data-assets-count]').textContent(), '2');
+      await page.evaluate(() => document.querySelector('[data-slot=asset-picker]').addEventListener('asset-picker:selection', e => window.__clearedSelection = e.detail.ids, { once: true }));
+      await page.locator('#creative-assets [data-assets-clear]').click();
+      assert.equal(await page.locator('#creative-assets [data-assets-count]').textContent(), '0');
+      assert.equal(await page.locator('#creative-assets input:checked').count(), 0);
+      assert.equal(await page.locator('#creative-assets figure[data-selected]').count(), 0);
+      assert.deepEqual(await page.evaluate(() => window.__clearedSelection), []);
+      await page.evaluate(() => document.querySelector('[data-slot=asset-picker]').addEventListener('asset-picker:confirm', e => window.__emptyConfirmation = e.detail.ids, { once: true }));
+      await page.locator('#creative-assets [data-assets-confirm]').click();
+      assert.deepEqual(await page.evaluate(() => window.__emptyConfirmation), []);
+    } finally {
+      await session.send('Emulation.clearDeviceMetricsOverride'); await session.detach();
+    }
+  });
   await check('overlay keyboard resize uses normalized size', async () => {
     await page.locator('[data-overlay-resize]').press('ArrowRight');
     const width = await page.locator('[data-slot=draggable-overlay]').evaluate(el => Number(el.dataset.width));
