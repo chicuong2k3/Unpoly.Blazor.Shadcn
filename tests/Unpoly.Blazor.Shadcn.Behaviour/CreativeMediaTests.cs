@@ -425,6 +425,16 @@ public class CreativeMediaTests(DemoFixture fixture) : DemoPage(fixture)
         AssertQuiet();
     }
 
+    [SkippableFact]
+    public async Task Comparison_layers_fill_the_frame()
+    {
+        RequireDemo();
+        await GoAsync("/components/creative-media");
+        await Page.WaitForFunctionAsync("() => customElements.get('img-comparison-slider') && [...document.querySelectorAll('[data-slot=image-compare] img')].every(img => img.complete && img.naturalWidth > 0)");
+        Assert.True(await Page.Locator("img-comparison-slider").EvaluateAsync<bool>("el => { const frame = el.getBoundingClientRect(); return frame.height > 0 && [...el.querySelectorAll('img')].every(img => Math.abs(img.getBoundingClientRect().height - frame.height) <= 2) }"));
+        AssertQuiet();
+    }
+
     async Task OpenPreviewAsync(string id)
     {
         await Page.Locator($"[data-slot=media-grid][data-lightbox-target=creative-preview] [data-media-preview={id}]").ClickAsync();

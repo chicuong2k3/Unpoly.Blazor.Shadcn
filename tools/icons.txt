@@ -147,6 +147,7 @@ play
 plus
 qr-code
 receipt
+redo-2
 refresh-cw
 repeat
 rocket

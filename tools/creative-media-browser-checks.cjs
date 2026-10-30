@@ -11,6 +11,7 @@ async function checkCreativeMedia(page, navigate) {
     await page.waitForFunction(() => document.querySelector('[data-canvas-plane]')?.style.transform && document.querySelector('[data-mask-toolbar]')?.parentElement.hasAttribute('data-canvas-toolbar'));
   };
   await navigate(page, '/components/creative-media'); await ready();
+  await page.waitForFunction(() => customElements.get('img-comparison-slider') && [...document.querySelectorAll('[data-slot=image-compare] img')].every(img => img.complete && img.naturalWidth > 0) && Number(document.querySelector('[data-crop-field=width]')?.value) > 0);
   const layoutSession = await page.context().newCDPSession(page);
   try {
     for (const [width, height] of [[1280, 900], [390, 844]]) {
@@ -31,6 +32,10 @@ async function checkCreativeMedia(page, navigate) {
             const r = clip.getBoundingClientRect(), start = clip.querySelector('[data-clip-start]').getBoundingClientRect(), end = clip.querySelector('[data-clip-end]').getBoundingClientRect();
             if (Math.abs(start.left - r.left) > 2 || Math.abs(end.right - r.right) > 2 || start.right > end.left) problems.push(`trim handles misplaced: ${JSON.stringify({clip:r.toJSON(),start:start.toJSON(),end:end.toJSON()})}`);
           }
+          const comparison = document.querySelector('img-comparison-slider'), frame = comparison.getBoundingClientRect();
+          for (const img of comparison.querySelectorAll('img')) {
+            if (Math.abs(img.getBoundingClientRect().height - frame.height) > 2) problems.push('comparison image leaves blank frame space');
+          }
           if (document.querySelector('[data-crop-details]').open) problems.push('advanced crop fields exposed by default');
           const crop = document.querySelector('[data-crop-stage]').getBoundingClientRect();
           if (crop.height < 100 || crop.height > 385) problems.push('crop frame unbounded');
@@ -43,8 +48,18 @@ async function checkCreativeMedia(page, navigate) {
         if (process.env.MAUI_MEDIA_REPORT_DIR) {
           const path = require('node:path');
           const css = await page.evaluate(() => [...document.styleSheets].some(s => s.href?.includes('app.v3.css')) ? 'v3' : 'v4');
-          await page.locator('[data-slot=image-canvas]').screenshot({ path: path.join(process.env.MAUI_MEDIA_REPORT_DIR, `${css}-${width}-canvas.png`) });
-          await page.locator('[data-creative-image-tools]').screenshot({ path: path.join(process.env.MAUI_MEDIA_REPORT_DIR, `${css}-${width}-image-tools.png`) });
+          const capture = async (selector, name) => {
+            const element = page.locator(selector);
+            // Keep the sticky docs header above the captured component, without changing CSS.
+            await element.evaluate(el => window.scrollTo(0, el.getBoundingClientRect().top + scrollY - 96));
+            await element.screenshot({ path: path.join(process.env.MAUI_MEDIA_REPORT_DIR, `${css}-${width}-${name}.png`) });
+          };
+          await capture('[data-slot=image-canvas]', 'canvas');
+          if (width >= 1024) await capture('[data-creative-image-tools]', 'image-tools');
+          else {
+            await capture('[data-creative-comparison]', 'comparison');
+            await capture('[data-creative-image-tools] > section:last-child', 'crop');
+          }
         }
       });
     }

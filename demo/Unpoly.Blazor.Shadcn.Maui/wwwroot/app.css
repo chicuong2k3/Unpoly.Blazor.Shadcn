@@ -6452,7 +6452,8 @@
   gap: 2rem;
 }
 [data-creative-comparison] img-comparison-slider {
-  height: clamp(14rem,40vh,24rem);
+  height: auto;
+  aspect-ratio: 4 / 3;
 }
 [data-creative-comparison] img-comparison-slider [slot] img {
   width: 100%;
