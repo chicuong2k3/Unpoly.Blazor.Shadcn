@@ -30,12 +30,16 @@ async function checkCreativeMedia(page, navigate) {
     await page.locator('[data-overlay-resize]').press('ArrowRight');
     const width = await page.locator('[data-slot=draggable-overlay]').evaluate(el => Number(el.dataset.width));
     assert.ok(Math.abs(width - .31) < 1e-9, `overlay width ${width}`);
+    assert.equal(await page.locator('[data-overlay-resize]').getAttribute('aria-description'), 'Left 10%, top 10%, width 31%, height 20%.');
+    assert.equal(await page.locator('[data-slot=draggable-overlay] [role=status]').textContent(), 'Left 10%, top 10%, width 31%, height 20%.');
   });
   await check('timeline trim preserves clip end', async () => {
     await page.locator('[data-media-clip=intro] [data-clip-start]').press('ArrowRight');
     const state = await page.locator('[data-media-clip=intro]').evaluate(el => ({ start: Number(el.dataset.start), duration: Number(el.dataset.length) }));
     assert.ok(Math.abs(state.start - .1) < 1e-9);
     assert.ok(Math.abs(state.start + state.duration - 8) < 1e-9);
+    assert.equal(await page.locator('[data-media-clip=intro] [data-clip-start]').getAttribute('aria-description'), 'Start 0.1 seconds, end 8 seconds, duration 7.9 seconds, track 1.');
+    assert.equal(await page.locator('[data-slot=media-timeline] [role=status]').textContent(), 'Introduction. Start 0.1 seconds, end 8 seconds, duration 7.9 seconds, track 1.');
   });
   await check('mask undo restores source raster', async () => {
     const canvas = page.locator('[data-slot=mask-brush] canvas');
@@ -100,6 +104,8 @@ async function checkCreativeMedia(page, navigate) {
     assert.equal(await page.locator('img-comparison-slider').getAttribute('aria-valuenow'), '28');
     assert.equal(await page.evaluate(() => window.__nativeCompareChanges), 1);
     assert.equal(await page.locator('img-comparison-slider').evaluate(el => getComputedStyle(el).getPropertyValue('--default-transition-time').trim()), '0ms');
+    const shadows = await page.locator('img-comparison-slider').evaluate(el => ['--divider-shadow', '--default-handle-shadow'].map(name => getComputedStyle(el).getPropertyValue(name).trim()));
+    assert.ok(shadows.every(value => value && value !== 'none'), `comparison shadows: ${shadows}`);
   });
   await check('Blazor navigation disposes old media handlers', async () => {
     await page.evaluate(() => {

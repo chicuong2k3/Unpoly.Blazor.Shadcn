@@ -160,3 +160,9 @@ to `Unpoly.Blazor.Shadcn.Maui.exe` on port 9222, with prior value/type restorati
 It changes no wildcard policy. The smoke harness checks that the selected port is free; startup
 failure reports include the last HTTP probe result and the disposable WebView process arguments.
 This workflow policy is confined to the ephemeral runner and is not required for ordinary app use.
+
+### Accessible editing feedback
+
+Overlay move/resize handles expose the current rectangle as percentages in `aria-description`. All timeline handles expose start/end/duration in seconds and the one-based track, including before the first edit and after a cancelled pointer gesture. Committed changes update a polite `role="status"` region; pointer previews and no-op edits do not announce a commit. Both demos show the keyboard instructions. These are button controls with spatial/time editing shortcuts, not ARIA sliders.
+
+The comparison divider and default handle have a black edge behind their white foreground, keeping a boundary over light and dark image content. Automated checks verify feedback markup/state and stylesheet application in Web and native WebView2. Manual screen-reader announcement quality and image-dependent contrast review still require human verification.
