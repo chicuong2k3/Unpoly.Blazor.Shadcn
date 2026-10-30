@@ -11,10 +11,11 @@ async function checkCreativeMedia(page, navigate) {
     await page.waitForFunction(() => document.querySelector('[data-canvas-plane]')?.style.transform && document.querySelector('[data-mask-toolbar]')?.parentElement.hasAttribute('data-canvas-toolbar'));
   };
   await navigate(page, '/components/creative-media'); await ready();
-  const initialViewport = page.viewportSize() || await page.evaluate(() => ({ width: innerWidth, height: innerHeight }));
+  const layoutSession = await page.context().newCDPSession(page);
   try {
     for (const [width, height] of [[1280, 900], [390, 844]]) {
-      await page.setViewportSize({ width, height });
+      await layoutSession.send('Emulation.setDeviceMetricsOverride', { width, height, deviceScaleFactor: 1, mobile: false });
+      await page.waitForFunction(width => innerWidth === width, width);
       await check(`editor controls fit ${width}px viewport`, async () => {
         const problems = await page.evaluate(() => {
           const problems = [], canvas = document.querySelector('[data-slot=image-canvas]');
@@ -28,7 +29,7 @@ async function checkCreativeMedia(page, navigate) {
           });
           for (const clip of document.querySelectorAll('[data-media-clip]')) {
             const r = clip.getBoundingClientRect(), start = clip.querySelector('[data-clip-start]').getBoundingClientRect(), end = clip.querySelector('[data-clip-end]').getBoundingClientRect();
-            if (Math.abs(start.left - r.left) > 2 || Math.abs(end.right - r.right) > 2 || start.right > end.left) problems.push('trim handles misplaced');
+            if (Math.abs(start.left - r.left) > 2 || Math.abs(end.right - r.right) > 2 || start.right > end.left) problems.push(`trim handles misplaced: ${JSON.stringify({clip:r.toJSON(),start:start.toJSON(),end:end.toJSON()})}`);
           }
           if (document.querySelector('[data-crop-details]').open) problems.push('advanced crop fields exposed by default');
           const crop = document.querySelector('[data-crop-stage]').getBoundingClientRect();
@@ -47,7 +48,7 @@ async function checkCreativeMedia(page, navigate) {
         }
       });
     }
-  } finally { await page.setViewportSize(initialViewport); }
+  } finally { await layoutSession.send('Emulation.clearDeviceMetricsOverride'); await layoutSession.detach(); }
   await check('gallery selects requested image', async () => {
     await page.locator('[data-slot=media-grid][data-lightbox-target=creative-preview] [data-media-preview=reference]').click();
     await page.locator('#creative-preview[open]').waitFor();

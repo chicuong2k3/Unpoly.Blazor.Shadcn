@@ -8314,7 +8314,7 @@ up-modal up-modal-dismiss:focus-visible, up-drawer up-drawer-dismiss:focus-visib
   min-height: 24px;
   min-width: 24px;
 }
-[data-overlay-move] {
+[data-slot="draggable-overlay"] [data-overlay-move] {
   position: absolute;
   top: 0;
   left: 0;
@@ -8328,10 +8328,10 @@ up-modal up-modal-dismiss:focus-visible, up-drawer up-drawer-dismiss:focus-visib
   padding: 30px .5rem 24px;
   height: 100%;
   overflow: auto;
-  font-size: .75rem;
+  font-size: 1.25rem;
   line-height: 1.4;
 }
-[data-overlay-resize] {
+[data-slot="draggable-overlay"] [data-overlay-resize] {
   position: absolute;
   bottom: 0;
   right: 0;
@@ -8388,7 +8388,7 @@ up-modal up-modal-dismiss:focus-visible, up-drawer up-drawer-dismiss:focus-visib
   font-size: .75rem;
   cursor: grab;
 }
-[data-clip-start], [data-clip-end] {
+[data-media-clip] [data-clip-start], [data-media-clip] [data-clip-end] {
   width: 24px;
   height: 100%;
   border-radius: 0;
