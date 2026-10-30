@@ -1434,7 +1434,11 @@ up-cover up-cover-dismiss:focus-visible {
 [data-slot="draggable-overlay"] [data-overlay-move] { position:absolute; top:0; left:0; height:24px; width:24px; transform-origin:top left; transform:scale(var(--canvas-control-scale,1)) translate(-50%,-50%); z-index:1; border:1px solid var(--border); border-radius:4px; cursor:move; background:var(--muted); }
 [data-overlay-content] { padding:.5rem; height:100%; overflow:auto; font-size:1.25rem; line-height:1.4; }
 [data-slot="draggable-overlay"] [data-overlay-resize] { position:absolute; bottom:0; right:0; width:24px; height:24px; transform-origin:bottom right; transform:scale(var(--canvas-control-scale,1)) translate(50%,50%); z-index:1; border:1px solid var(--border); border-radius:4px; cursor:nwse-resize; background:var(--background); }
-[data-slot="media-timeline"] { position:relative; width:100%; overflow:auto; min-height:112px; border:1px solid var(--border); border-radius:var(--radius); background:repeating-linear-gradient(to bottom,var(--background) 0px,var(--background) 79px,var(--border) 79px,var(--border) 80px); background-position:0 32px; }
+[data-slot="media-timeline"] { width:100%; min-width:0; }
+[data-timeline-viewport] { overflow:auto; max-height:28rem; border:1px solid var(--border); border-radius:var(--radius); background:repeating-linear-gradient(to bottom,var(--background) 0px,var(--background) 79px,var(--border) 79px,var(--border) 80px); background-position:0 32px; }
+[data-timeline-surface] { position:relative; width:100%; min-width:var(--timeline-min-width,48rem); min-height:112px; }
+[data-timeline-hint] { margin-top:.5rem; color:var(--muted-foreground); font-size:.75rem; }
+[data-timeline-hint][hidden] { display:none; }
 [data-timeline-ruler] { display:flex; justify-content:space-between; height:28px; padding:.375rem .5rem; border-bottom:1px solid var(--border); background:var(--muted); color:var(--muted-foreground); font-size:.625rem; font-variant-numeric:tabular-nums; }
 [data-media-clip] { position:absolute; height:64px; display:grid; grid-template-columns:24px minmax(0,1fr) 24px; border:1px solid var(--border); border-radius:calc(var(--radius) / 2); background:var(--secondary); color:var(--secondary-foreground); overflow:hidden; }
 [data-media-clip] [data-clip-move] { min-width:0; width:100%; height:100%; padding:.25rem; padding-bottom:1.25rem; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; display:block; text-align:start; border-radius:0; font-size:.75rem; cursor:grab; }

@@ -8381,14 +8381,30 @@ up-modal up-modal-dismiss:focus-visible, up-drawer up-drawer-dismiss:focus-visib
   background: var(--background);
 }
 [data-slot="media-timeline"] {
-  position: relative;
   width: 100%;
+  min-width: 0;
+}
+[data-timeline-viewport] {
   overflow: auto;
-  min-height: 112px;
+  max-height: 28rem;
   border: 1px solid var(--border);
   border-radius: var(--radius);
   background: repeating-linear-gradient(to bottom,var(--background) 0px,var(--background) 79px,var(--border) 79px,var(--border) 80px);
   background-position: 0 32px;
+}
+[data-timeline-surface] {
+  position: relative;
+  width: 100%;
+  min-width: var(--timeline-min-width,48rem);
+  min-height: 112px;
+}
+[data-timeline-hint] {
+  margin-top: .5rem;
+  color: var(--muted-foreground);
+  font-size: .75rem;
+}
+[data-timeline-hint][hidden] {
+  display: none;
 }
 [data-timeline-ruler] {
   display: flex;

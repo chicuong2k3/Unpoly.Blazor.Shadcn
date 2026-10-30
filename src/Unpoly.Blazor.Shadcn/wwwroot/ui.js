@@ -2783,11 +2783,14 @@
 
   shadcnCompiler('[data-slot="media-timeline"]', root => {
     const controller = new AbortController(), duration = mediaNumber(root.dataset.duration,60), snap = mediaNumber(root.dataset.snap,.1), clips = Array.from(root.querySelectorAll('[data-media-clip]'))
+    const surface = root.querySelector('[data-timeline-surface]'), viewport = root.querySelector('[data-timeline-viewport]'), hint = root.querySelector('[data-timeline-hint]')
+    const overflow = () => { hint.hidden = surface.scrollWidth <= viewport.clientWidth + 1 }
+    const observer = new ResizeObserver(overflow); observer.observe(viewport)
     let drag = null
     const read = clip => ({ start:mediaNumber(clip.dataset.start), duration:mediaNumber(clip.dataset.length), track:mediaNumber(clip.dataset.track) })
     const describe = clip => { const s=read(clip); return `Start ${mediaTidy(s.start)} seconds, end ${mediaTidy(s.start+s.duration)} seconds, duration ${mediaTidy(s.duration)} seconds, track ${s.track+1}.` }
     const feedback = root.querySelector('[data-media-feedback]')
-    const render = clip => { const s=read(clip); clip.style.left=`${s.start/duration*100}%`; clip.style.width=`${s.duration/duration*100}%`; clip.style.top=`${s.track*80+32}px`; root.style.minHeight=`${Math.max(...clips.map(c=>read(c).track),0)*80+112}px`
+    const render = clip => { const s=read(clip); clip.style.left=`${s.start/duration*100}%`; clip.style.width=`${s.duration/duration*100}%`; clip.style.top=`${s.track*80+32}px`; surface.style.minHeight=`${Math.max(...clips.map(c=>read(c).track),0)*80+112}px`
       const meta = clip.querySelector('[data-clip-meta]'); if (meta) meta.textContent = `Track ${s.track+1} · ${mediaTidy(s.duration)}s`
       for (const control of clip.querySelectorAll('[data-clip-move], [data-clip-start], [data-clip-end]')) control.setAttribute('aria-description', describe(clip))
     }
@@ -2821,7 +2824,7 @@
     mediaListen(controller, root, 'pointerdown', e => {
       const h=handle(e.target); if(!h || e.button!==0 || drag) return
       e.preventDefault(); h.h.focus(); select(h.clip)
-      drag={...h,id:e.pointerId,x:e.clientX,y:e.clientY,width:root.getBoundingClientRect().width,base:read(h.clip)}; root.setPointerCapture(e.pointerId)
+      drag={...h,id:e.pointerId,x:e.clientX,y:e.clientY,width:surface.getBoundingClientRect().width || root.getBoundingClientRect().width,base:read(h.clip)}; root.setPointerCapture(e.pointerId)
     })
     mediaListen(controller, root, 'pointermove', e => { if(drag?.id===e.pointerId && drag.width) update(drag.clip,drag.base,(e.clientX-drag.x)/drag.width*duration,drag.action,Math.round((e.clientY-drag.y)/80)) })
     const end = e => {
@@ -2852,8 +2855,8 @@
       const before = read(clip)
       clip.dataset.start=String(d.start); clip.dataset.length=String(d.duration); clip.dataset.track=String(d.track); render(clip); emit(clip, before)
     })
-    clips.forEach(render)
-    return () => { controller.abort(); if(drag && root.hasPointerCapture(drag.id)) root.releasePointerCapture(drag.id); drag=null }
+    clips.forEach(render); overflow()
+    return () => { controller.abort(); observer.disconnect(); if(drag && root.hasPointerCapture(drag.id)) root.releasePointerCapture(drag.id); drag=null }
   })
 
   shadcnCompiler('[data-slot="image-crop"]', root => {

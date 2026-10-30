@@ -33,6 +33,14 @@ async function auditCreativeMedia(page, navigate, { output, host, css }) {
     return r.width>0 && r.height>0 && r.left>=p.left-2 && r.right<=p.right+2 && r.top>=p.top-2 && r.bottom<=p.bottom+2;
   }, parent);
   const session = await page.context().newCDPSession(page);
+  const setViewport = async (width,height) => {
+    // Keep Playwright's own viewport model in sync on Web. WebView2 has no browser
+    // window sizing API, so native uses device metrics directly.
+    if(host==='web') await page.setViewportSize({width,height});
+    else await session.send('Emulation.setDeviceMetricsOverride',{width,height,deviceScaleFactor:1,mobile:false});
+    await page.waitForFunction(width=>innerWidth===width,width);
+  };
+
   try {
     await navigate(page, '/components/creative-media/audit');
     await page.getByRole('heading',{name:'Creative Media Audit',exact:true}).waitFor();
@@ -40,8 +48,7 @@ async function auditCreativeMedia(page, navigate, { output, host, css }) {
     for (const [width,height] of [[320,740],[768,1024],[1280,900],[740,360]]) {
       for (const dark of [false,true]) {
         mode=`${width}x${height}-${dark?'dark':'light'}`; report.viewports.push({width,height,dark});
-        await session.send('Emulation.setDeviceMetricsOverride',{width,height,deviceScaleFactor:1,mobile:false});
-        await page.waitForFunction(width=>innerWidth===width,width);
+        await setViewport(width,height);
         await close(); await page.evaluate(dark=>{document.documentElement.classList.toggle('dark',dark);document.activeElement?.blur()},dark);
         await page.evaluate(()=>new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve))));
         report.styles.push({mode, values:await page.evaluate(()=>Object.fromEntries(['canvas','editor','timeline','grid','lightbox','picker','compare','crop'].map(name=>{const root=document.querySelector(`[data-audit=${name}]`),c=getComputedStyle(root);return [name,{color:c.color,background:c.backgroundColor,border:c.borderColor,font:c.fontFamily,fontSize:c.fontSize}]})))});
@@ -68,7 +75,12 @@ async function auditCreativeMedia(page, navigate, { output, host, css }) {
           const valid=await page.locator('[data-audit=timeline]').evaluate(el=>[...el.querySelectorAll('[data-media-clip]')].every(clip=>{
             const r=clip.getBoundingClientRect(),a=clip.querySelector('[data-clip-start]').getBoundingClientRect(),b=clip.querySelector('[data-clip-end]').getBoundingClientRect();
             return Math.abs(a.left-r.left)<=2&&Math.abs(b.right-r.right)<=2&&a.right<=b.left&&a.width>=23.5&&b.width>=23.5;
-          }));assert.ok(valid,'timeline grips overlap');await capture('[data-audit=timeline]','timeline');
+          }));assert.ok(valid,'timeline grips overlap');
+          const titleWidth=await page.locator('[data-audit=timeline] [data-clip-move]').first().evaluate(el=>el.getBoundingClientRect().width);assert.ok(titleWidth>=72,'timeline title has no usable room');
+          await capture('[data-audit=timeline]','timeline');
+          await page.locator('[data-audit=timeline] [data-timeline-viewport]').evaluate(el=>el.scrollLeft=el.scrollWidth);
+          await capture('[data-audit=timeline]','timeline-end');
+          await page.locator('[data-audit=timeline] [data-timeline-viewport]').evaluate(el=>el.scrollLeft=0);
         });
         await check('MediaGrid','tiles and all loading/error/empty states render',async()=>{
           assert.equal(await page.locator('[data-audit=grid] figure').count(),4);
@@ -108,7 +120,7 @@ async function auditCreativeMedia(page, navigate, { output, host, css }) {
         });
       }
     }
-    await session.send('Emulation.setDeviceMetricsOverride',{width:1280,height:900,deviceScaleFactor:1,mobile:false});
+    await setViewport(1280,900);
     await page.evaluate(()=>document.documentElement.classList.remove('dark')); mode='functionality';
     const crop=page.locator('[data-audit=crop]');
     await page.waitForFunction(()=>{const root=document.querySelector('[data-audit=crop]');return Math.abs(root.querySelector('.cropper-container').clientWidth-root.querySelector('[data-crop-stage]').clientWidth)<=2});
@@ -117,8 +129,7 @@ async function auditCreativeMedia(page, navigate, { output, host, css }) {
       const handle=crop.locator(`.cropper-point[data-cropper-action=${action}]`);await handle.scrollIntoViewIfNeeded();const b=await handle.boundingBox();
       await page.mouse.move(b.x+b.width/2,b.y+b.height/2);await page.mouse.down();await page.mouse.move(b.x+b.width/2+(action==='e'?-24:0),b.y+b.height/2+(action==='s'?-24:0),{steps:6});await page.mouse.up();
     };
-    await crop.evaluate(el=>el.dispatchEvent(new CustomEvent('image-crop:set',{detail:{crop:{x:64,y:48,width:512,height:384}}})));
-    await page.waitForFunction(()=>Number(document.querySelector('[data-audit=crop] [data-crop-field=width]').value)>500);
+    await check('ImageCrop','Reset leaves a usable crop selection',async()=>{await crop.locator('[data-slot=image-crop-reset]').click();const b=await crop.locator('.cropper-crop-box').boundingBox();assert.ok(b.width>48&&b.height>48);});
     await check('ImageCrop','east drag changes width without changing height in Free',async()=>{const before=await cropData();await dragEdge('e');const after=await cropData();assert.ok(after.width<before.width);assert.ok(Math.abs(after.height-before.height)<=1);});
     await check('ImageCrop','south drag changes height without changing width in Free',async()=>{const before=await cropData();await dragEdge('s');const after=await cropData();assert.ok(after.height<before.height);assert.ok(Math.abs(after.width-before.width)<=1);});
     await check('ImageCrop','ratio control locks 4:3 only when chosen',async()=>{
@@ -148,6 +159,10 @@ async function auditCreativeMedia(page, navigate, { output, host, css }) {
       const root=page.locator('[data-audit=editor] [data-slot=draggable-overlay]'),handle=root.locator('[data-overlay-move]');await handle.scrollIntoViewIfNeeded();const b=await handle.boundingBox(),before=Number(await root.getAttribute('data-x'));await page.mouse.move(b.x+b.width/2,b.y+b.height/2);await page.mouse.down();await page.mouse.move(b.x+b.width/2+20,b.y+b.height/2+10,{steps:4});await page.mouse.up();assert.ok(Number(await root.getAttribute('data-x'))>before);
     });
     await check('MediaTimeline','keyboard trim preserves end time and track movement is bounded',async()=>{const root=page.locator('[data-audit=timeline] [data-media-clip=intro]');await root.locator('[data-clip-start]').press('ArrowRight');const d=await root.evaluate(el=>({start:Number(el.dataset.start),duration:Number(el.dataset.length)}));assert.ok(Math.abs(d.start+d.duration-8)<1e-8);await root.locator('[data-clip-move]').press('ArrowDown');assert.equal(await root.getAttribute('data-track'),'1');});
+    await check('MediaTimeline','pointer move uses the scrollable surface width',async()=>{
+      const clip=page.locator('[data-audit=timeline] [data-media-clip=intro]'),handle=clip.locator('[data-clip-move]');await handle.scrollIntoViewIfNeeded();const b=await handle.boundingBox(),before=Number(await clip.getAttribute('data-start'));
+      await page.mouse.move(b.x+b.width/2,b.y+b.height/2);await page.mouse.down();await page.mouse.move(b.x+b.width/2+20,b.y+b.height/2,{steps:5});await page.mouse.up();assert.ok(Number(await clip.getAttribute('data-start'))>before);
+    });
     await check('MediaGrid','checkbox selection paints the selected tile',async()=>{const root=page.locator('[data-audit=grid]');await root.locator('input[value=landscape]').check();assert.equal(await root.locator('figure[data-selected]').count(),1);});
     await check('MediaLightbox','error can be retried after its source is corrected',async()=>{
       const root=page.locator('[data-audit=lightbox] [data-slot=media-lightbox]');await root.evaluate(el=>el.dispatchEvent(new CustomEvent('media-lightbox:open',{detail:{id:'error'}})));const retry=page.locator('#audit-preview [data-media-retry]');await retry.waitFor();await root.evaluate(el=>{el.querySelector('[data-media-id=error]').dataset.src=el.querySelector('[data-media-id=landscape]').dataset.src});await retry.click();await page.waitForFunction(()=>document.querySelector('#audit-preview img')?.naturalWidth>0);assert.equal(await retry.isVisible(),false);await close();

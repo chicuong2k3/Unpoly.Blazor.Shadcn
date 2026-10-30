@@ -321,3 +321,9 @@ test('lightbox retry creates a new media request', withFixture(f=>{
   assert.equal(f.q('[data-media-retry]').hidden,false); f.q('[data-media-retry]').click();
   assert.notEqual(f.q('[data-media-stage] img'),image); assert.equal(f.q('[data-media-retry]').hidden,true);
 }));
+
+
+test('timeline disposal disconnects its layout observer', withFixture(f=>{
+  const dispose=f.compile('media-timeline'); dispose();
+  assert.ok(f.observers.every(observer=>observer.disconnected));
+}));

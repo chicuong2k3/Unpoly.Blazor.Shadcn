@@ -29,6 +29,7 @@ This audit exercises all nine media components on the actual SSR/Unpoly host and
 - Gallery thumbnails exposed browser broken-image rendering. A failed thumbnail now has a labeled fallback; the full media preview can still be opened independently.
 - Lightbox error state had no retry path and its stage could dominate short viewports. The stage and navigation now share a bounded grid; Retry starts a new request.
 - The comparison vendor's second-layer wrapper had no height. With the existing wrapper slots and an explicit vertical height, its image could size to intrinsic height instead of the frame. The bundled vendor CSS now gives that internal wrapper `height:100%`.
+- At 320px, timeline clip labels were nearly unreadable despite their handles technically fitting. The tracks now have a scrollable surface with a configurable `--timeline-min-width`; pointer deltas use the surface width so seconds remain accurate.
 - At the narrowest width, canvas and brush groups needed an explicit compact arrangement rather than relying on flex wrapping.
 
 ## Scope of evidence
