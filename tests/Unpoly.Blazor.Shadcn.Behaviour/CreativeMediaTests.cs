@@ -369,6 +369,72 @@ public class CreativeMediaTests(DemoFixture fixture) : DemoPage(fixture)
         AssertQuiet();
     }
 
+    [SkippableFact]
+    public async Task Desktop_editor_tool_groups_do_not_overlap()
+    {
+        RequireDemo();
+        await AssertToolLayoutAsync(1280, 900);
+    }
+
+    [SkippableFact]
+    public async Task Mobile_editor_tool_groups_do_not_overlap()
+    {
+        RequireDemo();
+        await AssertToolLayoutAsync(390, 844);
+    }
+
+    async Task AssertToolLayoutAsync(int width, int height)
+    {
+        await Page.SetViewportSizeAsync(width, height);
+        await GoAsync("/components/creative-media");
+        var fits = await Page.EvaluateAsync<bool>("""
+            () => {
+              const canvas = document.querySelector('[data-slot=image-canvas]').getBoundingClientRect();
+              const groups = [...document.querySelector('[data-mask-toolbar]').children].map(el => el.getBoundingClientRect());
+              return groups.every((r, i) => r.left >= canvas.left - 1 && r.right <= canvas.right + 1 && groups.slice(i + 1).every(other =>
+                Math.min(r.right, other.right) - Math.max(r.left, other.left) <= 1 || Math.min(r.bottom, other.bottom) - Math.max(r.top, other.top) <= 1));
+            }
+            """);
+        Assert.True(fits, $"Toolbar groups overlap or overflow at {width}px.");
+        AssertQuiet();
+    }
+
+    [SkippableFact]
+    public async Task Timeline_trim_handles_anchor_to_opposite_clip_edges()
+    {
+        RequireDemo();
+        await GoAsync("/components/creative-media");
+        Assert.True(await Page.EvaluateAsync<bool>("""
+            () => [...document.querySelectorAll('[data-media-clip]')].every(clip => {
+              const r = clip.getBoundingClientRect(), start = clip.querySelector('[data-clip-start]').getBoundingClientRect(), end = clip.querySelector('[data-clip-end]').getBoundingClientRect();
+              return Math.abs(start.left - r.left) <= 2 && Math.abs(end.right - r.right) <= 2 && start.right <= end.left;
+            })
+            """));
+        AssertQuiet();
+    }
+
+    [SkippableFact]
+    public async Task Crop_coordinates_are_available_in_an_expandable_panel()
+    {
+        RequireDemo();
+        await GoAsync("/components/creative-media");
+        var field = Page.Locator("[data-crop-field=x]");
+        Assert.False(await field.IsVisibleAsync());
+        await Page.Locator("[data-crop-details] summary").ClickAsync();
+        Assert.True(await field.IsVisibleAsync());
+        AssertQuiet();
+    }
+
+    [SkippableFact]
+    public async Task Comparison_layers_fill_the_frame()
+    {
+        RequireDemo();
+        await GoAsync("/components/creative-media");
+        await Page.WaitForFunctionAsync("() => customElements.get('img-comparison-slider') && [...document.querySelectorAll('[data-slot=image-compare] img')].every(img => img.complete && img.naturalWidth > 0)");
+        Assert.True(await Page.Locator("img-comparison-slider").EvaluateAsync<bool>("el => { const frame = el.getBoundingClientRect(); return frame.height > 0 && [...el.querySelectorAll('img')].every(img => Math.abs(img.getBoundingClientRect().height - frame.height) <= 2) }"));
+        AssertQuiet();
+    }
+
     async Task OpenPreviewAsync(string id)
     {
         await Page.Locator($"[data-slot=media-grid][data-lightbox-target=creative-preview] [data-media-preview={id}]").ClickAsync();

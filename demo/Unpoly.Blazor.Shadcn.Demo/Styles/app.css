@@ -1,4 +1,5 @@
 @import "tailwindcss";
+@import "../../creative-media.css";
 @import "../../../src/Unpoly.Blazor.Shadcn/Styles/ui.css";
 
 /* The demo bundles only Apple and Dracula in addition to the built-in shadcn palette.

@@ -2755,7 +2755,8 @@
     const read = clip => ({ start:mediaNumber(clip.dataset.start), duration:mediaNumber(clip.dataset.length), track:mediaNumber(clip.dataset.track) })
     const describe = clip => { const s=read(clip); return `Start ${mediaTidy(s.start)} seconds, end ${mediaTidy(s.start+s.duration)} seconds, duration ${mediaTidy(s.duration)} seconds, track ${s.track+1}.` }
     const feedback = root.querySelector('[data-media-feedback]')
-    const render = clip => { const s=read(clip); clip.style.left=`${s.start/duration*100}%`; clip.style.width=`${s.duration/duration*100}%`; clip.style.top=`${s.track*80}px`; root.style.minHeight=`${Math.max(...clips.map(c=>read(c).track),0)*80+80}px`
+    const render = clip => { const s=read(clip); clip.style.left=`${s.start/duration*100}%`; clip.style.width=`${s.duration/duration*100}%`; clip.style.top=`${s.track*80+32}px`; root.style.minHeight=`${Math.max(...clips.map(c=>read(c).track),0)*80+112}px`
+      const meta = clip.querySelector('[data-clip-meta]'); if (meta) meta.textContent = `Track ${s.track+1} · ${mediaTidy(s.duration)}s`
       for (const control of clip.querySelectorAll('[data-clip-move], [data-clip-start], [data-clip-end]')) control.setAttribute('aria-description', describe(clip))
     }
     const same = (a, b) => a.start === b.start && a.duration === b.duration && a.track === b.track

@@ -1,13 +1,19 @@
 @inherits UiComponentBase
 <div data-slot="mask-brush" class="@Class" data-size="@Size" data-opacity="@Opacity.ToString(System.Globalization.CultureInfo.InvariantCulture)" @attributes="AdditionalAttributes">
     <div data-mask-toolbar role="group" aria-label="Mask tools">
-        <Button Type="button" data-mask-action="draw" aria-pressed="true">Draw</Button>
-        <Button Type="button" data-mask-action="erase" aria-pressed="false">Erase</Button>
-        <label>Brush size <Slider Min="1" Max="256" Value="@Size" data-mask-size aria-label="Brush size" /></label>
-        <label>Opacity <Slider Min="1" Max="100" Value="@(Opacity * 100)" data-mask-opacity aria-label="Brush opacity" /></label>
-        <Button Type="button" data-mask-action="undo">Undo</Button>
-        <Button Type="button" data-mask-action="redo">Redo</Button>
-        <Button Type="button" data-mask-action="export">Export mask</Button>
+        <div data-mask-tool-group role="group" aria-label="Brush mode">
+            <Button Type="button" Variant="outline" Size="sm" data-mask-action="draw" aria-pressed="true"><Icon Name="brush" /> Draw</Button>
+            <Button Type="button" Variant="outline" Size="sm" data-mask-action="erase" aria-pressed="false"><Icon Name="eraser" /> Erase</Button>
+        </div>
+        <div data-mask-settings>
+            <label>Brush size <Slider Min="1" Max="256" Value="@Size" data-mask-size aria-label="Brush size" /></label>
+            <label>Opacity <Slider Min="1" Max="100" Value="@(Opacity * 100)" data-mask-opacity aria-label="Brush opacity" /></label>
+        </div>
+        <div data-mask-tool-group role="group" aria-label="Mask history">
+            <Button Type="button" Variant="ghost" Size="icon" data-mask-action="undo" aria-label="Undo" title="Undo"><Icon Name="undo-2" /></Button>
+            <Button Type="button" Variant="ghost" Size="icon" data-mask-action="redo" aria-label="Redo" title="Redo"><Icon Name="redo-2" /></Button>
+        </div>
+        <Button Type="button" Size="sm" data-mask-action="export"><Icon Name="download" /> Export mask</Button>
     </div>
     <canvas tabindex="0" role="img" aria-label="@Label"></canvas>
     <span data-mask-cursor aria-hidden="true"></span>

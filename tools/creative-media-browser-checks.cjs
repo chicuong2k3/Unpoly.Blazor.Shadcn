@@ -11,6 +11,59 @@ async function checkCreativeMedia(page, navigate) {
     await page.waitForFunction(() => document.querySelector('[data-canvas-plane]')?.style.transform && document.querySelector('[data-mask-toolbar]')?.parentElement.hasAttribute('data-canvas-toolbar'));
   };
   await navigate(page, '/components/creative-media'); await ready();
+  await page.waitForFunction(() => customElements.get('img-comparison-slider') && [...document.querySelectorAll('[data-slot=image-compare] img')].every(img => img.complete && img.naturalWidth > 0) && Number(document.querySelector('[data-crop-field=width]')?.value) > 0);
+  const layoutSession = await page.context().newCDPSession(page);
+  try {
+    for (const [width, height] of [[1280, 900], [390, 844]]) {
+      await layoutSession.send('Emulation.setDeviceMetricsOverride', { width, height, deviceScaleFactor: 1, mobile: false });
+      await page.waitForFunction(width => innerWidth === width, width);
+      await check(`editor controls fit ${width}px viewport`, async () => {
+        const problems = await page.evaluate(() => {
+          const problems = [], canvas = document.querySelector('[data-slot=image-canvas]');
+          const bounds = canvas.getBoundingClientRect();
+          const groups = [...document.querySelector('[data-mask-toolbar]').children].map(el => el.getBoundingClientRect());
+          groups.forEach((r, i) => {
+            if (r.left < bounds.left - 1 || r.right > bounds.right + 1) problems.push(`toolbar group ${i} overflows`);
+            groups.slice(i + 1).forEach(other => {
+              if (Math.min(r.right, other.right) - Math.max(r.left, other.left) > 1 && Math.min(r.bottom, other.bottom) - Math.max(r.top, other.top) > 1) problems.push(`toolbar group ${i} overlaps`);
+            });
+          });
+          for (const clip of document.querySelectorAll('[data-media-clip]')) {
+            const r = clip.getBoundingClientRect(), start = clip.querySelector('[data-clip-start]').getBoundingClientRect(), end = clip.querySelector('[data-clip-end]').getBoundingClientRect();
+            if (Math.abs(start.left - r.left) > 2 || Math.abs(end.right - r.right) > 2 || start.right > end.left) problems.push(`trim handles misplaced: ${JSON.stringify({clip:r.toJSON(),start:start.toJSON(),end:end.toJSON()})}`);
+          }
+          const comparison = document.querySelector('img-comparison-slider'), frame = comparison.getBoundingClientRect();
+          for (const img of comparison.querySelectorAll('img')) {
+            if (Math.abs(img.getBoundingClientRect().height - frame.height) > 2) problems.push('comparison image leaves blank frame space');
+          }
+          if (document.querySelector('[data-crop-details]').open) problems.push('advanced crop fields exposed by default');
+          const crop = document.querySelector('[data-crop-stage]').getBoundingClientRect();
+          if (crop.height < 100 || crop.height > 385) problems.push('crop frame unbounded');
+          for (const el of document.querySelectorAll('[data-creative-section]')) {
+            const r = el.getBoundingClientRect(); if (r.left < -1 || r.right > innerWidth + 1) problems.push('section overflows viewport');
+          }
+          return problems;
+        });
+        assert.deepEqual(problems, []);
+        if (process.env.MAUI_MEDIA_REPORT_DIR) {
+          const path = require('node:path');
+          const css = await page.evaluate(() => [...document.styleSheets].some(s => s.href?.includes('app.v3.css')) ? 'v3' : 'v4');
+          const capture = async (selector, name) => {
+            const element = page.locator(selector);
+            // Keep the sticky docs header above the captured component, without changing CSS.
+            await element.evaluate(el => window.scrollTo(0, el.getBoundingClientRect().top + scrollY - 96));
+            await element.screenshot({ path: path.join(process.env.MAUI_MEDIA_REPORT_DIR, `${css}-${width}-${name}.png`) });
+          };
+          await capture('[data-slot=image-canvas]', 'canvas');
+          if (width >= 1024) await capture('[data-creative-image-tools]', 'image-tools');
+          else {
+            await capture('[data-creative-comparison]', 'comparison');
+            await capture('[data-creative-image-tools] > section:last-child', 'crop');
+          }
+        }
+      });
+    }
+  } finally { await layoutSession.send('Emulation.clearDeviceMetricsOverride'); await layoutSession.detach(); }
   await check('gallery selects requested image', async () => {
     await page.locator('[data-slot=media-grid][data-lightbox-target=creative-preview] [data-media-preview=reference]').click();
     await page.locator('#creative-preview[open]').waitFor();

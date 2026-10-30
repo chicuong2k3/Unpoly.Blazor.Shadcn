@@ -166,3 +166,13 @@ This workflow policy is confined to the ephemeral runner and is not required for
 Overlay move/resize handles expose the current rectangle as percentages in `aria-description`. All timeline handles expose start/end/duration in seconds and the one-based track, including before the first edit and after a cancelled pointer gesture. Committed changes update a polite `role="status"` region; pointer previews and no-op edits do not announce a commit. Both demos show the keyboard instructions. These are button controls with spatial/time editing shortcuts, not ARIA sliders.
 
 The comparison divider and default handle have a black edge behind their white foreground, keeping a boundary over light and dark image content. Automated checks verify feedback markup/state and stylesheet application in Web and native WebView2. Manual screen-reader announcement quality and image-dependent contrast review still require human verification.
+
+### Reference layout alignment
+
+The editor uses the grouped toolbar structure from [konva-drawboard's Toolbar](https://github.com/Oval17/konva-drawboard/blob/main/src/components/Toolbar.tsx): mode, brush settings, history, export. Canvas view controls stay on their own row. On narrow screens the two brush settings move together to a dedicated row; toolbar groups never split internally.
+
+The crop layout follows [Kibo's example](https://github.com/haydenbleasel/kibo/blob/main/apps/docs/examples/image-crop.tsx): a bounded image stage with adjacent Apply/Reset controls. Source-coordinate inputs remain available under an expandable panel as the keyboard alternative. Cropper.js remains the existing engine; no React file-upload state is embedded in the component.
+
+Comparison uses a round grip on the divider, with the two layers sharing one frame, following the [shadcn.io comparison](https://www.shadcn.io/ui/comparison) anatomy. The demo makes the original grayscale so the comparison is visible. Gallery tiles and a centered media stage with separate navigation/caption follow the presentation structure of [DKMediaViewer](https://github.com/diklein/dkmediaviewer). Masonry, EXIF cards and fly-in animations are not reproduced by these simpler paginated primitives.
+
+Timeline clips put trim grips at opposite edges and the move area between them, with time ticks above and track/duration metadata below the title. Overlay move and resize controls are icon handles on the top edge and bottom corner. All controls compose the library's Button/Slider components. This is presentation layout, not a port of the references' React state or a new editor engine.

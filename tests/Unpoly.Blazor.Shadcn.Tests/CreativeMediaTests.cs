@@ -6,6 +6,15 @@ namespace Unpoly.Blazor.Shadcn.Tests;
 public class CreativeMediaTests : BunitContext
 {
     [Theory]
+    [InlineData("undo")]
+    [InlineData("redo")]
+    public void Mask_history_control_renders_a_glyph(string action)
+    {
+        var root = Render<MaskBrush>();
+        Assert.NotEmpty(root.FindAll($"[data-mask-action={action}] svg > *"));
+    }
+
+    [Theory]
     [InlineData(-1, 0)]
     [InlineData(150, 100)]
     [InlineData(25, 25)]

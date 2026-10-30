@@ -1,9 +1,9 @@
 @inherits UiComponentBase
 <div data-slot="draggable-overlay" data-x="@F(X)" data-y="@F(Y)" data-width="@F(Width)" data-height="@F(Height)" data-snap="@F(Snap)" class="@Class" @attributes="AdditionalAttributes">
-    <button type="button" data-overlay-move aria-label="@MoveLabel">Move</button>
+    <Button Type="button" Variant="ghost" Size="icon" data-overlay-move aria-label="@MoveLabel" title="@MoveLabel"><Icon Name="grip" /></Button>
     <span data-media-feedback role="status" aria-atomic="true"></span>
-    @ChildContent
-    <button type="button" data-overlay-resize aria-label="@ResizeLabel">Resize</button>
+    <div data-overlay-content>@ChildContent</div>
+    <Button Type="button" Variant="ghost" Size="icon" data-overlay-resize aria-label="@ResizeLabel" title="@ResizeLabel"><Icon Name="move-diagonal-2" /></Button>
 </div>
 @code {
     [Parameter] public double X { get; set; } = .1;
