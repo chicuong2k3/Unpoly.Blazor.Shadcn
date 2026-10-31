@@ -2387,12 +2387,28 @@
   // Static SSR renders <img-comparison-slider> with two <img slot="first/second">. This compiler
   // lazy-loads the WC definition only when [data-slot="image-compare"] is on the page, so a landing
   // page with no compare never fetches the 11KB script.
-  // The bundled media-chrome IIFE registers custom elements once. The browser upgrades
-  // connected controllers automatically; removing one leaves no per-instance listeners here.
-  shadcnCompiler('[data-slot="video-player"]', () => {
-    if (!customElements.get('media-controller')) {
-      loadScript('_content/Unpoly.Blazor.Shadcn/media-chrome/index.js').catch(console.error)
+  // Video.js 10 registers <video-player>/<video-skin> once. It is an ES module, so it is imported
+  // rather than script-loaded; the browser upgrades connected players by itself and Unpoly swaps
+  // re-run this compiler, which is a no-op once the elements are defined. The import is shared by
+  // every player on the page. When it fails the root is marked data-videojs="failed" and the
+  // server-rendered native controls stay usable. No per-instance listeners are attached, so the
+  // destructor has nothing to undo.
+  let videojsLoad = null
+  shadcnCompiler('[data-slot="video-player"]', (root) => {
+    const mark = (state) => { if (root.isConnected) root.dataset.videojs = state }
+    if (customElements.get('video-skin')) {
+      mark('ready')
+      return () => {}
     }
+    videojsLoad = videojsLoad || import(new URL('_content/Unpoly.Blazor.Shadcn/videojs/video.js', document.baseURI).href)
+    videojsLoad.then(
+      () => mark('ready'),
+      (error) => {
+        console.error('Video.js failed to load', error)
+        mark('failed')
+        videojsLoad = null
+      })
+    return () => {}
   })
 
   shadcnCompiler('[data-slot="image-crop"]', (root) => {
