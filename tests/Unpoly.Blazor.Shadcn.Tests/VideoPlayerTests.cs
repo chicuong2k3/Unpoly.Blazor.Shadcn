@@ -18,8 +18,7 @@ public class VideoPlayerTests : BunitContext
     {
         var root = Player(p => p.Add(x => x.Src, "/clip.mp4")).Find("[data-slot=video-player]");
 
-        Assert.Equal("video-player", root.LocalName);
-        var skin = root.QuerySelector("video-skin");
+        var skin = root.QuerySelector("video-player > video-skin");
         Assert.NotNull(skin);
         Assert.Equal("/clip.mp4", skin!.QuerySelector("video")?.GetAttribute("src"));
     }
@@ -51,11 +50,19 @@ public class VideoPlayerTests : BunitContext
     public void Title_is_absent_when_not_set() =>
         Assert.False(Player().Find("video-player").HasAttribute("content-title"));
 
+    [Fact]
+    public void The_root_is_the_i18n_provider_because_videojs_reads_its_language_from_it() =>
+        Assert.Equal("media-i18n", Player().Find("[data-slot=video-player]").LocalName);
+
     [Theory]
     [InlineData(null, "vi")]
     [InlineData("en", "en")]
     public void Lang_defaults_to_vietnamese_and_can_be_overridden(string? lang, string expected) =>
-        Assert.Equal(expected, Player(p => { if (lang is not null) p.Add(x => x.Lang, lang); }).Find("video-player").GetAttribute("lang"));
+        Assert.Equal(expected, Player(p => { if (lang is not null) p.Add(x => x.Lang, lang); }).Find("[data-slot=video-player]").GetAttribute("lang"));
+
+    [Fact]
+    public void The_player_element_is_a_block_so_it_fills_the_root() =>
+        Assert.Contains("display:block", Player().Find("video-player").GetAttribute("style"));
 
     [Fact]
     public void A_title_with_markup_characters_stays_text_and_cannot_add_attributes()

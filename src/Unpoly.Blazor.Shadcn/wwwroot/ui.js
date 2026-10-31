@@ -2395,12 +2395,28 @@
   // destructor has nothing to undo.
   let videojsLoad = null
   shadcnCompiler('[data-slot="video-player"]', (root) => {
-    const mark = (state) => { if (root.isConnected) root.dataset.videojs = state }
+    const mark = (state) => {
+      if (!root.isConnected) return
+      root.dataset.videojs = state
+      // The skin draws its own controls; the server-rendered native ones were only a fallback for a
+      // failed load, and left on they show through behind the frosted bar as a second control set.
+      if (state === 'ready') root.querySelector('video')?.removeAttribute('controls')
+    }
     if (customElements.get('video-skin')) {
       mark('ready')
       return () => {}
     }
-    videojsLoad = videojsLoad || import(new URL('_content/Unpoly.Blazor.Shadcn/videojs/video.js', document.baseURI).href)
+    // A locale file only registers its strings when imported, and the skin reads them as it renders, so the
+    // locale of the first player on the page is imported BEFORE video.js defines the elements. A missing
+    // locale must not stop playback, hence the catch.
+    videojsLoad = videojsLoad || (async () => {
+      const lang = (root.getAttribute('lang') || root.closest('[lang]')?.getAttribute('lang') || document.documentElement.lang || '').toLowerCase()
+      if (lang.startsWith('vi')) {
+        await import(new URL('_content/Unpoly.Blazor.Shadcn/videojs/locales/vi.js', document.baseURI).href)
+          .catch((error) => console.warn('Video.js Vietnamese locale not loaded', error))
+      }
+      return import(new URL('_content/Unpoly.Blazor.Shadcn/videojs/video.js', document.baseURI).href)
+    })()
     videojsLoad.then(
       () => mark('ready'),
       (error) => {
