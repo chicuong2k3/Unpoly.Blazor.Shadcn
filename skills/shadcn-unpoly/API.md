@@ -2500,7 +2500,7 @@ renders `<button>` · `data-slot="tooltip-trigger"`
 | `Size` | `string` | `"default"` |  |
 
 ## `<VideoPlayer>`
-renders `<video-player>` · `data-slot="video-player"`
+renders `<media-i18n>` · `data-slot="video-player"`
 
 | Parameter | Type | Default | |
 |---|---|---|---|
