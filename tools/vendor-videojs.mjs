@@ -7,7 +7,7 @@ import fs from 'node:fs'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 
-const IMPORT = /(?:from\s*|import\s*\(?\s*|import\s+)["'](\.[^"']+)["']/g
+const IMPORT = /(?:from\s*|import\s*\(?\s*|import\s+)["'`](\.[^"'`]+)["'`]/g
 
 export function closureOf(root, entry) {
   const seen = new Set()

@@ -38,6 +38,28 @@ public class VideoPlayerTests : BunitContext
     public void Aspect_ratio_reaches_the_skin(string ratio) =>
         Assert.Contains($"aspect-ratio:{ratio}", Player(p => p.Add(x => x.AspectRatio, ratio)).Find("video-skin").GetAttribute("style"));
 
+    [Theory]
+    [InlineData("")]
+    [InlineData("abc")]
+    [InlineData("1/1;position:fixed;inset:0;background:url(https://evil.example/x)")]
+    [InlineData("16/9}body{display:none")]
+    [InlineData("/")]
+    public void An_aspect_ratio_that_is_not_a_plain_ratio_falls_back_and_never_reaches_the_css(string ratio)
+    {
+        var style = Player(p => p.Add(x => x.AspectRatio, ratio)).Find("video-skin").GetAttribute("style");
+
+        Assert.Contains("aspect-ratio:16/9", style);
+        Assert.DoesNotContain("evil", style);
+        Assert.DoesNotContain("position:fixed", style);
+    }
+
+    [Theory]
+    [InlineData("2.39/1")]
+    [InlineData("1.5")]
+    [InlineData("4 / 3")]
+    public void A_decimal_or_single_number_ratio_is_accepted(string ratio) =>
+        Assert.Contains($"aspect-ratio:{ratio}", Player(p => p.Add(x => x.AspectRatio, ratio)).Find("video-skin").GetAttribute("style"));
+
     [Fact]
     public void Aspect_ratio_defaults_to_sixteen_by_nine() =>
         Assert.Contains("aspect-ratio:16/9", Player().Find("video-skin").GetAttribute("style"));

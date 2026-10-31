@@ -34,3 +34,11 @@ test('throws when an import cannot be resolved so a partial copy is never produc
   const dir = fixture({ 'video.js': 'import "./missing.js";' })
   assert.throws(() => closureOf(dir, 'video.js'), /missing\.js/)
 })
+
+test('follows dynamic imports written with template-literal quotes', () => {
+  const dir = fixture({
+    'video.js': 'const l={fr:()=>import(`./fr-abc.js`)};',
+    'fr-abc.js': 'export default 1;',
+  })
+  assert.deepEqual(closureOf(dir, 'video.js'), ['fr-abc.js', 'video.js'])
+})

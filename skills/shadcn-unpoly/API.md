@@ -2511,5 +2511,5 @@ renders `<media-i18n>` · `data-slot="video-player"`
 | `Muted` | `bool` | — |  |
 | `Preload` | `string` | `"metadata"` |  |
 | `Title` | `string?` | — |  |
-| `AspectRatio` | `string` | `"16/9"` |  |
+| `AspectRatio` | `string?` | `"16/9"` |  |
 | `Lang` | `string` | `"vi"` |  |
