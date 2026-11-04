@@ -2457,15 +2457,13 @@
       mark('ready')
       return () => {}
     }
-    // A locale file only registers its strings when imported, and the skin reads them as it renders, so the
-    // locale of the first player on the page is imported BEFORE video.js defines the elements. A missing
-    // locale must not stop playback, hence the catch.
+    // The shared module loader may be initialized by an English player before a Vietnamese
+    // player is inserted (e.g. after an Unpoly swap). Register every bundled non-default locale
+    // BEFORE defining the skin, independently of which instance triggers the first import.
+    // A missing translation must not prevent native playback or the default English skin.
     videojsLoad = videojsLoad || (async () => {
-      const lang = (root.getAttribute('lang') || root.closest('[lang]')?.getAttribute('lang') || document.documentElement.lang || '').toLowerCase()
-      if (lang.startsWith('vi')) {
-        await import(new URL('_content/Unpoly.Blazor.Shadcn/videojs/locales/vi.js', document.baseURI).href)
-          .catch((error) => console.warn('Video.js Vietnamese locale not loaded', error))
-      }
+      await import(new URL('_content/Unpoly.Blazor.Shadcn/videojs/locales/vi.js', document.baseURI).href)
+        .catch((error) => console.warn('Video.js Vietnamese locale not loaded', error))
       return import(new URL('_content/Unpoly.Blazor.Shadcn/videojs/video.js', document.baseURI).href)
     })()
     videojsLoad.then(
