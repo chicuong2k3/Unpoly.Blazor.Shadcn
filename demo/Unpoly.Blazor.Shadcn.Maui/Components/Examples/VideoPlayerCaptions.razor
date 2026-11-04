@@ -1,0 +1,7 @@
+@* Caption tracks are plain <track> children of the video; the captions button and the settings
+   menu list them. Here the WebVTT file is a data URL so the example needs no extra asset. *@
+<VideoPlayer Src="https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4"
+             Class="w-full max-w-xl overflow-hidden rounded-lg">
+    <track kind="captions" srclang="vi" label="Tiếng Việt" default
+           src="data:text/vtt;charset=utf-8,WEBVTT%0A%0A00%3A00%3A00.500%20--%3E%2000%3A00%3A03.000%0AM%E1%BB%99t%20b%C3%B4ng%20hoa%20n%E1%BB%9F%20trong%20n%E1%BA%AFng.%0A%0A00%3A00%3A03.000%20--%3E%2000%3A00%3A06.000%0AOng%20bay%20%C4%91%E1%BA%BFn%20l%E1%BA%A5y%20m%E1%BA%ADt.%0A" />
+</VideoPlayer>

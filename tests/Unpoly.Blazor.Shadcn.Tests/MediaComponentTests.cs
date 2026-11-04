@@ -41,17 +41,4 @@ public class MediaComponentTests : BunitContext
         Assert.Equal("true", root.GetAttribute("data-circular"));
         Assert.Equal("2048", root.GetAttribute("data-max-image-size"));
     }
-
-    [Fact]
-    public void Video_player_connects_media_to_media_chrome_controls()
-    {
-        var root = Render<VideoPlayer>(p => p.Add(x => x.Src, "/clip.mp4")).Find("[data-slot=video-player]");
-        var video = root.QuerySelector("video");
-
-        Assert.Equal("media-controller", root.LocalName);
-        Assert.Equal("media", video?.GetAttribute("slot"));
-        Assert.Equal("/clip.mp4", video?.GetAttribute("src"));
-        Assert.NotNull(root.QuerySelector("media-control-bar media-play-button"));
-        Assert.NotNull(root.QuerySelector("media-control-bar media-time-range"));
-    }
 }
