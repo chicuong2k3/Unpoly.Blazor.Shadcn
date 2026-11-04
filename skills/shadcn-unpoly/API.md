@@ -2594,7 +2594,7 @@ renders `<button>` · `data-slot="tooltip-trigger"`
 | `Size` | `string` | `"default"` |  |
 
 ## `<VideoPlayer>`
-renders `<media-controller>` · `data-slot="video-player"`
+renders `<media-i18n>` · `data-slot="video-player"`
 
 | Parameter | Type | Default | |
 |---|---|---|---|
@@ -2604,3 +2604,6 @@ renders `<media-controller>` · `data-slot="video-player"`
 | `Loop` | `bool` | — |  |
 | `Muted` | `bool` | — |  |
 | `Preload` | `string` | `"metadata"` |  |
+| `Title` | `string?` | — |  |
+| `AspectRatio` | `string?` | `"16/9"` |  |
+| `Lang` | `string` | `"vi"` |  |
