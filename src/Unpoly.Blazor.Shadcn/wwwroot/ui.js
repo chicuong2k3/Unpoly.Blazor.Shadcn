@@ -2438,12 +2438,42 @@
   // Static SSR renders <img-comparison-slider> with two <img slot="first/second">. This compiler
   // lazy-loads the WC definition only when [data-slot="image-compare"] is on the page, so a landing
   // page with no compare never fetches the 11KB script.
-  // The bundled media-chrome IIFE registers custom elements once. The browser upgrades
-  // connected controllers automatically; removing one leaves no per-instance listeners here.
-  shadcnCompiler('[data-slot="video-player"]', () => {
-    if (!customElements.get('media-controller')) {
-      loadScript('_content/Unpoly.Blazor.Shadcn/media-chrome/index.js').catch(console.error)
+  // Video.js 10 registers <video-player>/<video-skin> once. It is an ES module, so it is imported
+  // rather than script-loaded; the browser upgrades connected players by itself and Unpoly swaps
+  // re-run this compiler, which is a no-op once the elements are defined. The import is shared by
+  // every player on the page. When it fails the root is marked data-videojs="failed" and the
+  // server-rendered native controls stay usable. No per-instance listeners are attached, so the
+  // destructor has nothing to undo.
+  let videojsLoad = null
+  shadcnCompiler('[data-slot="video-player"]', (root) => {
+    const mark = (state) => {
+      if (!root.isConnected) return
+      root.dataset.videojs = state
+      // The skin draws its own controls; the server-rendered native ones were only a fallback for a
+      // failed load, and left on they show through behind the frosted bar as a second control set.
+      if (state === 'ready') root.querySelector('video')?.removeAttribute('controls')
     }
+    if (customElements.get('video-skin')) {
+      mark('ready')
+      return () => {}
+    }
+    // The shared module loader may be initialized by an English player before a Vietnamese
+    // player is inserted (e.g. after an Unpoly swap). Register every bundled non-default locale
+    // BEFORE defining the skin, independently of which instance triggers the first import.
+    // A missing translation must not prevent native playback or the default English skin.
+    videojsLoad = videojsLoad || (async () => {
+      await import(new URL('_content/Unpoly.Blazor.Shadcn/videojs/locales/vi.js', document.baseURI).href)
+        .catch((error) => console.warn('Video.js Vietnamese locale not loaded', error))
+      return import(new URL('_content/Unpoly.Blazor.Shadcn/videojs/video.js', document.baseURI).href)
+    })()
+    videojsLoad.then(
+      () => mark('ready'),
+      (error) => {
+        console.error('Video.js failed to load', error)
+        mark('failed')
+        videojsLoad = null
+      })
+    return () => {}
   })
 
   // Creative media primitives share the platform driver on SSR/Unpoly and WebView hosts.

@@ -1,24 +1,25 @@
 @inherits UiComponentBase
 
-@* media-chrome Web Components provide playback UI on both static SSR and MAUI.
-   The video stays native media; controls are media-chrome's accessible custom elements. *@
-<media-controller data-slot="video-player" class="@Class"
-                  style="--media-primary-color:var(--primary);--media-secondary-color:var(--background);--media-text-color:var(--foreground);--media-background-color:var(--background);--media-control-hover-background:var(--accent);--media-font-family:var(--font-sans);--media-range-track-background:var(--border)"
-                  @attributes="AdditionalAttributes">
-    <video slot="media" src="@Src" poster="@Poster" autoplay="@Autoplay"
-           loop="@Loop" muted="@Muted" playsinline preload="@Preload">
-        @ChildContent
-    </video>
-    <media-control-bar>
-        <media-play-button></media-play-button>
-        <media-seek-backward-button></media-seek-backward-button>
-        <media-seek-forward-button></media-seek-forward-button>
-        <media-time-range></media-time-range>
-        <media-time-display show-duration></media-time-display>
-        <media-mute-button></media-mute-button>
-        <media-volume-range></media-volume-range>
-    </media-control-bar>
-</media-controller>
+@* Video.js 10 default skin. <video-player> and <video-skin> are custom elements registered by ui.js,
+   which imports videojs/video.js once when a [data-slot="video-player"] is on the page. The native
+   controls stay on the <video> until the skin upgrades and takes over, so a failed import still
+   leaves a usable player.
+
+   The root is <media-i18n>: Video.js reads the UI language from that provider (or the document),
+   NOT from <video-player> or the skin, so lang has to sit here. ui.js imports the matching locale
+   before the skin renders. The skin is themed through Video.js' public --media-* variables, mapped
+   here onto this library's tokens. AspectRatio matters for portrait clips: the skin is a fixed box. *@
+<media-i18n data-slot="video-player" class="@Class" lang="@Lang" style="display:block"
+            @attributes="AdditionalAttributes">
+    <video-player content-title="@Title" style="display:block">
+        <video-skin style="display:block;width:100%;aspect-ratio:@SafeAspectRatio;--media-accent-color:var(--primary);--media-accent-text-color:var(--primary-foreground);--media-border-radius:var(--radius);--media-font-family:var(--font-sans, inherit)">
+            <video src="@Src" poster="@Poster" controls autoplay="@Autoplay" loop="@Loop" muted="@Muted"
+                   playsinline preload="@Preload">
+                @ChildContent
+            </video>
+        </video-skin>
+    </video-player>
+</media-i18n>
 
 @code {
     [Parameter] public string? Src { get; set; }
@@ -27,4 +28,18 @@
     [Parameter] public bool Loop { get; set; }
     [Parameter] public bool Muted { get; set; }
     [Parameter] public string Preload { get; set; } = "metadata";
+
+    /// <summary>Content title shown by the skin (the player's <c>content-title</c> attribute).</summary>
+    [Parameter] public string? Title { get; set; }
+
+    /// <summary>CSS <c>aspect-ratio</c> of the player box, e.g. <c>16/9</c> or <c>9/16</c> for portrait clips. Anything that is not a plain number or <c>w/h</c> ratio is replaced by <c>16/9</c>, so a caller's data can never inject CSS.</summary>
+    [Parameter] public string? AspectRatio { get; set; } = "16/9";
+
+    private static readonly System.Text.RegularExpressions.Regex PlainRatio =
+        new(@"^\d{1,4}(\.\d{1,3})?(\s?/\s?\d{1,4}(\.\d{1,3})?)?$", System.Text.RegularExpressions.RegexOptions.CultureInvariant);
+
+    private string SafeAspectRatio => AspectRatio is { } ratio && PlainRatio.IsMatch(ratio) ? ratio : "16/9";
+
+    /// <summary>UI language; the Vietnamese locale is loaded by ui.js. Set on the root, where Video.js reads it.</summary>
+    [Parameter] public string Lang { get; set; } = "vi";
 }

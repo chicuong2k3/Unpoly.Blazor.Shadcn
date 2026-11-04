@@ -1,5 +1,21 @@
 @page "/components/video-player"
 <PageTitle>Video Player — Unpoly.Blazor.Shadcn</PageTitle>
 <h1 class="doc-h1">Video Player</h1>
-<p class="doc-lede">Composable media-chrome playback controls for play, seek, time and volume.</p>
-<VideoPlayer Src="https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4" Class="w-full max-w-xl rounded-lg" />
+<p class="doc-lede">The Video.js 10 default skin (frosted controls, settings menu, hotkeys) on a native <code>&lt;video&gt;</code>, loaded lazily from <code>videojs/video.js</code>.</p>
+
+<h2 class="doc-h2">Default</h2>
+<Example Source="VideoPlayerBasic.razor"><VideoPlayerBasic /></Example>
+
+<h2 class="doc-h2">Poster and title</h2>
+<Example Source="VideoPlayerPoster.razor"><VideoPlayerPoster /></Example>
+
+<h2 class="doc-h2">Captions</h2>
+<p class="doc-note">Add <code>&lt;track&gt;</code> children. If the browser keeps the track hidden, turn it on from the captions button.</p>
+<Example Source="VideoPlayerCaptions.razor"><VideoPlayerCaptions /></Example>
+
+<h2 class="doc-h2">Portrait clip</h2>
+<p class="doc-note"><code>AspectRatio="9/16"</code> sizes the player box; the default is <code>16/9</code>.</p>
+<Example Source="VideoPlayerPortrait.razor"><VideoPlayerPortrait /></Example>
+
+<h2 class="doc-h2">Two players</h2>
+<Example Source="VideoPlayerPair.razor"><VideoPlayerPair /></Example>
