@@ -22,20 +22,22 @@
 
 @if (Values is not { Length: > 1 } values)
 {
-    @* id is written here, not left to the splat: Blazor matches parameters case-insensitively,
-       so a plain id="…" at the call site binds to the Id parameter below and never reaches the
-       element. The slider rendered with no id at all, and every <label for> and <output for>
-       pointing at it addressed nothing. *@
+    @* id and name are written here, not left to the splat: Blazor matches parameters
+       case-insensitively, so a plain id="…" or name="…" at the call site binds to the Id/Name
+       parameters below and never reaches the element. The slider rendered with no id at all, and
+       every <label for> and <output for> pointing at it addressed nothing; the name went missing
+       in the same way, so a slider inside a form posted nothing under it and the server fell back
+       to its own default instead of the value the user picked. *@
     @if (ValueChanged.HasDelegate)
     {
-        <input type="range" data-slot="slider" id="@Id" min="@Min" max="@Max" step="@Step"
+        <input type="range" data-slot="slider" id="@Id" name="@Name" min="@Min" max="@Max" step="@Step"
                value="@Value" disabled="@Disabled" data-disabled="@(Disabled ? "" : null)"
                data-orientation="@Orientation" class="@Classes"
                @onchange="OnChange" @attributes="AdditionalAttributes" />
     }
     else
     {
-        <input type="range" data-slot="slider" id="@Id" min="@Min" max="@Max" step="@Step"
+        <input type="range" data-slot="slider" id="@Id" name="@Name" min="@Min" max="@Max" step="@Step"
                value="@Value" disabled="@Disabled" data-disabled="@(Disabled ? "" : null)"
                data-orientation="@Orientation" class="@Classes"
                @attributes="AdditionalAttributes" />
