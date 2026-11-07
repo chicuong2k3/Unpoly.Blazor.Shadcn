@@ -12,15 +12,20 @@
    an ordinary form, an image survives a validation failure that re-renders the page, and the
    same field works inside a form that is already doing something else.
 
+   SubmitWithForm opts into native multipart submission instead: the picker carries Name,
+   the hidden URL field is disabled, and the preview uses a temporary object URL. Nothing
+   is sent until the surrounding form submits. That form must use enctype="multipart/form-data".
+
    It is a <div>, not a <form>. These sit inside the form they belong to, and a nested <form> is
    invalid HTML that the browser flattens — silently taking the outer form's fields with it. *@
 
 <div data-slot="file-upload" data-accept="@Accept" data-max-bytes="@MaxBytes"
-     data-action="@Action" data-preview-base="@PreviewBase" class="@Classes"
+     data-action="@Action" data-preview-base="@PreviewBase"
+     data-submit-with-form="@(SubmitWithForm ? "true" : null)" class="@Classes"
      @attributes="AdditionalAttributes">
 
     @* The value the form posts. Never typed, never shown — the picture is the interface. *@
-    <input type="hidden" data-slot="file-upload-value" name="@Name" value="@Value" />
+    <input type="hidden" data-slot="file-upload-value" name="@Name" value="@Value" disabled="@SubmitWithForm" />
 
     <div data-slot="file-upload-zone" role="button" tabindex="0" aria-label="@Prompt"
          class="@ZoneClasses">
@@ -47,8 +52,9 @@
             @ChildContent
         }
 
-        @* No name, so the parent form never tries to post it. It only opens the picker. *@
-        <input type="file" data-slot="file-upload-input" accept="@Accept" class="sr-only"
+        @* Only native multipart mode posts the file itself. *@
+        <input type="file" data-slot="file-upload-input" name="@(SubmitWithForm ? Name : null)"
+               accept="@Accept" class="sr-only" required="@Required"
                aria-label="@Prompt" disabled="@Disabled" />
 
         @* On the picture rather than under it: a word underneath is a permanent offer to delete
@@ -79,6 +85,15 @@
     /// the field's value — anything else in the body is ignored, so an endpoint may say more.
     /// </summary>
     [Parameter, EditorRequired] public string Action { get; set; } = default!;
+
+    /// <summary>
+    /// Keep the selected file in the picker and submit it under Name with the surrounding
+    /// multipart form. No fetch occurs and Action is ignored. Default remains immediate upload.
+    /// </summary>
+    [Parameter] public bool SubmitWithForm { get; set; }
+
+    /// <summary>Require a file selection before native form submission.</summary>
+    [Parameter] public bool Required { get; set; }
 
     /// <summary>Passed to the picker AND checked before the upload, because a picker's accept
     /// is advice: a file dragged onto the zone never went through it.</summary>

@@ -14,6 +14,15 @@
 </p>
 <Example Source="FileUploadExample.razor"><FileUploadExample /></Example>
 
+<h2 class="doc-h2">Submit with a form</h2>
+<p class="doc-note">
+    Set <code>SubmitWithForm</code> to keep the selected file in the browser until the surrounding
+    multipart form submits. The file posts under <code>Name</code>; no background upload occurs,
+    and <code>Action</code> is ignored. <code>Required</code> uses native form validation.
+    Preview URLs are local to this page and do not survive a reload.
+</p>
+<Example Source="FileUploadMultipart.razor"><FileUploadMultipart /></Example>
+
 <h2 class="doc-h2">With a value</h2>
 <p class="doc-note">
     The picture is the control. The only thing drawn on top of it is the way to remove it, and it

@@ -1198,7 +1198,9 @@ renders `<div>` · `data-slot="file-upload"`
 | `Name` | `string` | `default!` |  |
 | `Value` | `string?` | — | **required** |
 | `Action` | `string` | `default!` | **required** |
-| `Accept` | `string` | `"image/*"` | **required** |
+| `SubmitWithForm` | `bool` | — | **required** |
+| `Required` | `bool` | — |  |
+| `Accept` | `string` | `"image/*"` |  |
 | `MaxBytes` | `int` | `8 * 1024 * 1024` |  |
 | `Ratio` | `string` | `"aspect-video"` |  |
 | `Prompt` | `string` | `"Drop a file here, or click to choose"` |  |

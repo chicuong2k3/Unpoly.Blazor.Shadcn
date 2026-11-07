@@ -4034,6 +4034,12 @@
     const clear = root.querySelector('[data-slot="file-upload-clear"]')
     const status = root.querySelector('[data-slot="file-upload-status"]')
     if (!zone || !picker || !value) return
+    const submitWithForm = root.dataset.submitWithForm === 'true'
+    let localPreview = null
+    const releasePreview = () => {
+      if (localPreview) URL.revokeObjectURL(localPreview)
+      localPreview = null
+    }
 
     const text = () => ({
       uploading: 'Uploading…',
@@ -4052,7 +4058,7 @@
     // What the field holds decides what the zone shows. One function, called after every change,
     // rather than each path remembering to update three elements.
     const paint = () => {
-      const url = value.value
+      const url = submitWithForm ? localPreview : value.value
       zone.dataset.filled = url ? 'true' : 'false'
       if (preview) {
         // Removed rather than emptied: src="" is a request for the CURRENT PAGE, which the
@@ -4082,9 +4088,25 @@
       if (!file) return
       // Checked here as well as in the picker: `accept` is advice the picker gives, and a file
       // dragged onto the zone never went near it.
-      if (!accepts(file)) return say(text().refused, 'error')
+      const reject = (message) => {
+        if (submitWithForm) {
+          picker.value = ''
+          releasePreview()
+          paint()
+        }
+        say(message, 'error')
+      }
+      if (!accepts(file)) return reject(text().refused)
       const max = Number(root.dataset.maxBytes || 0)
-      if (max > 0 && file.size > max) return say(text().tooBig, 'error')
+      if (max > 0 && file.size > max) return reject(text().tooBig)
+
+      if (submitWithForm) {
+        releasePreview()
+        localPreview = URL.createObjectURL(file)
+        paint()
+        say('')
+        return
+      }
 
       zone.dataset.uploading = 'true'
       say(text().uploading)
@@ -4130,7 +4152,13 @@
     const onDrop = (event) => {
       event.preventDefault()
       delete zone.dataset.dragging
-      send(event.dataTransfer?.files?.[0])
+      const file = event.dataTransfer?.files?.[0]
+      if (submitWithForm && file) {
+        const selection = new DataTransfer()
+        selection.items.add(file)
+        picker.files = selection.files
+        picker.dispatchEvent(new Event('change', { bubbles: true }))
+      } else send(file)
     }
 
     const onClear = (event) => {
@@ -4140,10 +4168,22 @@
       value.dispatchEvent(new Event('input', { bubbles: true }))
       value.dispatchEvent(new Event('change', { bubbles: true }))
       picker.value = ''
+      releasePreview()
       paint()
       say('')
+      if (submitWithForm) picker.dispatchEvent(new Event('change', { bubbles: true }))
     }
 
+    const form = root.closest('form')
+    const onReset = () => {
+      if (!submitWithForm) return
+      queueMicrotask(() => {
+        releasePreview()
+        paint()
+        say('')
+      })
+    }
+    form?.addEventListener('reset', onReset)
     picker.addEventListener('change', onPick)
     zone.addEventListener('click', onClick)
     zone.addEventListener('keydown', onKey)
@@ -4154,6 +4194,8 @@
     paint()
 
     return () => {
+      releasePreview()
+      form?.removeEventListener('reset', onReset)
       picker.removeEventListener('change', onPick)
       zone.removeEventListener('click', onClick)
       zone.removeEventListener('keydown', onKey)
