@@ -425,6 +425,7 @@ side. That plugin is not installed here (it is listed by the check-compiled .NET
        has already made the form's fields inert. shadcn has no equivalent — it belongs to
        this port, which is why it is a rule here and not a class string on the component. */
     [data-slot="button"].up-active { pointer-events: none; }
+    [data-slot="button"][data-size^="icon"].up-active > * { display: none; }
     [data-slot="button"].up-active::after {
         content: "";
         margin-left: 0.5rem;
@@ -437,6 +438,10 @@ side. That plugin is not installed here (it is listed by the check-compiled .NET
         border-right-color: transparent;
         vertical-align: -2px;
         animation: sh-spin 0.6s linear infinite;
+    }
+    [data-slot="button"][data-size^="icon"].up-active::after {
+        margin-left: 0;
+        vertical-align: 0;
     }
     @media (prefers-reduced-motion: reduce) {
         /* No spin, but still a mark that something is happening. */
