@@ -173,20 +173,20 @@
     if (loading.has(src)) return loading.get(src)
     const targetBase = baseSrcOf(src)
     const existing = [...document.querySelectorAll('script[src]')].find((el) => {
-    const attr = el.getAttribute('src') || ''
-    return attr === src || (targetBase && baseSrcOf(attr).endsWith(targetBase))
+      const attr = el.getAttribute('src') || ''
+      return attr === src || (targetBase && baseSrcOf(attr).endsWith(targetBase))
     })
     if (existing) {
-    if (targetBase.endsWith('motion/motion.js') && typeof window.Motion !== 'undefined') {
-    loaded.add(src)
-    return Promise.resolve()
-    }
-    const waitExisting = new Promise((resolve, reject) => {
-    existing.addEventListener('load', () => { loaded.add(src); loading.delete(src); resolve() }, { once: true })
-    existing.addEventListener('error', (err) => { loading.delete(src); reject(err) }, { once: true })
-    })
-    loading.set(src, waitExisting)
-    return waitExisting
+      if (targetBase.endsWith('motion/motion.js') && typeof window.Motion !== 'undefined') {
+        loaded.add(src)
+        return Promise.resolve()
+      }
+      const waitExisting = new Promise((resolve, reject) => {
+        existing.addEventListener('load', () => { loaded.add(src); loading.delete(src); resolve() }, { once: true })
+        existing.addEventListener('error', (err) => { loading.delete(src); reject(err) }, { once: true })
+      })
+      loading.set(src, waitExisting)
+      return waitExisting
     }
     const promise = new Promise((resolve, reject) => {
       const s = document.createElement('script')
@@ -211,120 +211,122 @@
     return loadScript('_content/Unpoly.Blazor.Shadcn/motion/motion.js').then(() => window.Motion)
   }
 
-  // ---- cn ------------------------------------------------------------------------------------
+  // ---- motion helpers (Motion is loaded lazily by ensureMotion) -----------------------------
   const reducedMotion = () => !!window.matchMedia?.('(prefers-reduced-motion: reduce)').matches
   const MOTION_EASE_OUT = [0.16, 1, 0.3, 1]
   const activeMotionMap = new WeakMap()
   const clearMotionProps = (el, props = ['opacity', 'transform', 'filter', 'height', 'overflow']) => {
-  if (!el || !el.style) return
-  for (const p of props) el.style[p] = ''
+    if (!el || !el.style) return
+    for (const p of props) el.style[p] = ''
   }
   const withMotion = (fn) => {
-  if (typeof window.Motion !== 'undefined' && window.Motion) {
-  try { fn(window.Motion) } catch {}
-  return
-  }
-  ensureMotion().then((M) => { if (M) fn(M) }).catch(() => {})
+    if (typeof window.Motion !== 'undefined' && window.Motion) {
+      try { fn(window.Motion) } catch {}
+      return
+    }
+    ensureMotion().then((M) => { if (M) fn(M) }).catch(() => {})
   }
   const runTrackedMotion = (el, keyframes, options, propsToClear = ['opacity', 'transform']) => {
-  if (!el || reducedMotion()) return null
-  let handle = null
-  withMotion((M) => {
-  if (!el.isConnected || !M.animate) return
-  activeMotionMap.get(el)?.stop?.()
-  const anim = M.animate(el, keyframes, options)
-  handle = anim
-  activeMotionMap.set(el, anim)
-  anim.finished.then(() => {
-  if (activeMotionMap.get(el) === anim) {
-  activeMotionMap.delete(el)
-  clearMotionProps(el, propsToClear)
-  }
-  }).catch(() => {})
-  })
-  return handle
+    if (!el || reducedMotion()) return null
+    let handle = null
+    withMotion((M) => {
+      if (!el.isConnected || !M.animate) return
+      activeMotionMap.get(el)?.stop?.()
+      const anim = M.animate(el, keyframes, options)
+      handle = anim
+      activeMotionMap.set(el, anim)
+      anim.finished.then(() => {
+        if (activeMotionMap.get(el) === anim) {
+          activeMotionMap.delete(el)
+          clearMotionProps(el, propsToClear)
+        }
+      }).catch(() => {})
+    })
+    return handle
   }
   const springPop = (el) =>
-  runTrackedMotion(
-  el,
-  { transform: ['scale(0.955)', 'scale(1.025)', 'scale(1)'] },
-  { duration: 0.28, ease: MOTION_EASE_OUT },
-  ['transform']
-  )
+    runTrackedMotion(
+      el,
+      { transform: ['scale(0.955)', 'scale(1.025)', 'scale(1)'] },
+      { duration: 0.28, ease: MOTION_EASE_OUT },
+      ['transform']
+    )
   const fadeUp = (el, opts = {}) =>
-  runTrackedMotion(
-  el,
-  {
-  opacity: [opts.fromOpacity ?? 0, 1],
-  transform: [`translateY(${opts.y ?? 6}px)`, 'translateY(0px)'],
-  },
-  {
-  duration: opts.duration ?? 0.24,
-  delay: opts.delay ?? 0,
-  ease: opts.ease ?? MOTION_EASE_OUT,
-  },
-  ['opacity', 'transform']
-  )
+    runTrackedMotion(
+      el,
+      {
+        opacity: [opts.fromOpacity ?? 0, 1],
+        transform: [`translateY(${opts.y ?? 6}px)`, 'translateY(0px)'],
+      },
+      {
+        duration: opts.duration ?? 0.24,
+        delay: opts.delay ?? 0,
+        ease: opts.ease ?? MOTION_EASE_OUT,
+      },
+      ['opacity', 'transform']
+    )
   const stagger = (els, opts = {}) => {
-  if (!els || reducedMotion()) return
-  const list = [...els].filter((node) => node && !node.hidden)
-  if (!list.length) return
-  const step = opts.step ?? 0.04
-  const maxDelay = opts.maxDelay ?? 0.28
-  list.forEach((node, idx) => {
-  fadeUp(node, {
-  ...opts,
-  delay: Math.min(idx * step, maxDelay),
-  })
-  })
+    if (!els || reducedMotion()) return
+    const list = [...els].filter((node) => node && !node.hidden)
+    if (!list.length) return
+    const step = opts.step ?? 0.04
+    const maxDelay = opts.maxDelay ?? 0.28
+    list.forEach((node, idx) => {
+      fadeUp(node, {
+        ...opts,
+        delay: Math.min(idx * step, maxDelay),
+      })
+    })
   }
   const pulseValue = (el) => {
-  if (!el || reducedMotion()) return
-  runTrackedMotion(
-  el,
-  { transform: ['scale(1)', 'scale(1.06)', 'scale(1)'] },
-  { duration: 0.22, ease: MOTION_EASE_OUT },
-  ['transform']
-  )
+    if (!el || reducedMotion()) return
+    runTrackedMotion(
+      el,
+      { transform: ['scale(1)', 'scale(1.06)', 'scale(1)'] },
+      { duration: 0.22, ease: MOTION_EASE_OUT },
+      ['transform']
+    )
   }
   const flipPill = (_fromEl, toEl) => {
-  if (!toEl || reducedMotion()) return
-  runTrackedMotion(
-  toEl,
-  { transform: ['scale(0.96)', 'scale(1)'] },
-  { type: 'spring', stiffness: 420, damping: 28 },
-  ['transform']
-  )
+    if (!toEl || reducedMotion()) return
+    runTrackedMotion(
+      toEl,
+      { transform: ['scale(0.96)', 'scale(1)'] },
+      { type: 'spring', stiffness: 420, damping: 28 },
+      ['transform']
+    )
   }
   const animateDialogOpen = (dialog) => {
-  if (!dialog || reducedMotion()) return
-  const now = performance.now()
-  if (dialog._shadcnMotionAt && now - dialog._shadcnMotionAt < 32) return
-  dialog._shadcnMotionAt = now
-  const panel = dialog.firstElementChild
-  if (!panel) return
-  if (dialog.dataset.slot === 'sheet') {
-  const side = dialog.dataset.side || 'right'
-  const fromTransform =
-  side === 'left' ? 'translateX(-24px)'
-  : side === 'top' ? 'translateY(-20px)'
-  : side === 'bottom' ? 'translateY(24px)'
-  : 'translateX(24px)'
-  runTrackedMotion(
-  panel,
-  { opacity: [0.55, 1], transform: [fromTransform, 'translate(0px, 0px)'] },
-  { duration: 0.24, ease: MOTION_EASE_OUT },
-  ['opacity', 'transform']
-  )
-  return
+    if (!dialog || reducedMotion()) return
+    const now = performance.now()
+    if (dialog._shadcnMotionAt && now - dialog._shadcnMotionAt < 32) return
+    dialog._shadcnMotionAt = now
+    const panel = dialog.firstElementChild
+    if (!panel) return
+    if (dialog.dataset.slot === 'sheet') {
+      const side = dialog.dataset.side || 'right'
+      const fromTransform =
+        side === 'left' ? 'translateX(-24px)'
+      : side === 'top' ? 'translateY(-20px)'
+      : side === 'bottom' ? 'translateY(24px)'
+      : 'translateX(24px)'
+      runTrackedMotion(
+        panel,
+        { opacity: [0.55, 1], transform: [fromTransform, 'translate(0px, 0px)'] },
+        { duration: 0.24, ease: MOTION_EASE_OUT },
+        ['opacity', 'transform']
+      )
+      return
+    }
+    runTrackedMotion(
+      panel,
+      { opacity: [0, 1], transform: ['translateY(6px) scale(0.975)', 'translateY(0px) scale(1)'] },
+      { duration: 0.2, ease: MOTION_EASE_OUT },
+      ['opacity', 'transform']
+    )
   }
-  runTrackedMotion(
-  panel,
-  { opacity: [0, 1], transform: ['translateY(6px) scale(0.975)', 'translateY(0px) scale(1)'] },
-  { duration: 0.2, ease: MOTION_EASE_OUT },
-  ['opacity', 'transform']
-  )
-  }
+
+  // ---- cn ------------------------------------------------------------------------------------
   const cn = (...parts) => parts.filter(Boolean).join(' ')
 
   const el = (tag, className, props = {}) =>
@@ -468,12 +470,12 @@
       })
       node.insertBefore(button, node.querySelector('.toast-close'))
     }
-  runTrackedMotion(
-  node,
-  { opacity: [0, 1], transform: ['translateY(-8px) scale(0.975)', 'translateY(0px) scale(1)'] },
-  { duration: 0.24, ease: MOTION_EASE_OUT },
-  ['opacity', 'transform']
-  )
+    runTrackedMotion(
+      node,
+      { opacity: [0, 1], transform: ['translateY(-8px) scale(0.975)', 'translateY(0px) scale(1)'] },
+      { duration: 0.24, ease: MOTION_EASE_OUT },
+      ['opacity', 'transform']
+    )
   }
 
   // shadcn's five, and the same five lucide glyphs.
@@ -527,15 +529,15 @@
         '_content/Unpoly.Blazor.Shadcn/compat/dialog-shim.js before ui.js. Falling back to the open attribute.')
     }
     dialog.setAttribute('open', '')
-  if (!wasAlreadyOpen) animateDialogOpen(dialog)
+    if (!wasAlreadyOpen) animateDialogOpen(dialog)
   }
 
   const closeDialog = (dialog) => {
     const panel = dialog?.firstElementChild
     if (panel) {
-    activeMotionMap.get(panel)?.stop?.()
-    activeMotionMap.delete(panel)
-    clearMotionProps(panel, ['opacity', 'transform'])
+      activeMotionMap.get(panel)?.stop?.()
+      activeMotionMap.delete(panel)
+      clearMotionProps(panel, ['opacity', 'transform'])
     }
     if (typeof dialog.close === 'function') dialog.close()
     else dialog.removeAttribute('open')
@@ -675,14 +677,14 @@
       if (nowOpen === lastOpen) return
       lastOpen = nowOpen
       if (nowOpen) {
-      animateDialogOpen(dialog)
+        animateDialogOpen(dialog)
       } else if (dialog.firstElementChild) {
-      activeMotionMap.get(dialog.firstElementChild)?.stop?.()
-      activeMotionMap.delete(dialog.firstElementChild)
-      clearMotionProps(dialog.firstElementChild, ['opacity', 'transform'])
+        activeMotionMap.get(dialog.firstElementChild)?.stop?.()
+        activeMotionMap.delete(dialog.firstElementChild)
+        clearMotionProps(dialog.firstElementChild, ['opacity', 'transform'])
       }
       if (dialog.dataset.modal === 'false') return
-    lockScroll(nowOpen)
+      lockScroll(nowOpen)
     }
 
     const watch = new MutationObserver(onToggle)
@@ -691,12 +693,12 @@
 
     return () => {
       watch.disconnect()
-    if (dialog.firstElementChild) {
-    activeMotionMap.get(dialog.firstElementChild)?.stop?.()
-    activeMotionMap.delete(dialog.firstElementChild)
-    clearMotionProps(dialog.firstElementChild, ['opacity', 'transform'])
-    }
-    if (lastOpen && dialog.dataset.modal !== 'false') lockScroll(false)
+      if (dialog.firstElementChild) {
+        activeMotionMap.get(dialog.firstElementChild)?.stop?.()
+        activeMotionMap.delete(dialog.firstElementChild)
+        clearMotionProps(dialog.firstElementChild, ['opacity', 'transform'])
+      }
+      if (lastOpen && dialog.dataset.modal !== 'false') lockScroll(false)
     }
   })
 
@@ -816,8 +818,8 @@
       panel.setAttribute('aria-labelledby', trigger.id)
     })
 
-      let currentValue = null
-      const show = (value, animate = false) => {
+    let currentValue = null
+    const show = (value, animate = false) => {
       const changed = currentValue !== null && currentValue !== value
       const prevTrigger = triggers.find((t) => t.dataset.value === currentValue)
       currentValue = value
@@ -825,17 +827,17 @@
       for (const t of triggers) t.setAttribute('aria-selected', String(t.dataset.value === value))
       for (const t of triggers) t.tabIndex = t.dataset.value === value ? 0 : -1
       for (const p of panels) p.hidden = p.dataset.value !== value
-    if (animate && changed) {
-    const nextTrigger = triggers.find((t) => t.dataset.value === value)
-    const nextPanel = panels.find((p) => p.dataset.value === value)
-    if (nextTrigger) flipPill(prevTrigger, nextTrigger)
-    if (nextPanel) fadeUp(nextPanel, { y: 4, duration: 0.18 })
+      if (animate && changed) {
+        const nextTrigger = triggers.find((t) => t.dataset.value === value)
+        const nextPanel = panels.find((p) => p.dataset.value === value)
+        if (nextTrigger) flipPill(prevTrigger, nextTrigger)
+        if (nextPanel) fadeUp(nextPanel, { y: 4, duration: 0.18 })
+      }
     }
 
-    }
     const onClick = (event) => {
       const trigger = event.target.closest('[data-slot="tabs-trigger"]')
-    if (mine(trigger)) show(trigger.dataset.value, true)
+      if (mine(trigger)) show(trigger.dataset.value, true)
     }
 
     // Arrow keys move between tabs, which is the part of the APG pattern people actually notice.
@@ -3209,7 +3211,7 @@
     if (root.dataset.slot === 'command-dialog' && root.querySelector('[data-slot="command"]')) return
 
     const isDisabled = (item) =>
-    item.hasAttribute('disabled') || item.dataset.disabled !== undefined || item.getAttribute('aria-disabled') === 'true'
+      item.hasAttribute('disabled') || item.dataset.disabled !== undefined || item.getAttribute('aria-disabled') === 'true'
     const items = () => [...list.querySelectorAll('[data-slot="command-item"]:not([hidden])')].filter((i) => !isDisabled(i))
     const empty = root.querySelector('[data-slot="command-empty"]')
     const cleanup = []
@@ -3226,7 +3228,7 @@
     input.setAttribute('aria-expanded', 'true')
     input.setAttribute('aria-controls', list.id || (list.id = 'cmd-list-' + seq))
 
-      const highlight = (item, scroll = true) => {
+    const highlight = (item, scroll = true) => {
       for (const other of list.querySelectorAll('[data-slot="command-item"]')) {
         delete other.dataset.selected
       }
@@ -3243,7 +3245,7 @@
       if (!offScreen) item.scrollIntoView({ block: 'nearest' })
     }
 
-      const filter = (scroll = true) => {
+    const filter = (scroll = true) => {
       const q = fold(input.value.trim())
       let shown = 0
 
@@ -3260,7 +3262,7 @@
       }
       if (empty) empty.hidden = shown > 0
 
-    highlight(items()[0], scroll)
+      highlight(items()[0], scroll)
     }
 
     const onKey = (event) => {
@@ -3295,8 +3297,8 @@
     input.addEventListener('input', onInput)
     root.addEventListener('keydown', onKey)
 
-      const hostDialog = root.closest('dialog')
-      if (hostDialog) {
+    const hostDialog = root.closest('dialog')
+    if (hostDialog) {
       const focusInput = () => { if (isOpen(hostDialog)) input.focus({ preventScroll: true }) }
       const watch = new MutationObserver(focusInput)
       watch.observe(hostDialog, { attributes: true, attributeFilter: ['open'] })
@@ -3305,7 +3307,7 @@
     }
     list.addEventListener('pointermove', (e) => {
       const item = e.target.closest('[data-slot="command-item"]')
-    if (item && !item.hidden && !isDisabled(item)) highlight(item, false)
+      if (item && !item.hidden && !isDisabled(item)) highlight(item, false)
     })
 
     // The server-answered palette: <CommandInput> in a GET form with [up-target], and the results
@@ -3360,7 +3362,7 @@
       if (!input) return
       input.value = ''
       input.dispatchEvent(new Event('input', { bubbles: true }))
-    try { input.focus({ preventScroll: true }) } catch { input.focus() }
+      try { input.focus({ preventScroll: true }) } catch { input.focus() }
     }
 
     // Choosing an item is the end of a palette's job, so it closes — on the click itself, which
@@ -3376,10 +3378,10 @@
 
     let wasOpen = isOpen(dialog)
     const syncOpen = () => {
-    const nowOpen = isOpen(dialog)
-    if (nowOpen === wasOpen) return
-    wasOpen = nowOpen
-    if (nowOpen) onOpen()
+      const nowOpen = isOpen(dialog)
+      if (nowOpen === wasOpen) return
+      wasOpen = nowOpen
+      if (nowOpen) onOpen()
     }
     const watch = new MutationObserver(syncOpen)
     watch.observe(dialog, { attributes: true, attributeFilter: ['open'] })
@@ -4255,23 +4257,23 @@
         // A stored PATH may belong to another origin, so it is resolved against
         // data-preview-base for display only — what the field posts is never rewritten.
         const base = (root.dataset.previewBase || '').replace(/\/$/, '')
-      const resolved = url ? (base && url.startsWith('/') ? base + url : url) : ''
-      if (resolved) {
-      if (preview.getAttribute('src') !== resolved) preview.src = resolved
-      preview.hidden = false
-      if (lastPaintedSrc !== null && lastPaintedSrc !== resolved) {
-      runTrackedMotion(
-      preview,
-      { opacity: [0.35, 1], transform: ['scale(0.985)', 'scale(1)'] },
-      { duration: 0.22, ease: MOTION_EASE_OUT },
-      ['opacity', 'transform']
-      )
-      }
-      } else {
-      preview.removeAttribute('src')
-      preview.hidden = true
-      }
-      lastPaintedSrc = resolved
+        const resolved = url ? (base && url.startsWith('/') ? base + url : url) : ''
+        if (resolved) {
+          if (preview.getAttribute('src') !== resolved) preview.src = resolved
+          preview.hidden = false
+          if (lastPaintedSrc !== null && lastPaintedSrc !== resolved) {
+            runTrackedMotion(
+              preview,
+              { opacity: [0.35, 1], transform: ['scale(0.985)', 'scale(1)'] },
+              { duration: 0.22, ease: MOTION_EASE_OUT },
+              ['opacity', 'transform']
+            )
+          }
+        } else {
+          preview.removeAttribute('src')
+          preview.hidden = true
+        }
+        lastPaintedSrc = resolved
       }
       if (empty) empty.hidden = !!url
       if (clear) clear.hidden = !url
@@ -5317,187 +5319,188 @@
     return () => { stopTimeline(); stopRoll() }
   })
 
-  // Anything outside Unpoly's world — a head's own app.js, a page script — reaches these.
-  // `toast` is global on purpose: that is sonner's API, and the call sites read the same.
+  // ---- Smooth Disclosure (<Accordion>, <Collapsible>, <details data-motion-disclosure>) -----
   shadcnCompiler('details[data-slot="accordion-item"], details[data-slot="collapsible"], details[data-motion-disclosure]', (details) => {
-  const summary = details.querySelector(':scope > summary')
-  const content = details.querySelector(':scope > [data-slot="accordion-content"], :scope > [data-slot="collapsible-content"], :scope > div, :scope > *:not(summary)')
-  if (!summary || !content) return () => {}
-  let lastOpen = details.open
-  let closing = false
-  let anim = null
-  let disposed = false
-  const resetContent = () => {
-  anim?.stop?.()
-  anim = null
-  clearMotionProps(content, ['height', 'opacity', 'overflow', 'transform'])
-  }
-  const onToggle = () => {
-  if (disposed || details.open === lastOpen) return
-  lastOpen = details.open
-  if (!details.open) {
-  closing = false
-  resetContent()
-  return
-  }
-  if (reducedMotion()) return
-  withMotion((M) => {
-  if (disposed || !details.open || !M.animate) return
-  anim?.stop?.()
-  content.style.overflow = 'hidden'
-  content.style.height = 'auto'
-  const targetH = content.scrollHeight
-  if (targetH <= 0) { resetContent(); return }
-  const current = anim
-  const nextAnim = M.animate(
-  content,
-  { height: ['0px', `${targetH}px`], opacity: [0, 1] },
-  { duration: 0.22, ease: MOTION_EASE_OUT }
-  )
-  anim = nextAnim
-  nextAnim.finished.then(() => {
-  if (anim === nextAnim && !disposed) resetContent()
-  }).catch(() => {})
-  void current
-  })
-  }
-  const onSummaryClick = (e) => {
-  if (reducedMotion() || !window.Motion?.animate) return
-  if (closing) {
-  e.preventDefault()
-  closing = false
-  const fromH = content.getBoundingClientRect().height
-  anim?.stop?.()
-  content.style.overflow = 'hidden'
-  content.style.height = 'auto'
-  const targetH = content.scrollHeight
-  const reopenAnim = window.Motion.animate(
-  content,
-  { height: [`${fromH}px`, `${targetH}px`], opacity: [0.6, 1] },
-  { duration: 0.2, ease: MOTION_EASE_OUT }
-  )
-  anim = reopenAnim
-  reopenAnim.finished.then(() => {
-  if (anim === reopenAnim && !disposed) resetContent()
-  }).catch(() => {})
-  return
-  }
-  if (!details.open) return
-  e.preventDefault()
-  closing = true
-  const fromH = content.getBoundingClientRect().height
-  if (fromH <= 0) {
-  closing = false
-  details.open = false
-  lastOpen = false
-  resetContent()
-  return
-  }
-  anim?.stop?.()
-  content.style.overflow = 'hidden'
-  const closeAnim = window.Motion.animate(
-  content,
-  { height: [`${fromH}px`, '0px'], opacity: [1, 0] },
-  { duration: 0.18, ease: MOTION_EASE_OUT }
-  )
-  anim = closeAnim
-  closeAnim.finished.then(() => {
-  if (!closing || disposed || anim !== closeAnim) return
-  closing = false
-  details.open = false
-  lastOpen = false
-  resetContent()
-  }).catch(() => {
-  closing = false
-  resetContent()
-  })
-  }
-  details.addEventListener('toggle', onToggle)
-  summary.addEventListener('click', onSummaryClick)
-  return () => {
-  disposed = true
-  closing = false
-  details.removeEventListener('toggle', onToggle)
-  summary.removeEventListener('click', onSummaryClick)
-  resetContent()
-  }
+    const summary = details.querySelector(':scope > summary')
+    const content = details.querySelector(':scope > [data-slot="accordion-content"], :scope > [data-slot="collapsible-content"], :scope > div, :scope > *:not(summary)')
+    if (!summary || !content) return () => {}
+    let lastOpen = details.open
+    let closing = false
+    let anim = null
+    let disposed = false
+    const resetContent = () => {
+      anim?.stop?.()
+      anim = null
+      clearMotionProps(content, ['height', 'opacity', 'overflow', 'transform'])
+    }
+    const onToggle = () => {
+      if (disposed || details.open === lastOpen) return
+      lastOpen = details.open
+      if (!details.open) {
+        closing = false
+        resetContent()
+        return
+      }
+      if (reducedMotion()) return
+      withMotion((M) => {
+        if (disposed || !details.open || !M.animate) return
+        anim?.stop?.()
+        content.style.overflow = 'hidden'
+        content.style.height = 'auto'
+        const targetH = content.scrollHeight
+        if (targetH <= 0) { resetContent(); return }
+        const current = anim
+        const nextAnim = M.animate(
+          content,
+          { height: ['0px', `${targetH}px`], opacity: [0, 1] },
+          { duration: 0.22, ease: MOTION_EASE_OUT }
+        )
+        anim = nextAnim
+        nextAnim.finished.then(() => {
+          if (anim === nextAnim && !disposed) resetContent()
+        }).catch(() => {})
+        void current
+      })
+    }
+    const onSummaryClick = (e) => {
+      if (reducedMotion() || !window.Motion?.animate) return
+      if (closing) {
+        e.preventDefault()
+        closing = false
+        const fromH = content.getBoundingClientRect().height
+        anim?.stop?.()
+        content.style.overflow = 'hidden'
+        content.style.height = 'auto'
+        const targetH = content.scrollHeight
+        const reopenAnim = window.Motion.animate(
+          content,
+          { height: [`${fromH}px`, `${targetH}px`], opacity: [0.6, 1] },
+          { duration: 0.2, ease: MOTION_EASE_OUT }
+        )
+        anim = reopenAnim
+        reopenAnim.finished.then(() => {
+          if (anim === reopenAnim && !disposed) resetContent()
+        }).catch(() => {})
+        return
+      }
+      if (!details.open) return
+      e.preventDefault()
+      closing = true
+      const fromH = content.getBoundingClientRect().height
+      if (fromH <= 0) {
+        closing = false
+        details.open = false
+        lastOpen = false
+        resetContent()
+        return
+      }
+      anim?.stop?.()
+      content.style.overflow = 'hidden'
+      const closeAnim = window.Motion.animate(
+        content,
+        { height: [`${fromH}px`, '0px'], opacity: [1, 0] },
+        { duration: 0.18, ease: MOTION_EASE_OUT }
+      )
+      anim = closeAnim
+      closeAnim.finished.then(() => {
+        if (!closing || disposed || anim !== closeAnim) return
+        closing = false
+        details.open = false
+        lastOpen = false
+        resetContent()
+      }).catch(() => {
+        closing = false
+        resetContent()
+      })
+    }
+    details.addEventListener('toggle', onToggle)
+    summary.addEventListener('click', onSummaryClick)
+    return () => {
+      disposed = true
+      closing = false
+      details.removeEventListener('toggle', onToggle)
+      summary.removeEventListener('click', onSummaryClick)
+      resetContent()
+    }
   })
   shadcnCompiler('[data-motion="fade-up"]', (el) => {
-  if (reducedMotion() || el.dataset.motionPlayed === '1') return () => {}
-  let disposed = false
-  let stopInView = () => {}
-  withMotion((M) => {
-  if (disposed || !M.inView || !M.animate) return
-  stopInView = M.inView(el, () => {
-  el.dataset.motionPlayed = '1'
-  fadeUp(el, {
-  fromOpacity: performance.now() > 350 ? 0.75 : 0,
-  y: Number(el.dataset.motionY || 8),
-  duration: Number(el.dataset.motionDuration || 0.3),
-  delay: Number(el.dataset.motionDelay || 0),
-  })
-  stopInView()
-  }, { amount: 0.12 })
-  })
-  return () => {
-  disposed = true
-  stopInView()
-  clearMotionProps(el, ['opacity', 'transform'])
-  }
+    if (reducedMotion() || el.dataset.motionPlayed === '1') return () => {}
+    let disposed = false
+    let stopInView = () => {}
+    withMotion((M) => {
+      if (disposed || !M.inView || !M.animate) return
+      stopInView = M.inView(el, () => {
+        el.dataset.motionPlayed = '1'
+        fadeUp(el, {
+          fromOpacity: performance.now() > 350 ? 0.75 : 0,
+          y: Number(el.dataset.motionY || 8),
+          duration: Number(el.dataset.motionDuration || 0.3),
+          delay: Number(el.dataset.motionDelay || 0),
+        })
+        stopInView()
+      }, { amount: 0.12 })
+    })
+    return () => {
+      disposed = true
+      stopInView()
+      clearMotionProps(el, ['opacity', 'transform'])
+    }
   })
   shadcnCompiler('[data-motion-stagger]', (container) => {
-  if (reducedMotion() || container.dataset.motionStaggered === '1') return () => {}
-  const items = () => {
-  const explicit = container.querySelectorAll(':scope > [data-motion-item]')
-  return explicit.length ? [...explicit] : [...container.children]
-  }
-  let disposed = false
-  let stopInView = () => {}
-  const step = Number(container.dataset.motionStagger || 0.04) || 0.04
-  withMotion((M) => {
-  if (disposed || !M.inView) return
-  stopInView = M.inView(container, () => {
-  container.dataset.motionStaggered = '1'
-  stagger(items(), {
-  step,
-  maxDelay: 0.28,
-  fromOpacity: performance.now() > 350 ? 0.72 : 0,
-  y: 6,
-  duration: 0.26,
-  })
-  stopInView()
-  }, { amount: 0.08 })
-  })
-  return () => {
-  disposed = true
-  stopInView()
-  for (const child of items()) clearMotionProps(child, ['opacity', 'transform'])
-  }
+    if (reducedMotion() || container.dataset.motionStaggered === '1') return () => {}
+    const items = () => {
+      const explicit = container.querySelectorAll(':scope > [data-motion-item]')
+      return explicit.length ? [...explicit] : [...container.children]
+    }
+    let disposed = false
+    let stopInView = () => {}
+    const step = Number(container.dataset.motionStagger || 0.04) || 0.04
+    withMotion((M) => {
+      if (disposed || !M.inView) return
+      stopInView = M.inView(container, () => {
+        container.dataset.motionStaggered = '1'
+        stagger(items(), {
+          step,
+          maxDelay: 0.28,
+          fromOpacity: performance.now() > 350 ? 0.72 : 0,
+          y: 6,
+          duration: 0.26,
+        })
+        stopInView()
+      }, { amount: 0.08 })
+    })
+    return () => {
+      disposed = true
+      stopInView()
+      for (const child of items()) clearMotionProps(child, ['opacity', 'transform'])
+    }
   })
   shadcnCompiler('[data-motion-pill-bar]', (bar) => {
-  const onClick = (e) => {
-  if (reducedMotion()) return
-  const btn = e.target.closest?.('button, [role="tab"], [data-motion-pill]')
-  if (!btn || !bar.contains(btn)) return
-  flipPill(null, btn)
-  }
-  bar.addEventListener('click', onClick)
-  return () => bar.removeEventListener('click', onClick)
+    const onClick = (e) => {
+      if (reducedMotion()) return
+      const btn = e.target.closest?.('button, [role="tab"], [data-motion-pill]')
+      if (!btn || !bar.contains(btn)) return
+      flipPill(null, btn)
+    }
+    bar.addEventListener('click', onClick)
+    return () => bar.removeEventListener('click', onClick)
   })
+  // Anything outside Unpoly's world — a head's own app.js, a page script — reaches these.
+  // `toast` is global on purpose: that is sonner's API, and the call sites read the same.
   window.toast = toast
   window.alertDialog = alertDialog
-window.showDialog = showDialog
-window.closeDialog = closeDialog
-window.shadcnMotion = {
-ensure: ensureMotion,
-sync: () => (typeof window.Motion !== 'undefined' ? window.Motion : null),
-reduced: reducedMotion,
-clearProps: clearMotionProps,
-springPop,
-fadeUp,
-stagger,
-pulseValue,
-flipPill,
-rollText: (el, from, to) => (window.Motion ? rollText(window.Motion, el, from, to) : null),
-}
+  window.showDialog = showDialog
+  window.closeDialog = closeDialog
+  window.shadcnMotion = {
+    ensure: ensureMotion,
+    sync: () => (typeof window.Motion !== 'undefined' ? window.Motion : null),
+    reduced: reducedMotion,
+    clearProps: clearMotionProps,
+    springPop,
+    fadeUp,
+    stagger,
+    pulseValue,
+    flipPill,
+    rollText: (el, from, to) => (window.Motion ? rollText(window.Motion, el, from, to) : null),
+  }
 })()
