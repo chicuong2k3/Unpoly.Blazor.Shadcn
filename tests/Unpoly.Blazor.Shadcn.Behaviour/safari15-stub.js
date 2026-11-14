@@ -46,10 +46,11 @@
 (function () {
   'use strict';
 
-  /* ---- Array methods ------------------------------------------------------- */
+  /* ---- Array / Object methods ---------------------------------------------- */
   delete Array.prototype.toReversed;   // Safari < 16
   delete Array.prototype.at;           // Safari < 15.4
   delete Array.prototype.findLast;     // Safari < 16
+  delete Object.hasOwn;                // Safari < 15.4
 
   /* ---- structuredClone ----------------------------------------------------- */
   if (typeof window !== 'undefined') {

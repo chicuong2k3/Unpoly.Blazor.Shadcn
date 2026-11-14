@@ -8,13 +8,13 @@
 @if (Href is not null)
 {
     <a href="@Href" data-slot="command-item" role="option" data-keywords="@Keywords"
-       data-disabled="@(Disabled ? "" : null)" class="@Classes"
+       aria-disabled="@(Disabled ? "true" : null)" data-disabled="@(Disabled ? "true" : null)" class="@Classes"
        @attributes="AdditionalAttributes">@ChildContent</a>
 }
 else
 {
     <button type="button" data-slot="command-item" role="option" data-keywords="@Keywords"
-            data-disabled="@(Disabled ? "" : null)" disabled="@Disabled" class="@Classes"
+            aria-disabled="@(Disabled ? "true" : null)" data-disabled="@(Disabled ? "true" : null)" disabled="@Disabled" class="@Classes"
             @attributes="AdditionalAttributes">@ChildContent</button>
 }
 

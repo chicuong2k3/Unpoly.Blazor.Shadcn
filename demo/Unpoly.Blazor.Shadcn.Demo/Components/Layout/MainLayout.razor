@@ -14,7 +14,8 @@
    the chrome contains that anything might target from outside. *@
 
 <UpChrome Provides=".doc-nav, .doc-header">
-    <header class="doc-header sticky top-0 z-40 border-b bg-background/80 backdrop-blur">
+    <header class="doc-header sticky top-0 z-40 border-b">
+        <div aria-hidden="true" class="pointer-events-none absolute inset-0 -z-10 bg-background/80 backdrop-blur"></div>
         <div class="mx-auto flex h-16 max-w-[1400px] items-center gap-4 px-6">
             <a href="/" class="min-w-0 truncate font-semibold tracking-tight" up-target="body">
                 Unpoly.Blazor.Shadcn

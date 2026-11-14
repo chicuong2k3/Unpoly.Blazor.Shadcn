@@ -65,8 +65,20 @@
 
    A closed dialog must be invisible. The user-agent sheet does that only where it knows the
    element, and an unknown <dialog> otherwise renders in the flow, inline, all the time. */
+/* Tailwind 3 preflight writes `[hidden]:where(:not([hidden="until-found"])) { display: none; }`
+   without `!important` (unlike Tailwind 4), so any utility with equal `(0,1,0)` specificity later
+   in the sheet — such as `.flex` on `<CommandItem>` or `<ComboboxItem>` — overrides `hidden` and
+   leaves filtered-out rows visible. */
+[hidden]:where(:not([hidden="until-found"])) {
+  display: none !important;
+}
+
 :where(dialog:not([open])) {
   display: none;
+}
+
+:where(dialog[open]) {
+  display: block;
 }
 
 /* The frame the shim opened, positioned the way the user-agent sheet positions one. Only a
@@ -90,6 +102,17 @@
   max-height: calc(100% - 6px - 2em);
   overflow: auto;
   z-index: 2147483000;
+}
+
+/* CommandDialog pins its top at 12vh (`margin-block-start: 12vh`) and its inner `<Command>` has
+   `h-full` (`height: 100%`). On WebKit 15, `inset-block: 0` (`top: 0; bottom: 0`) with
+   `margin-block-start: 12vh` and a percentage-height child stretches a `position: fixed` box to
+   the bottom of the viewport instead of shrink-wrapping its list. Releasing `inset-block-end`
+   lets the palette size to its content while capping height to the remaining viewport. */
+[data-slot="command-dialog"][data-dialog-polyfill="modal"] {
+  inset-block-end: auto;
+  height: auto;
+  max-height: calc(88vh - 2rem);
 }
 
 /* ::backdrop, as the dialog's own ::before. position:fixed escapes the frame's size, z-index:-1

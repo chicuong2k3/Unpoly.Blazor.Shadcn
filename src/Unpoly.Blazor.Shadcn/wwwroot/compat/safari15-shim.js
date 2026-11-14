@@ -79,6 +79,37 @@
     };
   }
 
+  // Object.hasOwn — ES2022 (missing in Safari 15.0–15.3). Used by motion.js
+  // when animateDialogOpen / runTrackedMotion runs on dialog open.
+  if (typeof Object.hasOwn !== 'function') {
+    Object.hasOwn = function hasOwn(obj, prop) {
+      if (obj === null || obj === undefined) {
+        throw new TypeError('Cannot convert undefined or null to object');
+      }
+      return Object.prototype.hasOwnProperty.call(Object(obj), prop);
+    };
+  }
+
+  // structuredClone — HTML / Safari < 15.4. Used in ui.js mask-brush state cloning.
+  if (typeof window !== 'undefined' && typeof window.structuredClone !== 'function') {
+    window.structuredClone = function structuredClone(value) {
+      if (value === null || typeof value !== 'object') return value;
+      if (Array.isArray(value)) {
+        var copy = new Array(value.length);
+        for (var i = 0; i < value.length; i++) {
+          copy[i] = window.structuredClone(value[i]);
+        }
+        return copy;
+      }
+      var out = {};
+      var keys = Object.keys(value);
+      for (var k = 0; k < keys.length; k++) {
+        out[keys[k]] = window.structuredClone(value[keys[k]]);
+      }
+      return out;
+    };
+  }
+
   // :popover-open selector translation — Safari < 17 (and the oddbird polyfill,
   // which patches show/hide/toggle but NOT the selector engines). A selector
   // engine that does not know :popover-open throws SyntaxError on it, which

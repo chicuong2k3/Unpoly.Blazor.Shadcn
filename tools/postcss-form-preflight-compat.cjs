@@ -12,6 +12,7 @@ function formPreflightCompat() {
    root.append(postcss.rule({selector:'input::placeholder, textarea::placeholder',nodes:[postcss.decl({prop:'color',value:'currentColor'}),postcss.decl({prop:'opacity',value:'0.5'})]}));
    root.append(postcss.atRule({name:'supports',params:'(color: color-mix(in oklab, red, transparent))',nodes:[postcss.rule({selector:'input::placeholder, textarea::placeholder',nodes:[postcss.decl({prop:'color',value:'color-mix(in oklab, currentcolor 50%, transparent)'}),postcss.decl({prop:'opacity',value:'1'})]})]}));
    root.append(postcss.rule({selector:'::file-selector-button',nodes:[postcss.decl({prop:'margin-inline-end',value:'4px'})]}));
+   root.append(postcss.rule({selector:'[hidden]:where(:not([hidden="until-found"]))',nodes:[postcss.decl({prop:'display',value:'none',important:true})]}));
  }};
 }
 module.exports={formPreflightCompat};

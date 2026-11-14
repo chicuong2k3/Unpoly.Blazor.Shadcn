@@ -243,8 +243,12 @@ public class NavigationTests(DemoFixture fixture) : DemoPage(fixture)
         await input.FillAsync("tab");
         await Page.WaitForTimeoutAsync(300);
 
-        var shown = await box.Locator("[data-slot=\"command-item\"]:not([hidden])").CountAsync();
+        var shown = await box.Locator("[data-slot=\"command-item\"]")
+            .EvaluateAllAsync<int>("all => all.filter(i => !i.hidden && getComputedStyle(i).display !== 'none').length");
+        var hiddenButVisible = await box.Locator("[data-slot=\"command-item\"]")
+            .EvaluateAllAsync<int>("all => all.filter(i => i.hidden && getComputedStyle(i).display !== 'none').length");
         Assert.True(shown < all && shown > 0, $"{all} items became {shown}");
+        Assert.Equal(0, hiddenButVisible);
         AssertQuiet();
     }
 

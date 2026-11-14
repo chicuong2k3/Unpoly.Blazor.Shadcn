@@ -400,7 +400,8 @@ public class AccessibilityTests : BunitContext
             .Add(i => i.Href, "/x")
             .Add(i => i.Disabled, true)).Find("[data-slot=command-item]");
 
-        Assert.NotNull(item.GetAttribute("data-disabled"));
+        Assert.Equal("true", item.GetAttribute("data-disabled"));
+        Assert.Equal("true", item.GetAttribute("aria-disabled"));
     }
 
     [Fact]

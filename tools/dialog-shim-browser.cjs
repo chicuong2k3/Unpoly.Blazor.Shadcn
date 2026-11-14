@@ -40,8 +40,8 @@ const MARKUP = `
       <div data-slot="command-list" role="listbox">
         <div data-slot="command-empty" hidden>No results</div>
         <div data-slot="command-group" role="group">
-          <a data-slot="command-item" role="option" href="#alpha">Alpha</a>
-          <a data-slot="command-item" role="option" href="#beta">Beta</a>
+          <a data-slot="command-item" role="option" class="flex" href="#alpha">Alpha</a>
+          <a data-slot="command-item" role="option" class="flex" href="#beta">Beta</a>
         </div>
       </div>
     </div>
@@ -70,10 +70,10 @@ function page({ simulate = true, shim = true, ui = false }) {
     ...(shim ? [url(file('wwwroot/compat/dialog-shim.js'))] : []),
   ].map((src) => `<script src="${src}"></script>`).join('\n');
   const html = `<!doctype html><html><head><meta charset="utf-8">
-    <style>@keyframes sh-fade-in{from{opacity:0}to{opacity:1}}</style>
+    <style>@keyframes sh-fade-in{from{opacity:0}to{opacity:1}} [hidden]:where(:not([hidden="until-found"])){display:none} .flex{display:flex}</style>
     <style>${behaviour}</style><style>${safari15}</style>
     ${scripts}</head><body>${MARKUP}
-    ${ui ? `<script src="${url(file('wwwroot/ui.js'))}"></script>` : ''}</body></html>`;
+    ${ui ? `<script src="${url(file('wwwroot/motion/motion.js'))}"></script><script src="${url(file('wwwroot/ui.js'))}"></script>` : ''}</body></html>`;
   const target = path.join(os.tmpdir(), `dialog-shim-${process.pid}-${Math.random().toString(36).slice(2)}.html`);
   fs.writeFileSync(target, html);
   return { target, simulate };
@@ -436,7 +436,7 @@ check('ui.js: typing filters the items', ui, async (p) => {
   await p.click('#trigger');
   await p.keyboard.type('bet');
   const shown = await p.evaluate(() => [...document.querySelectorAll('#palette [data-slot="command-item"]')]
-    .filter((i) => !i.hidden).map((i) => i.textContent));
+    .filter((i) => !i.hidden && getComputedStyle(i).display !== 'none').map((i) => i.textContent));
   assert.deepEqual(shown, ['Beta']);
 });
 
